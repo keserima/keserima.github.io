@@ -3,7 +3,7 @@ module Main exposing (Model, Msg, init, main, view)
 import Browser
 import Html exposing (Html, div)
 import Html.Attributes exposing (style)
-import Random
+import List exposing (length)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (..)
@@ -26,10 +26,6 @@ subscriptions model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     ( { model | msg = msg }, Cmd.none )
-
-
-type alias Msg =
-    Maybe String
 
 
 boardBackgroundColor : Coordinate -> String
@@ -78,6 +74,10 @@ board =
 
 type alias Coordinate =
     { x : Int, y : Int }
+
+
+type alias CoordinateFloat =
+    { x : Float, y : Float }
 
 
 type PieceColor
@@ -141,14 +141,18 @@ glyph profession color =
             glyph HorizontalVertical color ++ glyph Diagonal color ++ glyph Circle color
 
 
-type alias Piece =
+type alias PieceOnBoard =
     { prof : Profession, pieceColor : PieceColor, coord : Coordinate }
 
 
-pieceSvg : Msg -> Piece -> Svg Msg
+type alias PieceWithFloatPosition =
+    { prof : Profession, pieceColor : PieceColor, coord : CoordinateFloat }
+
+
+pieceSvg : Msg -> PieceWithFloatPosition -> Svg Msg
 pieceSvg msg p =
     g
-        [ transform ("translate(" ++ String.fromInt (p.coord.x * 100) ++ " " ++ String.fromInt (p.coord.y * 100) ++ ")")
+        [ transform ("translate(" ++ String.fromFloat (p.coord.x * 100.0) ++ " " ++ String.fromFloat (p.coord.y * 100.0) ++ ")")
         , Html.Attributes.style "cursor" "pointer"
         , Svg.Events.onClick msg
         ]
@@ -164,26 +168,78 @@ pieceSvg msg p =
         )
 
 
+drawUpToThree : List a -> ( List a, List a )
+drawUpToThree xs =
+    case xs of
+        a :: b :: c :: ys ->
+            ( [ a, b, c ], ys )
+
+        _ ->
+            ( xs, [] )
+
+
+type alias Msg =
+    Maybe String
+
+
+type ClickPosition
+    = PieceOnTheBoard Coordinate
+
+
 view : Model -> Html Msg
 view model =
     div [ Html.Attributes.style "padding" "0 0 0 20px" ]
         [ svg
-            [ viewBox "0 -100 504 704"
-            , width "378"
+            [ viewBox "0 -200 800 900"
+            , width "600"
             ]
             (board
                 ++ List.map
                     (\piece ->
-                        piece
+                        { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
                             |> pieceSvg (Just ("piece on board, location " ++ String.fromInt piece.coord.x ++ " " ++ String.fromInt piece.coord.y))
                     )
                     model.board
                 ++ List.indexedMap
-                    (\i prof -> pieceSvg (Just ("piece on keseCaptured, index " ++ String.fromInt i)) { coord = { x = i, y = 5 }, prof = prof, pieceColor = Rima })
-                    model.keseCaptured
+                    (\i prof -> pieceSvg Nothing { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
+                    model.capturedByKese
                 ++ List.indexedMap
-                    (\i prof -> pieceSvg (Just ("piece on rimaCaptured, index " ++ String.fromInt i)) { coord = { x = 4 - i, y = -1 }, prof = prof, pieceColor = Kese })
-                    model.rimaCaptured
+                    (\i prof -> pieceSvg Nothing { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese })
+                    model.keseHand
+                ++ List.indexedMap
+                    (\i prof -> pieceSvg Nothing { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
+                    model.capturedByRima
+                ++ List.indexedMap
+                    (\i prof -> pieceSvg Nothing { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima })
+                    model.rimaHand
+                ++ List.indexedMap
+                    (\i _ ->
+                        rect
+                            [ x (String.fromInt (532 + 10 * i))
+                            , y (String.fromInt (12 + 3 * i))
+                            , width "80"
+                            , height "80"
+                            , fill (backgroundColor Rima)
+                            , strokeWidth "1"
+                            , stroke "#000"
+                            ]
+                            []
+                    )
+                    model.rimaDeck
+                ++ List.indexedMap
+                    (\i _ ->
+                        rect
+                            [ x (String.fromInt (532 + 10 * i))
+                            , y (String.fromInt (412 - 3 * i))
+                            , width "80"
+                            , height "80"
+                            , fill (backgroundColor Kese)
+                            , strokeWidth "1"
+                            , stroke "#eee"
+                            ]
+                            []
+                    )
+                    model.keseDeck
             )
         , Html.text
             (case model.msg of
@@ -197,97 +253,113 @@ view model =
 
 
 type alias Model =
-    { focus : Maybe Piece
-    , board : List Piece
-    , keseCaptured : List Profession
-    , rimaCaptured : List Profession
+    { focus : Maybe PieceOnBoard
+    , board : List PieceOnBoard
+    , capturedByKese : List Profession
+    , capturedByRima : List Profession
     , msg : Msg
+    , keseDeck : List Profession
+    , rimaDeck : List Profession
+    , keseHand : List Profession
+    , rimaHand : List Profession
     }
 
 
-coin =
-    Random.map (\n -> n == 0) (Random.int 0 1)
+type alias Flags =
+    { keseDice : Bool, rimaDice : Bool, shipDice : Bool, keseDeck : List Int, rimaDeck : List Int }
 
 
-init : () -> ( Model, Cmd Msg )
-init =
-    \_ ->
-        let
-            keseDice =
-                False
+numToProf n =
+    case n of
+        0 ->
+            Circle
 
-            rimaDice =
-                True
+        1 ->
+            HorizontalVertical
 
-            shipDice =
-                True
-        in
-        ( { focus = Nothing
-          , board =
-                [ { coord = { x = 0, y = 0 }
-                  , pieceColor = Rima
-                  , prof =
-                        if rimaDice then
-                            HorizontalVertical
+        _ ->
+            Diagonal
 
-                        else
-                            Diagonal
-                  }
-                , { coord = { x = 1, y = 0 }, pieceColor = Rima, prof = Circle }
-                , { coord = { x = 2, y = 0 }, pieceColor = Rima, prof = All }
-                , { coord = { x = 3, y = 0 }, pieceColor = Rima, prof = Circle }
-                , { coord = { x = 4, y = 0 }
-                  , pieceColor = Rima
-                  , prof =
-                        if not rimaDice then
-                            HorizontalVertical
 
-                        else
-                            Diagonal
-                  }
-                , { coord = { x = 0, y = 4 }
-                  , pieceColor = Kese
-                  , prof =
-                        if keseDice then
-                            HorizontalVertical
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    let
+        ( keseHand, keseDeck ) =
+            drawUpToThree (List.map numToProf flags.keseDeck)
 
-                        else
-                            Diagonal
-                  }
-                , { coord = { x = 1, y = 4 }, pieceColor = Kese, prof = Circle }
-                , { coord = { x = 2, y = 4 }, pieceColor = Kese, prof = All }
-                , { coord = { x = 3, y = 4 }, pieceColor = Kese, prof = Circle }
-                , { coord = { x = 4, y = 4 }
-                  , pieceColor = Kese
-                  , prof =
-                        if not keseDice then
-                            HorizontalVertical
+        ( rimaHand, rimaDeck ) =
+            drawUpToThree (List.map numToProf flags.rimaDeck)
+    in
+    ( { keseDeck = keseDeck
+      , rimaDeck = rimaDeck
+      , keseHand = keseHand
+      , rimaHand = rimaHand
+      , focus = Nothing
+      , board =
+            [ { coord = { x = 0, y = 0 }
+              , pieceColor = Rima
+              , prof =
+                    if flags.rimaDice then
+                        HorizontalVertical
 
-                        else
-                            Diagonal
-                  }
-                , { coord = { x = 1, y = 2 }
-                  , pieceColor = Ship
-                  , prof =
-                        if shipDice then
-                            HorizontalVertical
+                    else
+                        Diagonal
+              }
+            , { coord = { x = 1, y = 0 }, pieceColor = Rima, prof = Circle }
+            , { coord = { x = 2, y = 0 }, pieceColor = Rima, prof = All }
+            , { coord = { x = 3, y = 0 }, pieceColor = Rima, prof = Circle }
+            , { coord = { x = 4, y = 0 }
+              , pieceColor = Rima
+              , prof =
+                    if not flags.rimaDice then
+                        HorizontalVertical
 
-                        else
-                            Diagonal
-                  }
-                , { coord = { x = 3, y = 2 }
-                  , pieceColor = Ship
-                  , prof =
-                        if not shipDice then
-                            HorizontalVertical
+                    else
+                        Diagonal
+              }
+            , { coord = { x = 0, y = 4 }
+              , pieceColor = Kese
+              , prof =
+                    if flags.keseDice then
+                        HorizontalVertical
 
-                        else
-                            Diagonal
-                  }
-                ]
-          , keseCaptured = [ Diagonal, Circle, Circle ]
-          , rimaCaptured = [ HorizontalVertical, Diagonal ]
-          , msg = Nothing
-          }
-        , Cmd.none
-        )
+                    else
+                        Diagonal
+              }
+            , { coord = { x = 1, y = 4 }, pieceColor = Kese, prof = Circle }
+            , { coord = { x = 2, y = 4 }, pieceColor = Kese, prof = All }
+            , { coord = { x = 3, y = 4 }, pieceColor = Kese, prof = Circle }
+            , { coord = { x = 4, y = 4 }
+              , pieceColor = Kese
+              , prof =
+                    if not flags.keseDice then
+                        HorizontalVertical
+
+                    else
+                        Diagonal
+              }
+            , { coord = { x = 1, y = 2 }
+              , pieceColor = Ship
+              , prof =
+                    if flags.shipDice then
+                        HorizontalVertical
+
+                    else
+                        Diagonal
+              }
+            , { coord = { x = 3, y = 2 }
+              , pieceColor = Ship
+              , prof =
+                    if not flags.shipDice then
+                        HorizontalVertical
+
+                    else
+                        Diagonal
+              }
+            ]
+      , capturedByKese = [ Diagonal, Circle, Circle ]
+      , capturedByRima = [ HorizontalVertical, Diagonal ]
+      , msg = Nothing
+      }
+    , Cmd.none
+    )
