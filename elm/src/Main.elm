@@ -2,6 +2,7 @@ module Main exposing (Model, Msg, init, main, view)
 
 import Browser
 import Html exposing (Html)
+import Html.Attributes exposing (style)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (..)
@@ -141,8 +142,16 @@ type alias Piece =
 
 pieceSvg : Msg -> Piece -> Svg Msg
 pieceSvg msg p =
-    g [ transform ("translate(" ++ String.fromInt (p.coord.x * 100) ++ " " ++ String.fromInt (p.coord.y * 100) ++ ")") ]
-        (rect [ x "12", y "12", width "80", height "80", fill (backgroundColor p.pieceColor), onClick msg ] []
+    g [ transform ("translate(" ++ String.fromInt (p.coord.x * 100) ++ " " ++ String.fromInt (p.coord.y * 100) ++ ")"), Html.Attributes.style "cursor" "pointer" ]
+        (rect
+            [ x "12"
+            , y "12"
+            , width "80"
+            , height "80"
+            , fill (backgroundColor p.pieceColor)
+            , onClick msg
+            ]
+            []
             :: glyph p.prof (foregroundColor p.pieceColor)
         )
 
@@ -154,25 +163,28 @@ view model =
         , width "504"
         , height "504"
         ]
-        (board ++ List.map (pieceSvg ()) model)
+        (board ++ List.map (pieceSvg ()) model.board)
 
 
 type alias Model =
-    List Piece
+    { focus : Maybe Piece, board : List Piece }
 
 
 init : Model
 init =
-    [ { coord = { x = 0, y = 0 }, pieceColor = Rima, prof = HorizontalVertical }
-    , { coord = { x = 1, y = 0 }, pieceColor = Rima, prof = Circle }
-    , { coord = { x = 2, y = 0 }, pieceColor = Rima, prof = All }
-    , { coord = { x = 3, y = 0 }, pieceColor = Rima, prof = Circle }
-    , { coord = { x = 4, y = 0 }, pieceColor = Rima, prof = Diagonal }
-    , { coord = { x = 0, y = 4 }, pieceColor = Kese, prof = HorizontalVertical }
-    , { coord = { x = 1, y = 4 }, pieceColor = Kese, prof = Circle }
-    , { coord = { x = 2, y = 4 }, pieceColor = Kese, prof = All }
-    , { coord = { x = 3, y = 4 }, pieceColor = Kese, prof = Circle }
-    , { coord = { x = 4, y = 4 }, pieceColor = Kese, prof = Diagonal }
-    , { coord = { x = 1, y = 2 }, pieceColor = Ship, prof = HorizontalVertical }
-    , { coord = { x = 3, y = 2 }, pieceColor = Ship, prof = Diagonal }
-    ]
+    { focus = Nothing
+    , board =
+        [ { coord = { x = 0, y = 0 }, pieceColor = Rima, prof = HorizontalVertical }
+        , { coord = { x = 1, y = 0 }, pieceColor = Rima, prof = Circle }
+        , { coord = { x = 2, y = 0 }, pieceColor = Rima, prof = All }
+        , { coord = { x = 3, y = 0 }, pieceColor = Rima, prof = Circle }
+        , { coord = { x = 4, y = 0 }, pieceColor = Rima, prof = Diagonal }
+        , { coord = { x = 0, y = 4 }, pieceColor = Kese, prof = HorizontalVertical }
+        , { coord = { x = 1, y = 4 }, pieceColor = Kese, prof = Circle }
+        , { coord = { x = 2, y = 4 }, pieceColor = Kese, prof = All }
+        , { coord = { x = 3, y = 4 }, pieceColor = Kese, prof = Circle }
+        , { coord = { x = 4, y = 4 }, pieceColor = Kese, prof = Diagonal }
+        , { coord = { x = 1, y = 2 }, pieceColor = Ship, prof = HorizontalVertical }
+        , { coord = { x = 3, y = 2 }, pieceColor = Ship, prof = Diagonal }
+        ]
+    }
