@@ -4,6 +4,7 @@ import Browser
 import Html exposing (Html)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
+import Svg.Events exposing (..)
 
 
 main =
@@ -47,29 +48,26 @@ boardBackgroundColor coord =
             "#ccc"
 
 
-board : Svg Msg
+board : List (Svg Msg)
 board =
-    g
-        []
-        ([ 0, 1, 2, 3, 4 ]
-            |> List.concatMap
-                (\y_ind ->
-                    [ 0, 1, 2, 3, 4 ]
-                        |> List.map
-                            (\x_ind ->
-                                rect
-                                    [ x (String.fromInt (x_ind * 100 + 2))
-                                    , y (String.fromInt (y_ind * 100 + 2))
-                                    , width "100"
-                                    , height "100"
-                                    , fill (boardBackgroundColor { y = y_ind, x = x_ind })
-                                    , stroke "#000"
-                                    , strokeWidth "4"
-                                    ]
-                                    []
-                            )
+    List.concatMap
+        (\y_ind ->
+            List.map
+                (\x_ind ->
+                    rect
+                        [ x (String.fromInt (x_ind * 100 + 2))
+                        , y (String.fromInt (y_ind * 100 + 2))
+                        , width "100"
+                        , height "100"
+                        , fill (boardBackgroundColor { y = y_ind, x = x_ind })
+                        , stroke "#000"
+                        , strokeWidth "4"
+                        ]
+                        []
                 )
+                [ 0, 1, 2, 3, 4 ]
         )
+        [ 0, 1, 2, 3, 4 ]
 
 
 type alias Coordinate =
@@ -114,27 +112,23 @@ type Profession
 
 
 glyph profession color =
+    let
+        style =
+            [ fill "transparent", stroke color, strokeWidth "6", strokeLinecap "round" ]
+    in
     case profession of
         HorizontalVertical ->
-            [ Svg.path [ d "M 21 52 h 62", fill "transparent", stroke color, strokeWidth "6", strokeLinecap "round" ] []
-            , Svg.path [ d "M 52 21 v 62", fill "transparent", stroke color, strokeWidth "6", strokeLinecap "round" ] []
+            [ Svg.path (d "M 21 52 h 62" :: style) []
+            , Svg.path (d "M 52 21 v 62" :: style) []
             ]
 
         Diagonal ->
-            [ Svg.path [ d "M 24 24 l 56 56", fill "transparent", stroke color, strokeWidth "6", strokeLinecap "round" ] []
-            , Svg.path [ d "M 80 24 l -56 56", fill "transparent", stroke color, strokeWidth "6", strokeLinecap "round" ] []
+            [ Svg.path (d "M 24 24 l  56 56" :: style) []
+            , Svg.path (d "M 80 24 l -56 56" :: style) []
             ]
 
         Circle ->
-            [ circle
-                [ cx "52"
-                , cy "52"
-                , r "27"
-                , fill "transparent"
-                , stroke color
-                , strokeWidth "6"
-                ]
-                []
+            [ circle ([ cx "52", cy "52", r "27" ] ++ style) []
             ]
 
         All ->
@@ -145,10 +139,10 @@ type alias Piece =
     { prof : Profession, pieceColor : PieceColor, coord : Coordinate }
 
 
-pieceSvg : Piece -> Svg msg
-pieceSvg p =
+pieceSvg : Msg -> Piece -> Svg Msg
+pieceSvg msg p =
     g [ transform ("translate(" ++ String.fromInt (p.coord.x * 100) ++ " " ++ String.fromInt (p.coord.y * 100) ++ ")") ]
-        (rect [ x "12", y "12", width "80", height "80", fill (backgroundColor p.pieceColor) ] []
+        (rect [ x "12", y "12", width "80", height "80", fill (backgroundColor p.pieceColor), onClick msg ] []
             :: glyph p.prof (foregroundColor p.pieceColor)
         )
 
@@ -160,20 +154,7 @@ view model =
         , width "504"
         , height "504"
         ]
-        [ board
-        , pieceSvg { coord = { x = 0, y = 0 }, pieceColor = Rima, prof = HorizontalVertical }
-        , pieceSvg { coord = { x = 1, y = 0 }, pieceColor = Rima, prof = Circle }
-        , pieceSvg { coord = { x = 2, y = 0 }, pieceColor = Rima, prof = All }
-        , pieceSvg { coord = { x = 3, y = 0 }, pieceColor = Rima, prof = Circle }
-        , pieceSvg { coord = { x = 4, y = 0 }, pieceColor = Rima, prof = Diagonal }
-        , pieceSvg { coord = { x = 0, y = 4 }, pieceColor = Kese, prof = HorizontalVertical }
-        , pieceSvg { coord = { x = 1, y = 4 }, pieceColor = Kese, prof = Circle }
-        , pieceSvg { coord = { x = 2, y = 4 }, pieceColor = Kese, prof = All }
-        , pieceSvg { coord = { x = 3, y = 4 }, pieceColor = Kese, prof = Circle }
-        , pieceSvg { coord = { x = 4, y = 4 }, pieceColor = Kese, prof = Diagonal }
-        , pieceSvg { coord = { x = 1, y = 2 }, pieceColor = Ship, prof = HorizontalVertical }
-        , pieceSvg { coord = { x = 3, y = 2 }, pieceColor = Ship, prof = Diagonal }
-        ]
+        (board ++ List.map (pieceSvg ()) model)
 
 
 type alias Model =
