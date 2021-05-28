@@ -1,7 +1,7 @@
 module Main exposing (Model, Msg, init, main, view)
 
 import Browser
-import Html exposing (Html)
+import Html exposing (Html, div)
 import Html.Attributes exposing (style)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -18,13 +18,11 @@ main =
 
 update : Msg -> Model -> Model
 update msg model =
-    case msg of
-        () ->
-            model
+    { model | msg = msg }
 
 
 type alias Msg =
-    ()
+    String
 
 
 boardBackgroundColor : Coordinate -> String
@@ -142,14 +140,17 @@ type alias Piece =
 
 pieceSvg : Msg -> Piece -> Svg Msg
 pieceSvg msg p =
-    g [ transform ("translate(" ++ String.fromInt (p.coord.x * 100) ++ " " ++ String.fromInt (p.coord.y * 100) ++ ")"), Html.Attributes.style "cursor" "pointer" ]
+    g
+        [ transform ("translate(" ++ String.fromInt (p.coord.x * 100) ++ " " ++ String.fromInt (p.coord.y * 100) ++ ")")
+        , Html.Attributes.style "cursor" "pointer"
+        , Svg.Events.onClick msg
+        ]
         (rect
             [ x "12"
             , y "12"
             , width "80"
             , height "80"
             , fill (backgroundColor p.pieceColor)
-            , onClick msg
             ]
             []
             :: glyph p.prof (foregroundColor p.pieceColor)
@@ -158,16 +159,25 @@ pieceSvg msg p =
 
 view : Model -> Html Msg
 view model =
-    svg
-        [ viewBox "0 0 504 504"
-        , width "504"
-        , height "504"
+    div []
+        [ svg
+            [ viewBox "0 0 504 504"
+            , width "504"
+            , height "504"
+            ]
+            (board
+                ++ List.map
+                    (\p ->
+                        pieceSvg (String.fromInt p.coord.x ++ " " ++ String.fromInt p.coord.y) p
+                    )
+                    model.board
+            )
+        , Html.text ("clicked: " ++ model.msg)
         ]
-        (board ++ List.map (pieceSvg ()) model.board)
 
 
 type alias Model =
-    { focus : Maybe Piece, board : List Piece }
+    { focus : Maybe Piece, board : List Piece, msg : Msg }
 
 
 init : Model
@@ -187,4 +197,5 @@ init =
         , { coord = { x = 1, y = 2 }, pieceColor = Ship, prof = HorizontalVertical }
         , { coord = { x = 3, y = 2 }, pieceColor = Ship, prof = Diagonal }
         ]
+    , msg = ""
     }
