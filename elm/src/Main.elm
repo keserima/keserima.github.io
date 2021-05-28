@@ -10,16 +10,22 @@ import Svg.Events exposing (..)
 
 
 main =
-    Browser.sandbox
+    Browser.element
         { init = init
         , view = view
         , update = update
+        , subscriptions = subscriptions
         }
 
 
-update : Msg -> Model -> Model
+subscriptions : Model -> Sub msg
+subscriptions model =
+    Sub.none
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    { model | msg = msg }
+    ( { model | msg = msg }, Cmd.none )
 
 
 type alias Msg =
@@ -203,82 +209,85 @@ coin =
     Random.map (\n -> n == 0) (Random.int 0 1)
 
 
-init : Model
+init : () -> ( Model, Cmd Msg )
 init =
-    let
-        keseDice =
-            False
+    \_ ->
+        let
+            keseDice =
+                False
 
-        rimaDice =
-            True
+            rimaDice =
+                True
 
-        shipDice =
-            True
-    in
-    { focus = Nothing
-    , board =
-        [ { coord = { x = 0, y = 0 }
-          , pieceColor = Rima
-          , prof =
-                if rimaDice then
-                    HorizontalVertical
+            shipDice =
+                True
+        in
+        ( { focus = Nothing
+          , board =
+                [ { coord = { x = 0, y = 0 }
+                  , pieceColor = Rima
+                  , prof =
+                        if rimaDice then
+                            HorizontalVertical
 
-                else
-                    Diagonal
+                        else
+                            Diagonal
+                  }
+                , { coord = { x = 1, y = 0 }, pieceColor = Rima, prof = Circle }
+                , { coord = { x = 2, y = 0 }, pieceColor = Rima, prof = All }
+                , { coord = { x = 3, y = 0 }, pieceColor = Rima, prof = Circle }
+                , { coord = { x = 4, y = 0 }
+                  , pieceColor = Rima
+                  , prof =
+                        if not rimaDice then
+                            HorizontalVertical
+
+                        else
+                            Diagonal
+                  }
+                , { coord = { x = 0, y = 4 }
+                  , pieceColor = Kese
+                  , prof =
+                        if keseDice then
+                            HorizontalVertical
+
+                        else
+                            Diagonal
+                  }
+                , { coord = { x = 1, y = 4 }, pieceColor = Kese, prof = Circle }
+                , { coord = { x = 2, y = 4 }, pieceColor = Kese, prof = All }
+                , { coord = { x = 3, y = 4 }, pieceColor = Kese, prof = Circle }
+                , { coord = { x = 4, y = 4 }
+                  , pieceColor = Kese
+                  , prof =
+                        if not keseDice then
+                            HorizontalVertical
+
+                        else
+                            Diagonal
+                  }
+                , { coord = { x = 1, y = 2 }
+                  , pieceColor = Ship
+                  , prof =
+                        if shipDice then
+                            HorizontalVertical
+
+                        else
+                            Diagonal
+                  }
+                , { coord = { x = 3, y = 2 }
+                  , pieceColor = Ship
+                  , prof =
+                        if not shipDice then
+                            HorizontalVertical
+
+                        else
+                            Diagonal
+                  }
+                ]
+          , keseCaptured = [ Diagonal, Circle, Circle ]
+          , rimaCaptured = [ HorizontalVertical, Diagonal ]
+          , msg = Nothing
           }
-        , { coord = { x = 1, y = 0 }, pieceColor = Rima, prof = Circle }
-        , { coord = { x = 2, y = 0 }, pieceColor = Rima, prof = All }
-        , { coord = { x = 3, y = 0 }, pieceColor = Rima, prof = Circle }
-        , { coord = { x = 4, y = 0 }
-          , pieceColor = Rima
-          , prof =
-                if not rimaDice then
-                    HorizontalVertical
-
-                else
-                    Diagonal
-          }
-        , { coord = { x = 0, y = 4 }
-          , pieceColor = Kese
-          , prof =
-                if keseDice then
-                    HorizontalVertical
-
-                else
-                    Diagonal
-          }
-        , { coord = { x = 1, y = 4 }, pieceColor = Kese, prof = Circle }
-        , { coord = { x = 2, y = 4 }, pieceColor = Kese, prof = All }
-        , { coord = { x = 3, y = 4 }, pieceColor = Kese, prof = Circle }
-        , { coord = { x = 4, y = 4 }
-          , pieceColor = Kese
-          , prof =
-                if not keseDice then
-                    HorizontalVertical
-
-                else
-                    Diagonal
-          }
-        , { coord = { x = 1, y = 2 }
-          , pieceColor = Ship
-          , prof =
-                if shipDice then
-                    HorizontalVertical
-
-                else
-                    Diagonal
-          }
-        , { coord = { x = 3, y = 2 }
-          , pieceColor = Ship
-          , prof =
-                if not shipDice then
-                    HorizontalVertical
-
-                else
-                    Diagonal
-          }
-        ]
-    , keseCaptured = [ Diagonal, Circle, Circle ]
-    , rimaCaptured = [ HorizontalVertical, Diagonal ]
-    , msg = Nothing
-    }
+        , Cmd.none
+        )
