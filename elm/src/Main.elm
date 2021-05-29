@@ -3,10 +3,64 @@ module Main exposing (Model, Msg, init, main, view)
 import Browser
 import Html exposing (Html, div)
 import Html.Attributes exposing (style)
-import List exposing (length)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (..)
+
+
+type alias Coordinate =
+    { x : Int, y : Int }
+
+
+type alias CoordinateFloat =
+    { x : Float, y : Float }
+
+
+type PieceColor
+    = Kese
+    | Rima
+    | Ship
+
+
+type Profession
+    = HorizontalVertical
+    | Diagonal
+    | Circle
+    | All
+
+
+type alias PieceOnBoard =
+    { prof : Profession, pieceColor : PieceColor, coord : Coordinate }
+
+
+type alias PieceWithFloatPosition =
+    { prof : Profession, pieceColor : PieceColor, coord : CoordinateFloat }
+
+
+type alias Msg =
+    Maybe String
+
+
+type ClickPosition
+    = PieceOnTheBoard Coordinate
+
+
+type Model
+    = NoMoverSelected
+        { focus : Maybe PieceOnBoard
+        , board : List PieceOnBoard
+        , capturedByKese : List Profession
+        , capturedByRima : List Profession
+        , msg : Msg
+        , keseDeck : List Profession
+        , rimaDeck : List Profession
+        , keseHand : List Profession
+        , rimaHand : List Profession
+        }
+
+
+type alias Flags =
+    { keseDice : Bool, rimaDice : Bool, shipDice : Bool, keseDeck : List Int, rimaDeck : List Int }
 
 
 main : Program Flags Model Msg
@@ -75,20 +129,6 @@ board =
         [ 0, 1, 2, 3, 4 ]
 
 
-type alias Coordinate =
-    { x : Int, y : Int }
-
-
-type alias CoordinateFloat =
-    { x : Float, y : Float }
-
-
-type PieceColor
-    = Kese
-    | Rima
-    | Ship
-
-
 backgroundColor : PieceColor -> String
 backgroundColor pieceColor =
     case pieceColor of
@@ -115,13 +155,6 @@ foregroundColor pieceColor =
             "rgb(34, 44, 47)"
 
 
-type Profession
-    = HorizontalVertical
-    | Diagonal
-    | Circle
-    | All
-
-
 glyph : Profession -> String -> List (Svg msg)
 glyph profession color =
     let
@@ -145,14 +178,6 @@ glyph profession color =
 
         All ->
             glyph HorizontalVertical color ++ glyph Diagonal color ++ glyph Circle color
-
-
-type alias PieceOnBoard =
-    { prof : Profession, pieceColor : PieceColor, coord : Coordinate }
-
-
-type alias PieceWithFloatPosition =
-    { prof : Profession, pieceColor : PieceColor, coord : CoordinateFloat }
 
 
 pieceSvg : Msg -> PieceWithFloatPosition -> Svg Msg
@@ -189,14 +214,6 @@ drawUpToThree xs =
 
         _ ->
             ( xs, [] )
-
-
-type alias Msg =
-    Maybe String
-
-
-type ClickPosition
-    = PieceOnTheBoard Coordinate
 
 
 view : Model -> Html Msg
@@ -265,24 +282,6 @@ view modl =
                             "clicked: " ++ str
                     )
                 ]
-
-
-type Model
-    = NoMoverSelected
-        { focus : Maybe PieceOnBoard
-        , board : List PieceOnBoard
-        , capturedByKese : List Profession
-        , capturedByRima : List Profession
-        , msg : Msg
-        , keseDeck : List Profession
-        , rimaDeck : List Profession
-        , keseHand : List Profession
-        , rimaHand : List Profession
-        }
-
-
-type alias Flags =
-    { keseDice : Bool, rimaDice : Bool, shipDice : Bool, keseDeck : List Int, rimaDeck : List Int }
 
 
 numToProf : Int -> Profession
