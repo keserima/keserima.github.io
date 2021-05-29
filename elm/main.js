@@ -5503,7 +5503,16 @@ var $author$project$Main$pieceSvg = F2(
 				[
 					$elm$svg$Svg$Attributes$transform(
 					'translate(' + ($elm$core$String$fromFloat(p.coord.x * 100.0) + (' ' + ($elm$core$String$fromFloat(p.coord.y * 100.0) + ')')))),
-					A2($elm$html$Html$Attributes$style, 'cursor', 'pointer'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'cursor',
+					function () {
+						if (msg.$ === 'Nothing') {
+							return 'default';
+						} else {
+							return 'pointer';
+						}
+					}()),
 					$elm$svg$Svg$Events$onClick(msg)
 				]),
 			A2(
@@ -5584,7 +5593,8 @@ var $author$project$Main$view = function (model) {
 										function (i, prof) {
 											return A2(
 												$author$project$Main$pieceSvg,
-												$elm$core$Maybe$Nothing,
+												$elm$core$Maybe$Just(
+													'piece in keseHand, index ' + $elm$core$String$fromInt(i)),
 												{
 													coord: {x: i + 1.0, y: 5.0},
 													pieceColor: $author$project$Main$Kese,
@@ -5614,7 +5624,8 @@ var $author$project$Main$view = function (model) {
 												function (i, prof) {
 													return A2(
 														$author$project$Main$pieceSvg,
-														$elm$core$Maybe$Nothing,
+														$elm$core$Maybe$Just(
+															'piece in rimaHand, index ' + $elm$core$String$fromInt(i)),
 														{
 															coord: {x: 3.0 - i, y: -1.0},
 															pieceColor: $author$project$Main$Rima,

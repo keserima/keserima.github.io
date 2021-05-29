@@ -153,7 +153,14 @@ pieceSvg : Msg -> PieceWithFloatPosition -> Svg Msg
 pieceSvg msg p =
     g
         [ transform ("translate(" ++ String.fromFloat (p.coord.x * 100.0) ++ " " ++ String.fromFloat (p.coord.y * 100.0) ++ ")")
-        , Html.Attributes.style "cursor" "pointer"
+        , Html.Attributes.style "cursor"
+            (case msg of
+                Nothing ->
+                    "default"
+
+                Just _ ->
+                    "pointer"
+            )
         , Svg.Events.onClick msg
         ]
         (rect
@@ -204,13 +211,13 @@ view model =
                     (\i prof -> pieceSvg Nothing { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
                     model.capturedByKese
                 ++ List.indexedMap
-                    (\i prof -> pieceSvg Nothing { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese })
+                    (\i prof -> pieceSvg (Just ("piece in keseHand, index " ++ String.fromInt i)) { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese })
                     model.keseHand
                 ++ List.indexedMap
                     (\i prof -> pieceSvg Nothing { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
                     model.capturedByRima
                 ++ List.indexedMap
-                    (\i prof -> pieceSvg Nothing { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima })
+                    (\i prof -> pieceSvg (Just ("piece in rimaHand, index " ++ String.fromInt i)) { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima })
                     model.rimaHand
                 ++ List.indexedMap
                     (\i _ ->
