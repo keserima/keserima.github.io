@@ -5152,6 +5152,9 @@ var $author$project$Main$Circle = {$: 'Circle'};
 var $author$project$Main$Diagonal = {$: 'Diagonal'};
 var $author$project$Main$HorizontalVertical = {$: 'HorizontalVertical'};
 var $author$project$Main$Kese = {$: 'Kese'};
+var $author$project$Main$NoMoverSelected = function (a) {
+	return {$: 'NoMoverSelected', a: a};
+};
 var $author$project$Main$Rima = {$: 'Rima'};
 var $author$project$Main$Ship = {$: 'Ship'};
 var $author$project$Main$drawUpToThree = function (xs) {
@@ -5193,98 +5196,115 @@ var $author$project$Main$init = function (flags) {
 	var keseHand = _v1.a;
 	var keseDeck = _v1.b;
 	return _Utils_Tuple2(
-		{
-			board: _List_fromArray(
-				[
-					{
-					coord: {x: 0, y: 0},
-					pieceColor: $author$project$Main$Rima,
-					prof: flags.rimaDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
-				},
-					{
-					coord: {x: 1, y: 0},
-					pieceColor: $author$project$Main$Rima,
-					prof: $author$project$Main$Circle
-				},
-					{
-					coord: {x: 2, y: 0},
-					pieceColor: $author$project$Main$Rima,
-					prof: $author$project$Main$All
-				},
-					{
-					coord: {x: 3, y: 0},
-					pieceColor: $author$project$Main$Rima,
-					prof: $author$project$Main$Circle
-				},
-					{
-					coord: {x: 4, y: 0},
-					pieceColor: $author$project$Main$Rima,
-					prof: (!flags.rimaDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
-				},
-					{
-					coord: {x: 0, y: 4},
-					pieceColor: $author$project$Main$Kese,
-					prof: flags.keseDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
-				},
-					{
-					coord: {x: 1, y: 4},
-					pieceColor: $author$project$Main$Kese,
-					prof: $author$project$Main$Circle
-				},
-					{
-					coord: {x: 2, y: 4},
-					pieceColor: $author$project$Main$Kese,
-					prof: $author$project$Main$All
-				},
-					{
-					coord: {x: 3, y: 4},
-					pieceColor: $author$project$Main$Kese,
-					prof: $author$project$Main$Circle
-				},
-					{
-					coord: {x: 4, y: 4},
-					pieceColor: $author$project$Main$Kese,
-					prof: (!flags.keseDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
-				},
-					{
-					coord: {x: 1, y: 2},
-					pieceColor: $author$project$Main$Ship,
-					prof: flags.shipDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
-				},
-					{
-					coord: {x: 3, y: 2},
-					pieceColor: $author$project$Main$Ship,
-					prof: (!flags.shipDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
-				}
-				]),
-			capturedByKese: _List_fromArray(
-				[$author$project$Main$Diagonal, $author$project$Main$Circle, $author$project$Main$Circle]),
-			capturedByRima: _List_fromArray(
-				[$author$project$Main$HorizontalVertical, $author$project$Main$Diagonal]),
-			focus: $elm$core$Maybe$Nothing,
-			keseDeck: keseDeck,
-			keseHand: keseHand,
-			msg: $elm$core$Maybe$Nothing,
-			rimaDeck: rimaDeck,
-			rimaHand: rimaHand
-		},
+		$author$project$Main$NoMoverSelected(
+			{
+				board: _List_fromArray(
+					[
+						{
+						coord: {x: 0, y: 0},
+						pieceColor: $author$project$Main$Rima,
+						prof: flags.rimaDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+					},
+						{
+						coord: {x: 1, y: 0},
+						pieceColor: $author$project$Main$Rima,
+						prof: $author$project$Main$Circle
+					},
+						{
+						coord: {x: 2, y: 0},
+						pieceColor: $author$project$Main$Rima,
+						prof: $author$project$Main$All
+					},
+						{
+						coord: {x: 3, y: 0},
+						pieceColor: $author$project$Main$Rima,
+						prof: $author$project$Main$Circle
+					},
+						{
+						coord: {x: 4, y: 0},
+						pieceColor: $author$project$Main$Rima,
+						prof: (!flags.rimaDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+					},
+						{
+						coord: {x: 0, y: 4},
+						pieceColor: $author$project$Main$Kese,
+						prof: flags.keseDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+					},
+						{
+						coord: {x: 1, y: 4},
+						pieceColor: $author$project$Main$Kese,
+						prof: $author$project$Main$Circle
+					},
+						{
+						coord: {x: 2, y: 4},
+						pieceColor: $author$project$Main$Kese,
+						prof: $author$project$Main$All
+					},
+						{
+						coord: {x: 3, y: 4},
+						pieceColor: $author$project$Main$Kese,
+						prof: $author$project$Main$Circle
+					},
+						{
+						coord: {x: 4, y: 4},
+						pieceColor: $author$project$Main$Kese,
+						prof: (!flags.keseDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+					},
+						{
+						coord: {x: 1, y: 2},
+						pieceColor: $author$project$Main$Ship,
+						prof: flags.shipDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+					},
+						{
+						coord: {x: 3, y: 2},
+						pieceColor: $author$project$Main$Ship,
+						prof: (!flags.shipDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+					}
+					]),
+				capturedByKese: _List_fromArray(
+					[$author$project$Main$Diagonal, $author$project$Main$Circle, $author$project$Main$Circle]),
+				capturedByRima: _List_fromArray(
+					[$author$project$Main$HorizontalVertical, $author$project$Main$Diagonal]),
+				keseDeck: keseDeck,
+				keseHand: keseHand,
+				rimaDeck: rimaDeck,
+				rimaHand: rimaHand
+			}),
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $elm$json$Json$Decode$list = _Json_decodeList;
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$Main$subscriptions = function (model) {
+var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
+var $author$project$Main$MoverIsSelected = function (a) {
+	return {$: 'MoverIsSelected', a: a};
+};
 var $author$project$Main$update = F2(
-	function (msg, model) {
-		return _Utils_Tuple2(
-			_Utils_update(
-				model,
-				{msg: msg}),
-			$elm$core$Platform$Cmd$none);
+	function (msg, modl) {
+		var _v0 = _Utils_Tuple2(modl, msg);
+		if ((_v0.a.$ === 'NoMoverSelected') && (_v0.b.$ === 'Just')) {
+			var model = _v0.a.a;
+			var msg_ = _v0.b.a;
+			return _Utils_Tuple2(
+				$author$project$Main$MoverIsSelected(
+					{board: model.board, capturedByKese: model.capturedByKese, capturedByRima: model.capturedByRima, keseDeck: model.keseDeck, keseHand: model.keseHand, msg: msg_, rimaDeck: model.rimaDeck, rimaHand: model.rimaHand}),
+				$elm$core$Platform$Cmd$none);
+		} else {
+			return _Utils_Tuple2(modl, $elm$core$Platform$Cmd$none);
+		}
 	});
+var $author$project$Main$PieceInKeseHand = function (a) {
+	return {$: 'PieceInKeseHand', a: a};
+};
+var $author$project$Main$PieceInRimaHand = function (a) {
+	return {$: 'PieceInRimaHand', a: a};
+};
+var $author$project$Main$PieceOnTheBoard = function (a) {
+	return {$: 'PieceOnTheBoard', a: a};
+};
 var $author$project$Main$backgroundColor = function (pieceColor) {
 	switch (pieceColor.$) {
 		case 'Rima':
@@ -5386,6 +5406,16 @@ var $author$project$Main$board = A2(
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$core$Basics$negate = function (n) {
 	return -n;
+};
+var $author$project$Main$borderColor = function (c) {
+	switch (c.$) {
+		case 'Rima':
+			return '#005242';
+		case 'Kese':
+			return '#00b592';
+		default:
+			return '#005242';
+	}
 };
 var $author$project$Main$foregroundColor = function (pieceColor) {
 	switch (pieceColor.$) {
@@ -5495,8 +5525,8 @@ var $elm$svg$Svg$Events$onClick = function (msg) {
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
-var $author$project$Main$pieceSvg = F2(
-	function (msg, p) {
+var $author$project$Main$pieceSvg = F3(
+	function (focused, msg, p) {
 		return A2(
 			$elm$svg$Svg$g,
 			_List_fromArray(
@@ -5526,7 +5556,11 @@ var $author$project$Main$pieceSvg = F2(
 							$elm$svg$Svg$Attributes$width('80'),
 							$elm$svg$Svg$Attributes$height('80'),
 							$elm$svg$Svg$Attributes$fill(
-							$author$project$Main$backgroundColor(p.pieceColor))
+							$author$project$Main$backgroundColor(p.pieceColor)),
+							$elm$svg$Svg$Attributes$stroke(
+							focused ? $author$project$Main$borderColor(p.pieceColor) : 'none'),
+							$elm$svg$Svg$Attributes$strokeWidth(
+							focused ? '10' : 'none')
 						]),
 					_List_Nil),
 				A2(
@@ -5534,161 +5568,360 @@ var $author$project$Main$pieceSvg = F2(
 					p.prof,
 					$author$project$Main$foregroundColor(p.pieceColor))));
 	});
+var $author$project$Main$serializeMsg = function (msg) {
+	switch (msg.$) {
+		case 'PieceOnTheBoard':
+			var coord = msg.a;
+			return 'piece on board, location ' + ($elm$core$String$fromInt(coord.x) + (' ' + $elm$core$String$fromInt(coord.y)));
+		case 'PieceInKeseHand':
+			var i = msg.a;
+			return 'piece in keseHand, index ' + $elm$core$String$fromInt(i);
+		default:
+			var i = msg.a;
+			return 'piece in rimaHand, index ' + $elm$core$String$fromInt(i);
+	}
+};
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
-var $author$project$Main$view = function (model) {
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$svg$Svg$svg,
-				_List_fromArray(
-					[
-						$elm$svg$Svg$Attributes$viewBox('0 -200 800 900'),
-						$elm$svg$Svg$Attributes$width('600')
-					]),
-				_Utils_ap(
-					$author$project$Main$board,
+var $author$project$Main$view = function (modl) {
+	if (modl.$ === 'MoverIsSelected') {
+		var model = modl.a;
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$svg$Svg$svg,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$viewBox('0 -200 800 900'),
+							$elm$svg$Svg$Attributes$width('600')
+						]),
 					_Utils_ap(
-						A2(
-							$elm$core$List$map,
-							function (piece) {
-								return A2(
-									$author$project$Main$pieceSvg,
-									$elm$core$Maybe$Just(
-										'piece on board, location ' + ($elm$core$String$fromInt(piece.coord.x) + (' ' + $elm$core$String$fromInt(piece.coord.y)))),
-									{
-										coord: {x: piece.coord.x, y: piece.coord.y},
-										pieceColor: piece.pieceColor,
-										prof: piece.prof
-									});
-							},
-							model.board),
+						$author$project$Main$board,
 						_Utils_ap(
 							A2(
-								$elm$core$List$indexedMap,
-								F2(
-									function (i, prof) {
-										return A2(
+								$elm$core$List$map,
+								function (piece) {
+									var _v1 = model.msg;
+									if (_v1.$ === 'PieceOnTheBoard') {
+										var focus_coord = _v1.a;
+										return A3(
 											$author$project$Main$pieceSvg,
+											_Utils_eq(piece.coord, focus_coord),
 											$elm$core$Maybe$Nothing,
 											{
-												coord: {x: i * 0.85, y: 6.0},
-												pieceColor: $author$project$Main$Rima,
-												prof: prof
+												coord: {x: piece.coord.x, y: piece.coord.y},
+												pieceColor: piece.pieceColor,
+												prof: piece.prof
 											});
-									}),
-								model.capturedByKese),
+									} else {
+										return A3(
+											$author$project$Main$pieceSvg,
+											false,
+											$elm$core$Maybe$Nothing,
+											{
+												coord: {x: piece.coord.x, y: piece.coord.y},
+												pieceColor: piece.pieceColor,
+												prof: piece.prof
+											});
+									}
+								},
+								model.board),
 							_Utils_ap(
 								A2(
 									$elm$core$List$indexedMap,
 									F2(
 										function (i, prof) {
-											return A2(
+											return A3(
 												$author$project$Main$pieceSvg,
-												$elm$core$Maybe$Just(
-													'piece in keseHand, index ' + $elm$core$String$fromInt(i)),
+												false,
+												$elm$core$Maybe$Nothing,
 												{
-													coord: {x: i + 1.0, y: 5.0},
-													pieceColor: $author$project$Main$Kese,
+													coord: {x: i * 0.85, y: 6.0},
+													pieceColor: $author$project$Main$Rima,
 													prof: prof
 												});
 										}),
-									model.keseHand),
+									model.capturedByKese),
 								_Utils_ap(
 									A2(
 										$elm$core$List$indexedMap,
 										F2(
 											function (i, prof) {
-												return A2(
-													$author$project$Main$pieceSvg,
-													$elm$core$Maybe$Nothing,
-													{
-														coord: {x: 4.0 - (i * 0.85), y: -2.0},
-														pieceColor: $author$project$Main$Kese,
-														prof: prof
-													});
+												var _v2 = model.msg;
+												if (_v2.$ === 'PieceInKeseHand') {
+													var ind = _v2.a;
+													return A3(
+														$author$project$Main$pieceSvg,
+														_Utils_eq(ind, i),
+														$elm$core$Maybe$Nothing,
+														{
+															coord: {x: i + 1.0, y: 5.0},
+															pieceColor: $author$project$Main$Kese,
+															prof: prof
+														});
+												} else {
+													return A3(
+														$author$project$Main$pieceSvg,
+														false,
+														$elm$core$Maybe$Nothing,
+														{
+															coord: {x: i + 1.0, y: 5.0},
+															pieceColor: $author$project$Main$Kese,
+															prof: prof
+														});
+												}
 											}),
-										model.capturedByRima),
+										model.keseHand),
 									_Utils_ap(
 										A2(
 											$elm$core$List$indexedMap,
 											F2(
 												function (i, prof) {
-													return A2(
+													return A3(
 														$author$project$Main$pieceSvg,
-														$elm$core$Maybe$Just(
-															'piece in rimaHand, index ' + $elm$core$String$fromInt(i)),
+														false,
+														$elm$core$Maybe$Nothing,
 														{
-															coord: {x: 3.0 - i, y: -1.0},
-															pieceColor: $author$project$Main$Rima,
+															coord: {x: 4.0 - (i * 0.85), y: -2.0},
+															pieceColor: $author$project$Main$Kese,
 															prof: prof
 														});
 												}),
-											model.rimaHand),
+											model.capturedByRima),
 										_Utils_ap(
 											A2(
 												$elm$core$List$indexedMap,
 												F2(
-													function (i, _v0) {
-														return A2(
-															$elm$svg$Svg$rect,
-															_List_fromArray(
-																[
-																	$elm$svg$Svg$Attributes$x(
-																	$elm$core$String$fromInt(532 + (10 * i))),
-																	$elm$svg$Svg$Attributes$y(
-																	$elm$core$String$fromInt(12 + (3 * i))),
-																	$elm$svg$Svg$Attributes$width('80'),
-																	$elm$svg$Svg$Attributes$height('80'),
-																	$elm$svg$Svg$Attributes$fill(
-																	$author$project$Main$backgroundColor($author$project$Main$Rima)),
-																	$elm$svg$Svg$Attributes$strokeWidth('1'),
-																	$elm$svg$Svg$Attributes$stroke('#000')
-																]),
-															_List_Nil);
+													function (i, prof) {
+														var _v3 = model.msg;
+														if (_v3.$ === 'PieceInRimaHand') {
+															var ind = _v3.a;
+															return A3(
+																$author$project$Main$pieceSvg,
+																_Utils_eq(ind, i),
+																$elm$core$Maybe$Nothing,
+																{
+																	coord: {x: 3.0 - i, y: -1.0},
+																	pieceColor: $author$project$Main$Rima,
+																	prof: prof
+																});
+														} else {
+															return A3(
+																$author$project$Main$pieceSvg,
+																false,
+																$elm$core$Maybe$Nothing,
+																{
+																	coord: {x: 3.0 - i, y: -1.0},
+																	pieceColor: $author$project$Main$Rima,
+																	prof: prof
+																});
+														}
 													}),
-												model.rimaDeck),
+												model.rimaHand),
+											_Utils_ap(
+												A2(
+													$elm$core$List$indexedMap,
+													F2(
+														function (i, _v4) {
+															return A2(
+																$elm$svg$Svg$rect,
+																_List_fromArray(
+																	[
+																		$elm$svg$Svg$Attributes$x(
+																		$elm$core$String$fromInt(532 + (10 * i))),
+																		$elm$svg$Svg$Attributes$y(
+																		$elm$core$String$fromInt(12 + (3 * i))),
+																		$elm$svg$Svg$Attributes$width('80'),
+																		$elm$svg$Svg$Attributes$height('80'),
+																		$elm$svg$Svg$Attributes$fill(
+																		$author$project$Main$backgroundColor($author$project$Main$Rima)),
+																		$elm$svg$Svg$Attributes$strokeWidth('1'),
+																		$elm$svg$Svg$Attributes$stroke('#000')
+																	]),
+																_List_Nil);
+														}),
+													model.rimaDeck),
+												A2(
+													$elm$core$List$indexedMap,
+													F2(
+														function (i, _v5) {
+															return A2(
+																$elm$svg$Svg$rect,
+																_List_fromArray(
+																	[
+																		$elm$svg$Svg$Attributes$x(
+																		$elm$core$String$fromInt(532 + (10 * i))),
+																		$elm$svg$Svg$Attributes$y(
+																		$elm$core$String$fromInt(412 - (3 * i))),
+																		$elm$svg$Svg$Attributes$width('80'),
+																		$elm$svg$Svg$Attributes$height('80'),
+																		$elm$svg$Svg$Attributes$fill(
+																		$author$project$Main$backgroundColor($author$project$Main$Kese)),
+																		$elm$svg$Svg$Attributes$strokeWidth('1'),
+																		$elm$svg$Svg$Attributes$stroke('#eee')
+																	]),
+																_List_Nil);
+														}),
+													model.keseDeck))))))))),
+					$elm$html$Html$text(
+					'clicked: ' + $author$project$Main$serializeMsg(model.msg))
+				]));
+	} else {
+		var model = modl.a;
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$svg$Svg$svg,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$viewBox('0 -200 800 900'),
+							$elm$svg$Svg$Attributes$width('600')
+						]),
+					_Utils_ap(
+						$author$project$Main$board,
+						_Utils_ap(
+							A2(
+								$elm$core$List$map,
+								function (piece) {
+									return A3(
+										$author$project$Main$pieceSvg,
+										false,
+										$elm$core$Maybe$Just(
+											$author$project$Main$PieceOnTheBoard(piece.coord)),
+										{
+											coord: {x: piece.coord.x, y: piece.coord.y},
+											pieceColor: piece.pieceColor,
+											prof: piece.prof
+										});
+								},
+								model.board),
+							_Utils_ap(
+								A2(
+									$elm$core$List$indexedMap,
+									F2(
+										function (i, prof) {
+											return A3(
+												$author$project$Main$pieceSvg,
+												false,
+												$elm$core$Maybe$Nothing,
+												{
+													coord: {x: i * 0.85, y: 6.0},
+													pieceColor: $author$project$Main$Rima,
+													prof: prof
+												});
+										}),
+									model.capturedByKese),
+								_Utils_ap(
+									A2(
+										$elm$core$List$indexedMap,
+										F2(
+											function (i, prof) {
+												return A3(
+													$author$project$Main$pieceSvg,
+													false,
+													$elm$core$Maybe$Just(
+														$author$project$Main$PieceInKeseHand(i)),
+													{
+														coord: {x: i + 1.0, y: 5.0},
+														pieceColor: $author$project$Main$Kese,
+														prof: prof
+													});
+											}),
+										model.keseHand),
+									_Utils_ap(
+										A2(
+											$elm$core$List$indexedMap,
+											F2(
+												function (i, prof) {
+													return A3(
+														$author$project$Main$pieceSvg,
+														false,
+														$elm$core$Maybe$Nothing,
+														{
+															coord: {x: 4.0 - (i * 0.85), y: -2.0},
+															pieceColor: $author$project$Main$Kese,
+															prof: prof
+														});
+												}),
+											model.capturedByRima),
+										_Utils_ap(
 											A2(
 												$elm$core$List$indexedMap,
 												F2(
-													function (i, _v1) {
-														return A2(
-															$elm$svg$Svg$rect,
-															_List_fromArray(
-																[
-																	$elm$svg$Svg$Attributes$x(
-																	$elm$core$String$fromInt(532 + (10 * i))),
-																	$elm$svg$Svg$Attributes$y(
-																	$elm$core$String$fromInt(412 - (3 * i))),
-																	$elm$svg$Svg$Attributes$width('80'),
-																	$elm$svg$Svg$Attributes$height('80'),
-																	$elm$svg$Svg$Attributes$fill(
-																	$author$project$Main$backgroundColor($author$project$Main$Kese)),
-																	$elm$svg$Svg$Attributes$strokeWidth('1'),
-																	$elm$svg$Svg$Attributes$stroke('#eee')
-																]),
-															_List_Nil);
+													function (i, prof) {
+														return A3(
+															$author$project$Main$pieceSvg,
+															false,
+															$elm$core$Maybe$Just(
+																$author$project$Main$PieceInRimaHand(i)),
+															{
+																coord: {x: 3.0 - i, y: -1.0},
+																pieceColor: $author$project$Main$Rima,
+																prof: prof
+															});
 													}),
-												model.keseDeck))))))))),
-				$elm$html$Html$text(
-				function () {
-					var _v2 = model.msg;
-					if (_v2.$ === 'Nothing') {
-						return '';
-					} else {
-						var str = _v2.a;
-						return 'clicked: ' + str;
-					}
-				}())
-			]));
+												model.rimaHand),
+											_Utils_ap(
+												A2(
+													$elm$core$List$indexedMap,
+													F2(
+														function (i, _v6) {
+															return A2(
+																$elm$svg$Svg$rect,
+																_List_fromArray(
+																	[
+																		$elm$svg$Svg$Attributes$x(
+																		$elm$core$String$fromInt(532 + (10 * i))),
+																		$elm$svg$Svg$Attributes$y(
+																		$elm$core$String$fromInt(12 + (3 * i))),
+																		$elm$svg$Svg$Attributes$width('80'),
+																		$elm$svg$Svg$Attributes$height('80'),
+																		$elm$svg$Svg$Attributes$fill(
+																		$author$project$Main$backgroundColor($author$project$Main$Rima)),
+																		$elm$svg$Svg$Attributes$strokeWidth('1'),
+																		$elm$svg$Svg$Attributes$stroke('#000')
+																	]),
+																_List_Nil);
+														}),
+													model.rimaDeck),
+												A2(
+													$elm$core$List$indexedMap,
+													F2(
+														function (i, _v7) {
+															return A2(
+																$elm$svg$Svg$rect,
+																_List_fromArray(
+																	[
+																		$elm$svg$Svg$Attributes$x(
+																		$elm$core$String$fromInt(532 + (10 * i))),
+																		$elm$svg$Svg$Attributes$y(
+																		$elm$core$String$fromInt(412 - (3 * i))),
+																		$elm$svg$Svg$Attributes$width('80'),
+																		$elm$svg$Svg$Attributes$height('80'),
+																		$elm$svg$Svg$Attributes$fill(
+																		$author$project$Main$backgroundColor($author$project$Main$Kese)),
+																		$elm$svg$Svg$Attributes$strokeWidth('1'),
+																		$elm$svg$Svg$Attributes$stroke('#eee')
+																	]),
+																_List_Nil);
+														}),
+													model.keseDeck)))))))))
+				]));
+	}
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{init: $author$project$Main$init, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});

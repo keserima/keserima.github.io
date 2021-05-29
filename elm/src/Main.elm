@@ -37,21 +37,21 @@ type alias PieceWithFloatPosition =
     { prof : Profession, pieceColor : PieceColor, coord : CoordinateFloat }
 
 
-type alias Msg =
-    Maybe String
-
-
-type ClickPosition
-    = PieceOnTheBoard Coordinate
-
-
 type Model
     = NoMoverSelected
-        { focus : Maybe PieceOnBoard
-        , board : List PieceOnBoard
+        { board : List PieceOnBoard
         , capturedByKese : List Profession
         , capturedByRima : List Profession
-        , msg : Msg
+        , keseDeck : List Profession
+        , rimaDeck : List Profession
+        , keseHand : List Profession
+        , rimaHand : List Profession
+        }
+    | MoverIsSelected
+        { board : List PieceOnBoard
+        , capturedByKese : List Profession
+        , capturedByRima : List Profession
+        , msg : Msg_
         , keseDeck : List Profession
         , rimaDeck : List Profession
         , keseHand : List Profession
@@ -74,15 +74,29 @@ main =
 
 
 subscriptions : Model -> Sub msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg modl =
-    case modl of
-        NoMoverSelected model ->
-            ( NoMoverSelected { model | msg = msg }, Cmd.none )
+    case ( modl, msg ) of
+        ( NoMoverSelected model, Just msg_ ) ->
+            ( MoverIsSelected
+                { board = model.board
+                , msg = msg_
+                , keseHand = model.keseHand
+                , keseDeck = model.keseDeck
+                , rimaHand = model.rimaHand
+                , rimaDeck = model.rimaDeck
+                , capturedByRima = model.capturedByRima
+                , capturedByKese = model.capturedByKese
+                }
+            , Cmd.none
+            )
+
+        _ ->
+            ( modl, Cmd.none )
 
 
 boardBackgroundColor : Coordinate -> String
@@ -180,8 +194,8 @@ glyph profession color =
             glyph HorizontalVertical color ++ glyph Diagonal color ++ glyph Circle color
 
 
-pieceSvg : Msg -> PieceWithFloatPosition -> Svg Msg
-pieceSvg msg p =
+pieceSvg : Bool -> Msg -> PieceWithFloatPosition -> Svg Msg
+pieceSvg focused msg p =
     g
         [ transform ("translate(" ++ String.fromFloat (p.coord.x * 100.0) ++ " " ++ String.fromFloat (p.coord.y * 100.0) ++ ")")
         , Html.Attributes.style "cursor"
@@ -200,10 +214,37 @@ pieceSvg msg p =
             , width "80"
             , height "80"
             , fill (backgroundColor p.pieceColor)
+            , stroke
+                (if focused then
+                    borderColor p.pieceColor
+
+                 else
+                    "none"
+                )
+            , strokeWidth
+                (if focused then
+                    "10"
+
+                 else
+                    "none"
+                )
             ]
             []
             :: glyph p.prof (foregroundColor p.pieceColor)
         )
+
+
+borderColor : PieceColor -> String
+borderColor c =
+    case c of
+        Rima ->
+            "#005242"
+
+        Kese ->
+            "#00b592"
+
+        Ship ->
+            "#005242"
 
 
 drawUpToThree : List a -> ( List a, List a )
@@ -216,10 +257,33 @@ drawUpToThree xs =
             ( xs, [] )
 
 
+type alias Msg =
+    Maybe Msg_
+
+
+type Msg_
+    = PieceOnTheBoard Coordinate
+    | PieceInKeseHand Int
+    | PieceInRimaHand Int
+
+
+serializeMsg : Msg_ -> String
+serializeMsg msg =
+    case msg of
+        PieceOnTheBoard coord ->
+            "piece on board, location " ++ String.fromInt coord.x ++ " " ++ String.fromInt coord.y
+
+        PieceInKeseHand i ->
+            "piece in keseHand, index " ++ String.fromInt i
+
+        PieceInRimaHand i ->
+            "piece in rimaHand, index " ++ String.fromInt i
+
+
 view : Model -> Html Msg
 view modl =
     case modl of
-        NoMoverSelected model ->
+        MoverIsSelected model ->
             div [ Html.Attributes.style "padding" "0 0 0 20px" ]
                 [ svg
                     [ viewBox "0 -200 800 900"
@@ -228,21 +292,41 @@ view modl =
                     (board
                         ++ List.map
                             (\piece ->
-                                { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                    |> pieceSvg (Just ("piece on board, location " ++ String.fromInt piece.coord.x ++ " " ++ String.fromInt piece.coord.y))
+                                case model.msg of
+                                    PieceOnTheBoard focus_coord ->
+                                        { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                            |> pieceSvg (piece.coord == focus_coord) Nothing
+
+                                    _ ->
+                                        { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                            |> pieceSvg False Nothing
                             )
                             model.board
                         ++ List.indexedMap
-                            (\i prof -> pieceSvg Nothing { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
+                            (\i prof -> pieceSvg False Nothing { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
                             model.capturedByKese
                         ++ List.indexedMap
-                            (\i prof -> pieceSvg (Just ("piece in keseHand, index " ++ String.fromInt i)) { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese })
+                            (\i prof ->
+                                case model.msg of
+                                    PieceInKeseHand ind ->
+                                        pieceSvg (ind == i) Nothing { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+
+                                    _ ->
+                                        pieceSvg False Nothing { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                            )
                             model.keseHand
                         ++ List.indexedMap
-                            (\i prof -> pieceSvg Nothing { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
+                            (\i prof -> pieceSvg False Nothing { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
                             model.capturedByRima
                         ++ List.indexedMap
-                            (\i prof -> pieceSvg (Just ("piece in rimaHand, index " ++ String.fromInt i)) { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima })
+                            (\i prof ->
+                                case model.msg of
+                                    PieceInRimaHand ind ->
+                                        pieceSvg (ind == i) Nothing { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+
+                                    _ ->
+                                        pieceSvg False Nothing { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                            )
                             model.rimaHand
                         ++ List.indexedMap
                             (\i _ ->
@@ -274,12 +358,62 @@ view modl =
                             model.keseDeck
                     )
                 , Html.text
-                    (case model.msg of
-                        Nothing ->
-                            ""
+                    ("clicked: " ++ serializeMsg model.msg)
+                ]
 
-                        Just str ->
-                            "clicked: " ++ str
+        NoMoverSelected model ->
+            div [ Html.Attributes.style "padding" "0 0 0 20px" ]
+                [ svg
+                    [ viewBox "0 -200 800 900"
+                    , width "600"
+                    ]
+                    (board
+                        ++ List.map
+                            (\piece ->
+                                { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                    |> pieceSvg False (Just (PieceOnTheBoard piece.coord))
+                            )
+                            model.board
+                        ++ List.indexedMap
+                            (\i prof -> pieceSvg False Nothing { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
+                            model.capturedByKese
+                        ++ List.indexedMap
+                            (\i prof -> pieceSvg False (Just (PieceInKeseHand i)) { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese })
+                            model.keseHand
+                        ++ List.indexedMap
+                            (\i prof -> pieceSvg False Nothing { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
+                            model.capturedByRima
+                        ++ List.indexedMap
+                            (\i prof -> pieceSvg False (Just (PieceInRimaHand i)) { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima })
+                            model.rimaHand
+                        ++ List.indexedMap
+                            (\i _ ->
+                                rect
+                                    [ x (String.fromInt (532 + 10 * i))
+                                    , y (String.fromInt (12 + 3 * i))
+                                    , width "80"
+                                    , height "80"
+                                    , fill (backgroundColor Rima)
+                                    , strokeWidth "1"
+                                    , stroke "#000"
+                                    ]
+                                    []
+                            )
+                            model.rimaDeck
+                        ++ List.indexedMap
+                            (\i _ ->
+                                rect
+                                    [ x (String.fromInt (532 + 10 * i))
+                                    , y (String.fromInt (412 - 3 * i))
+                                    , width "80"
+                                    , height "80"
+                                    , fill (backgroundColor Kese)
+                                    , strokeWidth "1"
+                                    , stroke "#eee"
+                                    ]
+                                    []
+                            )
+                            model.keseDeck
                     )
                 ]
 
@@ -311,7 +445,6 @@ init flags =
         , rimaDeck = rimaDeck
         , keseHand = keseHand
         , rimaHand = rimaHand
-        , focus = Nothing
         , board =
             [ { coord = { x = 0, y = 0 }
               , pieceColor = Rima
@@ -376,7 +509,6 @@ init flags =
             ]
         , capturedByKese = [ Diagonal, Circle, Circle ]
         , capturedByRima = [ HorizontalVertical, Diagonal ]
-        , msg = Nothing
         }
     , Cmd.none
     )
