@@ -1,7 +1,7 @@
 module Main exposing (Model, Msg, init, main, view)
 
 import Browser
-import Html exposing (Html, div)
+import Html exposing (Html, button, div)
 import Html.Attributes exposing (style)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -51,7 +51,7 @@ type Model
         { board : List PieceOnBoard
         , capturedByKese : List Profession
         , capturedByRima : List Profession
-        , msg : Msg_
+        , focus : Focus
         , keseDeck : List Profession
         , rimaDeck : List Profession
         , keseHand : List Profession
@@ -81,10 +81,23 @@ subscriptions _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg modl =
     case ( modl, msg ) of
-        ( NoMoverSelected model, Just msg_ ) ->
+        ( NoMoverSelected model, Focused msg_ ) ->
             ( MoverIsSelected
                 { board = model.board
-                , msg = msg_
+                , focus = msg_
+                , keseHand = model.keseHand
+                , keseDeck = model.keseDeck
+                , rimaHand = model.rimaHand
+                , rimaDeck = model.rimaDeck
+                , capturedByRima = model.capturedByRima
+                , capturedByKese = model.capturedByKese
+                }
+            , Cmd.none
+            )
+
+        ( MoverIsSelected model, Cancel ) ->
+            ( NoMoverSelected
+                { board = model.board
                 , keseHand = model.keseHand
                 , keseDeck = model.keseDeck
                 , rimaHand = model.rimaHand
@@ -195,18 +208,18 @@ glyph profession color =
 
 
 pieceSvg : Bool -> Msg -> PieceWithFloatPosition -> Svg Msg
-pieceSvg focused msg p =
+pieceSvg focused msgToBeSend p =
     g
         [ transform ("translate(" ++ String.fromFloat (p.coord.x * 100.0) ++ " " ++ String.fromFloat (p.coord.y * 100.0) ++ ")")
         , Html.Attributes.style "cursor"
-            (case msg of
-                Nothing ->
+            (case msgToBeSend of
+                None ->
                     "default"
 
-                Just _ ->
+                _ ->
                     "pointer"
             )
-        , Svg.Events.onClick msg
+        , Svg.Events.onClick msgToBeSend
         ]
         (rect
             [ x "12"
@@ -257,27 +270,16 @@ drawUpToThree xs =
             ( xs, [] )
 
 
-type alias Msg =
-    Maybe Msg_
+type Msg
+    = None
+    | Cancel
+    | Focused Focus
 
 
-type Msg_
+type Focus
     = PieceOnTheBoard Coordinate
     | PieceInKeseHand Int
     | PieceInRimaHand Int
-
-
-serializeMsg : Msg_ -> String
-serializeMsg msg =
-    case msg of
-        PieceOnTheBoard coord ->
-            "piece on board, location " ++ String.fromInt coord.x ++ " " ++ String.fromInt coord.y
-
-        PieceInKeseHand i ->
-            "piece in keseHand, index " ++ String.fromInt i
-
-        PieceInRimaHand i ->
-            "piece in rimaHand, index " ++ String.fromInt i
 
 
 view : Model -> Html Msg
@@ -292,40 +294,40 @@ view modl =
                     (board
                         ++ List.map
                             (\piece ->
-                                case model.msg of
+                                case model.focus of
                                     PieceOnTheBoard focus_coord ->
                                         { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                            |> pieceSvg (piece.coord == focus_coord) Nothing
+                                            |> pieceSvg (piece.coord == focus_coord) None
 
                                     _ ->
                                         { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                            |> pieceSvg False Nothing
+                                            |> pieceSvg False None
                             )
                             model.board
                         ++ List.indexedMap
-                            (\i prof -> pieceSvg False Nothing { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
+                            (\i prof -> pieceSvg False None { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
                             model.capturedByKese
                         ++ List.indexedMap
                             (\i prof ->
-                                case model.msg of
+                                case model.focus of
                                     PieceInKeseHand ind ->
-                                        pieceSvg (ind == i) Nothing { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                                        pieceSvg (ind == i) None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
 
                                     _ ->
-                                        pieceSvg False Nothing { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                                        pieceSvg False None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
                             )
                             model.keseHand
                         ++ List.indexedMap
-                            (\i prof -> pieceSvg False Nothing { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
+                            (\i prof -> pieceSvg False None { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
                             model.capturedByRima
                         ++ List.indexedMap
                             (\i prof ->
-                                case model.msg of
+                                case model.focus of
                                     PieceInRimaHand ind ->
-                                        pieceSvg (ind == i) Nothing { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                                        pieceSvg (ind == i) None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
 
                                     _ ->
-                                        pieceSvg False Nothing { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                                        pieceSvg False None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
                             )
                             model.rimaHand
                         ++ List.indexedMap
@@ -357,8 +359,7 @@ view modl =
                             )
                             model.keseDeck
                     )
-                , Html.text
-                    ("clicked: " ++ serializeMsg model.msg)
+                , Html.button [ onClick Cancel ] [ text "キャンセル" ]
                 ]
 
         NoMoverSelected model ->
@@ -371,20 +372,20 @@ view modl =
                         ++ List.map
                             (\piece ->
                                 { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                    |> pieceSvg False (Just (PieceOnTheBoard piece.coord))
+                                    |> pieceSvg False (Focused (PieceOnTheBoard piece.coord))
                             )
                             model.board
                         ++ List.indexedMap
-                            (\i prof -> pieceSvg False Nothing { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
+                            (\i prof -> pieceSvg False None { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
                             model.capturedByKese
                         ++ List.indexedMap
-                            (\i prof -> pieceSvg False (Just (PieceInKeseHand i)) { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese })
+                            (\i prof -> pieceSvg False (Focused (PieceInKeseHand i)) { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese })
                             model.keseHand
                         ++ List.indexedMap
-                            (\i prof -> pieceSvg False Nothing { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
+                            (\i prof -> pieceSvg False None { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
                             model.capturedByRima
                         ++ List.indexedMap
-                            (\i prof -> pieceSvg False (Just (PieceInRimaHand i)) { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima })
+                            (\i prof -> pieceSvg False (Focused (PieceInRimaHand i)) { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima })
                             model.rimaHand
                         ++ List.indexedMap
                             (\i _ ->

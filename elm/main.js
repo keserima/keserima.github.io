@@ -5285,17 +5285,39 @@ var $author$project$Main$MoverIsSelected = function (a) {
 var $author$project$Main$update = F2(
 	function (msg, modl) {
 		var _v0 = _Utils_Tuple2(modl, msg);
-		if ((_v0.a.$ === 'NoMoverSelected') && (_v0.b.$ === 'Just')) {
-			var model = _v0.a.a;
-			var msg_ = _v0.b.a;
-			return _Utils_Tuple2(
-				$author$project$Main$MoverIsSelected(
-					{board: model.board, capturedByKese: model.capturedByKese, capturedByRima: model.capturedByRima, keseDeck: model.keseDeck, keseHand: model.keseHand, msg: msg_, rimaDeck: model.rimaDeck, rimaHand: model.rimaHand}),
-				$elm$core$Platform$Cmd$none);
-		} else {
-			return _Utils_Tuple2(modl, $elm$core$Platform$Cmd$none);
+		_v0$2:
+		while (true) {
+			if (_v0.a.$ === 'NoMoverSelected') {
+				if (_v0.b.$ === 'Focused') {
+					var model = _v0.a.a;
+					var msg_ = _v0.b.a;
+					return _Utils_Tuple2(
+						$author$project$Main$MoverIsSelected(
+							{board: model.board, capturedByKese: model.capturedByKese, capturedByRima: model.capturedByRima, focus: msg_, keseDeck: model.keseDeck, keseHand: model.keseHand, rimaDeck: model.rimaDeck, rimaHand: model.rimaHand}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					break _v0$2;
+				}
+			} else {
+				if (_v0.b.$ === 'Cancel') {
+					var model = _v0.a.a;
+					var _v1 = _v0.b;
+					return _Utils_Tuple2(
+						$author$project$Main$NoMoverSelected(
+							{board: model.board, capturedByKese: model.capturedByKese, capturedByRima: model.capturedByRima, keseDeck: model.keseDeck, keseHand: model.keseHand, rimaDeck: model.rimaDeck, rimaHand: model.rimaHand}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					break _v0$2;
+				}
+			}
 		}
+		return _Utils_Tuple2(modl, $elm$core$Platform$Cmd$none);
 	});
+var $author$project$Main$Cancel = {$: 'Cancel'};
+var $author$project$Main$Focused = function (a) {
+	return {$: 'Focused', a: a};
+};
+var $author$project$Main$None = {$: 'None'};
 var $author$project$Main$PieceInKeseHand = function (a) {
 	return {$: 'PieceInKeseHand', a: a};
 };
@@ -5403,9 +5425,27 @@ var $author$project$Main$board = A2(
 	},
 	_List_fromArray(
 		[0, 1, 2, 3, 4]));
+var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$core$Basics$negate = function (n) {
 	return -n;
+};
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$svg$Svg$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
 };
 var $author$project$Main$borderColor = function (c) {
 	switch (c.$) {
@@ -5505,28 +5545,11 @@ var $author$project$Main$glyph = F2(
 						A2($author$project$Main$glyph, $author$project$Main$Circle, color)));
 		}
 	});
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$svg$Svg$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
 var $author$project$Main$pieceSvg = F3(
-	function (focused, msg, p) {
+	function (focused, msgToBeSend, p) {
 		return A2(
 			$elm$svg$Svg$g,
 			_List_fromArray(
@@ -5537,13 +5560,13 @@ var $author$project$Main$pieceSvg = F3(
 					$elm$html$Html$Attributes$style,
 					'cursor',
 					function () {
-						if (msg.$ === 'Nothing') {
+						if (msgToBeSend.$ === 'None') {
 							return 'default';
 						} else {
 							return 'pointer';
 						}
 					}()),
-					$elm$svg$Svg$Events$onClick(msg)
+					$elm$svg$Svg$Events$onClick(msgToBeSend)
 				]),
 			A2(
 				$elm$core$List$cons,
@@ -5568,22 +5591,9 @@ var $author$project$Main$pieceSvg = F3(
 					p.prof,
 					$author$project$Main$foregroundColor(p.pieceColor))));
 	});
-var $author$project$Main$serializeMsg = function (msg) {
-	switch (msg.$) {
-		case 'PieceOnTheBoard':
-			var coord = msg.a;
-			return 'piece on board, location ' + ($elm$core$String$fromInt(coord.x) + (' ' + $elm$core$String$fromInt(coord.y)));
-		case 'PieceInKeseHand':
-			var i = msg.a;
-			return 'piece in keseHand, index ' + $elm$core$String$fromInt(i);
-		default:
-			var i = msg.a;
-			return 'piece in rimaHand, index ' + $elm$core$String$fromInt(i);
-	}
-};
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
 var $author$project$Main$view = function (modl) {
 	if (modl.$ === 'MoverIsSelected') {
@@ -5609,13 +5619,13 @@ var $author$project$Main$view = function (modl) {
 							A2(
 								$elm$core$List$map,
 								function (piece) {
-									var _v1 = model.msg;
+									var _v1 = model.focus;
 									if (_v1.$ === 'PieceOnTheBoard') {
 										var focus_coord = _v1.a;
 										return A3(
 											$author$project$Main$pieceSvg,
 											_Utils_eq(piece.coord, focus_coord),
-											$elm$core$Maybe$Nothing,
+											$author$project$Main$None,
 											{
 												coord: {x: piece.coord.x, y: piece.coord.y},
 												pieceColor: piece.pieceColor,
@@ -5625,7 +5635,7 @@ var $author$project$Main$view = function (modl) {
 										return A3(
 											$author$project$Main$pieceSvg,
 											false,
-											$elm$core$Maybe$Nothing,
+											$author$project$Main$None,
 											{
 												coord: {x: piece.coord.x, y: piece.coord.y},
 												pieceColor: piece.pieceColor,
@@ -5642,7 +5652,7 @@ var $author$project$Main$view = function (modl) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												false,
-												$elm$core$Maybe$Nothing,
+												$author$project$Main$None,
 												{
 													coord: {x: i * 0.85, y: 6.0},
 													pieceColor: $author$project$Main$Rima,
@@ -5655,13 +5665,13 @@ var $author$project$Main$view = function (modl) {
 										$elm$core$List$indexedMap,
 										F2(
 											function (i, prof) {
-												var _v2 = model.msg;
+												var _v2 = model.focus;
 												if (_v2.$ === 'PieceInKeseHand') {
 													var ind = _v2.a;
 													return A3(
 														$author$project$Main$pieceSvg,
 														_Utils_eq(ind, i),
-														$elm$core$Maybe$Nothing,
+														$author$project$Main$None,
 														{
 															coord: {x: i + 1.0, y: 5.0},
 															pieceColor: $author$project$Main$Kese,
@@ -5671,7 +5681,7 @@ var $author$project$Main$view = function (modl) {
 													return A3(
 														$author$project$Main$pieceSvg,
 														false,
-														$elm$core$Maybe$Nothing,
+														$author$project$Main$None,
 														{
 															coord: {x: i + 1.0, y: 5.0},
 															pieceColor: $author$project$Main$Kese,
@@ -5688,7 +5698,7 @@ var $author$project$Main$view = function (modl) {
 													return A3(
 														$author$project$Main$pieceSvg,
 														false,
-														$elm$core$Maybe$Nothing,
+														$author$project$Main$None,
 														{
 															coord: {x: 4.0 - (i * 0.85), y: -2.0},
 															pieceColor: $author$project$Main$Kese,
@@ -5701,13 +5711,13 @@ var $author$project$Main$view = function (modl) {
 												$elm$core$List$indexedMap,
 												F2(
 													function (i, prof) {
-														var _v3 = model.msg;
+														var _v3 = model.focus;
 														if (_v3.$ === 'PieceInRimaHand') {
 															var ind = _v3.a;
 															return A3(
 																$author$project$Main$pieceSvg,
 																_Utils_eq(ind, i),
-																$elm$core$Maybe$Nothing,
+																$author$project$Main$None,
 																{
 																	coord: {x: 3.0 - i, y: -1.0},
 																	pieceColor: $author$project$Main$Rima,
@@ -5717,7 +5727,7 @@ var $author$project$Main$view = function (modl) {
 															return A3(
 																$author$project$Main$pieceSvg,
 																false,
-																$elm$core$Maybe$Nothing,
+																$author$project$Main$None,
 																{
 																	coord: {x: 3.0 - i, y: -1.0},
 																	pieceColor: $author$project$Main$Rima,
@@ -5771,8 +5781,16 @@ var $author$project$Main$view = function (modl) {
 																_List_Nil);
 														}),
 													model.keseDeck))))))))),
-					$elm$html$Html$text(
-					'clicked: ' + $author$project$Main$serializeMsg(model.msg))
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Events$onClick($author$project$Main$Cancel)
+						]),
+					_List_fromArray(
+						[
+							$elm$svg$Svg$text('キャンセル')
+						]))
 				]));
 	} else {
 		var model = modl.a;
@@ -5800,7 +5818,7 @@ var $author$project$Main$view = function (modl) {
 									return A3(
 										$author$project$Main$pieceSvg,
 										false,
-										$elm$core$Maybe$Just(
+										$author$project$Main$Focused(
 											$author$project$Main$PieceOnTheBoard(piece.coord)),
 										{
 											coord: {x: piece.coord.x, y: piece.coord.y},
@@ -5817,7 +5835,7 @@ var $author$project$Main$view = function (modl) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												false,
-												$elm$core$Maybe$Nothing,
+												$author$project$Main$None,
 												{
 													coord: {x: i * 0.85, y: 6.0},
 													pieceColor: $author$project$Main$Rima,
@@ -5833,7 +5851,7 @@ var $author$project$Main$view = function (modl) {
 												return A3(
 													$author$project$Main$pieceSvg,
 													false,
-													$elm$core$Maybe$Just(
+													$author$project$Main$Focused(
 														$author$project$Main$PieceInKeseHand(i)),
 													{
 														coord: {x: i + 1.0, y: 5.0},
@@ -5850,7 +5868,7 @@ var $author$project$Main$view = function (modl) {
 													return A3(
 														$author$project$Main$pieceSvg,
 														false,
-														$elm$core$Maybe$Nothing,
+														$author$project$Main$None,
 														{
 															coord: {x: 4.0 - (i * 0.85), y: -2.0},
 															pieceColor: $author$project$Main$Kese,
@@ -5866,7 +5884,7 @@ var $author$project$Main$view = function (modl) {
 														return A3(
 															$author$project$Main$pieceSvg,
 															false,
-															$elm$core$Maybe$Just(
+															$author$project$Main$Focused(
 																$author$project$Main$PieceInRimaHand(i)),
 															{
 																coord: {x: 3.0 - i, y: -1.0},
