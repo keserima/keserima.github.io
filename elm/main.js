@@ -5152,8 +5152,8 @@ var $author$project$Main$Circle = {$: 'Circle'};
 var $author$project$Main$Diagonal = {$: 'Diagonal'};
 var $author$project$Main$HorizontalVertical = {$: 'HorizontalVertical'};
 var $author$project$Main$Kese = {$: 'Kese'};
-var $author$project$Main$NoMoverSelected = function (a) {
-	return {$: 'NoMoverSelected', a: a};
+var $author$project$Main$NothingSelected = function (a) {
+	return {$: 'NothingSelected', a: a};
 };
 var $author$project$Main$Rima = {$: 'Rima'};
 var $author$project$Main$Ship = {$: 'Ship'};
@@ -5196,7 +5196,7 @@ var $author$project$Main$init = function (flags) {
 	var keseHand = _v1.a;
 	var keseDeck = _v1.b;
 	return _Utils_Tuple2(
-		$author$project$Main$NoMoverSelected(
+		$author$project$Main$NothingSelected(
 			{
 				board: _List_fromArray(
 					[
@@ -5282,12 +5282,159 @@ var $author$project$Main$subscriptions = function (_v0) {
 var $author$project$Main$MoverIsSelected = function (a) {
 	return {$: 'MoverIsSelected', a: a};
 };
+var $elm$core$List$drop = F2(
+	function (n, list) {
+		drop:
+		while (true) {
+			if (n <= 0) {
+				return list;
+			} else {
+				if (!list.b) {
+					return list;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs;
+					n = $temp$n;
+					list = $temp$list;
+					continue drop;
+				}
+			}
+		}
+	});
+var $elm$core$List$takeReverse = F3(
+	function (n, list, kept) {
+		takeReverse:
+		while (true) {
+			if (n <= 0) {
+				return kept;
+			} else {
+				if (!list.b) {
+					return kept;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs,
+						$temp$kept = A2($elm$core$List$cons, x, kept);
+					n = $temp$n;
+					list = $temp$list;
+					kept = $temp$kept;
+					continue takeReverse;
+				}
+			}
+		}
+	});
+var $elm$core$List$takeTailRec = F2(
+	function (n, list) {
+		return $elm$core$List$reverse(
+			A3($elm$core$List$takeReverse, n, list, _List_Nil));
+	});
+var $elm$core$List$takeFast = F3(
+	function (ctr, n, list) {
+		if (n <= 0) {
+			return _List_Nil;
+		} else {
+			var _v0 = _Utils_Tuple2(n, list);
+			_v0$1:
+			while (true) {
+				_v0$5:
+				while (true) {
+					if (!_v0.b.b) {
+						return list;
+					} else {
+						if (_v0.b.b.b) {
+							switch (_v0.a) {
+								case 1:
+									break _v0$1;
+								case 2:
+									var _v2 = _v0.b;
+									var x = _v2.a;
+									var _v3 = _v2.b;
+									var y = _v3.a;
+									return _List_fromArray(
+										[x, y]);
+								case 3:
+									if (_v0.b.b.b.b) {
+										var _v4 = _v0.b;
+										var x = _v4.a;
+										var _v5 = _v4.b;
+										var y = _v5.a;
+										var _v6 = _v5.b;
+										var z = _v6.a;
+										return _List_fromArray(
+											[x, y, z]);
+									} else {
+										break _v0$5;
+									}
+								default:
+									if (_v0.b.b.b.b && _v0.b.b.b.b.b) {
+										var _v7 = _v0.b;
+										var x = _v7.a;
+										var _v8 = _v7.b;
+										var y = _v8.a;
+										var _v9 = _v8.b;
+										var z = _v9.a;
+										var _v10 = _v9.b;
+										var w = _v10.a;
+										var tl = _v10.b;
+										return (ctr > 1000) ? A2(
+											$elm$core$List$cons,
+											x,
+											A2(
+												$elm$core$List$cons,
+												y,
+												A2(
+													$elm$core$List$cons,
+													z,
+													A2(
+														$elm$core$List$cons,
+														w,
+														A2($elm$core$List$takeTailRec, n - 4, tl))))) : A2(
+											$elm$core$List$cons,
+											x,
+											A2(
+												$elm$core$List$cons,
+												y,
+												A2(
+													$elm$core$List$cons,
+													z,
+													A2(
+														$elm$core$List$cons,
+														w,
+														A3($elm$core$List$takeFast, ctr + 1, n - 4, tl)))));
+									} else {
+										break _v0$5;
+									}
+							}
+						} else {
+							if (_v0.a === 1) {
+								break _v0$1;
+							} else {
+								break _v0$5;
+							}
+						}
+					}
+				}
+				return list;
+			}
+			var _v1 = _v0.b;
+			var x = _v1.a;
+			return _List_fromArray(
+				[x]);
+		}
+	});
+var $elm$core$List$take = F2(
+	function (n, list) {
+		return A3($elm$core$List$takeFast, 0, n, list);
+	});
 var $author$project$Main$update = F2(
 	function (msg, modl) {
 		var _v0 = _Utils_Tuple2(modl, msg);
-		_v0$2:
+		_v0$3:
 		while (true) {
-			if (_v0.a.$ === 'NoMoverSelected') {
+			if (_v0.a.$ === 'NothingSelected') {
 				if (_v0.b.$ === 'Focused') {
 					var model = _v0.a.a;
 					var msg_ = _v0.b.a;
@@ -5296,24 +5443,79 @@ var $author$project$Main$update = F2(
 							{board: model.board, capturedByKese: model.capturedByKese, capturedByRima: model.capturedByRima, focus: msg_, keseDeck: model.keseDeck, keseHand: model.keseHand, rimaDeck: model.rimaDeck, rimaHand: model.rimaHand}),
 						$elm$core$Platform$Cmd$none);
 				} else {
-					break _v0$2;
+					break _v0$3;
 				}
 			} else {
-				if (_v0.b.$ === 'Cancel') {
-					var model = _v0.a.a;
-					var _v1 = _v0.b;
-					return _Utils_Tuple2(
-						$author$project$Main$NoMoverSelected(
-							{board: model.board, capturedByKese: model.capturedByKese, capturedByRima: model.capturedByRima, keseDeck: model.keseDeck, keseHand: model.keseHand, rimaDeck: model.rimaDeck, rimaHand: model.rimaHand}),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					break _v0$2;
+				switch (_v0.b.$) {
+					case 'Cancel':
+						var model = _v0.a.a;
+						var _v1 = _v0.b;
+						return _Utils_Tuple2(
+							$author$project$Main$NothingSelected(
+								{board: model.board, capturedByKese: model.capturedByKese, capturedByRima: model.capturedByRima, keseDeck: model.keseDeck, keseHand: model.keseHand, rimaDeck: model.rimaDeck, rimaHand: model.rimaHand}),
+							$elm$core$Platform$Cmd$none);
+					case 'FirstMove':
+						var model = _v0.a.a;
+						var from = _v0.b.a.from;
+						var to = _v0.b.a.to;
+						switch (from.$) {
+							case 'PieceOnTheBoard':
+								var coord = from.a;
+								return _Utils_Tuple2(modl, $elm$core$Platform$Cmd$none);
+							case 'PieceInKeseHand':
+								var ind = from.a;
+								var newKeseHand = _Utils_ap(
+									A2($elm$core$List$take, ind, model.keseHand),
+									A2($elm$core$List$drop, ind + 1, model.keseHand));
+								var newBoard = function () {
+									var _v3 = A2($elm$core$List$drop, ind, model.keseHand);
+									if (_v3.b) {
+										var profession = _v3.a;
+										return A2(
+											$elm$core$List$cons,
+											{coord: to, pieceColor: $author$project$Main$Kese, prof: profession},
+											model.board);
+									} else {
+										return model.board;
+									}
+								}();
+								return _Utils_Tuple2(
+									$author$project$Main$NothingSelected(
+										{board: newBoard, capturedByKese: model.capturedByKese, capturedByRima: model.capturedByRima, keseDeck: model.keseDeck, keseHand: newKeseHand, rimaDeck: model.rimaDeck, rimaHand: model.rimaHand}),
+									$elm$core$Platform$Cmd$none);
+							default:
+								var ind = from.a;
+								var newRimaHand = _Utils_ap(
+									A2($elm$core$List$take, ind, model.rimaHand),
+									A2($elm$core$List$drop, ind + 1, model.rimaHand));
+								var newBoard = function () {
+									var _v4 = A2($elm$core$List$drop, ind, model.rimaHand);
+									if (_v4.b) {
+										var profession = _v4.a;
+										return A2(
+											$elm$core$List$cons,
+											{coord: to, pieceColor: $author$project$Main$Rima, prof: profession},
+											model.board);
+									} else {
+										return model.board;
+									}
+								}();
+								return _Utils_Tuple2(
+									$author$project$Main$NothingSelected(
+										{board: newBoard, capturedByKese: model.capturedByKese, capturedByRima: model.capturedByRima, keseDeck: model.keseDeck, keseHand: model.keseHand, rimaDeck: model.rimaDeck, rimaHand: newRimaHand}),
+									$elm$core$Platform$Cmd$none);
+						}
+					default:
+						break _v0$3;
 				}
 			}
 		}
 		return _Utils_Tuple2(modl, $elm$core$Platform$Cmd$none);
 	});
 var $author$project$Main$Cancel = {$: 'Cancel'};
+var $author$project$Main$FirstMove = function (a) {
+	return {$: 'FirstMove', a: a};
+};
 var $author$project$Main$Focused = function (a) {
 	return {$: 'Focused', a: a};
 };
@@ -5450,30 +5652,49 @@ var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
 var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
 var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
 var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$svg$Svg$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
 var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
 var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
-var $author$project$Main$goalCandidateSvg = function (coord) {
-	return A2(
-		$elm$svg$Svg$g,
-		_List_fromArray(
-			[
-				$elm$svg$Svg$Attributes$transform(
-				'translate(' + ($elm$core$String$fromInt(coord.x * 100) + (' ' + ($elm$core$String$fromInt(coord.y * 100) + ')'))))
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$svg$Svg$circle,
-				_List_fromArray(
-					[
-						$elm$svg$Svg$Attributes$cx('52'),
-						$elm$svg$Svg$Attributes$cy('52'),
-						$elm$svg$Svg$Attributes$r('16'),
-						$elm$svg$Svg$Attributes$fill('#ffff00')
-					]),
-				_List_Nil)
-			]));
-};
+var $author$project$Main$goalCandidateSvg = F2(
+	function (msgToBeSent, coord) {
+		return A2(
+			$elm$svg$Svg$g,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$transform(
+					'translate(' + ($elm$core$String$fromInt(coord.x * 100) + (' ' + ($elm$core$String$fromInt(coord.y * 100) + ')')))),
+					$elm$svg$Svg$Events$onClick(msgToBeSent)
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$cx('52'),
+							$elm$svg$Svg$Attributes$cy('52'),
+							$elm$svg$Svg$Attributes$r('16'),
+							$elm$svg$Svg$Attributes$fill('#ffff00')
+						]),
+					_List_Nil)
+				]));
+	});
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
 		any:
@@ -5506,23 +5727,6 @@ var $elm$core$List$member = F2(
 	});
 var $elm$core$Basics$negate = function (n) {
 	return -n;
-};
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$svg$Svg$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
 };
 var $author$project$Main$borderColor = function (c) {
 	switch (c.$) {
@@ -5620,7 +5824,7 @@ var $author$project$Main$glyph = F2(
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$Main$pieceSvg = F3(
-	function (focused, msgToBeSend, p) {
+	function (focused, msgToBeSent, p) {
 		return A2(
 			$elm$svg$Svg$g,
 			_List_fromArray(
@@ -5631,13 +5835,13 @@ var $author$project$Main$pieceSvg = F3(
 					$elm$html$Html$Attributes$style,
 					'cursor',
 					function () {
-						if (msgToBeSend.$ === 'None') {
+						if (msgToBeSent.$ === 'None') {
 							return 'default';
 						} else {
 							return 'pointer';
 						}
 					}()),
-					$elm$svg$Svg$Events$onClick(msgToBeSend)
+					$elm$svg$Svg$Events$onClick(msgToBeSent)
 				]),
 			A2(
 				$elm$core$List$cons,
@@ -5667,7 +5871,7 @@ var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
 var $author$project$Main$view = function (modl) {
-	if (modl.$ === 'NoMoverSelected') {
+	if (modl.$ === 'NothingSelected') {
 		var model = modl.a;
 		return A2(
 			$elm$html$Html$div,
@@ -5992,8 +6196,12 @@ var $author$project$Main$view = function (modl) {
 							_Utils_ap(
 								A2(
 									$elm$core$List$map,
-									function (emptyCoord) {
-										return $author$project$Main$goalCandidateSvg(emptyCoord);
+									function (coord) {
+										return A2(
+											$author$project$Main$goalCandidateSvg,
+											$author$project$Main$FirstMove(
+												{from: model.focus, to: coord}),
+											coord);
 									},
 									A2(
 										$elm$core$List$filter,

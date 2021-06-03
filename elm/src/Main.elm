@@ -38,7 +38,7 @@ type alias PieceWithFloatPosition =
 
 
 type Model
-    = NoMoverSelected
+    = NothingSelected
         { board : List PieceOnBoard
         , capturedByKese : List Profession
         , capturedByRima : List Profession
@@ -63,6 +63,19 @@ type alias Flags =
     { keseDice : Bool, rimaDice : Bool, shipDice : Bool, keseDeck : List Int, rimaDeck : List Int }
 
 
+type Msg
+    = None
+    | Cancel
+    | Focused Focus
+    | FirstMove { from : Focus, to : Coordinate }
+
+
+type Focus
+    = PieceOnTheBoard Coordinate
+    | PieceInKeseHand Int
+    | PieceInRimaHand Int
+
+
 main : Program Flags Model Msg
 main =
     Browser.element
@@ -81,7 +94,7 @@ subscriptions _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg modl =
     case ( modl, msg ) of
-        ( NoMoverSelected model, Focused msg_ ) ->
+        ( NothingSelected model, Focused msg_ ) ->
             ( MoverIsSelected
                 { board = model.board
                 , focus = msg_
@@ -96,7 +109,7 @@ update msg modl =
             )
 
         ( MoverIsSelected model, Cancel ) ->
-            ( NoMoverSelected
+            ( NothingSelected
                 { board = model.board
                 , keseHand = model.keseHand
                 , keseDeck = model.keseDeck
@@ -107,6 +120,64 @@ update msg modl =
                 }
             , Cmd.none
             )
+
+        ( MoverIsSelected model, FirstMove { from, to } ) ->
+            case from of
+                {- FIXME -}
+                PieceOnTheBoard coord ->
+                    ( modl, Cmd.none )
+
+                PieceInKeseHand ind ->
+                    let
+                        newKeseHand =
+                            List.take ind model.keseHand ++ List.drop (ind + 1) model.keseHand
+
+                        newBoard =
+                            case List.drop ind model.keseHand of
+                                profession :: _ ->
+                                    { pieceColor = Kese, coord = to, prof = profession } :: model.board
+
+                                {- This path is never taken -}
+                                [] ->
+                                    model.board
+                    in
+                    ( NothingSelected
+                        { board = newBoard
+                        , keseHand = newKeseHand
+                        , keseDeck = model.keseDeck
+                        , rimaHand = model.rimaHand
+                        , rimaDeck = model.rimaDeck
+                        , capturedByRima = model.capturedByRima
+                        , capturedByKese = model.capturedByKese
+                        }
+                    , Cmd.none
+                    )
+
+                PieceInRimaHand ind ->
+                    let
+                        newRimaHand =
+                            List.take ind model.rimaHand ++ List.drop (ind + 1) model.rimaHand
+
+                        newBoard =
+                            case List.drop ind model.rimaHand of
+                                profession :: _ ->
+                                    { pieceColor = Rima, coord = to, prof = profession } :: model.board
+
+                                {- This path is never taken -}
+                                [] ->
+                                    model.board
+                    in
+                    ( NothingSelected
+                        { board = newBoard
+                        , keseHand = model.keseHand
+                        , keseDeck = model.keseDeck
+                        , rimaHand = newRimaHand
+                        , rimaDeck = model.rimaDeck
+                        , capturedByRima = model.capturedByRima
+                        , capturedByKese = model.capturedByKese
+                        }
+                    , Cmd.none
+                    )
 
         _ ->
             ( modl, Cmd.none )
@@ -225,26 +296,28 @@ glyph profession color =
             glyph HorizontalVertical color ++ glyph Diagonal color ++ glyph Circle color
 
 
-goalCandidateSvg : Coordinate -> Svg Msg
-goalCandidateSvg coord =
+goalCandidateSvg : Msg -> Coordinate -> Svg Msg
+goalCandidateSvg msgToBeSent coord =
     g
-        [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")") ]
+        [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")")
+        , Svg.Events.onClick msgToBeSent
+        ]
         [ circle [ cx "52", cy "52", r "16", fill "#ffff00" ] [] ]
 
 
 pieceSvg : Bool -> Msg -> PieceWithFloatPosition -> Svg Msg
-pieceSvg focused msgToBeSend p =
+pieceSvg focused msgToBeSent p =
     g
         [ transform ("translate(" ++ String.fromFloat (p.coord.x * 100.0) ++ " " ++ String.fromFloat (p.coord.y * 100.0) ++ ")")
         , Html.Attributes.style "cursor"
-            (case msgToBeSend of
+            (case msgToBeSent of
                 None ->
                     "default"
 
                 _ ->
                     "pointer"
             )
-        , Svg.Events.onClick msgToBeSend
+        , Svg.Events.onClick msgToBeSent
         ]
         (rect
             [ x "12"
@@ -295,22 +368,10 @@ drawUpToThree xs =
             ( xs, [] )
 
 
-type Msg
-    = None
-    | Cancel
-    | Focused Focus
-
-
-type Focus
-    = PieceOnTheBoard Coordinate
-    | PieceInKeseHand Int
-    | PieceInRimaHand Int
-
-
 view : Model -> Html Msg
 view modl =
     case modl of
-        NoMoverSelected model ->
+        NothingSelected model ->
             div [ Html.Attributes.style "padding" "0 0 0 20px" ]
                 [ svg
                     [ viewBox "0 -200 800 900"
@@ -439,7 +500,7 @@ view modl =
                                 ++ (all_coord
                                         |> List.filter (\coord -> not (List.member coord (List.map .coord model.board)))
                                         |> List.filter (\coord -> not (isWater coord))
-                                        |> List.map (\emptyCoord -> goalCandidateSvg emptyCoord)
+                                        |> List.map (\coord -> goalCandidateSvg (FirstMove { from = model.focus, to = coord }) coord)
                                    )
                                 ++ List.map
                                     (\piece ->
@@ -528,7 +589,7 @@ init flags =
         ( rimaHand, rimaDeck ) =
             drawUpToThree (List.map numToProf flags.rimaDeck)
     in
-    ( NoMoverSelected
+    ( NothingSelected
         { keseDeck = keseDeck
         , rimaDeck = rimaDeck
         , keseHand = keseHand
