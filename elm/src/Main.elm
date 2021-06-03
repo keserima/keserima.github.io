@@ -112,44 +112,62 @@ update msg modl =
             ( modl, Cmd.none )
 
 
-boardBackgroundColor : Coordinate -> String
-boardBackgroundColor coord =
+isWater : Coordinate -> Bool
+isWater coord =
     case ( coord.x, coord.y ) of
         ( 1, 2 ) ->
-            "rgb(94, 147, 184)"
+            True
 
         ( 2, 1 ) ->
-            "rgb(94, 147, 184)"
+            True
 
         ( 2, 2 ) ->
-            "rgb(94, 147, 184)"
+            True
 
         ( 2, 3 ) ->
-            "rgb(94, 147, 184)"
+            True
 
         ( 3, 2 ) ->
-            "rgb(94, 147, 184)"
+            True
 
         _ ->
-            "#ccc"
+            False
+
+
+boardBackgroundColor : Coordinate -> String
+boardBackgroundColor coord =
+    if isWater coord then
+        "rgb(94, 147, 184)"
+
+    else
+        "#ccc"
 
 
 board : List (Svg Msg)
 board =
+    List.map
+        (\coord ->
+            rect
+                [ x (String.fromInt (coord.x * 100 + 2))
+                , y (String.fromInt (coord.y * 100 + 2))
+                , width "100"
+                , height "100"
+                , fill (boardBackgroundColor coord)
+                , stroke "#000"
+                , strokeWidth "4"
+                ]
+                []
+        )
+        all_coord
+
+
+all_coord : List Coordinate
+all_coord =
     List.concatMap
         (\y_ind ->
             List.map
                 (\x_ind ->
-                    rect
-                        [ x (String.fromInt (x_ind * 100 + 2))
-                        , y (String.fromInt (y_ind * 100 + 2))
-                        , width "100"
-                        , height "100"
-                        , fill (boardBackgroundColor { y = y_ind, x = x_ind })
-                        , stroke "#000"
-                        , strokeWidth "4"
-                        ]
-                        []
+                    { y = y_ind, x = x_ind }
                 )
                 [ 0, 1, 2, 3, 4 ]
         )
@@ -205,6 +223,13 @@ glyph profession color =
 
         All ->
             glyph HorizontalVertical color ++ glyph Diagonal color ++ glyph Circle color
+
+
+goalCandidateSvg : Coordinate -> Svg Msg
+goalCandidateSvg coord =
+    g
+        [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")") ]
+        [ circle [ cx "52", cy "52", r "16", fill "#ffff00" ] [] ]
 
 
 pieceSvg : Bool -> Msg -> PieceWithFloatPosition -> Svg Msg
@@ -285,83 +310,6 @@ type Focus
 view : Model -> Html Msg
 view modl =
     case modl of
-        MoverIsSelected model ->
-            div [ Html.Attributes.style "padding" "0 0 0 20px" ]
-                [ svg
-                    [ viewBox "0 -200 800 900"
-                    , width "600"
-                    ]
-                    (board
-                        ++ List.map
-                            (\piece ->
-                                case model.focus of
-                                    PieceOnTheBoard focus_coord ->
-                                        { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                            |> pieceSvg (piece.coord == focus_coord) None
-
-                                    _ ->
-                                        { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                            |> pieceSvg False None
-                            )
-                            model.board
-                        ++ List.indexedMap
-                            (\i prof -> pieceSvg False None { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
-                            model.capturedByKese
-                        ++ List.indexedMap
-                            (\i prof ->
-                                case model.focus of
-                                    PieceInKeseHand ind ->
-                                        pieceSvg (ind == i) None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
-
-                                    _ ->
-                                        pieceSvg False None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
-                            )
-                            model.keseHand
-                        ++ List.indexedMap
-                            (\i prof -> pieceSvg False None { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
-                            model.capturedByRima
-                        ++ List.indexedMap
-                            (\i prof ->
-                                case model.focus of
-                                    PieceInRimaHand ind ->
-                                        pieceSvg (ind == i) None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
-
-                                    _ ->
-                                        pieceSvg False None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
-                            )
-                            model.rimaHand
-                        ++ List.indexedMap
-                            (\i _ ->
-                                rect
-                                    [ x (String.fromInt (532 + 10 * i))
-                                    , y (String.fromInt (12 + 3 * i))
-                                    , width "80"
-                                    , height "80"
-                                    , fill (backgroundColor Rima)
-                                    , strokeWidth "1"
-                                    , stroke "#000"
-                                    ]
-                                    []
-                            )
-                            model.rimaDeck
-                        ++ List.indexedMap
-                            (\i _ ->
-                                rect
-                                    [ x (String.fromInt (532 + 10 * i))
-                                    , y (String.fromInt (412 - 3 * i))
-                                    , width "80"
-                                    , height "80"
-                                    , fill (backgroundColor Kese)
-                                    , strokeWidth "1"
-                                    , stroke "#eee"
-                                    ]
-                                    []
-                            )
-                            model.keseDeck
-                    )
-                , Html.button [ onClick Cancel ] [ text "キャンセル" ]
-                ]
-
         NoMoverSelected model ->
             div [ Html.Attributes.style "padding" "0 0 0 20px" ]
                 [ svg
@@ -417,6 +365,145 @@ view modl =
                             model.keseDeck
                     )
                 ]
+
+        MoverIsSelected model ->
+            case model.focus of
+                PieceOnTheBoard focus_coord ->
+                    div [ Html.Attributes.style "padding" "0 0 0 20px" ]
+                        [ svg
+                            [ viewBox "0 -200 800 900"
+                            , width "600"
+                            ]
+                            (board
+                                ++ List.map
+                                    (\piece ->
+                                        { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                            |> pieceSvg (piece.coord == focus_coord) None
+                                    )
+                                    model.board
+                                ++ List.indexedMap
+                                    (\i prof -> pieceSvg False None { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
+                                    model.capturedByKese
+                                ++ List.indexedMap
+                                    (\i prof ->
+                                        pieceSvg False None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                                    )
+                                    model.keseHand
+                                ++ List.indexedMap
+                                    (\i prof -> pieceSvg False None { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
+                                    model.capturedByRima
+                                ++ List.indexedMap
+                                    (\i prof ->
+                                        pieceSvg False None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                                    )
+                                    model.rimaHand
+                                ++ List.indexedMap
+                                    (\i _ ->
+                                        rect
+                                            [ x (String.fromInt (532 + 10 * i))
+                                            , y (String.fromInt (12 + 3 * i))
+                                            , width "80"
+                                            , height "80"
+                                            , fill (backgroundColor Rima)
+                                            , strokeWidth "1"
+                                            , stroke "#000"
+                                            ]
+                                            []
+                                    )
+                                    model.rimaDeck
+                                ++ List.indexedMap
+                                    (\i _ ->
+                                        rect
+                                            [ x (String.fromInt (532 + 10 * i))
+                                            , y (String.fromInt (412 - 3 * i))
+                                            , width "80"
+                                            , height "80"
+                                            , fill (backgroundColor Kese)
+                                            , strokeWidth "1"
+                                            , stroke "#eee"
+                                            ]
+                                            []
+                                    )
+                                    model.keseDeck
+                            )
+                        , Html.button [ onClick Cancel ] [ text "キャンセル" ]
+                        ]
+
+                _ ->
+                    div [ Html.Attributes.style "padding" "0 0 0 20px" ]
+                        [ svg
+                            [ viewBox "0 -200 800 900"
+                            , width "600"
+                            ]
+                            (board
+                                ++ (all_coord
+                                        |> List.filter (\coord -> not (List.member coord (List.map .coord model.board)))
+                                        |> List.filter (\coord -> not (isWater coord))
+                                        |> List.map (\emptyCoord -> goalCandidateSvg emptyCoord)
+                                   )
+                                ++ List.map
+                                    (\piece ->
+                                        { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                            |> pieceSvg False None
+                                    )
+                                    model.board
+                                ++ List.indexedMap
+                                    (\i prof -> pieceSvg False None { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
+                                    model.capturedByKese
+                                ++ List.indexedMap
+                                    (\i prof ->
+                                        case model.focus of
+                                            PieceInKeseHand ind ->
+                                                pieceSvg (ind == i) None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+
+                                            _ ->
+                                                pieceSvg False None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                                    )
+                                    model.keseHand
+                                ++ List.indexedMap
+                                    (\i prof -> pieceSvg False None { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
+                                    model.capturedByRima
+                                ++ List.indexedMap
+                                    (\i prof ->
+                                        case model.focus of
+                                            PieceInRimaHand ind ->
+                                                pieceSvg (ind == i) None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+
+                                            _ ->
+                                                pieceSvg False None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                                    )
+                                    model.rimaHand
+                                ++ List.indexedMap
+                                    (\i _ ->
+                                        rect
+                                            [ x (String.fromInt (532 + 10 * i))
+                                            , y (String.fromInt (12 + 3 * i))
+                                            , width "80"
+                                            , height "80"
+                                            , fill (backgroundColor Rima)
+                                            , strokeWidth "1"
+                                            , stroke "#000"
+                                            ]
+                                            []
+                                    )
+                                    model.rimaDeck
+                                ++ List.indexedMap
+                                    (\i _ ->
+                                        rect
+                                            [ x (String.fromInt (532 + 10 * i))
+                                            , y (String.fromInt (412 - 3 * i))
+                                            , width "80"
+                                            , height "80"
+                                            , fill (backgroundColor Kese)
+                                            , strokeWidth "1"
+                                            , stroke "#eee"
+                                            ]
+                                            []
+                                    )
+                                    model.keseDeck
+                            )
+                        , Html.button [ onClick Cancel ] [ text "キャンセル" ]
+                        ]
 
 
 numToProf : Int -> Profession

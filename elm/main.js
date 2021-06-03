@@ -5327,50 +5327,6 @@ var $author$project$Main$PieceInRimaHand = function (a) {
 var $author$project$Main$PieceOnTheBoard = function (a) {
 	return {$: 'PieceOnTheBoard', a: a};
 };
-var $author$project$Main$backgroundColor = function (pieceColor) {
-	switch (pieceColor.$) {
-		case 'Rima':
-			return 'rgb(200, 190, 183)';
-		case 'Kese':
-			return 'rgb(72, 62, 55)';
-		default:
-			return 'rgb(96, 133, 157)';
-	}
-};
-var $author$project$Main$boardBackgroundColor = function (coord) {
-	var _v0 = _Utils_Tuple2(coord.x, coord.y);
-	_v0$5:
-	while (true) {
-		switch (_v0.a) {
-			case 1:
-				if (_v0.b === 2) {
-					return 'rgb(94, 147, 184)';
-				} else {
-					break _v0$5;
-				}
-			case 2:
-				switch (_v0.b) {
-					case 1:
-						return 'rgb(94, 147, 184)';
-					case 2:
-						return 'rgb(94, 147, 184)';
-					case 3:
-						return 'rgb(94, 147, 184)';
-					default:
-						break _v0$5;
-				}
-			case 3:
-				if (_v0.b === 2) {
-					return 'rgb(94, 147, 184)';
-				} else {
-					break _v0$5;
-				}
-			default:
-				break _v0$5;
-		}
-	}
-	return '#ccc';
-};
 var $elm$core$List$append = F2(
 	function (xs, ys) {
 		if (!ys.b) {
@@ -5387,6 +5343,66 @@ var $elm$core$List$concatMap = F2(
 		return $elm$core$List$concat(
 			A2($elm$core$List$map, f, list));
 	});
+var $author$project$Main$all_coord = A2(
+	$elm$core$List$concatMap,
+	function (y_ind) {
+		return A2(
+			$elm$core$List$map,
+			function (x_ind) {
+				return {x: x_ind, y: y_ind};
+			},
+			_List_fromArray(
+				[0, 1, 2, 3, 4]));
+	},
+	_List_fromArray(
+		[0, 1, 2, 3, 4]));
+var $author$project$Main$backgroundColor = function (pieceColor) {
+	switch (pieceColor.$) {
+		case 'Rima':
+			return 'rgb(200, 190, 183)';
+		case 'Kese':
+			return 'rgb(72, 62, 55)';
+		default:
+			return 'rgb(96, 133, 157)';
+	}
+};
+var $author$project$Main$isWater = function (coord) {
+	var _v0 = _Utils_Tuple2(coord.x, coord.y);
+	_v0$5:
+	while (true) {
+		switch (_v0.a) {
+			case 1:
+				if (_v0.b === 2) {
+					return true;
+				} else {
+					break _v0$5;
+				}
+			case 2:
+				switch (_v0.b) {
+					case 1:
+						return true;
+					case 2:
+						return true;
+					case 3:
+						return true;
+					default:
+						break _v0$5;
+				}
+			case 3:
+				if (_v0.b === 2) {
+					return true;
+				} else {
+					break _v0$5;
+				}
+			default:
+				break _v0$5;
+		}
+	}
+	return false;
+};
+var $author$project$Main$boardBackgroundColor = function (coord) {
+	return $author$project$Main$isWater(coord) ? 'rgb(94, 147, 184)' : '#ccc';
+};
 var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
 var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
 var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
@@ -5397,36 +5413,97 @@ var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
 var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
 var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
 var $author$project$Main$board = A2(
-	$elm$core$List$concatMap,
-	function (y_ind) {
+	$elm$core$List$map,
+	function (coord) {
 		return A2(
-			$elm$core$List$map,
-			function (x_ind) {
-				return A2(
-					$elm$svg$Svg$rect,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Attributes$x(
-							$elm$core$String$fromInt((x_ind * 100) + 2)),
-							$elm$svg$Svg$Attributes$y(
-							$elm$core$String$fromInt((y_ind * 100) + 2)),
-							$elm$svg$Svg$Attributes$width('100'),
-							$elm$svg$Svg$Attributes$height('100'),
-							$elm$svg$Svg$Attributes$fill(
-							$author$project$Main$boardBackgroundColor(
-								{x: x_ind, y: y_ind})),
-							$elm$svg$Svg$Attributes$stroke('#000'),
-							$elm$svg$Svg$Attributes$strokeWidth('4')
-						]),
-					_List_Nil);
-			},
+			$elm$svg$Svg$rect,
 			_List_fromArray(
-				[0, 1, 2, 3, 4]));
+				[
+					$elm$svg$Svg$Attributes$x(
+					$elm$core$String$fromInt((coord.x * 100) + 2)),
+					$elm$svg$Svg$Attributes$y(
+					$elm$core$String$fromInt((coord.y * 100) + 2)),
+					$elm$svg$Svg$Attributes$width('100'),
+					$elm$svg$Svg$Attributes$height('100'),
+					$elm$svg$Svg$Attributes$fill(
+					$author$project$Main$boardBackgroundColor(coord)),
+					$elm$svg$Svg$Attributes$stroke('#000'),
+					$elm$svg$Svg$Attributes$strokeWidth('4')
+				]),
+			_List_Nil);
 	},
-	_List_fromArray(
-		[0, 1, 2, 3, 4]));
+	$author$project$Main$all_coord);
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
+var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
+var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
+var $author$project$Main$goalCandidateSvg = function (coord) {
+	return A2(
+		$elm$svg$Svg$g,
+		_List_fromArray(
+			[
+				$elm$svg$Svg$Attributes$transform(
+				'translate(' + ($elm$core$String$fromInt(coord.x * 100) + (' ' + ($elm$core$String$fromInt(coord.y * 100) + ')'))))
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$svg$Svg$circle,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$cx('52'),
+						$elm$svg$Svg$Attributes$cy('52'),
+						$elm$svg$Svg$Attributes$r('16'),
+						$elm$svg$Svg$Attributes$fill('#ffff00')
+					]),
+				_List_Nil)
+			]));
+};
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var $elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
 var $elm$core$Basics$negate = function (n) {
 	return -n;
 };
@@ -5468,13 +5545,8 @@ var $author$project$Main$foregroundColor = function (pieceColor) {
 	}
 };
 var $elm$core$String$fromFloat = _String_fromNumber;
-var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
-var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
-var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
-var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
 var $elm$svg$Svg$Attributes$d = _VirtualDom_attribute('d');
 var $elm$svg$Svg$path = $elm$svg$Svg$trustedNode('path');
-var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
 var $elm$svg$Svg$Attributes$strokeLinecap = _VirtualDom_attribute('stroke-linecap');
 var $author$project$Main$glyph = F2(
 	function (profession, color) {
@@ -5547,7 +5619,6 @@ var $author$project$Main$glyph = F2(
 	});
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
 var $author$project$Main$pieceSvg = F3(
 	function (focused, msgToBeSend, p) {
 		return A2(
@@ -5596,203 +5667,7 @@ var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
 var $author$project$Main$view = function (modl) {
-	if (modl.$ === 'MoverIsSelected') {
-		var model = modl.a;
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$svg$Svg$svg,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Attributes$viewBox('0 -200 800 900'),
-							$elm$svg$Svg$Attributes$width('600')
-						]),
-					_Utils_ap(
-						$author$project$Main$board,
-						_Utils_ap(
-							A2(
-								$elm$core$List$map,
-								function (piece) {
-									var _v1 = model.focus;
-									if (_v1.$ === 'PieceOnTheBoard') {
-										var focus_coord = _v1.a;
-										return A3(
-											$author$project$Main$pieceSvg,
-											_Utils_eq(piece.coord, focus_coord),
-											$author$project$Main$None,
-											{
-												coord: {x: piece.coord.x, y: piece.coord.y},
-												pieceColor: piece.pieceColor,
-												prof: piece.prof
-											});
-									} else {
-										return A3(
-											$author$project$Main$pieceSvg,
-											false,
-											$author$project$Main$None,
-											{
-												coord: {x: piece.coord.x, y: piece.coord.y},
-												pieceColor: piece.pieceColor,
-												prof: piece.prof
-											});
-									}
-								},
-								model.board),
-							_Utils_ap(
-								A2(
-									$elm$core$List$indexedMap,
-									F2(
-										function (i, prof) {
-											return A3(
-												$author$project$Main$pieceSvg,
-												false,
-												$author$project$Main$None,
-												{
-													coord: {x: i * 0.85, y: 6.0},
-													pieceColor: $author$project$Main$Rima,
-													prof: prof
-												});
-										}),
-									model.capturedByKese),
-								_Utils_ap(
-									A2(
-										$elm$core$List$indexedMap,
-										F2(
-											function (i, prof) {
-												var _v2 = model.focus;
-												if (_v2.$ === 'PieceInKeseHand') {
-													var ind = _v2.a;
-													return A3(
-														$author$project$Main$pieceSvg,
-														_Utils_eq(ind, i),
-														$author$project$Main$None,
-														{
-															coord: {x: i + 1.0, y: 5.0},
-															pieceColor: $author$project$Main$Kese,
-															prof: prof
-														});
-												} else {
-													return A3(
-														$author$project$Main$pieceSvg,
-														false,
-														$author$project$Main$None,
-														{
-															coord: {x: i + 1.0, y: 5.0},
-															pieceColor: $author$project$Main$Kese,
-															prof: prof
-														});
-												}
-											}),
-										model.keseHand),
-									_Utils_ap(
-										A2(
-											$elm$core$List$indexedMap,
-											F2(
-												function (i, prof) {
-													return A3(
-														$author$project$Main$pieceSvg,
-														false,
-														$author$project$Main$None,
-														{
-															coord: {x: 4.0 - (i * 0.85), y: -2.0},
-															pieceColor: $author$project$Main$Kese,
-															prof: prof
-														});
-												}),
-											model.capturedByRima),
-										_Utils_ap(
-											A2(
-												$elm$core$List$indexedMap,
-												F2(
-													function (i, prof) {
-														var _v3 = model.focus;
-														if (_v3.$ === 'PieceInRimaHand') {
-															var ind = _v3.a;
-															return A3(
-																$author$project$Main$pieceSvg,
-																_Utils_eq(ind, i),
-																$author$project$Main$None,
-																{
-																	coord: {x: 3.0 - i, y: -1.0},
-																	pieceColor: $author$project$Main$Rima,
-																	prof: prof
-																});
-														} else {
-															return A3(
-																$author$project$Main$pieceSvg,
-																false,
-																$author$project$Main$None,
-																{
-																	coord: {x: 3.0 - i, y: -1.0},
-																	pieceColor: $author$project$Main$Rima,
-																	prof: prof
-																});
-														}
-													}),
-												model.rimaHand),
-											_Utils_ap(
-												A2(
-													$elm$core$List$indexedMap,
-													F2(
-														function (i, _v4) {
-															return A2(
-																$elm$svg$Svg$rect,
-																_List_fromArray(
-																	[
-																		$elm$svg$Svg$Attributes$x(
-																		$elm$core$String$fromInt(532 + (10 * i))),
-																		$elm$svg$Svg$Attributes$y(
-																		$elm$core$String$fromInt(12 + (3 * i))),
-																		$elm$svg$Svg$Attributes$width('80'),
-																		$elm$svg$Svg$Attributes$height('80'),
-																		$elm$svg$Svg$Attributes$fill(
-																		$author$project$Main$backgroundColor($author$project$Main$Rima)),
-																		$elm$svg$Svg$Attributes$strokeWidth('1'),
-																		$elm$svg$Svg$Attributes$stroke('#000')
-																	]),
-																_List_Nil);
-														}),
-													model.rimaDeck),
-												A2(
-													$elm$core$List$indexedMap,
-													F2(
-														function (i, _v5) {
-															return A2(
-																$elm$svg$Svg$rect,
-																_List_fromArray(
-																	[
-																		$elm$svg$Svg$Attributes$x(
-																		$elm$core$String$fromInt(532 + (10 * i))),
-																		$elm$svg$Svg$Attributes$y(
-																		$elm$core$String$fromInt(412 - (3 * i))),
-																		$elm$svg$Svg$Attributes$width('80'),
-																		$elm$svg$Svg$Attributes$height('80'),
-																		$elm$svg$Svg$Attributes$fill(
-																		$author$project$Main$backgroundColor($author$project$Main$Kese)),
-																		$elm$svg$Svg$Attributes$strokeWidth('1'),
-																		$elm$svg$Svg$Attributes$stroke('#eee')
-																	]),
-																_List_Nil);
-														}),
-													model.keseDeck))))))))),
-					A2(
-					$elm$html$Html$button,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Events$onClick($author$project$Main$Cancel)
-						]),
-					_List_fromArray(
-						[
-							$elm$svg$Svg$text('キャンセル')
-						]))
-				]));
-	} else {
+	if (modl.$ === 'NoMoverSelected') {
 		var model = modl.a;
 		return A2(
 			$elm$html$Html$div,
@@ -5897,7 +5772,7 @@ var $author$project$Main$view = function (modl) {
 												A2(
 													$elm$core$List$indexedMap,
 													F2(
-														function (i, _v6) {
+														function (i, _v1) {
 															return A2(
 																$elm$svg$Svg$rect,
 																_List_fromArray(
@@ -5919,7 +5794,7 @@ var $author$project$Main$view = function (modl) {
 												A2(
 													$elm$core$List$indexedMap,
 													F2(
-														function (i, _v7) {
+														function (i, _v2) {
 															return A2(
 																$elm$svg$Svg$rect,
 																_List_fromArray(
@@ -5939,6 +5814,370 @@ var $author$project$Main$view = function (modl) {
 														}),
 													model.keseDeck)))))))))
 				]));
+	} else {
+		var model = modl.a;
+		var _v3 = model.focus;
+		if (_v3.$ === 'PieceOnTheBoard') {
+			var focus_coord = _v3.a;
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$svg$Svg$svg,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$viewBox('0 -200 800 900'),
+								$elm$svg$Svg$Attributes$width('600')
+							]),
+						_Utils_ap(
+							$author$project$Main$board,
+							_Utils_ap(
+								A2(
+									$elm$core$List$map,
+									function (piece) {
+										return A3(
+											$author$project$Main$pieceSvg,
+											_Utils_eq(piece.coord, focus_coord),
+											$author$project$Main$None,
+											{
+												coord: {x: piece.coord.x, y: piece.coord.y},
+												pieceColor: piece.pieceColor,
+												prof: piece.prof
+											});
+									},
+									model.board),
+								_Utils_ap(
+									A2(
+										$elm$core$List$indexedMap,
+										F2(
+											function (i, prof) {
+												return A3(
+													$author$project$Main$pieceSvg,
+													false,
+													$author$project$Main$None,
+													{
+														coord: {x: i * 0.85, y: 6.0},
+														pieceColor: $author$project$Main$Rima,
+														prof: prof
+													});
+											}),
+										model.capturedByKese),
+									_Utils_ap(
+										A2(
+											$elm$core$List$indexedMap,
+											F2(
+												function (i, prof) {
+													return A3(
+														$author$project$Main$pieceSvg,
+														false,
+														$author$project$Main$None,
+														{
+															coord: {x: i + 1.0, y: 5.0},
+															pieceColor: $author$project$Main$Kese,
+															prof: prof
+														});
+												}),
+											model.keseHand),
+										_Utils_ap(
+											A2(
+												$elm$core$List$indexedMap,
+												F2(
+													function (i, prof) {
+														return A3(
+															$author$project$Main$pieceSvg,
+															false,
+															$author$project$Main$None,
+															{
+																coord: {x: 4.0 - (i * 0.85), y: -2.0},
+																pieceColor: $author$project$Main$Kese,
+																prof: prof
+															});
+													}),
+												model.capturedByRima),
+											_Utils_ap(
+												A2(
+													$elm$core$List$indexedMap,
+													F2(
+														function (i, prof) {
+															return A3(
+																$author$project$Main$pieceSvg,
+																false,
+																$author$project$Main$None,
+																{
+																	coord: {x: 3.0 - i, y: -1.0},
+																	pieceColor: $author$project$Main$Rima,
+																	prof: prof
+																});
+														}),
+													model.rimaHand),
+												_Utils_ap(
+													A2(
+														$elm$core$List$indexedMap,
+														F2(
+															function (i, _v4) {
+																return A2(
+																	$elm$svg$Svg$rect,
+																	_List_fromArray(
+																		[
+																			$elm$svg$Svg$Attributes$x(
+																			$elm$core$String$fromInt(532 + (10 * i))),
+																			$elm$svg$Svg$Attributes$y(
+																			$elm$core$String$fromInt(12 + (3 * i))),
+																			$elm$svg$Svg$Attributes$width('80'),
+																			$elm$svg$Svg$Attributes$height('80'),
+																			$elm$svg$Svg$Attributes$fill(
+																			$author$project$Main$backgroundColor($author$project$Main$Rima)),
+																			$elm$svg$Svg$Attributes$strokeWidth('1'),
+																			$elm$svg$Svg$Attributes$stroke('#000')
+																		]),
+																	_List_Nil);
+															}),
+														model.rimaDeck),
+													A2(
+														$elm$core$List$indexedMap,
+														F2(
+															function (i, _v5) {
+																return A2(
+																	$elm$svg$Svg$rect,
+																	_List_fromArray(
+																		[
+																			$elm$svg$Svg$Attributes$x(
+																			$elm$core$String$fromInt(532 + (10 * i))),
+																			$elm$svg$Svg$Attributes$y(
+																			$elm$core$String$fromInt(412 - (3 * i))),
+																			$elm$svg$Svg$Attributes$width('80'),
+																			$elm$svg$Svg$Attributes$height('80'),
+																			$elm$svg$Svg$Attributes$fill(
+																			$author$project$Main$backgroundColor($author$project$Main$Kese)),
+																			$elm$svg$Svg$Attributes$strokeWidth('1'),
+																			$elm$svg$Svg$Attributes$stroke('#eee')
+																		]),
+																	_List_Nil);
+															}),
+														model.keseDeck))))))))),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Events$onClick($author$project$Main$Cancel)
+							]),
+						_List_fromArray(
+							[
+								$elm$svg$Svg$text('キャンセル')
+							]))
+					]));
+		} else {
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$svg$Svg$svg,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$viewBox('0 -200 800 900'),
+								$elm$svg$Svg$Attributes$width('600')
+							]),
+						_Utils_ap(
+							$author$project$Main$board,
+							_Utils_ap(
+								A2(
+									$elm$core$List$map,
+									function (emptyCoord) {
+										return $author$project$Main$goalCandidateSvg(emptyCoord);
+									},
+									A2(
+										$elm$core$List$filter,
+										function (coord) {
+											return !$author$project$Main$isWater(coord);
+										},
+										A2(
+											$elm$core$List$filter,
+											function (coord) {
+												return !A2(
+													$elm$core$List$member,
+													coord,
+													A2(
+														$elm$core$List$map,
+														function ($) {
+															return $.coord;
+														},
+														model.board));
+											},
+											$author$project$Main$all_coord))),
+								_Utils_ap(
+									A2(
+										$elm$core$List$map,
+										function (piece) {
+											return A3(
+												$author$project$Main$pieceSvg,
+												false,
+												$author$project$Main$None,
+												{
+													coord: {x: piece.coord.x, y: piece.coord.y},
+													pieceColor: piece.pieceColor,
+													prof: piece.prof
+												});
+										},
+										model.board),
+									_Utils_ap(
+										A2(
+											$elm$core$List$indexedMap,
+											F2(
+												function (i, prof) {
+													return A3(
+														$author$project$Main$pieceSvg,
+														false,
+														$author$project$Main$None,
+														{
+															coord: {x: i * 0.85, y: 6.0},
+															pieceColor: $author$project$Main$Rima,
+															prof: prof
+														});
+												}),
+											model.capturedByKese),
+										_Utils_ap(
+											A2(
+												$elm$core$List$indexedMap,
+												F2(
+													function (i, prof) {
+														var _v6 = model.focus;
+														if (_v6.$ === 'PieceInKeseHand') {
+															var ind = _v6.a;
+															return A3(
+																$author$project$Main$pieceSvg,
+																_Utils_eq(ind, i),
+																$author$project$Main$None,
+																{
+																	coord: {x: i + 1.0, y: 5.0},
+																	pieceColor: $author$project$Main$Kese,
+																	prof: prof
+																});
+														} else {
+															return A3(
+																$author$project$Main$pieceSvg,
+																false,
+																$author$project$Main$None,
+																{
+																	coord: {x: i + 1.0, y: 5.0},
+																	pieceColor: $author$project$Main$Kese,
+																	prof: prof
+																});
+														}
+													}),
+												model.keseHand),
+											_Utils_ap(
+												A2(
+													$elm$core$List$indexedMap,
+													F2(
+														function (i, prof) {
+															return A3(
+																$author$project$Main$pieceSvg,
+																false,
+																$author$project$Main$None,
+																{
+																	coord: {x: 4.0 - (i * 0.85), y: -2.0},
+																	pieceColor: $author$project$Main$Kese,
+																	prof: prof
+																});
+														}),
+													model.capturedByRima),
+												_Utils_ap(
+													A2(
+														$elm$core$List$indexedMap,
+														F2(
+															function (i, prof) {
+																var _v7 = model.focus;
+																if (_v7.$ === 'PieceInRimaHand') {
+																	var ind = _v7.a;
+																	return A3(
+																		$author$project$Main$pieceSvg,
+																		_Utils_eq(ind, i),
+																		$author$project$Main$None,
+																		{
+																			coord: {x: 3.0 - i, y: -1.0},
+																			pieceColor: $author$project$Main$Rima,
+																			prof: prof
+																		});
+																} else {
+																	return A3(
+																		$author$project$Main$pieceSvg,
+																		false,
+																		$author$project$Main$None,
+																		{
+																			coord: {x: 3.0 - i, y: -1.0},
+																			pieceColor: $author$project$Main$Rima,
+																			prof: prof
+																		});
+																}
+															}),
+														model.rimaHand),
+													_Utils_ap(
+														A2(
+															$elm$core$List$indexedMap,
+															F2(
+																function (i, _v8) {
+																	return A2(
+																		$elm$svg$Svg$rect,
+																		_List_fromArray(
+																			[
+																				$elm$svg$Svg$Attributes$x(
+																				$elm$core$String$fromInt(532 + (10 * i))),
+																				$elm$svg$Svg$Attributes$y(
+																				$elm$core$String$fromInt(12 + (3 * i))),
+																				$elm$svg$Svg$Attributes$width('80'),
+																				$elm$svg$Svg$Attributes$height('80'),
+																				$elm$svg$Svg$Attributes$fill(
+																				$author$project$Main$backgroundColor($author$project$Main$Rima)),
+																				$elm$svg$Svg$Attributes$strokeWidth('1'),
+																				$elm$svg$Svg$Attributes$stroke('#000')
+																			]),
+																		_List_Nil);
+																}),
+															model.rimaDeck),
+														A2(
+															$elm$core$List$indexedMap,
+															F2(
+																function (i, _v9) {
+																	return A2(
+																		$elm$svg$Svg$rect,
+																		_List_fromArray(
+																			[
+																				$elm$svg$Svg$Attributes$x(
+																				$elm$core$String$fromInt(532 + (10 * i))),
+																				$elm$svg$Svg$Attributes$y(
+																				$elm$core$String$fromInt(412 - (3 * i))),
+																				$elm$svg$Svg$Attributes$width('80'),
+																				$elm$svg$Svg$Attributes$height('80'),
+																				$elm$svg$Svg$Attributes$fill(
+																				$author$project$Main$backgroundColor($author$project$Main$Kese)),
+																				$elm$svg$Svg$Attributes$strokeWidth('1'),
+																				$elm$svg$Svg$Attributes$stroke('#eee')
+																			]),
+																		_List_Nil);
+																}),
+															model.keseDeck)))))))))),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Events$onClick($author$project$Main$Cancel)
+							]),
+						_List_fromArray(
+							[
+								$elm$svg$Svg$text('キャンセル')
+							]))
+					]));
+		}
 	}
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
