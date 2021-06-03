@@ -167,8 +167,8 @@ boardBackgroundColor coord =
         "#ccc"
 
 
-board : List (Svg Msg)
-board =
+boardSvg : List (Svg Msg)
+boardSvg =
     List.map
         (\coord ->
             rect
@@ -361,14 +361,73 @@ displayCapturedCardsAndTwoDecks model =
 
 stationaryPart : StateOfCards -> List (Svg Msg)
 stationaryPart cardState =
-    board ++ displayCapturedCardsAndTwoDecks cardState
+    boardSvg ++ displayCapturedCardsAndTwoDecks cardState
 
 
-neitherOccupiedNorWater : StateOfCards -> List Coordinate
-neitherOccupiedNorWater cardState =
+neitherOccupiedNorWater : List PieceOnBoard -> List Coordinate
+neitherOccupiedNorWater board =
     all_coord
-        |> List.filter (\coord -> not (List.member coord (List.map .coord cardState.board)))
+        |> List.filter (\coord -> not (List.member coord (List.map .coord board)))
         |> List.filter (\coord -> not (isWater coord))
+
+
+addDelta : ( Int, Int ) -> Coordinate -> List Coordinate
+addDelta ( deltaX, deltaY ) coord =
+    let
+        x =
+            coord.x + deltaX
+
+        y =
+            coord.y + deltaY
+    in
+    if 0 <= x && x <= 4 && 0 <= y && y <= 4 then
+        [ { x = x, y = y } ]
+
+    else
+        []
+
+
+robFocusedPieceFromBoard : Coordinate -> List PieceOnBoard -> Maybe ( PieceOnBoard, List PieceOnBoard )
+robFocusedPieceFromBoard coord board =
+    case List.filter (\p -> p.coord == coord) board of
+        [ piece ] ->
+            Just ( piece, List.filter (\p -> p.coord /= coord) board )
+
+        {- This branch is not taken -}
+        _ ->
+            Nothing
+
+
+getCandidates : Bool -> PieceOnBoard -> List PieceOnBoard -> List Coordinate
+getCandidates hasCircleInHand piece robbedBoard =
+    let
+        ship_positions =
+            robbedBoard |> List.filter (\p -> p.pieceColor == Ship) |> List.map (\p -> p.coord)
+
+        raw_candidates =
+            case piece.prof of
+                Circle ->
+                    [ piece.coord ]
+
+                HorizontalVertical ->
+                    List.concatMap (\delta -> addDelta delta piece.coord) [ ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ) ]
+
+                Diagonal ->
+                    List.concatMap (\delta -> addDelta delta piece.coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
+
+                All ->
+                    List.concatMap (\delta -> addDelta delta piece.coord)
+                        [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ), ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ), ( 0, 0 ) ]
+    in
+    if hasCircleInHand then
+        {- Allowed location: non-water OR ships -}
+        List.filter (\coord -> not (isWater coord)) raw_candidates
+            ++ List.filter (\coord -> List.member coord ship_positions) raw_candidates
+
+    else
+        {- Allowed location: (non-water AND unoccupied) OR ships -}
+        List.filter (\coord -> List.member coord (neitherOccupiedNorWater robbedBoard)) raw_candidates
+            ++ List.filter (\coord -> List.member coord ship_positions) raw_candidates
 
 
 view : Model -> Html Msg
@@ -401,33 +460,46 @@ view modl =
                 dynamicPart =
                     case focus of
                         PieceOnTheBoard focus_coord ->
+                            case robFocusedPieceFromBoard focus_coord cardState.board of
+                                {- This branch is not taken -}
+                                Nothing ->
+                                    []
+
+                                Just ( focused_piece, robbedBoard ) ->
+                                    let
+                                        candidates =
+                                            getCandidates True {- Fixme -} focused_piece robbedBoard
+                                    in
+                                    List.map
+                                        (\piece ->
+                                            { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                                |> pieceSvg (piece.coord == focus_coord) None
+                                        )
+                                        cardState.board
+                                        ++ (candidates
+                                                |> List.map (\coord -> goalCandidateSvg (FirstMove { to = coord }) coord)
+                                           )
+                                        ++ List.indexedMap
+                                            (\i prof ->
+                                                pieceSvg False None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                                            )
+                                            cardState.keseHand
+                                        ++ List.indexedMap
+                                            (\i prof ->
+                                                pieceSvg False None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                                            )
+                                            cardState.rimaHand
+
+                        _ ->
                             List.map
                                 (\piece ->
                                     { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                        |> pieceSvg (piece.coord == focus_coord) None
+                                        |> pieceSvg False None
                                 )
                                 cardState.board
-                                ++ List.indexedMap
-                                    (\i prof ->
-                                        pieceSvg False None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
-                                    )
-                                    cardState.keseHand
-                                ++ List.indexedMap
-                                    (\i prof ->
-                                        pieceSvg False None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
-                                    )
-                                    cardState.rimaHand
-
-                        _ ->
-                            (neitherOccupiedNorWater cardState
+                                ++ (neitherOccupiedNorWater cardState.board
                                         |> List.map (\coord -> goalCandidateSvg (FirstMove { to = coord }) coord)
                                    )
-                                ++ List.map
-                                    (\piece ->
-                                        { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                            |> pieceSvg False None
-                                    )
-                                    cardState.board
                                 ++ List.indexedMap
                                     (\i prof ->
                                         case focus of

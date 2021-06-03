@@ -5534,6 +5534,19 @@ var $author$project$Main$PieceInRimaHand = function (a) {
 var $author$project$Main$PieceOnTheBoard = function (a) {
 	return {$: 'PieceOnTheBoard', a: a};
 };
+var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $author$project$Main$addDelta = F2(
+	function (_v0, coord) {
+		var deltaX = _v0.a;
+		var deltaY = _v0.b;
+		var y = coord.y + deltaY;
+		var x = coord.x + deltaX;
+		return ((0 <= x) && ((x <= 4) && ((0 <= y) && (y <= 4)))) ? _List_fromArray(
+			[
+				{x: x, y: y}
+			]) : _List_Nil;
+	});
 var $elm$core$List$append = F2(
 	function (xs, ys) {
 		if (!ys.b) {
@@ -5550,19 +5563,17 @@ var $elm$core$List$concatMap = F2(
 		return $elm$core$List$concat(
 			A2($elm$core$List$map, f, list));
 	});
-var $author$project$Main$all_coord = A2(
-	$elm$core$List$concatMap,
-	function (y_ind) {
-		return A2(
-			$elm$core$List$map,
-			function (x_ind) {
-				return {x: x_ind, y: y_ind};
-			},
-			_List_fromArray(
-				[0, 1, 2, 3, 4]));
-	},
-	_List_fromArray(
-		[0, 1, 2, 3, 4]));
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
 var $author$project$Main$isWater = function (coord) {
 	var _v0 = _Utils_Tuple2(coord.x, coord.y);
 	_v0$5:
@@ -5597,44 +5608,172 @@ var $author$project$Main$isWater = function (coord) {
 	}
 	return false;
 };
-var $author$project$Main$boardBackgroundColor = function (coord) {
-	return $author$project$Main$isWater(coord) ? 'rgb(94, 147, 184)' : '#ccc';
-};
-var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
-var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
-var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
-var $elm$svg$Svg$rect = $elm$svg$Svg$trustedNode('rect');
-var $elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
-var $elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
-var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
-var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
-var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
-var $author$project$Main$board = A2(
-	$elm$core$List$map,
-	function (coord) {
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var $elm$core$List$member = F2(
+	function (x, xs) {
 		return A2(
-			$elm$svg$Svg$rect,
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $author$project$Main$all_coord = A2(
+	$elm$core$List$concatMap,
+	function (y_ind) {
+		return A2(
+			$elm$core$List$map,
+			function (x_ind) {
+				return {x: x_ind, y: y_ind};
+			},
 			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$x(
-					$elm$core$String$fromInt((coord.x * 100) + 2)),
-					$elm$svg$Svg$Attributes$y(
-					$elm$core$String$fromInt((coord.y * 100) + 2)),
-					$elm$svg$Svg$Attributes$width('100'),
-					$elm$svg$Svg$Attributes$height('100'),
-					$elm$svg$Svg$Attributes$fill(
-					$author$project$Main$boardBackgroundColor(coord)),
-					$elm$svg$Svg$Attributes$stroke('#000'),
-					$elm$svg$Svg$Attributes$strokeWidth('4')
-				]),
-			_List_Nil);
+				[0, 1, 2, 3, 4]));
 	},
-	$author$project$Main$all_coord);
-var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$html$Html$div = _VirtualDom_node('div');
+	_List_fromArray(
+		[0, 1, 2, 3, 4]));
+var $author$project$Main$neitherOccupiedNorWater = function (board) {
+	return A2(
+		$elm$core$List$filter,
+		function (coord) {
+			return !$author$project$Main$isWater(coord);
+		},
+		A2(
+			$elm$core$List$filter,
+			function (coord) {
+				return !A2(
+					$elm$core$List$member,
+					coord,
+					A2(
+						$elm$core$List$map,
+						function ($) {
+							return $.coord;
+						},
+						board));
+			},
+			$author$project$Main$all_coord));
+};
+var $author$project$Main$getCandidates = F3(
+	function (hasCircleInHand, piece, robbedBoard) {
+		var ship_positions = A2(
+			$elm$core$List$map,
+			function (p) {
+				return p.coord;
+			},
+			A2(
+				$elm$core$List$filter,
+				function (p) {
+					return _Utils_eq(p.pieceColor, $author$project$Main$Ship);
+				},
+				robbedBoard));
+		var raw_candidates = function () {
+			var _v0 = piece.prof;
+			switch (_v0.$) {
+				case 'Circle':
+					return _List_fromArray(
+						[piece.coord]);
+				case 'HorizontalVertical':
+					return A2(
+						$elm$core$List$concatMap,
+						function (delta) {
+							return A2($author$project$Main$addDelta, delta, piece.coord);
+						},
+						_List_fromArray(
+							[
+								_Utils_Tuple2(1, 0),
+								_Utils_Tuple2(-1, 0),
+								_Utils_Tuple2(0, 1),
+								_Utils_Tuple2(0, -1)
+							]));
+				case 'Diagonal':
+					return A2(
+						$elm$core$List$concatMap,
+						function (delta) {
+							return A2($author$project$Main$addDelta, delta, piece.coord);
+						},
+						_List_fromArray(
+							[
+								_Utils_Tuple2(1, 1),
+								_Utils_Tuple2(-1, -1),
+								_Utils_Tuple2(-1, 1),
+								_Utils_Tuple2(1, -1)
+							]));
+				default:
+					return A2(
+						$elm$core$List$concatMap,
+						function (delta) {
+							return A2($author$project$Main$addDelta, delta, piece.coord);
+						},
+						_List_fromArray(
+							[
+								_Utils_Tuple2(1, 1),
+								_Utils_Tuple2(-1, -1),
+								_Utils_Tuple2(-1, 1),
+								_Utils_Tuple2(1, -1),
+								_Utils_Tuple2(1, 0),
+								_Utils_Tuple2(-1, 0),
+								_Utils_Tuple2(0, 1),
+								_Utils_Tuple2(0, -1),
+								_Utils_Tuple2(0, 0)
+							]));
+			}
+		}();
+		return hasCircleInHand ? _Utils_ap(
+			A2(
+				$elm$core$List$filter,
+				function (coord) {
+					return !$author$project$Main$isWater(coord);
+				},
+				raw_candidates),
+			A2(
+				$elm$core$List$filter,
+				function (coord) {
+					return A2($elm$core$List$member, coord, ship_positions);
+				},
+				raw_candidates)) : _Utils_ap(
+			A2(
+				$elm$core$List$filter,
+				function (coord) {
+					return A2(
+						$elm$core$List$member,
+						coord,
+						$author$project$Main$neitherOccupiedNorWater(robbedBoard));
+				},
+				raw_candidates),
+			A2(
+				$elm$core$List$filter,
+				function (coord) {
+					return A2($elm$core$List$member, coord, ship_positions);
+				},
+				raw_candidates));
+	});
+var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
 var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
 var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
 var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
 var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
@@ -5679,71 +5818,6 @@ var $author$project$Main$goalCandidateSvg = F2(
 					_List_Nil)
 				]));
 	});
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
-var $elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
-		}
-	});
-var $elm$core$List$member = F2(
-	function (x, xs) {
-		return A2(
-			$elm$core$List$any,
-			function (a) {
-				return _Utils_eq(a, x);
-			},
-			xs);
-	});
-var $author$project$Main$neitherOccupiedNorWater = function (cardState) {
-	return A2(
-		$elm$core$List$filter,
-		function (coord) {
-			return !$author$project$Main$isWater(coord);
-		},
-		A2(
-			$elm$core$List$filter,
-			function (coord) {
-				return !A2(
-					$elm$core$List$member,
-					coord,
-					A2(
-						$elm$core$List$map,
-						function ($) {
-							return $.coord;
-						},
-						cardState.board));
-			},
-			$author$project$Main$all_coord));
-};
 var $author$project$Main$backgroundColor = function (pieceColor) {
 	switch (pieceColor.$) {
 		case 'Rima':
@@ -5777,7 +5851,9 @@ var $author$project$Main$foregroundColor = function (pieceColor) {
 var $elm$core$String$fromFloat = _String_fromNumber;
 var $elm$svg$Svg$Attributes$d = _VirtualDom_attribute('d');
 var $elm$svg$Svg$path = $elm$svg$Svg$trustedNode('path');
+var $elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
 var $elm$svg$Svg$Attributes$strokeLinecap = _VirtualDom_attribute('stroke-linecap');
+var $elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
 var $author$project$Main$glyph = F2(
 	function (profession, color) {
 		var style = _List_fromArray(
@@ -5847,8 +5923,13 @@ var $author$project$Main$glyph = F2(
 						A2($author$project$Main$glyph, $author$project$Main$Circle, color)));
 		}
 	});
+var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
+var $elm$svg$Svg$rect = $elm$svg$Svg$trustedNode('rect');
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
+var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
+var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
 var $author$project$Main$pieceSvg = F3(
 	function (focused, msgToBeSent, p) {
 		return A2(
@@ -5892,6 +5973,54 @@ var $author$project$Main$pieceSvg = F3(
 					p.prof,
 					$author$project$Main$foregroundColor(p.pieceColor))));
 	});
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $author$project$Main$robFocusedPieceFromBoard = F2(
+	function (coord, board) {
+		var _v0 = A2(
+			$elm$core$List$filter,
+			function (p) {
+				return _Utils_eq(p.coord, coord);
+			},
+			board);
+		if (_v0.b && (!_v0.b.b)) {
+			var piece = _v0.a;
+			return $elm$core$Maybe$Just(
+				_Utils_Tuple2(
+					piece,
+					A2(
+						$elm$core$List$filter,
+						function (p) {
+							return !_Utils_eq(p.coord, coord);
+						},
+						board)));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $author$project$Main$boardBackgroundColor = function (coord) {
+	return $author$project$Main$isWater(coord) ? 'rgb(94, 147, 184)' : '#ccc';
+};
+var $author$project$Main$boardSvg = A2(
+	$elm$core$List$map,
+	function (coord) {
+		return A2(
+			$elm$svg$Svg$rect,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$x(
+					$elm$core$String$fromInt((coord.x * 100) + 2)),
+					$elm$svg$Svg$Attributes$y(
+					$elm$core$String$fromInt((coord.y * 100) + 2)),
+					$elm$svg$Svg$Attributes$width('100'),
+					$elm$svg$Svg$Attributes$height('100'),
+					$elm$svg$Svg$Attributes$fill(
+					$author$project$Main$boardBackgroundColor(coord)),
+					$elm$svg$Svg$Attributes$stroke('#000'),
+					$elm$svg$Svg$Attributes$strokeWidth('4')
+				]),
+			_List_Nil);
+	},
+	$author$project$Main$all_coord);
 var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 	return _Utils_ap(
 		A2(
@@ -5973,7 +6102,7 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 };
 var $author$project$Main$stationaryPart = function (cardState) {
 	return _Utils_ap(
-		$author$project$Main$board,
+		$author$project$Main$boardSvg,
 		$author$project$Main$displayCapturedCardsAndTwoDecks(cardState));
 };
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
@@ -6056,13 +6185,80 @@ var $author$project$Main$view = function (modl) {
 		var dynamicPart = function () {
 			if (focus.$ === 'PieceOnTheBoard') {
 				var focus_coord = focus.a;
+				var _v2 = A2($author$project$Main$robFocusedPieceFromBoard, focus_coord, cardState.board);
+				if (_v2.$ === 'Nothing') {
+					return _List_Nil;
+				} else {
+					var _v3 = _v2.a;
+					var focused_piece = _v3.a;
+					var robbedBoard = _v3.b;
+					var candidates = A3($author$project$Main$getCandidates, true, focused_piece, robbedBoard);
+					return _Utils_ap(
+						A2(
+							$elm$core$List$map,
+							function (piece) {
+								return A3(
+									$author$project$Main$pieceSvg,
+									_Utils_eq(piece.coord, focus_coord),
+									$author$project$Main$None,
+									{
+										coord: {x: piece.coord.x, y: piece.coord.y},
+										pieceColor: piece.pieceColor,
+										prof: piece.prof
+									});
+							},
+							cardState.board),
+						_Utils_ap(
+							A2(
+								$elm$core$List$map,
+								function (coord) {
+									return A2(
+										$author$project$Main$goalCandidateSvg,
+										$author$project$Main$FirstMove(
+											{to: coord}),
+										coord);
+								},
+								candidates),
+							_Utils_ap(
+								A2(
+									$elm$core$List$indexedMap,
+									F2(
+										function (i, prof) {
+											return A3(
+												$author$project$Main$pieceSvg,
+												false,
+												$author$project$Main$None,
+												{
+													coord: {x: i + 1.0, y: 5.0},
+													pieceColor: $author$project$Main$Kese,
+													prof: prof
+												});
+										}),
+									cardState.keseHand),
+								A2(
+									$elm$core$List$indexedMap,
+									F2(
+										function (i, prof) {
+											return A3(
+												$author$project$Main$pieceSvg,
+												false,
+												$author$project$Main$None,
+												{
+													coord: {x: 3.0 - i, y: -1.0},
+													pieceColor: $author$project$Main$Rima,
+													prof: prof
+												});
+										}),
+									cardState.rimaHand))));
+				}
+			} else {
 				return _Utils_ap(
 					A2(
 						$elm$core$List$map,
 						function (piece) {
 							return A3(
 								$author$project$Main$pieceSvg,
-								_Utils_eq(piece.coord, focus_coord),
+								false,
 								$author$project$Main$None,
 								{
 									coord: {x: piece.coord.x, y: piece.coord.y},
@@ -6073,40 +6269,6 @@ var $author$project$Main$view = function (modl) {
 						cardState.board),
 					_Utils_ap(
 						A2(
-							$elm$core$List$indexedMap,
-							F2(
-								function (i, prof) {
-									return A3(
-										$author$project$Main$pieceSvg,
-										false,
-										$author$project$Main$None,
-										{
-											coord: {x: i + 1.0, y: 5.0},
-											pieceColor: $author$project$Main$Kese,
-											prof: prof
-										});
-								}),
-							cardState.keseHand),
-						A2(
-							$elm$core$List$indexedMap,
-							F2(
-								function (i, prof) {
-									return A3(
-										$author$project$Main$pieceSvg,
-										false,
-										$author$project$Main$None,
-										{
-											coord: {x: 3.0 - i, y: -1.0},
-											pieceColor: $author$project$Main$Rima,
-											prof: prof
-										});
-								}),
-							cardState.rimaHand)));
-			} else {
-				return _Utils_ap(
-					$author$project$Main$board,
-					_Utils_ap(
-						A2(
 							$elm$core$List$map,
 							function (coord) {
 								return A2(
@@ -6115,79 +6277,64 @@ var $author$project$Main$view = function (modl) {
 										{to: coord}),
 									coord);
 							},
-							$author$project$Main$neitherOccupiedNorWater(cardState)),
+							$author$project$Main$neitherOccupiedNorWater(cardState.board)),
 						_Utils_ap(
 							A2(
-								$elm$core$List$map,
-								function (piece) {
-									return A3(
-										$author$project$Main$pieceSvg,
-										false,
-										$author$project$Main$None,
-										{
-											coord: {x: piece.coord.x, y: piece.coord.y},
-											pieceColor: piece.pieceColor,
-											prof: piece.prof
-										});
-								},
-								cardState.board),
-							_Utils_ap(
-								A2(
-									$elm$core$List$indexedMap,
-									F2(
-										function (i, prof) {
-											if (focus.$ === 'PieceInKeseHand') {
-												var ind = focus.a;
-												return A3(
-													$author$project$Main$pieceSvg,
-													_Utils_eq(ind, i),
-													$author$project$Main$None,
-													{
-														coord: {x: i + 1.0, y: 5.0},
-														pieceColor: $author$project$Main$Kese,
-														prof: prof
-													});
-											} else {
-												return A3(
-													$author$project$Main$pieceSvg,
-													false,
-													$author$project$Main$None,
-													{
-														coord: {x: i + 1.0, y: 5.0},
-														pieceColor: $author$project$Main$Kese,
-														prof: prof
-													});
-											}
-										}),
-									cardState.keseHand),
-								A2(
-									$elm$core$List$indexedMap,
-									F2(
-										function (i, prof) {
-											if (focus.$ === 'PieceInRimaHand') {
-												var ind = focus.a;
-												return A3(
-													$author$project$Main$pieceSvg,
-													_Utils_eq(ind, i),
-													$author$project$Main$None,
-													{
-														coord: {x: 3.0 - i, y: -1.0},
-														pieceColor: $author$project$Main$Rima,
-														prof: prof
-													});
-											} else {
-												return A3(
-													$author$project$Main$pieceSvg,
-													false,
-													$author$project$Main$None,
-													{
-														coord: {x: 3.0 - i, y: -1.0},
-														pieceColor: $author$project$Main$Rima,
-														prof: prof
-													});
-											}
-										}),
-									cardState.rimaHand)))));
+								$elm$core$List$indexedMap,
+								F2(
+									function (i, prof) {
+										if (focus.$ === 'PieceInKeseHand') {
+											var ind = focus.a;
+											return A3(
+												$author$project$Main$pieceSvg,
+												_Utils_eq(ind, i),
+												$author$project$Main$None,
+												{
+													coord: {x: i + 1.0, y: 5.0},
+													pieceColor: $author$project$Main$Kese,
+													prof: prof
+												});
+										} else {
+											return A3(
+												$author$project$Main$pieceSvg,
+												false,
+												$author$project$Main$None,
+												{
+													coord: {x: i + 1.0, y: 5.0},
+													pieceColor: $author$project$Main$Kese,
+													prof: prof
+												});
+										}
+									}),
+								cardState.keseHand),
+							A2(
+								$elm$core$List$indexedMap,
+								F2(
+									function (i, prof) {
+										if (focus.$ === 'PieceInRimaHand') {
+											var ind = focus.a;
+											return A3(
+												$author$project$Main$pieceSvg,
+												_Utils_eq(ind, i),
+												$author$project$Main$None,
+												{
+													coord: {x: 3.0 - i, y: -1.0},
+													pieceColor: $author$project$Main$Rima,
+													prof: prof
+												});
+										} else {
+											return A3(
+												$author$project$Main$pieceSvg,
+												false,
+												$author$project$Main$None,
+												{
+													coord: {x: 3.0 - i, y: -1.0},
+													pieceColor: $author$project$Main$Rima,
+													prof: prof
+												});
+										}
+									}),
+								cardState.rimaHand))));
 			}
 		}();
 		return A2(
