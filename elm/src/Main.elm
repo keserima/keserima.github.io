@@ -61,7 +61,7 @@ type Msg
     = None
     | Cancel
     | Focused Focus
-    | FirstMove { from : Focus, to : Coordinate }
+    | FirstMove { to : Coordinate }
 
 
 type Focus
@@ -94,7 +94,7 @@ update msg modl =
         ( MoverIsSelected _ cardState, Cancel ) ->
             ( NothingSelected cardState, Cmd.none )
 
-        ( MoverIsSelected focus cardState, FirstMove { from, to } ) ->
+        ( MoverIsSelected from cardState, FirstMove { to } ) ->
             case from of
                 {- FIXME -}
                 PieceOnTheBoard coord ->
@@ -359,6 +359,18 @@ displayCapturedCardsAndTwoDecks model =
             model.capturedByRima
 
 
+stationaryPart : StateOfCards -> List (Svg Msg)
+stationaryPart cardState =
+    board ++ displayCapturedCardsAndTwoDecks cardState
+
+
+neitherOccupiedNorWater : StateOfCards -> List Coordinate
+neitherOccupiedNorWater cardState =
+    all_coord
+        |> List.filter (\coord -> not (List.member coord (List.map .coord cardState.board)))
+        |> List.filter (\coord -> not (isWater coord))
+
+
 view : Model -> Html Msg
 view modl =
     case modl of
@@ -368,7 +380,7 @@ view modl =
                     [ viewBox "0 -200 800 900"
                     , width "600"
                     ]
-                    (board
+                    (stationaryPart model
                         ++ List.map
                             (\piece ->
                                 { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
@@ -381,58 +393,42 @@ view modl =
                         ++ List.indexedMap
                             (\i prof -> pieceSvg False (Focused (PieceInRimaHand i)) { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima })
                             model.rimaHand
-                        ++ displayCapturedCardsAndTwoDecks model
                     )
                 ]
 
-        MoverIsSelected focus model ->
-            case focus of
-                PieceOnTheBoard focus_coord ->
-                    Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
-                        [ svg
-                            [ viewBox "0 -200 800 900"
-                            , width "600"
-                            ]
-                            (board
-                                ++ List.map
-                                    (\piece ->
-                                        { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                            |> pieceSvg (piece.coord == focus_coord) None
-                                    )
-                                    model.board
+        MoverIsSelected focus cardState ->
+            let
+                dynamicPart =
+                    case focus of
+                        PieceOnTheBoard focus_coord ->
+                            List.map
+                                (\piece ->
+                                    { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                        |> pieceSvg (piece.coord == focus_coord) None
+                                )
+                                cardState.board
                                 ++ List.indexedMap
                                     (\i prof ->
                                         pieceSvg False None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
                                     )
-                                    model.keseHand
+                                    cardState.keseHand
                                 ++ List.indexedMap
                                     (\i prof ->
                                         pieceSvg False None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
                                     )
-                                    model.rimaHand
-                                ++ displayCapturedCardsAndTwoDecks model
-                            )
-                        , Html.button [ onClick Cancel ] [ text "キャンセル" ]
-                        ]
+                                    cardState.rimaHand
 
-                _ ->
-                    Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
-                        [ svg
-                            [ viewBox "0 -200 800 900"
-                            , width "600"
-                            ]
-                            (board
-                                ++ (all_coord
-                                        |> List.filter (\coord -> not (List.member coord (List.map .coord model.board)))
-                                        |> List.filter (\coord -> not (isWater coord))
-                                        |> List.map (\coord -> goalCandidateSvg (FirstMove { from = focus, to = coord }) coord)
+                        _ ->
+                            board
+                                ++ (neitherOccupiedNorWater cardState
+                                        |> List.map (\coord -> goalCandidateSvg (FirstMove { to = coord }) coord)
                                    )
                                 ++ List.map
                                     (\piece ->
                                         { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
                                             |> pieceSvg False None
                                     )
-                                    model.board
+                                    cardState.board
                                 ++ List.indexedMap
                                     (\i prof ->
                                         case focus of
@@ -442,7 +438,7 @@ view modl =
                                             _ ->
                                                 pieceSvg False None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
                                     )
-                                    model.keseHand
+                                    cardState.keseHand
                                 ++ List.indexedMap
                                     (\i prof ->
                                         case focus of
@@ -452,11 +448,14 @@ view modl =
                                             _ ->
                                                 pieceSvg False None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
                                     )
-                                    model.rimaHand
-                                ++ displayCapturedCardsAndTwoDecks model
-                            )
-                        , Html.button [ onClick Cancel ] [ text "キャンセル" ]
-                        ]
+                                    cardState.rimaHand
+            in
+            Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
+                [ svg
+                    [ viewBox "0 -200 800 900", width "600" ]
+                    (stationaryPart cardState ++ dynamicPart)
+                , Html.button [ onClick Cancel ] [ text "キャンセル" ]
+                ]
 
 
 numToProf : Int -> Profession
