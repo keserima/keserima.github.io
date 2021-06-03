@@ -1,7 +1,7 @@
 module Main exposing (Model, Msg, init, main, view)
 
 import Browser
-import Html exposing (Html, button, div)
+import Html exposing (Html)
 import Html.Attributes exposing (style)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -38,25 +38,19 @@ type alias PieceWithFloatPosition =
 
 
 type Model
-    = NothingSelected
-        { board : List PieceOnBoard
-        , capturedByKese : List Profession
-        , capturedByRima : List Profession
-        , keseDeck : List Profession
-        , rimaDeck : List Profession
-        , keseHand : List Profession
-        , rimaHand : List Profession
-        }
-    | MoverIsSelected
-        { board : List PieceOnBoard
-        , capturedByKese : List Profession
-        , capturedByRima : List Profession
-        , focus : Focus
-        , keseDeck : List Profession
-        , rimaDeck : List Profession
-        , keseHand : List Profession
-        , rimaHand : List Profession
-        }
+    = NothingSelected StateOfCards
+    | MoverIsSelected Focus StateOfCards
+
+
+type alias StateOfCards =
+    { board : List PieceOnBoard
+    , capturedByKese : List Profession
+    , capturedByRima : List Profession
+    , keseDeck : List Profession
+    , rimaDeck : List Profession
+    , keseHand : List Profession
+    , rimaHand : List Profession
+    }
 
 
 type alias Flags =
@@ -94,34 +88,13 @@ subscriptions _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg modl =
     case ( modl, msg ) of
-        ( NothingSelected model, Focused msg_ ) ->
-            ( MoverIsSelected
-                { board = model.board
-                , focus = msg_
-                , keseHand = model.keseHand
-                , keseDeck = model.keseDeck
-                , rimaHand = model.rimaHand
-                , rimaDeck = model.rimaDeck
-                , capturedByRima = model.capturedByRima
-                , capturedByKese = model.capturedByKese
-                }
-            , Cmd.none
-            )
+        ( NothingSelected cardState, Focused focus ) ->
+            ( MoverIsSelected focus cardState, Cmd.none )
 
-        ( MoverIsSelected model, Cancel ) ->
-            ( NothingSelected
-                { board = model.board
-                , keseHand = model.keseHand
-                , keseDeck = model.keseDeck
-                , rimaHand = model.rimaHand
-                , rimaDeck = model.rimaDeck
-                , capturedByRima = model.capturedByRima
-                , capturedByKese = model.capturedByKese
-                }
-            , Cmd.none
-            )
+        ( MoverIsSelected _ cardState, Cancel ) ->
+            ( NothingSelected cardState, Cmd.none )
 
-        ( MoverIsSelected model, FirstMove { from, to } ) ->
+        ( MoverIsSelected focus cardState, FirstMove { from, to } ) ->
             case from of
                 {- FIXME -}
                 PieceOnTheBoard coord ->
@@ -130,54 +103,34 @@ update msg modl =
                 PieceInKeseHand ind ->
                     let
                         newKeseHand =
-                            List.take ind model.keseHand ++ List.drop (ind + 1) model.keseHand
+                            List.take ind cardState.keseHand ++ List.drop (ind + 1) cardState.keseHand
 
                         newBoard =
-                            case List.drop ind model.keseHand of
+                            case List.drop ind cardState.keseHand of
                                 profession :: _ ->
-                                    { pieceColor = Kese, coord = to, prof = profession } :: model.board
+                                    { pieceColor = Kese, coord = to, prof = profession } :: cardState.board
 
                                 {- This path is never taken -}
                                 [] ->
-                                    model.board
+                                    cardState.board
                     in
-                    ( NothingSelected
-                        { board = newBoard
-                        , keseHand = newKeseHand
-                        , keseDeck = model.keseDeck
-                        , rimaHand = model.rimaHand
-                        , rimaDeck = model.rimaDeck
-                        , capturedByRima = model.capturedByRima
-                        , capturedByKese = model.capturedByKese
-                        }
-                    , Cmd.none
-                    )
+                    ( NothingSelected { cardState | board = newBoard, keseHand = newKeseHand }, Cmd.none )
 
                 PieceInRimaHand ind ->
                     let
                         newRimaHand =
-                            List.take ind model.rimaHand ++ List.drop (ind + 1) model.rimaHand
+                            List.take ind cardState.rimaHand ++ List.drop (ind + 1) cardState.rimaHand
 
                         newBoard =
-                            case List.drop ind model.rimaHand of
+                            case List.drop ind cardState.rimaHand of
                                 profession :: _ ->
-                                    { pieceColor = Rima, coord = to, prof = profession } :: model.board
+                                    { pieceColor = Rima, coord = to, prof = profession } :: cardState.board
 
                                 {- This path is never taken -}
                                 [] ->
-                                    model.board
+                                    cardState.board
                     in
-                    ( NothingSelected
-                        { board = newBoard
-                        , keseHand = model.keseHand
-                        , keseDeck = model.keseDeck
-                        , rimaHand = newRimaHand
-                        , rimaDeck = model.rimaDeck
-                        , capturedByRima = model.capturedByRima
-                        , capturedByKese = model.capturedByKese
-                        }
-                    , Cmd.none
-                    )
+                    ( NothingSelected { cardState | board = newBoard, rimaHand = newRimaHand }, Cmd.none )
 
         _ ->
             ( modl, Cmd.none )
@@ -372,7 +325,7 @@ view : Model -> Html Msg
 view modl =
     case modl of
         NothingSelected model ->
-            div [ Html.Attributes.style "padding" "0 0 0 20px" ]
+            Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
                 [ svg
                     [ viewBox "0 -200 800 900"
                     , width "600"
@@ -427,10 +380,10 @@ view modl =
                     )
                 ]
 
-        MoverIsSelected model ->
-            case model.focus of
+        MoverIsSelected focus model ->
+            case focus of
                 PieceOnTheBoard focus_coord ->
-                    div [ Html.Attributes.style "padding" "0 0 0 20px" ]
+                    Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
                         [ svg
                             [ viewBox "0 -200 800 900"
                             , width "600"
@@ -491,7 +444,7 @@ view modl =
                         ]
 
                 _ ->
-                    div [ Html.Attributes.style "padding" "0 0 0 20px" ]
+                    Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
                         [ svg
                             [ viewBox "0 -200 800 900"
                             , width "600"
@@ -500,7 +453,7 @@ view modl =
                                 ++ (all_coord
                                         |> List.filter (\coord -> not (List.member coord (List.map .coord model.board)))
                                         |> List.filter (\coord -> not (isWater coord))
-                                        |> List.map (\coord -> goalCandidateSvg (FirstMove { from = model.focus, to = coord }) coord)
+                                        |> List.map (\coord -> goalCandidateSvg (FirstMove { from = focus, to = coord }) coord)
                                    )
                                 ++ List.map
                                     (\piece ->
@@ -513,7 +466,7 @@ view modl =
                                     model.capturedByKese
                                 ++ List.indexedMap
                                     (\i prof ->
-                                        case model.focus of
+                                        case focus of
                                             PieceInKeseHand ind ->
                                                 pieceSvg (ind == i) None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
 
@@ -526,7 +479,7 @@ view modl =
                                     model.capturedByRima
                                 ++ List.indexedMap
                                     (\i prof ->
-                                        case model.focus of
+                                        case focus of
                                             PieceInRimaHand ind ->
                                                 pieceSvg (ind == i) None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
 
