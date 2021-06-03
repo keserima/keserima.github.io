@@ -419,8 +419,7 @@ view modl =
                                     cardState.rimaHand
 
                         _ ->
-                            board
-                                ++ (neitherOccupiedNorWater cardState
+                            (neitherOccupiedNorWater cardState
                                         |> List.map (\coord -> goalCandidateSvg (FirstMove { to = coord }) coord)
                                    )
                                 ++ List.map
