@@ -5279,9 +5279,10 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
-var $author$project$Main$MoverIsSelected = function (a) {
-	return {$: 'MoverIsSelected', a: a};
-};
+var $author$project$Main$MoverIsSelected = F2(
+	function (a, b) {
+		return {$: 'MoverIsSelected', a: a, b: b};
+	});
 var $elm$core$List$drop = F2(
 	function (n, list) {
 		drop:
@@ -5436,11 +5437,10 @@ var $author$project$Main$update = F2(
 		while (true) {
 			if (_v0.a.$ === 'NothingSelected') {
 				if (_v0.b.$ === 'Focused') {
-					var model = _v0.a.a;
-					var msg_ = _v0.b.a;
+					var cardState = _v0.a.a;
+					var focus = _v0.b.a;
 					return _Utils_Tuple2(
-						$author$project$Main$MoverIsSelected(
-							{board: model.board, capturedByKese: model.capturedByKese, capturedByRima: model.capturedByRima, focus: msg_, keseDeck: model.keseDeck, keseHand: model.keseHand, rimaDeck: model.rimaDeck, rimaHand: model.rimaHand}),
+						A2($author$project$Main$MoverIsSelected, focus, cardState),
 						$elm$core$Platform$Cmd$none);
 				} else {
 					break _v0$3;
@@ -5448,14 +5448,16 @@ var $author$project$Main$update = F2(
 			} else {
 				switch (_v0.b.$) {
 					case 'Cancel':
-						var model = _v0.a.a;
-						var _v1 = _v0.b;
+						var _v1 = _v0.a;
+						var cardState = _v1.b;
+						var _v2 = _v0.b;
 						return _Utils_Tuple2(
-							$author$project$Main$NothingSelected(
-								{board: model.board, capturedByKese: model.capturedByKese, capturedByRima: model.capturedByRima, keseDeck: model.keseDeck, keseHand: model.keseHand, rimaDeck: model.rimaDeck, rimaHand: model.rimaHand}),
+							$author$project$Main$NothingSelected(cardState),
 							$elm$core$Platform$Cmd$none);
 					case 'FirstMove':
-						var model = _v0.a.a;
+						var _v3 = _v0.a;
+						var focus = _v3.a;
+						var cardState = _v3.b;
 						var from = _v0.b.a.from;
 						var to = _v0.b.a.to;
 						switch (from.$) {
@@ -5465,44 +5467,48 @@ var $author$project$Main$update = F2(
 							case 'PieceInKeseHand':
 								var ind = from.a;
 								var newKeseHand = _Utils_ap(
-									A2($elm$core$List$take, ind, model.keseHand),
-									A2($elm$core$List$drop, ind + 1, model.keseHand));
+									A2($elm$core$List$take, ind, cardState.keseHand),
+									A2($elm$core$List$drop, ind + 1, cardState.keseHand));
 								var newBoard = function () {
-									var _v3 = A2($elm$core$List$drop, ind, model.keseHand);
-									if (_v3.b) {
-										var profession = _v3.a;
+									var _v5 = A2($elm$core$List$drop, ind, cardState.keseHand);
+									if (_v5.b) {
+										var profession = _v5.a;
 										return A2(
 											$elm$core$List$cons,
 											{coord: to, pieceColor: $author$project$Main$Kese, prof: profession},
-											model.board);
+											cardState.board);
 									} else {
-										return model.board;
+										return cardState.board;
 									}
 								}();
 								return _Utils_Tuple2(
 									$author$project$Main$NothingSelected(
-										{board: newBoard, capturedByKese: model.capturedByKese, capturedByRima: model.capturedByRima, keseDeck: model.keseDeck, keseHand: newKeseHand, rimaDeck: model.rimaDeck, rimaHand: model.rimaHand}),
+										_Utils_update(
+											cardState,
+											{board: newBoard, keseHand: newKeseHand})),
 									$elm$core$Platform$Cmd$none);
 							default:
 								var ind = from.a;
 								var newRimaHand = _Utils_ap(
-									A2($elm$core$List$take, ind, model.rimaHand),
-									A2($elm$core$List$drop, ind + 1, model.rimaHand));
+									A2($elm$core$List$take, ind, cardState.rimaHand),
+									A2($elm$core$List$drop, ind + 1, cardState.rimaHand));
 								var newBoard = function () {
-									var _v4 = A2($elm$core$List$drop, ind, model.rimaHand);
-									if (_v4.b) {
-										var profession = _v4.a;
+									var _v6 = A2($elm$core$List$drop, ind, cardState.rimaHand);
+									if (_v6.b) {
+										var profession = _v6.a;
 										return A2(
 											$elm$core$List$cons,
 											{coord: to, pieceColor: $author$project$Main$Rima, prof: profession},
-											model.board);
+											cardState.board);
 									} else {
-										return model.board;
+										return cardState.board;
 									}
 								}();
 								return _Utils_Tuple2(
 									$author$project$Main$NothingSelected(
-										{board: newBoard, capturedByKese: model.capturedByKese, capturedByRima: model.capturedByRima, keseDeck: model.keseDeck, keseHand: model.keseHand, rimaDeck: model.rimaDeck, rimaHand: newRimaHand}),
+										_Utils_update(
+											cardState,
+											{board: newBoard, rimaHand: newRimaHand})),
 									$elm$core$Platform$Cmd$none);
 						}
 					default:
@@ -5558,16 +5564,6 @@ var $author$project$Main$all_coord = A2(
 	},
 	_List_fromArray(
 		[0, 1, 2, 3, 4]));
-var $author$project$Main$backgroundColor = function (pieceColor) {
-	switch (pieceColor.$) {
-		case 'Rima':
-			return 'rgb(200, 190, 183)';
-		case 'Kese':
-			return 'rgb(72, 62, 55)';
-		default:
-			return 'rgb(96, 133, 157)';
-	}
-};
 var $author$project$Main$isWater = function (coord) {
 	var _v0 = _Utils_Tuple2(coord.x, coord.y);
 	_v0$5:
@@ -5636,6 +5632,63 @@ var $author$project$Main$board = A2(
 	},
 	$author$project$Main$all_coord);
 var $elm$html$Html$button = _VirtualDom_node('button');
+var $author$project$Main$backgroundColor = function (pieceColor) {
+	switch (pieceColor.$) {
+		case 'Rima':
+			return 'rgb(200, 190, 183)';
+		case 'Kese':
+			return 'rgb(72, 62, 55)';
+		default:
+			return 'rgb(96, 133, 157)';
+	}
+};
+var $author$project$Main$displayTwoDecks = function (model) {
+	return _Utils_ap(
+		A2(
+			$elm$core$List$indexedMap,
+			F2(
+				function (i, _v0) {
+					return A2(
+						$elm$svg$Svg$rect,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$x(
+								$elm$core$String$fromInt(532 + (10 * i))),
+								$elm$svg$Svg$Attributes$y(
+								$elm$core$String$fromInt(12 + (3 * i))),
+								$elm$svg$Svg$Attributes$width('80'),
+								$elm$svg$Svg$Attributes$height('80'),
+								$elm$svg$Svg$Attributes$fill(
+								$author$project$Main$backgroundColor($author$project$Main$Rima)),
+								$elm$svg$Svg$Attributes$strokeWidth('1'),
+								$elm$svg$Svg$Attributes$stroke('#000')
+							]),
+						_List_Nil);
+				}),
+			model.rimaDeck),
+		A2(
+			$elm$core$List$indexedMap,
+			F2(
+				function (i, _v1) {
+					return A2(
+						$elm$svg$Svg$rect,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$x(
+								$elm$core$String$fromInt(532 + (10 * i))),
+								$elm$svg$Svg$Attributes$y(
+								$elm$core$String$fromInt(412 - (3 * i))),
+								$elm$svg$Svg$Attributes$width('80'),
+								$elm$svg$Svg$Attributes$height('80'),
+								$elm$svg$Svg$Attributes$fill(
+								$author$project$Main$backgroundColor($author$project$Main$Kese)),
+								$elm$svg$Svg$Attributes$strokeWidth('1'),
+								$elm$svg$Svg$Attributes$stroke('#eee')
+							]),
+						_List_Nil);
+				}),
+			model.keseDeck));
+};
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
@@ -5972,57 +6025,13 @@ var $author$project$Main$view = function (modl) {
 															});
 													}),
 												model.rimaHand),
-											_Utils_ap(
-												A2(
-													$elm$core$List$indexedMap,
-													F2(
-														function (i, _v1) {
-															return A2(
-																$elm$svg$Svg$rect,
-																_List_fromArray(
-																	[
-																		$elm$svg$Svg$Attributes$x(
-																		$elm$core$String$fromInt(532 + (10 * i))),
-																		$elm$svg$Svg$Attributes$y(
-																		$elm$core$String$fromInt(12 + (3 * i))),
-																		$elm$svg$Svg$Attributes$width('80'),
-																		$elm$svg$Svg$Attributes$height('80'),
-																		$elm$svg$Svg$Attributes$fill(
-																		$author$project$Main$backgroundColor($author$project$Main$Rima)),
-																		$elm$svg$Svg$Attributes$strokeWidth('1'),
-																		$elm$svg$Svg$Attributes$stroke('#000')
-																	]),
-																_List_Nil);
-														}),
-													model.rimaDeck),
-												A2(
-													$elm$core$List$indexedMap,
-													F2(
-														function (i, _v2) {
-															return A2(
-																$elm$svg$Svg$rect,
-																_List_fromArray(
-																	[
-																		$elm$svg$Svg$Attributes$x(
-																		$elm$core$String$fromInt(532 + (10 * i))),
-																		$elm$svg$Svg$Attributes$y(
-																		$elm$core$String$fromInt(412 - (3 * i))),
-																		$elm$svg$Svg$Attributes$width('80'),
-																		$elm$svg$Svg$Attributes$height('80'),
-																		$elm$svg$Svg$Attributes$fill(
-																		$author$project$Main$backgroundColor($author$project$Main$Kese)),
-																		$elm$svg$Svg$Attributes$strokeWidth('1'),
-																		$elm$svg$Svg$Attributes$stroke('#eee')
-																	]),
-																_List_Nil);
-														}),
-													model.keseDeck)))))))))
+											$author$project$Main$displayTwoDecks(model))))))))
 				]));
 	} else {
-		var model = modl.a;
-		var _v3 = model.focus;
-		if (_v3.$ === 'PieceOnTheBoard') {
-			var focus_coord = _v3.a;
+		var focus = modl.a;
+		var model = modl.b;
+		if (focus.$ === 'PieceOnTheBoard') {
+			var focus_coord = focus.a;
 			return A2(
 				$elm$html$Html$div,
 				_List_fromArray(
@@ -6119,51 +6128,7 @@ var $author$project$Main$view = function (modl) {
 																});
 														}),
 													model.rimaHand),
-												_Utils_ap(
-													A2(
-														$elm$core$List$indexedMap,
-														F2(
-															function (i, _v4) {
-																return A2(
-																	$elm$svg$Svg$rect,
-																	_List_fromArray(
-																		[
-																			$elm$svg$Svg$Attributes$x(
-																			$elm$core$String$fromInt(532 + (10 * i))),
-																			$elm$svg$Svg$Attributes$y(
-																			$elm$core$String$fromInt(12 + (3 * i))),
-																			$elm$svg$Svg$Attributes$width('80'),
-																			$elm$svg$Svg$Attributes$height('80'),
-																			$elm$svg$Svg$Attributes$fill(
-																			$author$project$Main$backgroundColor($author$project$Main$Rima)),
-																			$elm$svg$Svg$Attributes$strokeWidth('1'),
-																			$elm$svg$Svg$Attributes$stroke('#000')
-																		]),
-																	_List_Nil);
-															}),
-														model.rimaDeck),
-													A2(
-														$elm$core$List$indexedMap,
-														F2(
-															function (i, _v5) {
-																return A2(
-																	$elm$svg$Svg$rect,
-																	_List_fromArray(
-																		[
-																			$elm$svg$Svg$Attributes$x(
-																			$elm$core$String$fromInt(532 + (10 * i))),
-																			$elm$svg$Svg$Attributes$y(
-																			$elm$core$String$fromInt(412 - (3 * i))),
-																			$elm$svg$Svg$Attributes$width('80'),
-																			$elm$svg$Svg$Attributes$height('80'),
-																			$elm$svg$Svg$Attributes$fill(
-																			$author$project$Main$backgroundColor($author$project$Main$Kese)),
-																			$elm$svg$Svg$Attributes$strokeWidth('1'),
-																			$elm$svg$Svg$Attributes$stroke('#eee')
-																		]),
-																	_List_Nil);
-															}),
-														model.keseDeck))))))))),
+												$author$project$Main$displayTwoDecks(model)))))))),
 						A2(
 						$elm$html$Html$button,
 						_List_fromArray(
@@ -6200,7 +6165,7 @@ var $author$project$Main$view = function (modl) {
 										return A2(
 											$author$project$Main$goalCandidateSvg,
 											$author$project$Main$FirstMove(
-												{from: model.focus, to: coord}),
+												{from: focus, to: coord}),
 											coord);
 									},
 									A2(
@@ -6258,9 +6223,8 @@ var $author$project$Main$view = function (modl) {
 												$elm$core$List$indexedMap,
 												F2(
 													function (i, prof) {
-														var _v6 = model.focus;
-														if (_v6.$ === 'PieceInKeseHand') {
-															var ind = _v6.a;
+														if (focus.$ === 'PieceInKeseHand') {
+															var ind = focus.a;
 															return A3(
 																$author$project$Main$pieceSvg,
 																_Utils_eq(ind, i),
@@ -6304,9 +6268,8 @@ var $author$project$Main$view = function (modl) {
 														$elm$core$List$indexedMap,
 														F2(
 															function (i, prof) {
-																var _v7 = model.focus;
-																if (_v7.$ === 'PieceInRimaHand') {
-																	var ind = _v7.a;
+																if (focus.$ === 'PieceInRimaHand') {
+																	var ind = focus.a;
 																	return A3(
 																		$author$project$Main$pieceSvg,
 																		_Utils_eq(ind, i),
@@ -6329,51 +6292,7 @@ var $author$project$Main$view = function (modl) {
 																}
 															}),
 														model.rimaHand),
-													_Utils_ap(
-														A2(
-															$elm$core$List$indexedMap,
-															F2(
-																function (i, _v8) {
-																	return A2(
-																		$elm$svg$Svg$rect,
-																		_List_fromArray(
-																			[
-																				$elm$svg$Svg$Attributes$x(
-																				$elm$core$String$fromInt(532 + (10 * i))),
-																				$elm$svg$Svg$Attributes$y(
-																				$elm$core$String$fromInt(12 + (3 * i))),
-																				$elm$svg$Svg$Attributes$width('80'),
-																				$elm$svg$Svg$Attributes$height('80'),
-																				$elm$svg$Svg$Attributes$fill(
-																				$author$project$Main$backgroundColor($author$project$Main$Rima)),
-																				$elm$svg$Svg$Attributes$strokeWidth('1'),
-																				$elm$svg$Svg$Attributes$stroke('#000')
-																			]),
-																		_List_Nil);
-																}),
-															model.rimaDeck),
-														A2(
-															$elm$core$List$indexedMap,
-															F2(
-																function (i, _v9) {
-																	return A2(
-																		$elm$svg$Svg$rect,
-																		_List_fromArray(
-																			[
-																				$elm$svg$Svg$Attributes$x(
-																				$elm$core$String$fromInt(532 + (10 * i))),
-																				$elm$svg$Svg$Attributes$y(
-																				$elm$core$String$fromInt(412 - (3 * i))),
-																				$elm$svg$Svg$Attributes$width('80'),
-																				$elm$svg$Svg$Attributes$height('80'),
-																				$elm$svg$Svg$Attributes$fill(
-																				$author$project$Main$backgroundColor($author$project$Main$Kese)),
-																				$elm$svg$Svg$Attributes$strokeWidth('1'),
-																				$elm$svg$Svg$Attributes$stroke('#eee')
-																			]),
-																		_List_Nil);
-																}),
-															model.keseDeck)))))))))),
+													$author$project$Main$displayTwoDecks(model))))))))),
 						A2(
 						$elm$html$Html$button,
 						_List_fromArray(
