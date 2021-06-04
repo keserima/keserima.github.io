@@ -2,43 +2,51 @@
 fn test1() {
     assert_eq!(
         convert("KESERIMA TONADORAPAMO HIFI, MAHOSMA NINIBINIYANA,").unwrap(),
-        "かぃさぃりま となろらぱも いヒ,まおしま ににびにぃあな,"
+        "かぃさぃりま となろらぱも いヒ,まおしま ににぴにいあな,"
     );
 }
 #[test]
 fn test2() {
     assert_eq!(
         convert("HAYONTI MA NINIBINIYAFI, TONADORAMINIYA.").unwrap(),
-        "あぃおんち ま ににびにぃあヒ,となろらみにぃあ."
+        "あいおんち ま ににぴにいあヒ,となろらみにいあ."
     );
 }
 #[test]
 fn test3() {
     assert_eq!(
         convert("SEMIGOHA, PIYA MA HOMI MEHIGAMIFI,").unwrap(),
-        "さぃみごあ,ぴぃあ ま おみ まぃいがみヒ,"
+        "さぃみこあ,ぴいあ ま おみ まぃいがみヒ,"
     );
 }
 #[test]
 fn test4() {
     assert_eq!(
         convert("SANGAPAMO TONAMIYAFI MOHONIYA.").unwrap(),
-        "さんがぱも となみぃあヒ もおにぃあ."
+        "さんがぱも となみいあヒ もおにいあ."
     );
 }
 #[test]
 fn test5() {
     assert_eq!(
         convert("MIHOSMEYA SANTSEGIPAMO HIME,").unwrap(),
-        "みおしまぃぃあ さんさぃぎぱも いまぃ,"
+        "みおしまぃいあ さんさぃきぱも いまぃ,"
     );
 }
 #[test]
 fn test6() {
     assert_eq!(
         convert("MEGAYEDI HOMI HINA TONADORAMINI.").unwrap(),
-        "まぃがぃあぃり おみ いな となろらみに."
+        "まぃがいあぃり おみ いな となろらみに."
     );
+}
+
+#[test]
+fn test7() {
+    assert_eq!(
+        convert("HASTE, MAHOSMA, DIRETSO, SAMEGO, MOHONTA, HAYONTI MA SERIMIYA. OMMAFI MIRA, SEMIGOHA, PIYA MA SEGORIME SAMBATI SAMBATI GATONA").unwrap(),
+        "あしたぃ,まおしま,りらぃそ,さまぃこ,もおんた,あいおんち ま さぃりみいあ.おんまヒ みら,さぃみこあ,ぴいあ ま さぃこりまぃ さんばち さんばち がとな"
+    )
 }
 
 use log::warn;
@@ -374,11 +382,10 @@ fn make_syllable(c2: Onset, vowel: Vowel) -> &'static str {
         (Hor0, O) => "お",
         (P, A) => "ぱ",
         (P, E) => "ぱぃ",
-        (P, I) => "ぴ",
+        (P, I) | (B, I) => "ぴ",
         (P, O) => "ぽ",
         (B, A) => "ば",
         (B, E) => "ばぃ",
-        (B, I) => "び",
         (B, O) => "ぼ",
         (T, A) => "た",
         (T, E) => "たぃ",
@@ -390,12 +397,10 @@ fn make_syllable(c2: Onset, vowel: Vowel) -> &'static str {
         (DorR, O) => "ろ",
         (K, A) => "か",
         (K, E) => "かぃ",
-        (K, I) => "き",
-        (K, O) => "こ",
+        (K, I) | (G, I) => "き",
+        (K, O) | (G, O) => "こ",
         (G, A) => "が",
         (G, E) => "がぃ",
-        (G, I) => "ぎ",
-        (G, O) => "ご",
         (F, A) => "ハ",
         (F, E) => "ハぃ",
         (F, I) => "ヒ",
@@ -415,9 +420,9 @@ fn make_syllable(c2: Onset, vowel: Vowel) -> &'static str {
         (N, E) => "なぃ",
         (N, I) => "に",
         (N, O) => "の",
-        (Y, A) => "ぃあ",
-        (Y, E) => "ぃあぃ",
+        (Y, A) => "いあ",
+        (Y, E) => "いあぃ",
         (Y, I) => "い", // intentional
-        (Y, O) => "ぃお",
+        (Y, O) => "いお",
     }
 }
