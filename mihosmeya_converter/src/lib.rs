@@ -63,7 +63,7 @@ enum Onset {
     K,
     G,
     F,
-    SorTS,
+    SorTs,
     M,
     N,
     Y,
@@ -129,12 +129,12 @@ pub fn convert(a: &str) -> Result<String, Error> {
             'S' => match state {
                 ParserState::N => {
                     ans += "ん";
-                    state = ParserState::OnsetParsed(Onset::SorTS);
+                    state = ParserState::OnsetParsed(Onset::SorTs);
                 }
 
                 ParserState::S => {
                     ans += "し";
-                    state = ParserState::OnsetParsed(Onset::SorTS);
+                    state = ParserState::OnsetParsed(Onset::SorTs);
                 }
 
                 ParserState::OnsetParsed(o) => {
@@ -185,7 +185,7 @@ pub fn convert(a: &str) -> Result<String, Error> {
                 };
                 // might see a vowel, might see an 'S'
                 match iter.next() {
-                    Some('S') => state = ParserState::OnsetParsed(Onset::SorTS),
+                    Some('S') => state = ParserState::OnsetParsed(Onset::SorTs),
                     Some('A') => {
                         ans += make_syllable(Onset::T, Vowel::A);
                         state = ParserState::OpenSyllParsed;
@@ -222,7 +222,7 @@ pub fn convert(a: &str) -> Result<String, Error> {
                 match iter.next() {
                     Some('R') => {
                         ans += "ん";
-                        state = ParserState::OnsetParsed(Onset::SorTS)
+                        state = ParserState::OnsetParsed(Onset::SorTs)
                     }
                     Some('A') => {
                         ans += make_syllable(Onset::DorR, Vowel::A);
@@ -342,7 +342,7 @@ pub fn convert(a: &str) -> Result<String, Error> {
                         ans += make_syllable(c2, vowel);
                     }
                     ParserState::S => {
-                        ans += make_syllable(Onset::SorTS, vowel);
+                        ans += make_syllable(Onset::SorTs, vowel);
                     }
                     ParserState::N => {
                         ans += make_syllable(Onset::N, vowel);
@@ -405,13 +405,13 @@ fn make_syllable(c2: Onset, vowel: Vowel) -> &'static str {
         (F, E) => "ハぃ",
         (F, I) => "ヒ",
         (F, O) => "ホ",
-        (SorTS, A) => "さ",
-        (SorTS, E) => "さぃ",
-        (SorTS, I) => {
+        (SorTs, A) => "さ",
+        (SorTs, E) => "さぃ",
+        (SorTs, I) => {
             warn!("si / tsi detected. Replacing it with い");
             "い"
         }
-        (SorTS, O) => "そ",
+        (SorTs, O) => "そ",
         (M, A) => "ま",
         (M, E) => "まぃ",
         (M, I) => "み",
