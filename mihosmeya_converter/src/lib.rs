@@ -86,25 +86,29 @@ enum ParserState {
     S,
 }
 
+mod lex;
+
 pub fn convert(a: &str) -> Result<String, Error> {
+    use lex::Token::*;
     let mut ans = String::new();
     let mut state = ParserState::WordInitial;
-    let mut iter = a.chars();
+    let lexed = lex::lex(a)?;
+    let mut iter = lexed.iter();
 
     while let Some(c) = iter.next() {
         match c {
-            ' ' | ',' | '.' => {
+            Space | Comma | Period => {
                 if let ParserState::SkipSpaces = state {
-                    if c != ' ' {
+                    if *c != Space {
                         warn!("duplicate punctuation");
-                        ans.push(c);
+                        ans.push((*c).into());
                     }
                 } else {
                     state = ParserState::SkipSpaces;
-                    ans.push(c);
+                    ans.push((*c).into());
                 }
             }
-            'N' => match state {
+            N => match state {
                 ParserState::N => {
                     ans += "ん";
                     state = ParserState::OnsetParsed(Onset::N);
@@ -126,7 +130,7 @@ pub fn convert(a: &str) -> Result<String, Error> {
                 }
             },
 
-            'S' => match state {
+            S => match state {
                 ParserState::N => {
                     ans += "ん";
                     state = ParserState::OnsetParsed(Onset::SorTs);
@@ -147,7 +151,7 @@ pub fn convert(a: &str) -> Result<String, Error> {
                     state = ParserState::S;
                 }
             },
-            'P' | 'B' | 'D' | 'K' | 'G' | 'F' | 'Y' => {
+            P | B | D | K | G | F | Y => {
                 if let ParserState::OnsetParsed(c2) = state {
                     return Err(Error(format!(
                         "impossible consonant cluster detected: {:?} followed by {:?}",
@@ -160,19 +164,19 @@ pub fn convert(a: &str) -> Result<String, Error> {
                         ans += "し"
                     }
                     state = ParserState::OnsetParsed(match c {
-                        'P' => Onset::P,
-                        'B' => Onset::B,
-                        'D' => Onset::DorR,
-                        'K' => Onset::K,
-                        'G' => Onset::G,
-                        'F' => Onset::F,
-                        'Y' => Onset::Y,
+                        P => Onset::P,
+                        B => Onset::B,
+                        D => Onset::DorR,
+                        K => Onset::K,
+                        G => Onset::G,
+                        F => Onset::F,
+                        Y => Onset::Y,
                         _ => panic!("Cannot happen"),
                     });
                 }
             }
 
-            'T' => {
+            T => {
                 match state {
                     ParserState::N => {
                         ans += "ん";
@@ -185,20 +189,20 @@ pub fn convert(a: &str) -> Result<String, Error> {
                 };
                 // might see a vowel, might see an 'S'
                 match iter.next() {
-                    Some('S') => state = ParserState::OnsetParsed(Onset::SorTs),
-                    Some('A') => {
+                    Some(S) => state = ParserState::OnsetParsed(Onset::SorTs),
+                    Some(A) => {
                         ans += make_syllable(Onset::T, Vowel::A);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some('E') => {
+                    Some(E) => {
                         ans += make_syllable(Onset::T, Vowel::E);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some('I') => {
+                    Some(I) => {
                         ans += make_syllable(Onset::T, Vowel::I);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some('O') => {
+                    Some(O) => {
                         ans += make_syllable(Onset::T, Vowel::O);
                         state = ParserState::OpenSyllParsed;
                     }
@@ -206,7 +210,7 @@ pub fn convert(a: &str) -> Result<String, Error> {
                 }
             }
 
-            'R' => {
+            R => {
                 match state {
                     ParserState::N => {
                         ans += "ん";
@@ -220,30 +224,30 @@ pub fn convert(a: &str) -> Result<String, Error> {
                 };
                 // might see a vowel, might see an 'R'
                 match iter.next() {
-                    Some('R') => {
+                    Some(R) => {
                         ans += "ん";
                         state = ParserState::OnsetParsed(Onset::SorTs)
                     }
-                    Some('A') => {
+                    Some(A) => {
                         ans += make_syllable(Onset::DorR, Vowel::A);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some('E') => {
+                    Some(E) => {
                         ans += make_syllable(Onset::DorR, Vowel::E);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some('I') => {
+                    Some(I) => {
                         ans += make_syllable(Onset::DorR, Vowel::I);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some('O') => {
+                    Some(O) => {
                         ans += make_syllable(Onset::DorR, Vowel::O);
                         state = ParserState::OpenSyllParsed;
                     }
                     a => return Err(Error(format!("Unexpected {:?} encountered after `R`", a))),
                 }
             }
-            'H' => {
+            H => {
                 match state {
                     ParserState::N => {
                         ans += "ん";
@@ -256,30 +260,30 @@ pub fn convert(a: &str) -> Result<String, Error> {
                 };
                 // might see a vowel, might see an 'H'
                 match iter.next() {
-                    Some('H') => {
+                    Some(H) => {
                         ans += "し";
                         state = ParserState::OnsetParsed(Onset::Hor0)
                     }
-                    Some('A') => {
+                    Some(A) => {
                         ans += make_syllable(Onset::Hor0, Vowel::A);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some('E') => {
+                    Some(E) => {
                         ans += make_syllable(Onset::Hor0, Vowel::E);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some('I') => {
+                    Some(I) => {
                         ans += make_syllable(Onset::Hor0, Vowel::I);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some('O') => {
+                    Some(O) => {
                         ans += make_syllable(Onset::Hor0, Vowel::O);
                         state = ParserState::OpenSyllParsed;
                     }
                     a => return Err(Error(format!("Unexpected {:?} encountered after `H`", a))),
                 }
             }
-            'M' => {
+            M => {
                 match state {
                     ParserState::N => {
                         ans += "ん";
@@ -292,35 +296,35 @@ pub fn convert(a: &str) -> Result<String, Error> {
                 };
                 // might see a vowel, might see an 'M', 'P', 'B', 'F'
                 match iter.next() {
-                    Some('M') => {
+                    Some(M) => {
                         ans += "ん";
                         state = ParserState::OnsetParsed(Onset::M)
                     }
-                    Some('P') => {
+                    Some(P) => {
                         ans += "ん";
                         state = ParserState::OnsetParsed(Onset::P)
                     }
-                    Some('B') => {
+                    Some(B) => {
                         ans += "ん";
                         state = ParserState::OnsetParsed(Onset::B)
                     }
-                    Some('F') => {
+                    Some(F) => {
                         ans += "ん";
                         state = ParserState::OnsetParsed(Onset::F)
                     }
-                    Some('A') => {
+                    Some(A) => {
                         ans += make_syllable(Onset::M, Vowel::A);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some('E') => {
+                    Some(E) => {
                         ans += make_syllable(Onset::M, Vowel::E);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some('I') => {
+                    Some(I) => {
                         ans += make_syllable(Onset::M, Vowel::I);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some('O') => {
+                    Some(O) => {
                         ans += make_syllable(Onset::M, Vowel::O);
                         state = ParserState::OpenSyllParsed;
                     }
@@ -328,12 +332,12 @@ pub fn convert(a: &str) -> Result<String, Error> {
                 }
             }
 
-            'A' | 'I' | 'E' | 'O' => {
+            A | I | E | O => {
                 let vowel = match c {
-                    'A' => Vowel::A,
-                    'I' => Vowel::I,
-                    'E' => Vowel::E,
-                    'O' => Vowel::O,
+                    A => Vowel::A,
+                    I => Vowel::I,
+                    E => Vowel::E,
+                    O => Vowel::O,
                     _ => panic!("cannot happen"),
                 };
 
@@ -354,8 +358,6 @@ pub fn convert(a: &str) -> Result<String, Error> {
 
                 state = ParserState::OpenSyllParsed;
             }
-
-            a => return Err(Error(format!("Unexpected {:?} encontered", a))),
         }
     }
 
