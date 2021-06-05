@@ -176,7 +176,7 @@ pub fn convert(a: &str) -> Result<String, Error> {
                 }
             }
 
-            T => {
+            T | R | H | M => {
                 match state {
                     ParserState::N => {
                         ans += "ん";
@@ -187,148 +187,68 @@ pub fn convert(a: &str) -> Result<String, Error> {
                     }
                     _ => {}
                 };
-                // might see a vowel, might see an 'S'
-                match iter.next() {
-                    Some(S) => state = ParserState::OnsetParsed(Onset::SorTs),
-                    Some(A) => {
-                        ans += make_syllable(Onset::T, Vowel::A);
-                        state = ParserState::OpenSyllParsed;
-                    }
-                    Some(E) => {
-                        ans += make_syllable(Onset::T, Vowel::E);
-                        state = ParserState::OpenSyllParsed;
-                    }
-                    Some(I) => {
-                        ans += make_syllable(Onset::T, Vowel::I);
-                        state = ParserState::OpenSyllParsed;
-                    }
-                    Some(O) => {
-                        ans += make_syllable(Onset::T, Vowel::O);
-                        state = ParserState::OpenSyllParsed;
-                    }
-                    a => return Err(Error(format!("Unexpected {:?} encountered after `T`", a))),
-                }
-            }
 
-            R => {
-                match state {
-                    ParserState::N => {
-                        ans += "ん";
-                    }
-
-                    ParserState::S => {
-                        ans += "し";
-                    }
-
-                    _ => {}
+                let onset = match c {
+                    T => Onset::T,
+                    R => Onset::DorR,
+                    H => Onset::Hor0,
+                    M => Onset::M,
+                    _ => panic!("cannot happen"),
                 };
-                // might see a vowel, might see an 'R'
-                match iter.next() {
-                    Some(R) => {
-                        ans += "ん";
-                        state = ParserState::OnsetParsed(Onset::SorTs)
-                    }
-                    Some(A) => {
-                        ans += make_syllable(Onset::DorR, Vowel::A);
+
+                match (c, iter.next()) {
+                    (_, Some(A)) => {
+                        ans += make_syllable(onset, Vowel::A);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some(E) => {
-                        ans += make_syllable(Onset::DorR, Vowel::E);
+                    (_, Some(E)) => {
+                        ans += make_syllable(onset, Vowel::E);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some(I) => {
-                        ans += make_syllable(Onset::DorR, Vowel::I);
+                    (_, Some(I)) => {
+                        ans += make_syllable(onset, Vowel::I);
                         state = ParserState::OpenSyllParsed;
                     }
-                    Some(O) => {
-                        ans += make_syllable(Onset::DorR, Vowel::O);
+                    (_, Some(O)) => {
+                        ans += make_syllable(onset, Vowel::O);
                         state = ParserState::OpenSyllParsed;
-                    }
-                    a => return Err(Error(format!("Unexpected {:?} encountered after `R`", a))),
-                }
-            }
-            H => {
-                match state {
-                    ParserState::N => {
-                        ans += "ん";
                     }
 
-                    ParserState::S => {
-                        ans += "し";
+                    (T, Some(S)) => state = ParserState::OnsetParsed(Onset::SorTs),
+
+                    (R, Some(R)) => {
+                        ans += "ん";
+                        state = ParserState::OnsetParsed(Onset::DorR)
                     }
-                    _ => {}
-                };
-                // might see a vowel, might see an 'H'
-                match iter.next() {
-                    Some(H) => {
+
+                    (H, Some(H)) => {
                         ans += "し";
                         state = ParserState::OnsetParsed(Onset::Hor0)
                     }
-                    Some(A) => {
-                        ans += make_syllable(Onset::Hor0, Vowel::A);
-                        state = ParserState::OpenSyllParsed;
-                    }
-                    Some(E) => {
-                        ans += make_syllable(Onset::Hor0, Vowel::E);
-                        state = ParserState::OpenSyllParsed;
-                    }
-                    Some(I) => {
-                        ans += make_syllable(Onset::Hor0, Vowel::I);
-                        state = ParserState::OpenSyllParsed;
-                    }
-                    Some(O) => {
-                        ans += make_syllable(Onset::Hor0, Vowel::O);
-                        state = ParserState::OpenSyllParsed;
-                    }
-                    a => return Err(Error(format!("Unexpected {:?} encountered after `H`", a))),
-                }
-            }
-            M => {
-                match state {
-                    ParserState::N => {
-                        ans += "ん";
-                    }
 
-                    ParserState::S => {
-                        ans += "し";
-                    }
-                    _ => {}
-                };
-                // might see a vowel, might see an 'M', 'P', 'B', 'F'
-                match iter.next() {
-                    Some(M) => {
+                    (M, Some(M)) => {
                         ans += "ん";
                         state = ParserState::OnsetParsed(Onset::M)
                     }
-                    Some(P) => {
+                    (M, Some(P)) => {
                         ans += "ん";
                         state = ParserState::OnsetParsed(Onset::P)
                     }
-                    Some(B) => {
+                    (M, Some(B)) => {
                         ans += "ん";
                         state = ParserState::OnsetParsed(Onset::B)
                     }
-                    Some(F) => {
+                    (M, Some(F)) => {
                         ans += "ん";
                         state = ParserState::OnsetParsed(Onset::F)
                     }
-                    Some(A) => {
-                        ans += make_syllable(Onset::M, Vowel::A);
-                        state = ParserState::OpenSyllParsed;
+
+                    (_, a) => {
+                        return Err(Error(format!(
+                            "Unexpected {:?} encountered after {:?}",
+                            a, c
+                        )))
                     }
-                    Some(E) => {
-                        ans += make_syllable(Onset::M, Vowel::E);
-                        state = ParserState::OpenSyllParsed;
-                    }
-                    Some(I) => {
-                        ans += make_syllable(Onset::M, Vowel::I);
-                        state = ParserState::OpenSyllParsed;
-                    }
-                    Some(O) => {
-                        ans += make_syllable(Onset::M, Vowel::O);
-                        state = ParserState::OpenSyllParsed;
-                    }
-                    a => return Err(Error(format!("Unexpected {:?} encountered after `M`", a))),
                 }
             }
 
