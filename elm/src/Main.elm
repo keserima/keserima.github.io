@@ -361,7 +361,19 @@ displayCapturedCardsAndTwoDecks model =
 
 stationaryPart : StateOfCards -> List (Svg Msg)
 stationaryPart cardState =
-    boardSvg ++ displayCapturedCardsAndTwoDecks cardState
+    boardSvg
+        ++ displayCapturedCardsAndTwoDecks cardState
+        ++ [ g [ transform "translate(760 400) scale(4)" ]
+                [ circle [ cx "12", cy "13.5", r "12", fill (backgroundColor Kese) ] []
+                , circle [ cx "12", cy "8", r "4", fill (foregroundColor Kese) ] []
+                , Svg.path [ fill (foregroundColor Kese), d "m 12,14 c -2.9518496,2.51e-4 -5.8000458,1.08849 -8,3.056641 V 20 H 20 V 17.054688 C 17.799757,15.087246 14.951592,13.999714 12,14 Z" ] []
+                ]
+           , g [ transform "translate(760 0) scale(4)" ]
+                [ circle [ cx "12", cy "13.5", r "12", fill (backgroundColor Rima) ] []
+                ,circle [ cx "12", cy "8", r "4", fill (foregroundColor Rima) ] []
+                , Svg.path [ fill (foregroundColor Rima), d "m 12,14 c -2.9518496,2.51e-4 -5.8000458,1.08849 -8,3.056641 V 20 H 20 V 17.054688 C 17.799757,15.087246 14.951592,13.999714 12,14 Z" ] []
+                ]
+           ]
 
 
 neitherOccupiedNorWater : List PieceOnBoard -> List Coordinate
@@ -450,7 +462,7 @@ view modl =
         NothingSelected model ->
             Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
                 [ svg
-                    [ viewBox "0 -200 800 900"
+                    [ viewBox "0 -200 900 900"
                     , width "600"
                     ]
                     (stationaryPart model

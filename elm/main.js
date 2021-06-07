@@ -6115,7 +6115,91 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 var $author$project$Main$stationaryPart = function (cardState) {
 	return _Utils_ap(
 		$author$project$Main$boardSvg,
-		$author$project$Main$displayCapturedCardsAndTwoDecks(cardState));
+		_Utils_ap(
+			$author$project$Main$displayCapturedCardsAndTwoDecks(cardState),
+			_List_fromArray(
+				[
+					A2(
+					$elm$svg$Svg$g,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$transform('translate(760 400) scale(4)')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$svg$Svg$circle,
+							_List_fromArray(
+								[
+									$elm$svg$Svg$Attributes$cx('12'),
+									$elm$svg$Svg$Attributes$cy('13.5'),
+									$elm$svg$Svg$Attributes$r('12'),
+									$elm$svg$Svg$Attributes$fill(
+									$author$project$Main$backgroundColor($author$project$Main$Kese))
+								]),
+							_List_Nil),
+							A2(
+							$elm$svg$Svg$circle,
+							_List_fromArray(
+								[
+									$elm$svg$Svg$Attributes$cx('12'),
+									$elm$svg$Svg$Attributes$cy('8'),
+									$elm$svg$Svg$Attributes$r('4'),
+									$elm$svg$Svg$Attributes$fill(
+									$author$project$Main$foregroundColor($author$project$Main$Kese))
+								]),
+							_List_Nil),
+							A2(
+							$elm$svg$Svg$path,
+							_List_fromArray(
+								[
+									$elm$svg$Svg$Attributes$fill(
+									$author$project$Main$foregroundColor($author$project$Main$Kese)),
+									$elm$svg$Svg$Attributes$d('m 12,14 c -2.9518496,2.51e-4 -5.8000458,1.08849 -8,3.056641 V 20 H 20 V 17.054688 C 17.799757,15.087246 14.951592,13.999714 12,14 Z')
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$svg$Svg$g,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$transform('translate(760 0) scale(4)')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$svg$Svg$circle,
+							_List_fromArray(
+								[
+									$elm$svg$Svg$Attributes$cx('12'),
+									$elm$svg$Svg$Attributes$cy('13.5'),
+									$elm$svg$Svg$Attributes$r('12'),
+									$elm$svg$Svg$Attributes$fill(
+									$author$project$Main$backgroundColor($author$project$Main$Rima))
+								]),
+							_List_Nil),
+							A2(
+							$elm$svg$Svg$circle,
+							_List_fromArray(
+								[
+									$elm$svg$Svg$Attributes$cx('12'),
+									$elm$svg$Svg$Attributes$cy('8'),
+									$elm$svg$Svg$Attributes$r('4'),
+									$elm$svg$Svg$Attributes$fill(
+									$author$project$Main$foregroundColor($author$project$Main$Rima))
+								]),
+							_List_Nil),
+							A2(
+							$elm$svg$Svg$path,
+							_List_fromArray(
+								[
+									$elm$svg$Svg$Attributes$fill(
+									$author$project$Main$foregroundColor($author$project$Main$Rima)),
+									$elm$svg$Svg$Attributes$d('m 12,14 c -2.9518496,2.51e-4 -5.8000458,1.08849 -8,3.056641 V 20 H 20 V 17.054688 C 17.799757,15.087246 14.951592,13.999714 12,14 Z')
+								]),
+							_List_Nil)
+						]))
+				])));
 };
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
@@ -6136,7 +6220,7 @@ var $author$project$Main$view = function (modl) {
 					$elm$svg$Svg$svg,
 					_List_fromArray(
 						[
-							$elm$svg$Svg$Attributes$viewBox('0 -200 800 900'),
+							$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
 							$elm$svg$Svg$Attributes$width('600')
 						]),
 					_Utils_ap(
