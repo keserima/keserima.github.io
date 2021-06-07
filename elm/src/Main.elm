@@ -363,17 +363,21 @@ stationaryPart : StateOfCards -> List (Svg Msg)
 stationaryPart cardState =
     boardSvg
         ++ displayCapturedCardsAndTwoDecks cardState
-        ++ [ g [ transform "translate(760 400) scale(4)" ]
-                [ circle [ cx "12", cy "13.5", r "12", fill (backgroundColor Kese) ] []
-                , circle [ cx "12", cy "8", r "4", fill (foregroundColor Kese) ] []
-                , Svg.path [ fill (foregroundColor Kese), d "m 12,14 c -2.9518496,2.51e-4 -5.8000458,1.08849 -8,3.056641 V 20 H 20 V 17.054688 C 17.799757,15.087246 14.951592,13.999714 12,14 Z" ] []
-                ]
-           , g [ transform "translate(760 0) scale(4)" ]
-                [ circle [ cx "12", cy "13.5", r "12", fill (backgroundColor Rima) ] []
-                ,circle [ cx "12", cy "8", r "4", fill (foregroundColor Rima) ] []
-                , Svg.path [ fill (foregroundColor Rima), d "m 12,14 c -2.9518496,2.51e-4 -5.8000458,1.08849 -8,3.056641 V 20 H 20 V 17.054688 C 17.799757,15.087246 14.951592,13.999714 12,14 Z" ] []
-                ]
+        ++ [ santsegipamoSvg { x = 760.0, y = 400.0 } 4.0 Kese
+           , santsegipamoSvg { x = 760.0, y = 0.0 } 4.0 Rima
            ]
+
+
+santsegipamoSvg : CoordinateFloat -> Float -> PieceColor -> Svg msg
+santsegipamoSvg o scale color =
+    g
+        [ transform
+            ("translate(" ++ String.fromFloat o.x ++ " " ++ String.fromFloat o.y ++ ") scale(" ++ String.fromFloat scale ++ ")")
+        ]
+        [ circle [ cx "12", cy "13.5", r "12", fill (backgroundColor color) ] []
+        , circle [ cx "12", cy "8", r "4", fill (foregroundColor color) ] []
+        , Svg.path [ fill (foregroundColor color), d "m 12,14 c -3,0 -5.8,1 -8,3 V 20 H 20 V 17 C 17.8,15 15,14 12,14 Z" ] []
+        ]
 
 
 neitherOccupiedNorWater : List PieceOnBoard -> List Coordinate

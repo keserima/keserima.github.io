@@ -6112,6 +6112,50 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 						}),
 					model.capturedByRima))));
 };
+var $author$project$Main$santsegipamoSvg = F2(
+	function (o, color) {
+		return A2(
+			$elm$svg$Svg$g,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$transform(
+					'translate(' + ($elm$core$String$fromFloat(o.x) + (' ' + ($elm$core$String$fromFloat(o.y) + ') scale(4)'))))
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$cx('12'),
+							$elm$svg$Svg$Attributes$cy('13.5'),
+							$elm$svg$Svg$Attributes$r('12'),
+							$elm$svg$Svg$Attributes$fill(
+							$author$project$Main$backgroundColor(color))
+						]),
+					_List_Nil),
+					A2(
+					$elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$cx('12'),
+							$elm$svg$Svg$Attributes$cy('8'),
+							$elm$svg$Svg$Attributes$r('4'),
+							$elm$svg$Svg$Attributes$fill(
+							$author$project$Main$foregroundColor(color))
+						]),
+					_List_Nil),
+					A2(
+					$elm$svg$Svg$path,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$fill(
+							$author$project$Main$foregroundColor(color)),
+							$elm$svg$Svg$Attributes$d('m 12,14 c -3,0 -5.8,1 -8,3 V 20 H 20 V 17 C 17.8,15 15,14 12,14 Z')
+						]),
+					_List_Nil)
+				]));
+	});
 var $author$project$Main$stationaryPart = function (cardState) {
 	return _Utils_ap(
 		$author$project$Main$boardSvg,
@@ -6120,85 +6164,13 @@ var $author$project$Main$stationaryPart = function (cardState) {
 			_List_fromArray(
 				[
 					A2(
-					$elm$svg$Svg$g,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Attributes$transform('translate(760 400) scale(4)')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$svg$Svg$circle,
-							_List_fromArray(
-								[
-									$elm$svg$Svg$Attributes$cx('12'),
-									$elm$svg$Svg$Attributes$cy('13.5'),
-									$elm$svg$Svg$Attributes$r('12'),
-									$elm$svg$Svg$Attributes$fill(
-									$author$project$Main$backgroundColor($author$project$Main$Kese))
-								]),
-							_List_Nil),
-							A2(
-							$elm$svg$Svg$circle,
-							_List_fromArray(
-								[
-									$elm$svg$Svg$Attributes$cx('12'),
-									$elm$svg$Svg$Attributes$cy('8'),
-									$elm$svg$Svg$Attributes$r('4'),
-									$elm$svg$Svg$Attributes$fill(
-									$author$project$Main$foregroundColor($author$project$Main$Kese))
-								]),
-							_List_Nil),
-							A2(
-							$elm$svg$Svg$path,
-							_List_fromArray(
-								[
-									$elm$svg$Svg$Attributes$fill(
-									$author$project$Main$foregroundColor($author$project$Main$Kese)),
-									$elm$svg$Svg$Attributes$d('m 12,14 c -2.9518496,2.51e-4 -5.8000458,1.08849 -8,3.056641 V 20 H 20 V 17.054688 C 17.799757,15.087246 14.951592,13.999714 12,14 Z')
-								]),
-							_List_Nil)
-						])),
+					$author$project$Main$santsegipamoSvg,
+					{x: 760.0, y: 400.0},
+					$author$project$Main$Kese),
 					A2(
-					$elm$svg$Svg$g,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Attributes$transform('translate(760 0) scale(4)')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$svg$Svg$circle,
-							_List_fromArray(
-								[
-									$elm$svg$Svg$Attributes$cx('12'),
-									$elm$svg$Svg$Attributes$cy('13.5'),
-									$elm$svg$Svg$Attributes$r('12'),
-									$elm$svg$Svg$Attributes$fill(
-									$author$project$Main$backgroundColor($author$project$Main$Rima))
-								]),
-							_List_Nil),
-							A2(
-							$elm$svg$Svg$circle,
-							_List_fromArray(
-								[
-									$elm$svg$Svg$Attributes$cx('12'),
-									$elm$svg$Svg$Attributes$cy('8'),
-									$elm$svg$Svg$Attributes$r('4'),
-									$elm$svg$Svg$Attributes$fill(
-									$author$project$Main$foregroundColor($author$project$Main$Rima))
-								]),
-							_List_Nil),
-							A2(
-							$elm$svg$Svg$path,
-							_List_fromArray(
-								[
-									$elm$svg$Svg$Attributes$fill(
-									$author$project$Main$foregroundColor($author$project$Main$Rima)),
-									$elm$svg$Svg$Attributes$d('m 12,14 c -2.9518496,2.51e-4 -5.8000458,1.08849 -8,3.056641 V 20 H 20 V 17.054688 C 17.799757,15.087246 14.951592,13.999714 12,14 Z')
-								]),
-							_List_Nil)
-						]))
+					$author$project$Main$santsegipamoSvg,
+					{x: 760.0, y: 0.0},
+					$author$project$Main$Rima)
 				])));
 };
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
