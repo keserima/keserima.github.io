@@ -5439,7 +5439,7 @@ var $author$project$Main$update = F2(
 		_v0$3:
 		while (true) {
 			if (_v0.a.$ === 'NothingSelected') {
-				if (_v0.b.$ === 'Focused') {
+				if (_v0.b.$ === 'GiveFocusTo') {
 					var cardState = _v0.a.a;
 					var focus = _v0.b.a;
 					return _Utils_Tuple2(
@@ -5524,8 +5524,8 @@ var $author$project$Main$Cancel = {$: 'Cancel'};
 var $author$project$Main$FirstMove = function (a) {
 	return {$: 'FirstMove', a: a};
 };
-var $author$project$Main$Focused = function (a) {
-	return {$: 'Focused', a: a};
+var $author$project$Main$GiveFocusTo = function (a) {
+	return {$: 'GiveFocusTo', a: a};
 };
 var $author$project$Main$None = {$: 'None'};
 var $author$project$Main$PieceInKeseHand = function (a) {
@@ -5958,7 +5958,7 @@ var $author$project$Main$pieceSvg = F3(
 					'cursor',
 					function () {
 						if (msgToBeSent.$ === 'None') {
-							return 'default';
+							return 'not-allowed';
 						} else {
 							return 'pointer';
 						}
@@ -6273,8 +6273,10 @@ var $author$project$Main$view = function (modl) {
 									return A3(
 										$author$project$Main$pieceSvg,
 										false,
-										$author$project$Main$Focused(
-											$author$project$Main$PieceOnTheBoard(piece.coord)),
+										(_Utils_eq(piece.pieceColor, $author$project$Main$Ship) || _Utils_eq(
+											piece.pieceColor,
+											$author$project$Main$toColor(cardState.whoseTurn))) ? $author$project$Main$GiveFocusTo(
+											$author$project$Main$PieceOnTheBoard(piece.coord)) : $author$project$Main$None,
 										{
 											coord: {x: piece.coord.x, y: piece.coord.y},
 											pieceColor: piece.pieceColor,
@@ -6290,8 +6292,8 @@ var $author$project$Main$view = function (modl) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												false,
-												$author$project$Main$Focused(
-													$author$project$Main$PieceInKeseHand(i)),
+												_Utils_eq(cardState.whoseTurn, $author$project$Main$KeseTurn) ? $author$project$Main$GiveFocusTo(
+													$author$project$Main$PieceInKeseHand(i)) : $author$project$Main$None,
 												{
 													coord: {x: i + 1.0, y: 5.0},
 													pieceColor: $author$project$Main$Kese,
@@ -6306,8 +6308,8 @@ var $author$project$Main$view = function (modl) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												false,
-												$author$project$Main$Focused(
-													$author$project$Main$PieceInRimaHand(i)),
+												_Utils_eq(cardState.whoseTurn, $author$project$Main$RimaTurn) ? $author$project$Main$GiveFocusTo(
+													$author$project$Main$PieceInRimaHand(i)) : $author$project$Main$None,
 												{
 													coord: {x: 3.0 - i, y: -1.0},
 													pieceColor: $author$project$Main$Rima,

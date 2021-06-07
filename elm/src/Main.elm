@@ -76,7 +76,7 @@ type alias Flags =
 type Msg
     = None
     | Cancel
-    | Focused Focus
+    | GiveFocusTo Focus
     | FirstMove { to : Coordinate }
 
 
@@ -104,7 +104,7 @@ subscriptions _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg modl =
     case ( modl, msg ) of
-        ( NothingSelected cardState, Focused focus ) ->
+        ( NothingSelected cardState, GiveFocusTo focus ) ->
             ( MoverIsSelected focus cardState, Cmd.none )
 
         ( MoverIsSelected _ cardState, Cancel ) ->
@@ -283,7 +283,7 @@ pieceSvg focused msgToBeSent p =
         , Html.Attributes.style "cursor"
             (case msgToBeSent of
                 None ->
-                    "default"
+                    "not-allowed"
 
                 _ ->
                     "pointer"
@@ -377,7 +377,7 @@ displayCapturedCardsAndTwoDecks model =
             model.capturedByRima
 
 
-stationaryPart :StateOfCards -> List (Svg Msg)
+stationaryPart : StateOfCards -> List (Svg Msg)
 stationaryPart cardState =
     defs []
         [ Svg.filter [ Svg.Attributes.style "color-interpolation-filters:sRGB", id "blur" ]
@@ -524,14 +524,39 @@ view modl =
                         ++ List.map
                             (\piece ->
                                 { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                    |> pieceSvg False (Focused (PieceOnTheBoard piece.coord))
+                                    |> pieceSvg False
+                                        {- You can move the piece if it is a ship or if it belongs to you. -}
+                                        (if piece.pieceColor == Ship || piece.pieceColor == toColor cardState.whoseTurn then
+                                            GiveFocusTo (PieceOnTheBoard piece.coord)
+
+                                         else
+                                            None
+                                        )
                             )
                             cardState.board
                         ++ List.indexedMap
-                            (\i prof -> pieceSvg False (Focused (PieceInKeseHand i)) { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese })
+                            (\i prof ->
+                                pieceSvg False
+                                    (if cardState.whoseTurn == KeseTurn then
+                                        GiveFocusTo (PieceInKeseHand i)
+
+                                     else
+                                        None
+                                    )
+                                    { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                            )
                             cardState.keseHand
                         ++ List.indexedMap
-                            (\i prof -> pieceSvg False (Focused (PieceInRimaHand i)) { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima })
+                            (\i prof ->
+                                pieceSvg False
+                                    (if cardState.whoseTurn == RimaTurn then
+                                        GiveFocusTo (PieceInRimaHand i)
+
+                                     else
+                                        None
+                                    )
+                                    { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                            )
                             cardState.rimaHand
                     )
                 ]
