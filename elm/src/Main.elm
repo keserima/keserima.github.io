@@ -326,8 +326,8 @@ displayCapturedCardsAndTwoDecks model =
     List.indexedMap
         (\i _ ->
             rect
-                [ x (String.fromInt (532 + 10 * i))
-                , y (String.fromInt (12 + 3 * i))
+                [ x "535.7"
+                , y (String.fromInt (-10 + 10 * i))
                 , width "80"
                 , height "80"
                 , fill (backgroundColor Rima)
@@ -340,8 +340,8 @@ displayCapturedCardsAndTwoDecks model =
         ++ List.indexedMap
             (\i _ ->
                 rect
-                    [ x (String.fromInt (532 + 10 * i))
-                    , y (String.fromInt (412 - 3 * i))
+                    [ x "535.7"
+                    , y (String.fromInt (410 - 10 * i))
                     , width "80"
                     , height "80"
                     , fill (backgroundColor Kese)
@@ -361,23 +361,25 @@ displayCapturedCardsAndTwoDecks model =
 
 stationaryPart : StateOfCards -> List (Svg Msg)
 stationaryPart cardState =
-    boardSvg
+    defs []
+        [ Svg.filter [ Svg.Attributes.style "color-interpolation-filters:sRGB", id "blur" ]
+            [ feGaussianBlur [ stdDeviation "1.5 1.5", result "blur" ] []
+            ]
+        ]
+        :: boardSvg
         ++ displayCapturedCardsAndTwoDecks cardState
-        ++ [ santsegipamoSvg { x = 760.0, y = 400.0 } 4.0 Kese
-           , santsegipamoSvg { x = 760.0, y = 0.0 } 4.0 Rima
+        ++ [ g [ transform "translate(661,-17.5) scale(5.5)" ]
+                [ circle [ cx "12", cy "13.5", r "12", fill "#c8beb7", Svg.Attributes.style "fill:#483e37;fill-opacity:1;filter:url(#blur)" ] []
+                , circle [ cx "12", cy "13.5", r "12", fill "#c8beb7" ] []
+                , circle [ cx "12", cy "8", r "4", fill "#483e37" ] []
+                , Svg.path [ fill "#483e37", d "m 12,14 c -3,0 -5.8,1 -8,3 v 3 h 16 v -3 c -2.2,-2 -5,-3 -8,-3 z" ] []
+                ]
+           , g [ transform "translate(679,388) scale(4)" ]
+                [ circle [ cx "12", cy "13.5", r "12", fill "#483e37" ] []
+                , circle [ cx "12", cy "8", r "4", fill "#c8beb7" ] []
+                , Svg.path [ fill "#c8beb7", d "m 12,14 c -3,0 -5.8,1 -8,3 v 3 h 16 v -3 c -2.2,-2 -5,-3 -8,-3 z" ] []
+                ]
            ]
-
-
-santsegipamoSvg : CoordinateFloat -> Float -> PieceColor -> Svg msg
-santsegipamoSvg o scale color =
-    g
-        [ transform
-            ("translate(" ++ String.fromFloat o.x ++ " " ++ String.fromFloat o.y ++ ") scale(" ++ String.fromFloat scale ++ ")")
-        ]
-        [ circle [ cx "12", cy "13.5", r "12", fill (backgroundColor color) ] []
-        , circle [ cx "12", cy "8", r "4", fill (foregroundColor color) ] []
-        , Svg.path [ fill (foregroundColor color), d "m 12,14 c -3,0 -5.8,1 -8,3 V 20 H 20 V 17 C 17.8,15 15,14 12,14 Z" ] []
-        ]
 
 
 neitherOccupiedNorWater : List PieceOnBoard -> List Coordinate
@@ -553,7 +555,7 @@ view modl =
             in
             Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
                 [ svg
-                    [ viewBox "0 -200 800 900", width "600" ]
+                    [ viewBox "0 -200 900 900", width "600" ]
                     (stationaryPart cardState ++ dynamicPart)
                 , Html.button [ onClick Cancel ] [ text "キャンセル" ]
                 ]
