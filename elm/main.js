@@ -5689,8 +5689,8 @@ var $author$project$Main$getCandidates = F3(
 				},
 				robbedBoard));
 		var raw_candidates = function () {
-			var _v0 = piece.prof;
-			switch (_v0.$) {
+			var _v1 = piece.prof;
+			switch (_v1.$) {
 				case 'Circle':
 					return _List_fromArray(
 						[piece.coord]);
@@ -5740,34 +5740,46 @@ var $author$project$Main$getCandidates = F3(
 							]));
 			}
 		}();
-		return hasCircleInHand ? _Utils_ap(
-			A2(
-				$elm$core$List$filter,
-				function (coord) {
-					return !$author$project$Main$isWater(coord);
-				},
-				raw_candidates),
-			A2(
-				$elm$core$List$filter,
-				function (coord) {
-					return A2($elm$core$List$member, coord, ship_positions);
-				},
-				raw_candidates)) : _Utils_ap(
-			A2(
-				$elm$core$List$filter,
-				function (coord) {
-					return A2(
-						$elm$core$List$member,
-						coord,
-						$author$project$Main$neitherOccupiedNorWater(robbedBoard));
-				},
-				raw_candidates),
-			A2(
-				$elm$core$List$filter,
-				function (coord) {
-					return A2($elm$core$List$member, coord, ship_positions);
-				},
-				raw_candidates));
+		var _v0 = piece.pieceColor;
+		if (_v0.$ === 'Ship') {
+			return hasCircleInHand ? _Utils_ap(
+				A2($elm$core$List$filter, $author$project$Main$isWater, raw_candidates),
+				A2(
+					$elm$core$List$filter,
+					function (coord) {
+						return A2($elm$core$List$member, coord, ship_positions);
+					},
+					raw_candidates)) : A2($elm$core$List$filter, $author$project$Main$isWater, raw_candidates);
+		} else {
+			return hasCircleInHand ? _Utils_ap(
+				A2(
+					$elm$core$List$filter,
+					function (coord) {
+						return !$author$project$Main$isWater(coord);
+					},
+					raw_candidates),
+				A2(
+					$elm$core$List$filter,
+					function (coord) {
+						return A2($elm$core$List$member, coord, ship_positions);
+					},
+					raw_candidates)) : _Utils_ap(
+				A2(
+					$elm$core$List$filter,
+					function (coord) {
+						return A2(
+							$elm$core$List$member,
+							coord,
+							$author$project$Main$neitherOccupiedNorWater(robbedBoard));
+					},
+					raw_candidates),
+				A2(
+					$elm$core$List$filter,
+					function (coord) {
+						return A2($elm$core$List$member, coord, ship_positions);
+					},
+					raw_candidates));
+		}
 	});
 var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
 var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');

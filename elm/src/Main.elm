@@ -419,15 +419,29 @@ getCandidates hasCircleInHand piece robbedBoard =
                     List.concatMap (\delta -> addDelta delta piece.coord)
                         [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ), ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ), ( 0, 0 ) ]
     in
-    if hasCircleInHand then
-        {- Allowed location: non-water OR ships -}
-        List.filter (\coord -> not (isWater coord)) raw_candidates
-            ++ List.filter (\coord -> List.member coord ship_positions) raw_candidates
+    case piece.pieceColor of
+        {- If ship, cannot leave water -}
+        Ship ->
+            if hasCircleInHand then
+                {- Allowed location: water OR ships -}
+                List.filter isWater raw_candidates
+                    ++ List.filter (\coord -> List.member coord ship_positions) raw_candidates
 
-    else
-        {- Allowed location: (non-water AND unoccupied) OR ships -}
-        List.filter (\coord -> List.member coord (neitherOccupiedNorWater robbedBoard)) raw_candidates
-            ++ List.filter (\coord -> List.member coord ship_positions) raw_candidates
+            else
+                {- Allowed location: water -}
+                List.filter isWater raw_candidates
+
+        {- If not ship, then restriction on water -}
+        _ ->
+            if hasCircleInHand then
+                {- Allowed location: non-water OR ships -}
+                List.filter (\coord -> not (isWater coord)) raw_candidates
+                    ++ List.filter (\coord -> List.member coord ship_positions) raw_candidates
+
+            else
+                {- Allowed location: (non-water AND unoccupied) OR ships -}
+                List.filter (\coord -> List.member coord (neitherOccupiedNorWater robbedBoard)) raw_candidates
+                    ++ List.filter (\coord -> List.member coord ship_positions) raw_candidates
 
 
 view : Model -> Html Msg
