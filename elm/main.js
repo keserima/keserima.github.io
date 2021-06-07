@@ -6009,6 +6009,8 @@ var $author$project$Main$robFocusedPieceFromBoard = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
+var $author$project$Main$KeseTurn = {$: 'KeseTurn'};
+var $author$project$Main$RimaTurn = {$: 'RimaTurn'};
 var $author$project$Main$boardBackgroundColor = function (coord) {
 	return $author$project$Main$isWater(coord) ? 'rgb(94, 147, 184)' : '#ccc';
 };
@@ -6114,9 +6116,88 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 var $elm$svg$Svg$feGaussianBlur = $elm$svg$Svg$trustedNode('feGaussianBlur');
 var $elm$svg$Svg$filter = $elm$svg$Svg$trustedNode('filter');
 var $elm$svg$Svg$Attributes$id = _VirtualDom_attribute('id');
+var $elm$svg$Svg$Attributes$style = _VirtualDom_attribute('style');
+var $author$project$Main$toColor = function (w) {
+	if (w.$ === 'KeseTurn') {
+		return $author$project$Main$Kese;
+	} else {
+		return $author$project$Main$Rima;
+	}
+};
+var $author$project$Main$playerSvg = F2(
+	function (focused, turn) {
+		var translateY = function () {
+			if (turn.$ === 'KeseTurn') {
+				return 442.0;
+			} else {
+				return 56.75;
+			}
+		}();
+		var scale = focused ? 5.5 : 4.0;
+		var transf = 'translate(727,' + ($elm$core$String$fromFloat(translateY) + (') scale(' + ($elm$core$String$fromFloat(scale) + ')')));
+		var color = $author$project$Main$toColor(turn);
+		var person = _List_fromArray(
+			[
+				A2(
+				$elm$svg$Svg$circle,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$cx('0'),
+						$elm$svg$Svg$Attributes$cy('0'),
+						$elm$svg$Svg$Attributes$r('12'),
+						$elm$svg$Svg$Attributes$fill(
+						$author$project$Main$backgroundColor(color))
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$circle,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$cx('0'),
+						$elm$svg$Svg$Attributes$cy('-5.5'),
+						$elm$svg$Svg$Attributes$r('4'),
+						$elm$svg$Svg$Attributes$fill(
+						$author$project$Main$foregroundColor(color))
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$path,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$fill(
+						$author$project$Main$foregroundColor(color)),
+						$elm$svg$Svg$Attributes$d('m 0,0.5 c -3,0 -5.8,1 -8,3 v 3 h 16 v -3 c -2.2,-2 -5,-3 -8,-3 z')
+					]),
+				_List_Nil)
+			]);
+		var blur = A2(
+			$elm$svg$Svg$circle,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$cx('0'),
+					$elm$svg$Svg$Attributes$cy('0'),
+					$elm$svg$Svg$Attributes$r('12'),
+					$elm$svg$Svg$Attributes$fill(
+					$author$project$Main$backgroundColor(color)),
+					$elm$svg$Svg$Attributes$style('fill:#483e37;fill-opacity:1;filter:url(#blur)')
+				]),
+			_List_Nil);
+		return focused ? A2(
+			$elm$svg$Svg$g,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$transform(transf)
+				]),
+			A2($elm$core$List$cons, blur, person)) : A2(
+			$elm$svg$Svg$g,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$transform(transf)
+				]),
+			person);
+	});
 var $elm$svg$Svg$Attributes$result = _VirtualDom_attribute('result');
 var $elm$svg$Svg$Attributes$stdDeviation = _VirtualDom_attribute('stdDeviation');
-var $elm$svg$Svg$Attributes$style = _VirtualDom_attribute('style');
 var $author$project$Main$stationaryPart = function (cardState) {
 	return A2(
 		$elm$core$List$cons,
@@ -6150,91 +6231,8 @@ var $author$project$Main$stationaryPart = function (cardState) {
 				$author$project$Main$displayCapturedCardsAndTwoDecks(cardState),
 				_List_fromArray(
 					[
-						A2(
-						$elm$svg$Svg$g,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Attributes$transform('translate(661,-17.5) scale(5.5)')
-							]),
-						_List_fromArray(
-							[
-								A2(
-								$elm$svg$Svg$circle,
-								_List_fromArray(
-									[
-										$elm$svg$Svg$Attributes$cx('12'),
-										$elm$svg$Svg$Attributes$cy('13.5'),
-										$elm$svg$Svg$Attributes$r('12'),
-										$elm$svg$Svg$Attributes$fill('#c8beb7'),
-										$elm$svg$Svg$Attributes$style('fill:#483e37;fill-opacity:1;filter:url(#blur)')
-									]),
-								_List_Nil),
-								A2(
-								$elm$svg$Svg$circle,
-								_List_fromArray(
-									[
-										$elm$svg$Svg$Attributes$cx('12'),
-										$elm$svg$Svg$Attributes$cy('13.5'),
-										$elm$svg$Svg$Attributes$r('12'),
-										$elm$svg$Svg$Attributes$fill('#c8beb7')
-									]),
-								_List_Nil),
-								A2(
-								$elm$svg$Svg$circle,
-								_List_fromArray(
-									[
-										$elm$svg$Svg$Attributes$cx('12'),
-										$elm$svg$Svg$Attributes$cy('8'),
-										$elm$svg$Svg$Attributes$r('4'),
-										$elm$svg$Svg$Attributes$fill('#483e37')
-									]),
-								_List_Nil),
-								A2(
-								$elm$svg$Svg$path,
-								_List_fromArray(
-									[
-										$elm$svg$Svg$Attributes$fill('#483e37'),
-										$elm$svg$Svg$Attributes$d('m 12,14 c -3,0 -5.8,1 -8,3 v 3 h 16 v -3 c -2.2,-2 -5,-3 -8,-3 z')
-									]),
-								_List_Nil)
-							])),
-						A2(
-						$elm$svg$Svg$g,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Attributes$transform('translate(679,388) scale(4)')
-							]),
-						_List_fromArray(
-							[
-								A2(
-								$elm$svg$Svg$circle,
-								_List_fromArray(
-									[
-										$elm$svg$Svg$Attributes$cx('12'),
-										$elm$svg$Svg$Attributes$cy('13.5'),
-										$elm$svg$Svg$Attributes$r('12'),
-										$elm$svg$Svg$Attributes$fill('#483e37')
-									]),
-								_List_Nil),
-								A2(
-								$elm$svg$Svg$circle,
-								_List_fromArray(
-									[
-										$elm$svg$Svg$Attributes$cx('12'),
-										$elm$svg$Svg$Attributes$cy('8'),
-										$elm$svg$Svg$Attributes$r('4'),
-										$elm$svg$Svg$Attributes$fill('#c8beb7')
-									]),
-								_List_Nil),
-								A2(
-								$elm$svg$Svg$path,
-								_List_fromArray(
-									[
-										$elm$svg$Svg$Attributes$fill('#c8beb7'),
-										$elm$svg$Svg$Attributes$d('m 12,14 c -3,0 -5.8,1 -8,3 v 3 h 16 v -3 c -2.2,-2 -5,-3 -8,-3 z')
-									]),
-								_List_Nil)
-							]))
+						A2($author$project$Main$playerSvg, true, $author$project$Main$RimaTurn),
+						A2($author$project$Main$playerSvg, false, $author$project$Main$KeseTurn)
 					]))));
 };
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');

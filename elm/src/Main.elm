@@ -29,6 +29,21 @@ type Profession
     | All
 
 
+type WhoseTurn
+    = KeseTurn
+    | RimaTurn
+
+
+toColor : WhoseTurn -> PieceColor
+toColor w =
+    case w of
+        KeseTurn ->
+            Kese
+
+        RimaTurn ->
+            Rima
+
+
 type alias PieceOnBoard =
     { prof : Profession, pieceColor : PieceColor, coord : Coordinate }
 
@@ -368,18 +383,49 @@ stationaryPart cardState =
         ]
         :: boardSvg
         ++ displayCapturedCardsAndTwoDecks cardState
-        ++ [ g [ transform "translate(661,-17.5) scale(5.5)" ]
-                [ circle [ cx "12", cy "13.5", r "12", fill "#c8beb7", Svg.Attributes.style "fill:#483e37;fill-opacity:1;filter:url(#blur)" ] []
-                , circle [ cx "12", cy "13.5", r "12", fill "#c8beb7" ] []
-                , circle [ cx "12", cy "8", r "4", fill "#483e37" ] []
-                , Svg.path [ fill "#483e37", d "m 12,14 c -3,0 -5.8,1 -8,3 v 3 h 16 v -3 c -2.2,-2 -5,-3 -8,-3 z" ] []
-                ]
-           , g [ transform "translate(679,388) scale(4)" ]
-                [ circle [ cx "12", cy "13.5", r "12", fill "#483e37" ] []
-                , circle [ cx "12", cy "8", r "4", fill "#c8beb7" ] []
-                , Svg.path [ fill "#c8beb7", d "m 12,14 c -3,0 -5.8,1 -8,3 v 3 h 16 v -3 c -2.2,-2 -5,-3 -8,-3 z" ] []
-                ]
+        ++ [ playerSvg True RimaTurn
+           , playerSvg False KeseTurn
            ]
+
+
+playerSvg : Bool -> WhoseTurn -> Svg msg
+playerSvg focused turn =
+    let
+        translateY =
+            case turn of
+                KeseTurn ->
+                    442.0
+
+                RimaTurn ->
+                    56.75
+
+        color =
+            toColor turn
+
+        scale =
+            if focused then
+                5.5
+
+            else
+                4.0
+
+        transf =
+            "translate(727," ++ String.fromFloat translateY ++ ") scale(" ++ String.fromFloat scale ++ ")"
+
+        person =
+            [ circle [ cx "0", cy "0", r "12", fill (backgroundColor color) ] []
+            , circle [ cx "0", cy "-5.5", r "4", fill (foregroundColor color) ] []
+            , Svg.path [ fill (foregroundColor color), d "m 0,0.5 c -3,0 -5.8,1 -8,3 v 3 h 16 v -3 c -2.2,-2 -5,-3 -8,-3 z" ] []
+            ]
+
+        blur =
+            circle [ cx "0", cy "0", r "12", fill (backgroundColor color), Svg.Attributes.style "fill:#483e37;fill-opacity:1;filter:url(#blur)" ] []
+    in
+    if focused then
+        g [ transform transf ] (blur :: person)
+
+    else
+        g [ transform transf ] person
 
 
 neitherOccupiedNorWater : List PieceOnBoard -> List Coordinate
