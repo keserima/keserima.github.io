@@ -5286,6 +5286,9 @@ var $author$project$Main$MoverIsSelected = F2(
 	function (a, b) {
 		return {$: 'MoverIsSelected', a: a, b: b};
 	});
+var $author$project$Main$NowWaitingForAdditionalSacrifice = function (a) {
+	return {$: 'NowWaitingForAdditionalSacrifice', a: a};
+};
 var $elm$core$List$drop = F2(
 	function (n, list) {
 		drop:
@@ -5305,6 +5308,41 @@ var $elm$core$List$drop = F2(
 					continue drop;
 				}
 			}
+		}
+	});
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $author$project$Main$robFocusedPieceFromBoard = F2(
+	function (coord, board) {
+		var _v0 = A2(
+			$elm$core$List$filter,
+			function (p) {
+				return _Utils_eq(p.coord, coord);
+			},
+			board);
+		if (_v0.b && (!_v0.b.b)) {
+			var piece = _v0.a;
+			return $elm$core$Maybe$Just(
+				_Utils_Tuple2(
+					piece,
+					A2(
+						$elm$core$List$filter,
+						function (p) {
+							return !_Utils_eq(p.coord, coord);
+						},
+						board)));
+		} else {
+			return $elm$core$Maybe$Nothing;
 		}
 	});
 var $elm$core$List$takeReverse = F3(
@@ -5433,92 +5471,109 @@ var $elm$core$List$take = F2(
 	function (n, list) {
 		return A3($elm$core$List$takeFast, 0, n, list);
 	});
-var $author$project$Main$update = F2(
+var $author$project$Main$update_ = F2(
 	function (msg, modl) {
 		var _v0 = _Utils_Tuple2(modl, msg);
 		_v0$3:
 		while (true) {
-			if (_v0.a.$ === 'NothingSelected') {
-				if (_v0.b.$ === 'GiveFocusTo') {
-					var cardState = _v0.a.a;
-					var focus = _v0.b.a;
-					return _Utils_Tuple2(
-						A2($author$project$Main$MoverIsSelected, focus, cardState),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					break _v0$3;
-				}
-			} else {
-				switch (_v0.b.$) {
-					case 'Cancel':
-						var _v1 = _v0.a;
-						var cardState = _v1.b;
-						var _v2 = _v0.b;
-						return _Utils_Tuple2(
-							$author$project$Main$NothingSelected(cardState),
-							$elm$core$Platform$Cmd$none);
-					case 'FirstMove':
-						var _v3 = _v0.a;
-						var from = _v3.a;
-						var cardState = _v3.b;
-						var to = _v0.b.a.to;
-						switch (from.$) {
-							case 'PieceOnTheBoard':
-								var coord = from.a;
-								return _Utils_Tuple2(modl, $elm$core$Platform$Cmd$none);
-							case 'PieceInKeseHand':
-								var ind = from.a;
-								var newKeseHand = _Utils_ap(
-									A2($elm$core$List$take, ind, cardState.keseHand),
-									A2($elm$core$List$drop, ind + 1, cardState.keseHand));
-								var newBoard = function () {
-									var _v5 = A2($elm$core$List$drop, ind, cardState.keseHand);
-									if (_v5.b) {
-										var profession = _v5.a;
-										return A2(
-											$elm$core$List$cons,
-											{coord: to, pieceColor: $author$project$Main$Kese, prof: profession},
-											cardState.board);
-									} else {
-										return cardState.board;
-									}
-								}();
-								return _Utils_Tuple2(
-									$author$project$Main$NothingSelected(
-										_Utils_update(
-											cardState,
-											{board: newBoard, keseHand: newKeseHand, whoseTurn: $author$project$Main$RimaTurn})),
-									$elm$core$Platform$Cmd$none);
-							default:
-								var ind = from.a;
-								var newRimaHand = _Utils_ap(
-									A2($elm$core$List$take, ind, cardState.rimaHand),
-									A2($elm$core$List$drop, ind + 1, cardState.rimaHand));
-								var newBoard = function () {
-									var _v6 = A2($elm$core$List$drop, ind, cardState.rimaHand);
-									if (_v6.b) {
-										var profession = _v6.a;
-										return A2(
-											$elm$core$List$cons,
-											{coord: to, pieceColor: $author$project$Main$Rima, prof: profession},
-											cardState.board);
-									} else {
-										return cardState.board;
-									}
-								}();
-								return _Utils_Tuple2(
-									$author$project$Main$NothingSelected(
-										_Utils_update(
-											cardState,
-											{board: newBoard, rimaHand: newRimaHand, whoseTurn: $author$project$Main$KeseTurn})),
-									$elm$core$Platform$Cmd$none);
-						}
-					default:
+			switch (_v0.a.$) {
+				case 'NothingSelected':
+					if (_v0.b.$ === 'GiveFocusTo') {
+						var cardState = _v0.a.a;
+						var focus = _v0.b.a;
+						return A2($author$project$Main$MoverIsSelected, focus, cardState);
+					} else {
 						break _v0$3;
-				}
+					}
+				case 'MoverIsSelected':
+					switch (_v0.b.$) {
+						case 'Cancel':
+							var _v1 = _v0.a;
+							var cardState = _v1.b;
+							var _v2 = _v0.b;
+							return $author$project$Main$NothingSelected(cardState);
+						case 'FirstMove':
+							var _v3 = _v0.a;
+							var from = _v3.a;
+							var cardState = _v3.b;
+							var to = _v0.b.a.to;
+							switch (from.$) {
+								case 'PieceOnTheBoard':
+									var coord = from.a;
+									var _v5 = A2($author$project$Main$robFocusedPieceFromBoard, coord, cardState.board);
+									if (_v5.$ === 'Nothing') {
+										return modl;
+									} else {
+										var _v6 = _v5.a;
+										var piece = _v6.a;
+										var robbedBoard = _v6.b;
+										return $author$project$Main$NowWaitingForAdditionalSacrifice(
+											{
+												mover: _Utils_update(
+													piece,
+													{coord: to}),
+												remaining: _Utils_update(
+													cardState,
+													{board: robbedBoard})
+											});
+									}
+								case 'PieceInKeseHand':
+									var ind = from.a;
+									var newKeseHand = _Utils_ap(
+										A2($elm$core$List$take, ind, cardState.keseHand),
+										A2($elm$core$List$drop, ind + 1, cardState.keseHand));
+									var newBoard = function () {
+										var _v7 = A2($elm$core$List$drop, ind, cardState.keseHand);
+										if (_v7.b) {
+											var profession = _v7.a;
+											return A2(
+												$elm$core$List$cons,
+												{coord: to, pieceColor: $author$project$Main$Kese, prof: profession},
+												cardState.board);
+										} else {
+											return cardState.board;
+										}
+									}();
+									return $author$project$Main$NothingSelected(
+										_Utils_update(
+											cardState,
+											{board: newBoard, keseHand: newKeseHand, whoseTurn: $author$project$Main$RimaTurn}));
+								default:
+									var ind = from.a;
+									var newRimaHand = _Utils_ap(
+										A2($elm$core$List$take, ind, cardState.rimaHand),
+										A2($elm$core$List$drop, ind + 1, cardState.rimaHand));
+									var newBoard = function () {
+										var _v8 = A2($elm$core$List$drop, ind, cardState.rimaHand);
+										if (_v8.b) {
+											var profession = _v8.a;
+											return A2(
+												$elm$core$List$cons,
+												{coord: to, pieceColor: $author$project$Main$Rima, prof: profession},
+												cardState.board);
+										} else {
+											return cardState.board;
+										}
+									}();
+									return $author$project$Main$NothingSelected(
+										_Utils_update(
+											cardState,
+											{board: newBoard, rimaHand: newRimaHand, whoseTurn: $author$project$Main$KeseTurn}));
+							}
+						default:
+							break _v0$3;
+					}
+				default:
+					break _v0$3;
 			}
 		}
-		return _Utils_Tuple2(modl, $elm$core$Platform$Cmd$none);
+		return modl;
+	});
+var $author$project$Main$update = F2(
+	function (msg, modl) {
+		return _Utils_Tuple2(
+			A2($author$project$Main$update_, msg, modl),
+			$elm$core$Platform$Cmd$none);
 	});
 var $author$project$Main$Cancel = {$: 'Cancel'};
 var $author$project$Main$FirstMove = function (a) {
@@ -5537,6 +5592,28 @@ var $author$project$Main$PieceInRimaHand = function (a) {
 var $author$project$Main$PieceOnTheBoard = function (a) {
 	return {$: 'PieceOnTheBoard', a: a};
 };
+var $author$project$Main$TurnEnd = {$: 'TurnEnd'};
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $author$project$Main$addDelta = F2(
@@ -5565,17 +5642,6 @@ var $elm$core$List$concatMap = F2(
 	function (f, list) {
 		return $elm$core$List$concat(
 			A2($elm$core$List$map, f, list));
-	});
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
 	});
 var $author$project$Main$isWater = function (coord) {
 	var _v0 = _Utils_Tuple2(coord.x, coord.y);
@@ -5611,27 +5677,6 @@ var $author$project$Main$isWater = function (coord) {
 	}
 	return false;
 };
-var $elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
-		}
-	});
 var $elm$core$List$member = F2(
 	function (x, xs) {
 		return A2(
@@ -5989,30 +6034,36 @@ var $author$project$Main$pieceSvg = F3(
 					p.prof,
 					$author$project$Main$foregroundColor(p.pieceColor))));
 	});
-var $elm$core$Basics$neq = _Utils_notEqual;
-var $author$project$Main$robFocusedPieceFromBoard = F2(
-	function (coord, board) {
-		var _v0 = A2(
-			$elm$core$List$filter,
-			function (p) {
-				return _Utils_eq(p.coord, coord);
-			},
-			board);
-		if (_v0.b && (!_v0.b.b)) {
-			var piece = _v0.a;
-			return $elm$core$Maybe$Just(
-				_Utils_Tuple2(
-					piece,
-					A2(
-						$elm$core$List$filter,
-						function (p) {
-							return !_Utils_eq(p.coord, coord);
-						},
-						board)));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
+var $author$project$Main$pieceWaitingForAdditionalCommandSvg = function (p) {
+	return A2(
+		$elm$svg$Svg$g,
+		_List_fromArray(
+			[
+				$elm$svg$Svg$Attributes$transform(
+				'translate(' + ($elm$core$String$fromFloat((p.coord.x * 100.0) - 5.0) + (' ' + ($elm$core$String$fromFloat((p.coord.y * 100.0) + 5.0) + ')')))),
+				A2($elm$html$Html$Attributes$style, 'cursor', 'not-allowed')
+			]),
+		A2(
+			$elm$core$List$cons,
+			A2(
+				$elm$svg$Svg$rect,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$x('12'),
+						$elm$svg$Svg$Attributes$y('12'),
+						$elm$svg$Svg$Attributes$width('80'),
+						$elm$svg$Svg$Attributes$height('80'),
+						$elm$svg$Svg$Attributes$fill(
+						$author$project$Main$backgroundColor(p.pieceColor)),
+						$elm$svg$Svg$Attributes$stroke('#ffff00'),
+						$elm$svg$Svg$Attributes$strokeWidth('2')
+					]),
+				_List_Nil),
+			A2(
+				$author$project$Main$glyph,
+				p.prof,
+				$author$project$Main$foregroundColor(p.pieceColor))));
+};
 var $author$project$Main$boardBackgroundColor = function (coord) {
 	return $author$project$Main$isWater(coord) ? 'rgb(94, 147, 184)' : '#ccc';
 };
@@ -6248,36 +6299,113 @@ var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
 var $author$project$Main$view = function (modl) {
-	if (modl.$ === 'NothingSelected') {
-		var cardState = modl.a;
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$svg$Svg$svg,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
-							$elm$svg$Svg$Attributes$width('600')
-						]),
-					_Utils_ap(
-						$author$project$Main$stationaryPart(cardState),
+	switch (modl.$) {
+		case 'NothingSelected':
+			var cardState = modl.a;
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$svg$Svg$svg,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
+								$elm$svg$Svg$Attributes$width('600')
+							]),
 						_Utils_ap(
+							$author$project$Main$stationaryPart(cardState),
+							_Utils_ap(
+								A2(
+									$elm$core$List$map,
+									function (piece) {
+										return A3(
+											$author$project$Main$pieceSvg,
+											false,
+											(_Utils_eq(piece.pieceColor, $author$project$Main$Ship) || _Utils_eq(
+												piece.pieceColor,
+												$author$project$Main$toColor(cardState.whoseTurn))) ? $author$project$Main$GiveFocusTo(
+												$author$project$Main$PieceOnTheBoard(piece.coord)) : $author$project$Main$None,
+											{
+												coord: {x: piece.coord.x, y: piece.coord.y},
+												pieceColor: piece.pieceColor,
+												prof: piece.prof
+											});
+									},
+									cardState.board),
+								_Utils_ap(
+									A2(
+										$elm$core$List$indexedMap,
+										F2(
+											function (i, prof) {
+												return A3(
+													$author$project$Main$pieceSvg,
+													false,
+													_Utils_eq(cardState.whoseTurn, $author$project$Main$KeseTurn) ? $author$project$Main$GiveFocusTo(
+														$author$project$Main$PieceInKeseHand(i)) : $author$project$Main$None,
+													{
+														coord: {x: i + 1.0, y: 5.0},
+														pieceColor: $author$project$Main$Kese,
+														prof: prof
+													});
+											}),
+										cardState.keseHand),
+									A2(
+										$elm$core$List$indexedMap,
+										F2(
+											function (i, prof) {
+												return A3(
+													$author$project$Main$pieceSvg,
+													false,
+													_Utils_eq(cardState.whoseTurn, $author$project$Main$RimaTurn) ? $author$project$Main$GiveFocusTo(
+														$author$project$Main$PieceInRimaHand(i)) : $author$project$Main$None,
+													{
+														coord: {x: 3.0 - i, y: -1.0},
+														pieceColor: $author$project$Main$Rima,
+														prof: prof
+													});
+											}),
+										cardState.rimaHand)))))
+					]));
+		case 'MoverIsSelected':
+			var focus = modl.a;
+			var cardState = modl.b;
+			var dynamicPart = function () {
+				if (focus.$ === 'PieceOnTheBoard') {
+					var focus_coord = focus.a;
+					var _v2 = A2($author$project$Main$robFocusedPieceFromBoard, focus_coord, cardState.board);
+					if (_v2.$ === 'Nothing') {
+						return _List_Nil;
+					} else {
+						var _v3 = _v2.a;
+						var focused_piece = _v3.a;
+						var robbedBoard = _v3.b;
+						var hasCircleInHand = A2(
+							$elm$core$List$any,
+							function (c) {
+								return _Utils_eq(c, $author$project$Main$Circle);
+							},
+							function () {
+								var _v4 = cardState.whoseTurn;
+								if (_v4.$ === 'KeseTurn') {
+									return cardState.keseHand;
+								} else {
+									return cardState.rimaHand;
+								}
+							}());
+						var candidates = A3($author$project$Main$getCandidates, hasCircleInHand, focused_piece, robbedBoard);
+						return _Utils_ap(
 							A2(
 								$elm$core$List$map,
 								function (piece) {
 									return A3(
 										$author$project$Main$pieceSvg,
-										false,
-										(_Utils_eq(piece.pieceColor, $author$project$Main$Ship) || _Utils_eq(
-											piece.pieceColor,
-											$author$project$Main$toColor(cardState.whoseTurn))) ? $author$project$Main$GiveFocusTo(
-											$author$project$Main$PieceOnTheBoard(piece.coord)) : $author$project$Main$None,
+										_Utils_eq(piece.coord, focus_coord),
+										$author$project$Main$None,
 										{
 											coord: {x: piece.coord.x, y: piece.coord.y},
 											pieceColor: piece.pieceColor,
@@ -6287,59 +6415,55 @@ var $author$project$Main$view = function (modl) {
 								cardState.board),
 							_Utils_ap(
 								A2(
-									$elm$core$List$indexedMap,
-									F2(
-										function (i, prof) {
-											return A3(
-												$author$project$Main$pieceSvg,
-												false,
-												_Utils_eq(cardState.whoseTurn, $author$project$Main$KeseTurn) ? $author$project$Main$GiveFocusTo(
-													$author$project$Main$PieceInKeseHand(i)) : $author$project$Main$None,
-												{
-													coord: {x: i + 1.0, y: 5.0},
-													pieceColor: $author$project$Main$Kese,
-													prof: prof
-												});
-										}),
-									cardState.keseHand),
-								A2(
-									$elm$core$List$indexedMap,
-									F2(
-										function (i, prof) {
-											return A3(
-												$author$project$Main$pieceSvg,
-												false,
-												_Utils_eq(cardState.whoseTurn, $author$project$Main$RimaTurn) ? $author$project$Main$GiveFocusTo(
-													$author$project$Main$PieceInRimaHand(i)) : $author$project$Main$None,
-												{
-													coord: {x: 3.0 - i, y: -1.0},
-													pieceColor: $author$project$Main$Rima,
-													prof: prof
-												});
-										}),
-									cardState.rimaHand)))))
-				]));
-	} else {
-		var focus = modl.a;
-		var cardState = modl.b;
-		var dynamicPart = function () {
-			if (focus.$ === 'PieceOnTheBoard') {
-				var focus_coord = focus.a;
-				var _v2 = A2($author$project$Main$robFocusedPieceFromBoard, focus_coord, cardState.board);
-				if (_v2.$ === 'Nothing') {
-					return _List_Nil;
+									$elm$core$List$map,
+									function (coord) {
+										return A2(
+											$author$project$Main$goalCandidateSvg,
+											$author$project$Main$FirstMove(
+												{to: coord}),
+											coord);
+									},
+									candidates),
+								_Utils_ap(
+									A2(
+										$elm$core$List$indexedMap,
+										F2(
+											function (i, prof) {
+												return A3(
+													$author$project$Main$pieceSvg,
+													false,
+													$author$project$Main$None,
+													{
+														coord: {x: i + 1.0, y: 5.0},
+														pieceColor: $author$project$Main$Kese,
+														prof: prof
+													});
+											}),
+										cardState.keseHand),
+									A2(
+										$elm$core$List$indexedMap,
+										F2(
+											function (i, prof) {
+												return A3(
+													$author$project$Main$pieceSvg,
+													false,
+													$author$project$Main$None,
+													{
+														coord: {x: 3.0 - i, y: -1.0},
+														pieceColor: $author$project$Main$Rima,
+														prof: prof
+													});
+											}),
+										cardState.rimaHand))));
+					}
 				} else {
-					var _v3 = _v2.a;
-					var focused_piece = _v3.a;
-					var robbedBoard = _v3.b;
-					var candidates = A3($author$project$Main$getCandidates, true, focused_piece, robbedBoard);
 					return _Utils_ap(
 						A2(
 							$elm$core$List$map,
 							function (piece) {
 								return A3(
 									$author$project$Main$pieceSvg,
-									_Utils_eq(piece.coord, focus_coord),
+									false,
 									$author$project$Main$None,
 									{
 										coord: {x: piece.coord.x, y: piece.coord.y},
@@ -6358,154 +6482,184 @@ var $author$project$Main$view = function (modl) {
 											{to: coord}),
 										coord);
 								},
-								candidates),
+								$author$project$Main$neitherOccupiedNorWater(cardState.board)),
 							_Utils_ap(
 								A2(
 									$elm$core$List$indexedMap,
 									F2(
 										function (i, prof) {
-											return A3(
-												$author$project$Main$pieceSvg,
-												false,
-												$author$project$Main$None,
-												{
-													coord: {x: i + 1.0, y: 5.0},
-													pieceColor: $author$project$Main$Kese,
-													prof: prof
-												});
+											if (focus.$ === 'PieceInKeseHand') {
+												var ind = focus.a;
+												return A3(
+													$author$project$Main$pieceSvg,
+													_Utils_eq(ind, i),
+													$author$project$Main$None,
+													{
+														coord: {x: i + 1.0, y: 5.0},
+														pieceColor: $author$project$Main$Kese,
+														prof: prof
+													});
+											} else {
+												return A3(
+													$author$project$Main$pieceSvg,
+													false,
+													$author$project$Main$None,
+													{
+														coord: {x: i + 1.0, y: 5.0},
+														pieceColor: $author$project$Main$Kese,
+														prof: prof
+													});
+											}
 										}),
 									cardState.keseHand),
 								A2(
 									$elm$core$List$indexedMap,
 									F2(
 										function (i, prof) {
-											return A3(
-												$author$project$Main$pieceSvg,
-												false,
-												$author$project$Main$None,
-												{
-													coord: {x: 3.0 - i, y: -1.0},
-													pieceColor: $author$project$Main$Rima,
-													prof: prof
-												});
+											if (focus.$ === 'PieceInRimaHand') {
+												var ind = focus.a;
+												return A3(
+													$author$project$Main$pieceSvg,
+													_Utils_eq(ind, i),
+													$author$project$Main$None,
+													{
+														coord: {x: 3.0 - i, y: -1.0},
+														pieceColor: $author$project$Main$Rima,
+														prof: prof
+													});
+											} else {
+												return A3(
+													$author$project$Main$pieceSvg,
+													false,
+													$author$project$Main$None,
+													{
+														coord: {x: 3.0 - i, y: -1.0},
+														pieceColor: $author$project$Main$Rima,
+														prof: prof
+													});
+											}
 										}),
 									cardState.rimaHand))));
 				}
-			} else {
-				return _Utils_ap(
-					A2(
-						$elm$core$List$map,
-						function (piece) {
-							return A3(
-								$author$project$Main$pieceSvg,
-								false,
-								$author$project$Main$None,
-								{
-									coord: {x: piece.coord.x, y: piece.coord.y},
-									pieceColor: piece.pieceColor,
-									prof: piece.prof
-								});
-						},
-						cardState.board),
-					_Utils_ap(
+			}();
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
+					]),
+				_List_fromArray(
+					[
 						A2(
-							$elm$core$List$map,
-							function (coord) {
-								return A2(
-									$author$project$Main$goalCandidateSvg,
-									$author$project$Main$FirstMove(
-										{to: coord}),
-									coord);
-							},
-							$author$project$Main$neitherOccupiedNorWater(cardState.board)),
+						$elm$svg$Svg$svg,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
+								$elm$svg$Svg$Attributes$width('600')
+							]),
 						_Utils_ap(
-							A2(
-								$elm$core$List$indexedMap,
-								F2(
-									function (i, prof) {
-										if (focus.$ === 'PieceInKeseHand') {
-											var ind = focus.a;
-											return A3(
-												$author$project$Main$pieceSvg,
-												_Utils_eq(ind, i),
-												$author$project$Main$None,
+							$author$project$Main$stationaryPart(cardState),
+							dynamicPart)),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Events$onClick($author$project$Main$Cancel)
+							]),
+						_List_fromArray(
+							[
+								$elm$svg$Svg$text('キャンセル')
+							]))
+					]));
+		default:
+			var mover = modl.a.mover;
+			var remaining = modl.a.remaining;
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$svg$Svg$svg,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
+								$elm$svg$Svg$Attributes$width('600')
+							]),
+						_Utils_ap(
+							$author$project$Main$stationaryPart(remaining),
+							_Utils_ap(
+								A2(
+									$elm$core$List$map,
+									function (piece) {
+										return A3(
+											$author$project$Main$pieceSvg,
+											false,
+											$author$project$Main$None,
+											{
+												coord: {x: piece.coord.x, y: piece.coord.y},
+												pieceColor: piece.pieceColor,
+												prof: piece.prof
+											});
+									},
+									remaining.board),
+								_Utils_ap(
+									A2(
+										$elm$core$List$indexedMap,
+										F2(
+											function (i, prof) {
+												return A3(
+													$author$project$Main$pieceSvg,
+													false,
+													_Utils_eq(remaining.whoseTurn, $author$project$Main$KeseTurn) ? $author$project$Main$GiveFocusTo(
+														$author$project$Main$PieceInKeseHand(i)) : $author$project$Main$None,
+													{
+														coord: {x: i + 1.0, y: 5.0},
+														pieceColor: $author$project$Main$Kese,
+														prof: prof
+													});
+											}),
+										remaining.keseHand),
+									_Utils_ap(
+										A2(
+											$elm$core$List$indexedMap,
+											F2(
+												function (i, prof) {
+													return A3(
+														$author$project$Main$pieceSvg,
+														false,
+														_Utils_eq(remaining.whoseTurn, $author$project$Main$RimaTurn) ? $author$project$Main$GiveFocusTo(
+															$author$project$Main$PieceInRimaHand(i)) : $author$project$Main$None,
+														{
+															coord: {x: 3.0 - i, y: -1.0},
+															pieceColor: $author$project$Main$Rima,
+															prof: prof
+														});
+												}),
+											remaining.rimaHand),
+										_List_fromArray(
+											[
+												$author$project$Main$pieceWaitingForAdditionalCommandSvg(
 												{
-													coord: {x: i + 1.0, y: 5.0},
-													pieceColor: $author$project$Main$Kese,
-													prof: prof
-												});
-										} else {
-											return A3(
-												$author$project$Main$pieceSvg,
-												false,
-												$author$project$Main$None,
-												{
-													coord: {x: i + 1.0, y: 5.0},
-													pieceColor: $author$project$Main$Kese,
-													prof: prof
-												});
-										}
-									}),
-								cardState.keseHand),
-							A2(
-								$elm$core$List$indexedMap,
-								F2(
-									function (i, prof) {
-										if (focus.$ === 'PieceInRimaHand') {
-											var ind = focus.a;
-											return A3(
-												$author$project$Main$pieceSvg,
-												_Utils_eq(ind, i),
-												$author$project$Main$None,
-												{
-													coord: {x: 3.0 - i, y: -1.0},
-													pieceColor: $author$project$Main$Rima,
-													prof: prof
-												});
-										} else {
-											return A3(
-												$author$project$Main$pieceSvg,
-												false,
-												$author$project$Main$None,
-												{
-													coord: {x: 3.0 - i, y: -1.0},
-													pieceColor: $author$project$Main$Rima,
-													prof: prof
-												});
-										}
-									}),
-								cardState.rimaHand))));
-			}
-		}();
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$svg$Svg$svg,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
-							$elm$svg$Svg$Attributes$width('600')
-						]),
-					_Utils_ap(
-						$author$project$Main$stationaryPart(cardState),
-						dynamicPart)),
-					A2(
-					$elm$html$Html$button,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Events$onClick($author$project$Main$Cancel)
-						]),
-					_List_fromArray(
-						[
-							$elm$svg$Svg$text('キャンセル')
-						]))
-				]));
+													coord: {x: mover.coord.x, y: mover.coord.y},
+													pieceColor: mover.pieceColor,
+													prof: mover.prof
+												})
+											])))))),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Events$onClick($author$project$Main$TurnEnd)
+							]),
+						_List_fromArray(
+							[
+								$elm$svg$Svg$text('ターンエンド')
+							]))
+					]));
 	}
 };
 var $author$project$Main$main = $elm$browser$Browser$element(

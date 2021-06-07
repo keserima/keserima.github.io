@@ -34,16 +34,6 @@ type WhoseTurn
     | RimaTurn
 
 
-toColor : WhoseTurn -> PieceColor
-toColor w =
-    case w of
-        KeseTurn ->
-            Kese
-
-        RimaTurn ->
-            Rima
-
-
 type alias PieceOnBoard =
     { prof : Profession, pieceColor : PieceColor, coord : Coordinate }
 
@@ -55,6 +45,7 @@ type alias PieceWithFloatPosition =
 type Model
     = NothingSelected StateOfCards
     | MoverIsSelected Focus StateOfCards
+    | {- Sacrifice is necessary if currently stepping; otherwise not necessary -} NowWaitingForAdditionalSacrifice { mover : PieceOnBoard, remaining : StateOfCards }
 
 
 type alias StateOfCards =
@@ -76,6 +67,7 @@ type alias Flags =
 type Msg
     = None
     | Cancel
+    | TurnEnd
     | GiveFocusTo Focus
     | FirstMove { to : Coordinate }
 
@@ -84,6 +76,16 @@ type Focus
     = PieceOnTheBoard Coordinate
     | PieceInKeseHand Int
     | PieceInRimaHand Int
+
+
+toColor : WhoseTurn -> PieceColor
+toColor w =
+    case w of
+        KeseTurn ->
+            Kese
+
+        RimaTurn ->
+            Rima
 
 
 main : Program Flags Model Msg
@@ -103,18 +105,32 @@ subscriptions _ =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg modl =
+    ( update_ msg modl, Cmd.none )
+
+
+update_ : Msg -> Model -> Model
+update_ msg modl =
     case ( modl, msg ) of
         ( NothingSelected cardState, GiveFocusTo focus ) ->
-            ( MoverIsSelected focus cardState, Cmd.none )
+            MoverIsSelected focus cardState
 
         ( MoverIsSelected _ cardState, Cancel ) ->
-            ( NothingSelected cardState, Cmd.none )
+            NothingSelected cardState
 
         ( MoverIsSelected from cardState, FirstMove { to } ) ->
             case from of
                 {- FIXME -}
                 PieceOnTheBoard coord ->
-                    ( modl, Cmd.none )
+                    case robFocusedPieceFromBoard coord cardState.board of
+                        {- This branch is not taken -}
+                        Nothing ->
+                            modl
+
+                        Just ( piece, robbedBoard ) ->
+                            NowWaitingForAdditionalSacrifice
+                                { {- Update the position here -} mover = { piece | coord = to }
+                                , remaining = { cardState | board = robbedBoard }
+                                }
 
                 {- Parachuting from KeseHand -}
                 PieceInKeseHand ind ->
@@ -131,7 +147,7 @@ update msg modl =
                                 [] ->
                                     cardState.board
                     in
-                    ( NothingSelected { cardState | board = newBoard, keseHand = newKeseHand, whoseTurn = RimaTurn }, Cmd.none )
+                    NothingSelected { cardState | board = newBoard, keseHand = newKeseHand, whoseTurn = RimaTurn }
 
                 {- Parachuting from RimaHand -}
                 PieceInRimaHand ind ->
@@ -148,10 +164,10 @@ update msg modl =
                                 [] ->
                                     cardState.board
                     in
-                    ( NothingSelected { cardState | board = newBoard, rimaHand = newRimaHand, whoseTurn = KeseTurn }, Cmd.none )
+                    NothingSelected { cardState | board = newBoard, rimaHand = newRimaHand, whoseTurn = KeseTurn }
 
         _ ->
-            ( modl, Cmd.none )
+            modl
 
 
 isWater : Coordinate -> Bool
@@ -311,6 +327,26 @@ pieceSvg focused msgToBeSent p =
                  else
                     "none"
                 )
+            ]
+            []
+            :: glyph p.prof (foregroundColor p.pieceColor)
+        )
+
+
+pieceWaitingForAdditionalCommandSvg : PieceWithFloatPosition -> Svg Msg
+pieceWaitingForAdditionalCommandSvg p =
+    g
+        [ transform ("translate(" ++ String.fromFloat (p.coord.x * 100.0 - 5.0) ++ " " ++ String.fromFloat (p.coord.y * 100.0 + 5.0) ++ ")")
+        , Html.Attributes.style "cursor" "not-allowed"
+        ]
+        (rect
+            [ x "12"
+            , y "12"
+            , width "80"
+            , height "80"
+            , fill (backgroundColor p.pieceColor)
+            , stroke "#ffff00"
+            , strokeWidth "2"
             ]
             []
             :: glyph p.prof (foregroundColor p.pieceColor)
@@ -574,8 +610,18 @@ view modl =
 
                                 Just ( focused_piece, robbedBoard ) ->
                                     let
+                                        hasCircleInHand =
+                                            List.any (\c -> c == Circle)
+                                                (case cardState.whoseTurn of
+                                                    KeseTurn ->
+                                                        cardState.keseHand
+
+                                                    RimaTurn ->
+                                                        cardState.rimaHand
+                                                )
+
                                         candidates =
-                                            getCandidates True {- Fixme -} focused_piece robbedBoard
+                                            getCandidates hasCircleInHand focused_piece robbedBoard
                                     in
                                     List.map
                                         (\piece ->
@@ -633,6 +679,47 @@ view modl =
                     [ viewBox "0 -200 900 900", width "600" ]
                     (stationaryPart cardState ++ dynamicPart)
                 , Html.button [ onClick Cancel ] [ text "キャンセル" ]
+                ]
+
+        NowWaitingForAdditionalSacrifice { mover, remaining } ->
+            Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
+                [ svg
+                    [ viewBox "0 -200 900 900", width "600" ]
+                    (stationaryPart remaining
+                        ++ List.map
+                            (\piece ->
+                                { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                    |> pieceSvg False None
+                             {- You cannot click the piece on board while waiting for additional sacrifices. -}
+                            )
+                            remaining.board
+                        ++ List.indexedMap
+                            (\i prof ->
+                                pieceSvg False
+                                    (if remaining.whoseTurn == KeseTurn then
+                                        GiveFocusTo (PieceInKeseHand i)
+
+                                     else
+                                        None
+                                    )
+                                    { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                            )
+                            remaining.keseHand
+                        ++ List.indexedMap
+                            (\i prof ->
+                                pieceSvg False
+                                    (if remaining.whoseTurn == RimaTurn then
+                                        GiveFocusTo (PieceInRimaHand i)
+
+                                     else
+                                        None
+                                    )
+                                    { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                            )
+                            remaining.rimaHand
+                        ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
+                    )
+                , Html.button [ onClick TurnEnd ] [ text "ターンエンド" ]
                 ]
 
 
