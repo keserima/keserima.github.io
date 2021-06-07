@@ -5808,6 +5808,8 @@ var $elm$svg$Svg$Events$onClick = function (msg) {
 		$elm$json$Json$Decode$succeed(msg));
 };
 var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
 var $author$project$Main$goalCandidateSvg = F2(
 	function (msgToBeSent, coord) {
@@ -5817,7 +5819,8 @@ var $author$project$Main$goalCandidateSvg = F2(
 				[
 					$elm$svg$Svg$Attributes$transform(
 					'translate(' + ($elm$core$String$fromInt(coord.x * 100) + (' ' + ($elm$core$String$fromInt(coord.y * 100) + ')')))),
-					$elm$svg$Svg$Events$onClick(msgToBeSent)
+					$elm$svg$Svg$Events$onClick(msgToBeSent),
+					A2($elm$html$Html$Attributes$style, 'cursor', 'pointer')
 				]),
 			_List_fromArray(
 				[
@@ -5940,8 +5943,6 @@ var $author$project$Main$glyph = F2(
 	});
 var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
 var $elm$svg$Svg$rect = $elm$svg$Svg$trustedNode('rect');
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
 var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
 var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');

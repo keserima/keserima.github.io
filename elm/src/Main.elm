@@ -272,6 +272,7 @@ goalCandidateSvg msgToBeSent coord =
     g
         [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")")
         , Svg.Events.onClick msgToBeSent
+        , Html.Attributes.style "cursor" "pointer"
         ]
         [ circle [ cx "52", cy "52", r "16", fill "#ffff00" ] [] ]
 
