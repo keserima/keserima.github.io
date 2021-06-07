@@ -116,6 +116,7 @@ update msg modl =
                 PieceOnTheBoard coord ->
                     ( modl, Cmd.none )
 
+                {- Parachuting from KeseHand -}
                 PieceInKeseHand ind ->
                     let
                         newKeseHand =
@@ -130,8 +131,9 @@ update msg modl =
                                 [] ->
                                     cardState.board
                     in
-                    ( NothingSelected { cardState | board = newBoard, keseHand = newKeseHand }, Cmd.none )
+                    ( NothingSelected { cardState | board = newBoard, keseHand = newKeseHand, whoseTurn = RimaTurn }, Cmd.none )
 
+                {- Parachuting from RimaHand -}
                 PieceInRimaHand ind ->
                     let
                         newRimaHand =
@@ -146,7 +148,7 @@ update msg modl =
                                 [] ->
                                     cardState.board
                     in
-                    ( NothingSelected { cardState | board = newBoard, rimaHand = newRimaHand }, Cmd.none )
+                    ( NothingSelected { cardState | board = newBoard, rimaHand = newRimaHand, whoseTurn = KeseTurn }, Cmd.none )
 
         _ ->
             ( modl, Cmd.none )

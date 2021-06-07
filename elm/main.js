@@ -5487,7 +5487,7 @@ var $author$project$Main$update = F2(
 									$author$project$Main$NothingSelected(
 										_Utils_update(
 											cardState,
-											{board: newBoard, keseHand: newKeseHand})),
+											{board: newBoard, keseHand: newKeseHand, whoseTurn: $author$project$Main$RimaTurn})),
 									$elm$core$Platform$Cmd$none);
 							default:
 								var ind = from.a;
@@ -5510,7 +5510,7 @@ var $author$project$Main$update = F2(
 									$author$project$Main$NothingSelected(
 										_Utils_update(
 											cardState,
-											{board: newBoard, rimaHand: newRimaHand})),
+											{board: newBoard, rimaHand: newRimaHand, whoseTurn: $author$project$Main$KeseTurn})),
 									$elm$core$Platform$Cmd$none);
 						}
 					default:
@@ -6126,7 +6126,7 @@ var $author$project$Main$toColor = function (w) {
 	}
 };
 var $author$project$Main$playerSvg = F2(
-	function (ownTurn, turn) {
+	function (isOwnTurn, turn) {
 		var translateY = function () {
 			if (turn.$ === 'KeseTurn') {
 				return 442.0;
@@ -6134,7 +6134,7 @@ var $author$project$Main$playerSvg = F2(
 				return 56.75;
 			}
 		}();
-		var scale = ownTurn ? 5.5 : 4.0;
+		var scale = isOwnTurn ? 5.5 : 4.0;
 		var transf = 'translate(727,' + ($elm$core$String$fromFloat(translateY) + (') scale(' + ($elm$core$String$fromFloat(scale) + ')')));
 		var color = $author$project$Main$toColor(turn);
 		var person = _List_fromArray(
@@ -6183,7 +6183,7 @@ var $author$project$Main$playerSvg = F2(
 					$elm$svg$Svg$Attributes$style('fill:#483e37;fill-opacity:1;filter:url(#blur)')
 				]),
 			_List_Nil);
-		return ownTurn ? A2(
+		return isOwnTurn ? A2(
 			$elm$svg$Svg$g,
 			_List_fromArray(
 				[
