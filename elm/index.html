@@ -41,6 +41,7 @@
         var app = Elm.Main.init({
             node: document.getElementById('myapp'),
             flags: {
+                keseGoesFirst: Math.random() < 0.5,
                 keseDice: Math.random() < 0.5,
                 rimaDice: Math.random() < 0.5,
                 shipDice: Math.random() < 0.5,

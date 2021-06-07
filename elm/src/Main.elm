@@ -65,11 +65,12 @@ type alias StateOfCards =
     , rimaDeck : List Profession
     , keseHand : List Profession
     , rimaHand : List Profession
+    , whoseTurn : WhoseTurn
     }
 
 
 type alias Flags =
-    { keseDice : Bool, rimaDice : Bool, shipDice : Bool, keseDeck : List Int, rimaDeck : List Int }
+    { keseGoesFirst : Bool, keseDice : Bool, rimaDice : Bool, shipDice : Bool, keseDeck : List Int, rimaDeck : List Int }
 
 
 type Msg
@@ -374,7 +375,7 @@ displayCapturedCardsAndTwoDecks model =
             model.capturedByRima
 
 
-stationaryPart : StateOfCards -> List (Svg Msg)
+stationaryPart :StateOfCards -> List (Svg Msg)
 stationaryPart cardState =
     defs []
         [ Svg.filter [ Svg.Attributes.style "color-interpolation-filters:sRGB", id "blur" ]
@@ -383,13 +384,13 @@ stationaryPart cardState =
         ]
         :: boardSvg
         ++ displayCapturedCardsAndTwoDecks cardState
-        ++ [ playerSvg True RimaTurn
-           , playerSvg False KeseTurn
+        ++ [ playerSvg (RimaTurn == cardState.whoseTurn) RimaTurn
+           , playerSvg (KeseTurn == cardState.whoseTurn) KeseTurn
            ]
 
 
 playerSvg : Bool -> WhoseTurn -> Svg msg
-playerSvg focused turn =
+playerSvg isOwnTurn turn =
     let
         translateY =
             case turn of
@@ -403,7 +404,7 @@ playerSvg focused turn =
             toColor turn
 
         scale =
-            if focused then
+            if isOwnTurn then
                 5.5
 
             else
@@ -421,7 +422,7 @@ playerSvg focused turn =
         blur =
             circle [ cx "0", cy "0", r "12", fill (backgroundColor color), Svg.Attributes.style "fill:#483e37;fill-opacity:1;filter:url(#blur)" ] []
     in
-    if focused then
+    if isOwnTurn then
         g [ transform transf ] (blur :: person)
 
     else
@@ -511,25 +512,25 @@ getCandidates hasCircleInHand piece robbedBoard =
 view : Model -> Html Msg
 view modl =
     case modl of
-        NothingSelected model ->
+        NothingSelected cardState ->
             Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
                 [ svg
                     [ viewBox "0 -200 900 900"
                     , width "600"
                     ]
-                    (stationaryPart model
+                    (stationaryPart cardState
                         ++ List.map
                             (\piece ->
                                 { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
                                     |> pieceSvg False (Focused (PieceOnTheBoard piece.coord))
                             )
-                            model.board
+                            cardState.board
                         ++ List.indexedMap
                             (\i prof -> pieceSvg False (Focused (PieceInKeseHand i)) { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese })
-                            model.keseHand
+                            cardState.keseHand
                         ++ List.indexedMap
                             (\i prof -> pieceSvg False (Focused (PieceInRimaHand i)) { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima })
-                            model.rimaHand
+                            cardState.rimaHand
                     )
                 ]
 
@@ -630,7 +631,13 @@ init flags =
             drawUpToThree (List.map numToProf flags.rimaDeck)
     in
     ( NothingSelected
-        { keseDeck = keseDeck
+        { whoseTurn =
+            if flags.keseGoesFirst then
+                KeseTurn
+
+            else
+                RimaTurn
+        , keseDeck = keseDeck
         , rimaDeck = rimaDeck
         , keseHand = keseHand
         , rimaHand = rimaHand

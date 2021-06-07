@@ -5152,10 +5152,12 @@ var $author$project$Main$Circle = {$: 'Circle'};
 var $author$project$Main$Diagonal = {$: 'Diagonal'};
 var $author$project$Main$HorizontalVertical = {$: 'HorizontalVertical'};
 var $author$project$Main$Kese = {$: 'Kese'};
+var $author$project$Main$KeseTurn = {$: 'KeseTurn'};
 var $author$project$Main$NothingSelected = function (a) {
 	return {$: 'NothingSelected', a: a};
 };
 var $author$project$Main$Rima = {$: 'Rima'};
+var $author$project$Main$RimaTurn = {$: 'RimaTurn'};
 var $author$project$Main$Ship = {$: 'Ship'};
 var $author$project$Main$drawUpToThree = function (xs) {
 	if ((xs.b && xs.b.b) && xs.b.b.b) {
@@ -5268,7 +5270,8 @@ var $author$project$Main$init = function (flags) {
 				keseDeck: keseDeck,
 				keseHand: keseHand,
 				rimaDeck: rimaDeck,
-				rimaHand: rimaHand
+				rimaHand: rimaHand,
+				whoseTurn: flags.keseGoesFirst ? $author$project$Main$KeseTurn : $author$project$Main$RimaTurn
 			}),
 		$elm$core$Platform$Cmd$none);
 };
@@ -6009,8 +6012,6 @@ var $author$project$Main$robFocusedPieceFromBoard = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $author$project$Main$KeseTurn = {$: 'KeseTurn'};
-var $author$project$Main$RimaTurn = {$: 'RimaTurn'};
 var $author$project$Main$boardBackgroundColor = function (coord) {
 	return $author$project$Main$isWater(coord) ? 'rgb(94, 147, 184)' : '#ccc';
 };
@@ -6125,7 +6126,7 @@ var $author$project$Main$toColor = function (w) {
 	}
 };
 var $author$project$Main$playerSvg = F2(
-	function (focused, turn) {
+	function (ownTurn, turn) {
 		var translateY = function () {
 			if (turn.$ === 'KeseTurn') {
 				return 442.0;
@@ -6133,7 +6134,7 @@ var $author$project$Main$playerSvg = F2(
 				return 56.75;
 			}
 		}();
-		var scale = focused ? 5.5 : 4.0;
+		var scale = ownTurn ? 5.5 : 4.0;
 		var transf = 'translate(727,' + ($elm$core$String$fromFloat(translateY) + (') scale(' + ($elm$core$String$fromFloat(scale) + ')')));
 		var color = $author$project$Main$toColor(turn);
 		var person = _List_fromArray(
@@ -6182,7 +6183,7 @@ var $author$project$Main$playerSvg = F2(
 					$elm$svg$Svg$Attributes$style('fill:#483e37;fill-opacity:1;filter:url(#blur)')
 				]),
 			_List_Nil);
-		return focused ? A2(
+		return ownTurn ? A2(
 			$elm$svg$Svg$g,
 			_List_fromArray(
 				[
@@ -6231,8 +6232,14 @@ var $author$project$Main$stationaryPart = function (cardState) {
 				$author$project$Main$displayCapturedCardsAndTwoDecks(cardState),
 				_List_fromArray(
 					[
-						A2($author$project$Main$playerSvg, true, $author$project$Main$RimaTurn),
-						A2($author$project$Main$playerSvg, false, $author$project$Main$KeseTurn)
+						A2(
+						$author$project$Main$playerSvg,
+						_Utils_eq($author$project$Main$RimaTurn, cardState.whoseTurn),
+						$author$project$Main$RimaTurn),
+						A2(
+						$author$project$Main$playerSvg,
+						_Utils_eq($author$project$Main$KeseTurn, cardState.whoseTurn),
+						$author$project$Main$KeseTurn)
 					]))));
 };
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
@@ -6241,7 +6248,7 @@ var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
 var $author$project$Main$view = function (modl) {
 	if (modl.$ === 'NothingSelected') {
-		var model = modl.a;
+		var cardState = modl.a;
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -6258,7 +6265,7 @@ var $author$project$Main$view = function (modl) {
 							$elm$svg$Svg$Attributes$width('600')
 						]),
 					_Utils_ap(
-						$author$project$Main$stationaryPart(model),
+						$author$project$Main$stationaryPart(cardState),
 						_Utils_ap(
 							A2(
 								$elm$core$List$map,
@@ -6274,7 +6281,7 @@ var $author$project$Main$view = function (modl) {
 											prof: piece.prof
 										});
 								},
-								model.board),
+								cardState.board),
 							_Utils_ap(
 								A2(
 									$elm$core$List$indexedMap,
@@ -6291,7 +6298,7 @@ var $author$project$Main$view = function (modl) {
 													prof: prof
 												});
 										}),
-									model.keseHand),
+									cardState.keseHand),
 								A2(
 									$elm$core$List$indexedMap,
 									F2(
@@ -6307,7 +6314,7 @@ var $author$project$Main$view = function (modl) {
 													prof: prof
 												});
 										}),
-									model.rimaHand)))))
+									cardState.rimaHand)))))
 				]));
 	} else {
 		var focus = modl.a;
@@ -6512,19 +6519,24 @@ _Platform_export({'Main':{'init':$author$project$Main$main(
 						function (rimaDeck) {
 							return A2(
 								$elm$json$Json$Decode$andThen,
-								function (keseDice) {
+								function (keseGoesFirst) {
 									return A2(
 										$elm$json$Json$Decode$andThen,
-										function (keseDeck) {
-											return $elm$json$Json$Decode$succeed(
-												{keseDeck: keseDeck, keseDice: keseDice, rimaDeck: rimaDeck, rimaDice: rimaDice, shipDice: shipDice});
+										function (keseDice) {
+											return A2(
+												$elm$json$Json$Decode$andThen,
+												function (keseDeck) {
+													return $elm$json$Json$Decode$succeed(
+														{keseDeck: keseDeck, keseDice: keseDice, keseGoesFirst: keseGoesFirst, rimaDeck: rimaDeck, rimaDice: rimaDice, shipDice: shipDice});
+												},
+												A2(
+													$elm$json$Json$Decode$field,
+													'keseDeck',
+													$elm$json$Json$Decode$list($elm$json$Json$Decode$int)));
 										},
-										A2(
-											$elm$json$Json$Decode$field,
-											'keseDeck',
-											$elm$json$Json$Decode$list($elm$json$Json$Decode$int)));
+										A2($elm$json$Json$Decode$field, 'keseDice', $elm$json$Json$Decode$bool));
 								},
-								A2($elm$json$Json$Decode$field, 'keseDice', $elm$json$Json$Decode$bool));
+								A2($elm$json$Json$Decode$field, 'keseGoesFirst', $elm$json$Json$Decode$bool));
 						},
 						A2(
 							$elm$json$Json$Decode$field,
