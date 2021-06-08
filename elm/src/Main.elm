@@ -83,7 +83,7 @@ type Msg
     | GiveFocusTo Focus
     | SendToTrashBinPart1 { whoseHand : WhoseTurn, index : Int }
     | SendToTrashBinPart2
-    | FirstMove { to : Coordinate }
+    | MovementToward Coordinate
 
 
 type Focus
@@ -131,7 +131,7 @@ update_ msg modl =
         ( MoverIsSelected _ cardState, Cancel ) ->
             NothingSelected cardState
 
-        ( MoverIsSelected from cardState, FirstMove { to } ) ->
+        ( MoverIsSelected from cardState, MovementToward to ) ->
             case from of
                 PieceOnTheBoard coord ->
                     case robFocusedPieceFromBoard coord cardState.board of
@@ -141,7 +141,7 @@ update_ msg modl =
 
                         Just ( piece, robbedBoard ) ->
                             NowWaitingForAdditionalSacrifice
-                                { {- Update the position here -} mover = { piece | coord = to }
+                                { {- Updates the position here -} mover = { piece | coord = to }
                                 , remaining = { cardState | board = robbedBoard }
                                 }
 
@@ -169,6 +169,9 @@ update_ msg modl =
                     in
                     NothingSelected { cardState | board = newBoard, rimaHand = newRimaHand, whoseTurn = KeseTurn }
 
+        ( AfterSacrifice command { mover, remaining }, MovementToward to ) ->
+            NowWaitingForAdditionalSacrifice { mover = { mover | coord = to }, remaining = remaining }
+
         ( NowWaitingForAdditionalSacrifice { mover, remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->
             WaitForTrashBinClick { mover = mover, remaining = remaining, whoseHand = whoseHand, index = index }
 
@@ -191,17 +194,19 @@ update_ msg modl =
                     let
                         ( sacrifices {- always a singleton -}, newKeseHand ) =
                             robIth index remaining.keseHand
+
+                        new =
+                            { mover = mover, remaining = { remaining | keseHand = newKeseHand } }
                     in
                     case sacrifices of
-                        {- FIXME -}
                         [ Circle ] ->
-                            modl
+                            AfterCircleSacrifice new
 
                         [ HorizontalVertical ] ->
-                            AfterSacrifice HorizVert { mover = mover, remaining = { remaining | keseHand = newKeseHand } }
+                            AfterSacrifice HorizVert new
 
                         [ Diagonal ] ->
-                            AfterSacrifice Diag { mover = mover, remaining = { remaining | keseHand = newKeseHand } }
+                            AfterSacrifice Diag new
 
                         {- this path shall not be taken -}
                         _ ->
@@ -211,21 +216,27 @@ update_ msg modl =
                     let
                         ( sacrifices {- always a singleton -}, newRimaHand ) =
                             robIth index remaining.rimaHand
+
+                        new =
+                            { mover = mover, remaining = { remaining | rimaHand = newRimaHand } }
                     in
                     case sacrifices of
                         {- FIXME -}
                         [ Circle ] ->
-                            modl
+                            AfterCircleSacrifice new
 
                         [ HorizontalVertical ] ->
-                            AfterSacrifice HorizVert { mover = mover, remaining = { remaining | rimaHand = newRimaHand } }
+                            AfterSacrifice HorizVert new
 
                         [ Diagonal ] ->
-                            AfterSacrifice Diag { mover = mover, remaining = { remaining | rimaHand = newRimaHand } }
+                            AfterSacrifice Diag new
 
                         {- this path shall not be taken -}
                         _ ->
                             modl
+
+        ( AfterCircleSacrifice { mover, remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->
+            WaitForTrashBinClick { mover = mover, remaining = remaining, whoseHand = whoseHand, index = index }
 
         _ ->
             modl
@@ -775,7 +786,7 @@ view modl =
                                         )
                                         cardState.board
                                         ++ (candidates
-                                                |> List.map (\coord -> goalCandidateSvg (FirstMove { to = coord }) coord)
+                                                |> List.map (\coord -> goalCandidateSvg (MovementToward coord) coord)
                                            )
                                         ++ List.indexedMap
                                             (\i prof ->
@@ -796,7 +807,7 @@ view modl =
                                 )
                                 cardState.board
                                 ++ (neitherOccupiedNorWater cardState.board
-                                        |> List.map (\coord -> goalCandidateSvg (FirstMove { to = coord }) coord)
+                                        |> List.map (\coord -> goalCandidateSvg (MovementToward coord) coord)
                                    )
                                 ++ List.indexedMap
                                     (\i prof ->
@@ -919,12 +930,6 @@ view modl =
 
         AfterSacrifice command { mover, remaining } ->
             let
-                focus_coord =
-                    mover.coord
-
-                robbedBoard =
-                    remaining.board
-
                 hasCircleInHand =
                     List.any (\c -> c == Circle)
                         (case remaining.whoseTurn of
@@ -936,17 +941,17 @@ view modl =
                         )
 
                 candidates =
-                    getCandidatesWithCommand command hasCircleInHand mover robbedBoard
+                    getCandidatesWithCommand command hasCircleInHand mover remaining.board
 
                 dynamicPart =
                     List.map
                         (\piece ->
                             { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                |> pieceSvg (piece.coord == focus_coord) None
+                                |> pieceSvg False None
                         )
                         remaining.board
                         ++ (candidates
-                                |> List.map (\coord -> goalCandidateSvg (FirstMove { to = coord }) coord)
+                                |> List.map (\coord -> goalCandidateSvg (MovementToward coord) coord)
                            )
                         ++ List.indexedMap
                             (\i prof ->
@@ -966,12 +971,44 @@ view modl =
                     (stationaryPart Nothing remaining ++ dynamicPart)
                 ]
 
-        AfterCircleSacrifice internal ->
+        AfterCircleSacrifice { mover, remaining } ->
             Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
                 [ svg
                     [ viewBox "0 -200 900 900", width "600" ]
-                    []
-                , Html.button [ onClick Cancel ] [ text "キャンセル" ]
+                    (stationaryPart Nothing remaining
+                        ++ List.map
+                            (\piece ->
+                                { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                    |> pieceSvg False None
+                             {- You cannot click any piece on the board while waiting for additional sacrifices. -}
+                            )
+                            remaining.board
+                        ++ List.indexedMap
+                            (\i prof ->
+                                pieceSvg False
+                                    (if remaining.whoseTurn == KeseTurn && prof /= Circle then
+                                        SendToTrashBinPart1 { whoseHand = KeseTurn, index = i }
+
+                                     else
+                                        None
+                                    )
+                                    { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                            )
+                            remaining.keseHand
+                        ++ List.indexedMap
+                            (\i prof ->
+                                pieceSvg False
+                                    (if remaining.whoseTurn == RimaTurn && prof /= Circle then
+                                        SendToTrashBinPart1 { whoseHand = RimaTurn, index = i }
+
+                                     else
+                                        None
+                                    )
+                                    { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                            )
+                            remaining.rimaHand
+                        ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
+                    )
                 ]
 
 
@@ -1070,8 +1107,8 @@ init flags =
                         Diagonal
               }
             ]
-        , capturedByKese = [ Diagonal, Circle, Circle ]
-        , capturedByRima = [ HorizontalVertical, Diagonal ]
+        , capturedByKese = []
+        , capturedByRima = []
         }
     , Cmd.none
     )

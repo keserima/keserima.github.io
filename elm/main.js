@@ -5263,10 +5263,8 @@ var $author$project$Main$init = function (flags) {
 						prof: (!flags.shipDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
 					}
 					]),
-				capturedByKese: _List_fromArray(
-					[$author$project$Main$Diagonal, $author$project$Main$Circle, $author$project$Main$Circle]),
-				capturedByRima: _List_fromArray(
-					[$author$project$Main$HorizontalVertical, $author$project$Main$Diagonal]),
+				capturedByKese: _List_Nil,
+				capturedByRima: _List_Nil,
 				keseDeck: keseDeck,
 				keseHand: keseHand,
 				rimaDeck: rimaDeck,
@@ -5281,6 +5279,9 @@ var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
+};
+var $author$project$Main$AfterCircleSacrifice = function (a) {
+	return {$: 'AfterCircleSacrifice', a: a};
 };
 var $author$project$Main$AfterSacrifice = F2(
 	function (a, b) {
@@ -5500,7 +5501,7 @@ var $author$project$Main$robIth = F2(
 var $author$project$Main$update_ = F2(
 	function (msg, modl) {
 		var _v0 = _Utils_Tuple2(modl, msg);
-		_v0$6:
+		_v0$8:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'NothingSelected':
@@ -5509,7 +5510,7 @@ var $author$project$Main$update_ = F2(
 						var focus = _v0.b.a;
 						return A2($author$project$Main$MoverIsSelected, focus, cardState);
 					} else {
-						break _v0$6;
+						break _v0$8;
 					}
 				case 'MoverIsSelected':
 					switch (_v0.b.$) {
@@ -5518,11 +5519,11 @@ var $author$project$Main$update_ = F2(
 							var cardState = _v1.b;
 							var _v2 = _v0.b;
 							return $author$project$Main$NothingSelected(cardState);
-						case 'FirstMove':
+						case 'MovementToward':
 							var _v3 = _v0.a;
 							var from = _v3.a;
 							var cardState = _v3.b;
-							var to = _v0.b.a.to;
+							var to = _v0.b.a;
 							switch (from.$) {
 								case 'PieceOnTheBoard':
 									var coord = from.a;
@@ -5579,7 +5580,24 @@ var $author$project$Main$update_ = F2(
 											{board: newBoard, rimaHand: newRimaHand, whoseTurn: $author$project$Main$KeseTurn}));
 							}
 						default:
-							break _v0$6;
+							break _v0$8;
+					}
+				case 'AfterSacrifice':
+					if (_v0.b.$ === 'MovementToward') {
+						var _v9 = _v0.a;
+						var command = _v9.a;
+						var mover = _v9.b.mover;
+						var remaining = _v9.b.remaining;
+						var to = _v0.b.a;
+						return $author$project$Main$NowWaitingForAdditionalSacrifice(
+							{
+								mover: _Utils_update(
+									mover,
+									{coord: to}),
+								remaining: remaining
+							});
+					} else {
+						break _v0$8;
 					}
 				case 'NowWaitingForAdditionalSacrifice':
 					switch (_v0.b.$) {
@@ -5593,15 +5611,15 @@ var $author$project$Main$update_ = F2(
 						case 'TurnEnd':
 							var mover = _v0.a.a.mover;
 							var remaining = _v0.a.a.remaining;
-							var _v9 = _v0.b;
+							var _v10 = _v0.b;
 							return $author$project$Main$NothingSelected(
 								_Utils_update(
 									remaining,
 									{
 										board: A2($elm$core$List$cons, mover, remaining.board),
 										whoseTurn: function () {
-											var _v10 = remaining.whoseTurn;
-											if (_v10.$ === 'KeseTurn') {
+											var _v11 = remaining.whoseTurn;
+											if (_v11.$ === 'KeseTurn') {
 												return $author$project$Main$RimaTurn;
 											} else {
 												return $author$project$Main$KeseTurn;
@@ -5609,7 +5627,7 @@ var $author$project$Main$update_ = F2(
 										}()
 									}));
 						default:
-							break _v0$6;
+							break _v0$8;
 					}
 				case 'WaitForTrashBinClick':
 					if (_v0.b.$ === 'SendToTrashBinPart2') {
@@ -5617,95 +5635,84 @@ var $author$project$Main$update_ = F2(
 						var remaining = _v0.a.a.remaining;
 						var whoseHand = _v0.a.a.whoseHand;
 						var index = _v0.a.a.index;
-						var _v11 = _v0.b;
+						var _v12 = _v0.b;
 						if (whoseHand.$ === 'KeseTurn') {
-							var _v13 = A2($author$project$Main$robIth, index, remaining.keseHand);
-							var sacrifices = _v13.a;
-							var newKeseHand = _v13.b;
-							_v14$3:
+							var _v14 = A2($author$project$Main$robIth, index, remaining.keseHand);
+							var sacrifices = _v14.a;
+							var newKeseHand = _v14.b;
+							var _new = {
+								mover: mover,
+								remaining: _Utils_update(
+									remaining,
+									{keseHand: newKeseHand})
+							};
+							_v15$3:
 							while (true) {
 								if (sacrifices.b && (!sacrifices.b.b)) {
 									switch (sacrifices.a.$) {
 										case 'Circle':
-											var _v15 = sacrifices.a;
-											return modl;
-										case 'HorizontalVertical':
 											var _v16 = sacrifices.a;
-											return A2(
-												$author$project$Main$AfterSacrifice,
-												$author$project$Main$HorizVert,
-												{
-													mover: mover,
-													remaining: _Utils_update(
-														remaining,
-														{keseHand: newKeseHand})
-												});
-										case 'Diagonal':
+											return $author$project$Main$AfterCircleSacrifice(_new);
+										case 'HorizontalVertical':
 											var _v17 = sacrifices.a;
-											return A2(
-												$author$project$Main$AfterSacrifice,
-												$author$project$Main$Diag,
-												{
-													mover: mover,
-													remaining: _Utils_update(
-														remaining,
-														{keseHand: newKeseHand})
-												});
+											return A2($author$project$Main$AfterSacrifice, $author$project$Main$HorizVert, _new);
+										case 'Diagonal':
+											var _v18 = sacrifices.a;
+											return A2($author$project$Main$AfterSacrifice, $author$project$Main$Diag, _new);
 										default:
-											break _v14$3;
+											break _v15$3;
 									}
 								} else {
-									break _v14$3;
+									break _v15$3;
 								}
 							}
 							return modl;
 						} else {
-							var _v18 = A2($author$project$Main$robIth, index, remaining.rimaHand);
-							var sacrifices = _v18.a;
-							var newRimaHand = _v18.b;
-							_v19$3:
+							var _v19 = A2($author$project$Main$robIth, index, remaining.rimaHand);
+							var sacrifices = _v19.a;
+							var newRimaHand = _v19.b;
+							var _new = {
+								mover: mover,
+								remaining: _Utils_update(
+									remaining,
+									{rimaHand: newRimaHand})
+							};
+							_v20$3:
 							while (true) {
 								if (sacrifices.b && (!sacrifices.b.b)) {
 									switch (sacrifices.a.$) {
 										case 'Circle':
-											var _v20 = sacrifices.a;
-											return modl;
-										case 'HorizontalVertical':
 											var _v21 = sacrifices.a;
-											return A2(
-												$author$project$Main$AfterSacrifice,
-												$author$project$Main$HorizVert,
-												{
-													mover: mover,
-													remaining: _Utils_update(
-														remaining,
-														{rimaHand: newRimaHand})
-												});
-										case 'Diagonal':
+											return $author$project$Main$AfterCircleSacrifice(_new);
+										case 'HorizontalVertical':
 											var _v22 = sacrifices.a;
-											return A2(
-												$author$project$Main$AfterSacrifice,
-												$author$project$Main$Diag,
-												{
-													mover: mover,
-													remaining: _Utils_update(
-														remaining,
-														{rimaHand: newRimaHand})
-												});
+											return A2($author$project$Main$AfterSacrifice, $author$project$Main$HorizVert, _new);
+										case 'Diagonal':
+											var _v23 = sacrifices.a;
+											return A2($author$project$Main$AfterSacrifice, $author$project$Main$Diag, _new);
 										default:
-											break _v19$3;
+											break _v20$3;
 									}
 								} else {
-									break _v19$3;
+									break _v20$3;
 								}
 							}
 							return modl;
 						}
 					} else {
-						break _v0$6;
+						break _v0$8;
 					}
 				default:
-					break _v0$6;
+					if (_v0.b.$ === 'SendToTrashBinPart1') {
+						var mover = _v0.a.a.mover;
+						var remaining = _v0.a.a.remaining;
+						var whoseHand = _v0.b.a.whoseHand;
+						var index = _v0.b.a.index;
+						return $author$project$Main$WaitForTrashBinClick(
+							{index: index, mover: mover, remaining: remaining, whoseHand: whoseHand});
+					} else {
+						break _v0$8;
+					}
 			}
 		}
 		return modl;
@@ -5717,11 +5724,11 @@ var $author$project$Main$update = F2(
 			$elm$core$Platform$Cmd$none);
 	});
 var $author$project$Main$Cancel = {$: 'Cancel'};
-var $author$project$Main$FirstMove = function (a) {
-	return {$: 'FirstMove', a: a};
-};
 var $author$project$Main$GiveFocusTo = function (a) {
 	return {$: 'GiveFocusTo', a: a};
+};
+var $author$project$Main$MovementToward = function (a) {
+	return {$: 'MovementToward', a: a};
 };
 var $author$project$Main$None = {$: 'None'};
 var $author$project$Main$PieceInKeseHand = function (a) {
@@ -6692,8 +6699,7 @@ var $author$project$Main$view = function (modl) {
 									function (coord) {
 										return A2(
 											$author$project$Main$goalCandidateSvg,
-											$author$project$Main$FirstMove(
-												{to: coord}),
+											$author$project$Main$MovementToward(coord),
 											coord);
 									},
 									candidates),
@@ -6751,8 +6757,7 @@ var $author$project$Main$view = function (modl) {
 								function (coord) {
 									return A2(
 										$author$project$Main$goalCandidateSvg,
-										$author$project$Main$FirstMove(
-											{to: coord}),
+										$author$project$Main$MovementToward(coord),
 										coord);
 								},
 								$author$project$Main$neitherOccupiedNorWater(cardState.board)),
@@ -7050,7 +7055,6 @@ var $author$project$Main$view = function (modl) {
 			var command = modl.a;
 			var mover = modl.b.mover;
 			var remaining = modl.b.remaining;
-			var robbedBoard = remaining.board;
 			var hasCircleInHand = A2(
 				$elm$core$List$any,
 				function (c) {
@@ -7064,15 +7068,14 @@ var $author$project$Main$view = function (modl) {
 						return remaining.rimaHand;
 					}
 				}());
-			var focus_coord = mover.coord;
-			var candidates = A4($author$project$Main$getCandidatesWithCommand, command, hasCircleInHand, mover, robbedBoard);
+			var candidates = A4($author$project$Main$getCandidatesWithCommand, command, hasCircleInHand, mover, remaining.board);
 			var dynamicPart = _Utils_ap(
 				A2(
 					$elm$core$List$map,
 					function (piece) {
 						return A3(
 							$author$project$Main$pieceSvg,
-							_Utils_eq(piece.coord, focus_coord),
+							false,
 							$author$project$Main$None,
 							{
 								coord: {x: piece.coord.x, y: piece.coord.y},
@@ -7087,8 +7090,7 @@ var $author$project$Main$view = function (modl) {
 						function (coord) {
 							return A2(
 								$author$project$Main$goalCandidateSvg,
-								$author$project$Main$FirstMove(
-									{to: coord}),
+								$author$project$Main$MovementToward(coord),
 								coord);
 						},
 						candidates),
@@ -7153,7 +7155,8 @@ var $author$project$Main$view = function (modl) {
 							dynamicPart))
 					]));
 		default:
-			var internal = modl.a;
+			var mover = modl.a.mover;
+			var remaining = modl.a.remaining;
 			return A2(
 				$elm$html$Html$div,
 				_List_fromArray(
@@ -7169,17 +7172,66 @@ var $author$project$Main$view = function (modl) {
 								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
 								$elm$svg$Svg$Attributes$width('600')
 							]),
-						_List_Nil),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Events$onClick($author$project$Main$Cancel)
-							]),
-						_List_fromArray(
-							[
-								$elm$svg$Svg$text('キャンセル')
-							]))
+						_Utils_ap(
+							A2($author$project$Main$stationaryPart, $elm$core$Maybe$Nothing, remaining),
+							_Utils_ap(
+								A2(
+									$elm$core$List$map,
+									function (piece) {
+										return A3(
+											$author$project$Main$pieceSvg,
+											false,
+											$author$project$Main$None,
+											{
+												coord: {x: piece.coord.x, y: piece.coord.y},
+												pieceColor: piece.pieceColor,
+												prof: piece.prof
+											});
+									},
+									remaining.board),
+								_Utils_ap(
+									A2(
+										$elm$core$List$indexedMap,
+										F2(
+											function (i, prof) {
+												return A3(
+													$author$project$Main$pieceSvg,
+													false,
+													(_Utils_eq(remaining.whoseTurn, $author$project$Main$KeseTurn) && (!_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
+														{index: i, whoseHand: $author$project$Main$KeseTurn}) : $author$project$Main$None,
+													{
+														coord: {x: i + 1.0, y: 5.0},
+														pieceColor: $author$project$Main$Kese,
+														prof: prof
+													});
+											}),
+										remaining.keseHand),
+									_Utils_ap(
+										A2(
+											$elm$core$List$indexedMap,
+											F2(
+												function (i, prof) {
+													return A3(
+														$author$project$Main$pieceSvg,
+														false,
+														(_Utils_eq(remaining.whoseTurn, $author$project$Main$RimaTurn) && (!_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
+															{index: i, whoseHand: $author$project$Main$RimaTurn}) : $author$project$Main$None,
+														{
+															coord: {x: 3.0 - i, y: -1.0},
+															pieceColor: $author$project$Main$Rima,
+															prof: prof
+														});
+												}),
+											remaining.rimaHand),
+										_List_fromArray(
+											[
+												$author$project$Main$pieceWaitingForAdditionalCommandSvg(
+												{
+													coord: {x: mover.coord.x, y: mover.coord.y},
+													pieceColor: mover.pieceColor,
+													prof: mover.prof
+												})
+											]))))))
 					]));
 	}
 };
