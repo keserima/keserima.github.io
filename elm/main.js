@@ -5592,6 +5592,9 @@ var $author$project$Main$PieceInRimaHand = function (a) {
 var $author$project$Main$PieceOnTheBoard = function (a) {
 	return {$: 'PieceOnTheBoard', a: a};
 };
+var $author$project$Main$SendToGrave = function (a) {
+	return {$: 'SendToGrave', a: a};
+};
 var $author$project$Main$TurnEnd = {$: 'TurnEnd'};
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
@@ -6291,7 +6294,32 @@ var $author$project$Main$stationaryPart = function (cardState) {
 						A2(
 						$author$project$Main$playerSvg,
 						_Utils_eq($author$project$Main$KeseTurn, cardState.whoseTurn),
-						$author$project$Main$KeseTurn)
+						$author$project$Main$KeseTurn),
+						A2(
+						$elm$svg$Svg$g,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$transform('translate(660 180) scale(0.3)')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$svg$Svg$path,
+								_List_fromArray(
+									[
+										$elm$svg$Svg$Attributes$fill('#555'),
+										$elm$svg$Svg$Attributes$d('M 4 112 l 59 337 c 5 22 25 37 47 37 c 0 0 0 0 0 0 h 227 c 22 0 41 -16 47 -37 v 0 l 59 -337 z m 219 58 c 8 0 13 6 13 13 v 218 c 0 7 -5 13 -13 13 c -7 0 -13 -6 -13 -13 v -218 c 0 -7 6 -13 13 -13 z m -105 0 c 7 0 13 6 13 12 l 19 218 c 1 7 -4 13 -12 14 c -7 0 -13 -5 -14 -12 l -19 -217 c -1 -8 5 -14 12 -15 c 1 0 1 0 1 0 z m 210 0 c 0 0 0 0 1 0 c 7 1 13 7 12 15 l -19 217 c -1 7 -7 12 -14 12 c -8 -1 -13 -7 -12 -14 l 19 -218 c 0 -6 6 -12 13 -12 z')
+									]),
+								_List_Nil),
+								A2(
+								$elm$svg$Svg$path,
+								_List_fromArray(
+									[
+										$elm$svg$Svg$Attributes$fill('#555'),
+										$elm$svg$Svg$Attributes$d('m 200,0 c -7,0 -13,6 -13,13 V 30 L 13,45 A 15,15 0 0 0 0,60 v 0 29 H 446 v -29 0 a 15,15 0 0 0 -13,-15 l -173,-15 V 13 c 0,-7 -5,-13 -12,-13 z')
+									]),
+								_List_Nil)
+							]))
 					]))));
 };
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
@@ -6574,6 +6602,32 @@ var $author$project$Main$view = function (modl) {
 		default:
 			var mover = modl.a.mover;
 			var remaining = modl.a.remaining;
+			var isSacrificingCircleRequired = function () {
+				var _v7 = A2(
+					$elm$core$List$filter,
+					function (c) {
+						return _Utils_eq(c.coord, mover.coord);
+					},
+					remaining.board);
+				if (!_v7.b) {
+					return false;
+				} else {
+					var steppedOn = _v7.a;
+					var _v8 = _Utils_Tuple2(mover.pieceColor, steppedOn.pieceColor);
+					if (_v8.b.$ === 'Ship') {
+						if (_v8.a.$ === 'Ship') {
+							var _v9 = _v8.a;
+							var _v10 = _v8.b;
+							return true;
+						} else {
+							var _v11 = _v8.b;
+							return false;
+						}
+					} else {
+						return true;
+					}
+				}
+			}();
 			return A2(
 				$elm$html$Html$div,
 				_List_fromArray(
@@ -6614,8 +6668,10 @@ var $author$project$Main$view = function (modl) {
 												return A3(
 													$author$project$Main$pieceSvg,
 													false,
-													_Utils_eq(remaining.whoseTurn, $author$project$Main$KeseTurn) ? $author$project$Main$GiveFocusTo(
-														$author$project$Main$PieceInKeseHand(i)) : $author$project$Main$None,
+													(_Utils_eq(remaining.whoseTurn, $author$project$Main$KeseTurn) && _Utils_eq(
+														isSacrificingCircleRequired,
+														_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToGrave(
+														{index: i, whoseHand: $author$project$Main$KeseTurn}) : $author$project$Main$None,
 													{
 														coord: {x: i + 1.0, y: 5.0},
 														pieceColor: $author$project$Main$Kese,
@@ -6631,8 +6687,10 @@ var $author$project$Main$view = function (modl) {
 													return A3(
 														$author$project$Main$pieceSvg,
 														false,
-														_Utils_eq(remaining.whoseTurn, $author$project$Main$RimaTurn) ? $author$project$Main$GiveFocusTo(
-															$author$project$Main$PieceInRimaHand(i)) : $author$project$Main$None,
+														(_Utils_eq(remaining.whoseTurn, $author$project$Main$RimaTurn) && _Utils_eq(
+															isSacrificingCircleRequired,
+															_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToGrave(
+															{index: i, whoseHand: $author$project$Main$RimaTurn}) : $author$project$Main$None,
 														{
 															coord: {x: 3.0 - i, y: -1.0},
 															pieceColor: $author$project$Main$Rima,

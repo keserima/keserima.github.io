@@ -69,6 +69,7 @@ type Msg
     | Cancel
     | TurnEnd
     | GiveFocusTo Focus
+    | SendToGrave { whoseHand : WhoseTurn, index : Int }
     | FirstMove { to : Coordinate }
 
 
@@ -425,6 +426,11 @@ stationaryPart cardState =
         ++ displayCapturedCardsAndTwoDecks cardState
         ++ [ playerSvg (RimaTurn == cardState.whoseTurn) RimaTurn
            , playerSvg (KeseTurn == cardState.whoseTurn) KeseTurn
+           , g [ transform "translate(660 180) scale(0.3)" ]
+                {- trash bin -}
+                [ Svg.path [ fill "#555", d "M 4 112 l 59 337 c 5 22 25 37 47 37 c 0 0 0 0 0 0 h 227 c 22 0 41 -16 47 -37 v 0 l 59 -337 z m 219 58 c 8 0 13 6 13 13 v 218 c 0 7 -5 13 -13 13 c -7 0 -13 -6 -13 -13 v -218 c 0 -7 6 -13 13 -13 z m -105 0 c 7 0 13 6 13 12 l 19 218 c 1 7 -4 13 -12 14 c -7 0 -13 -5 -14 -12 l -19 -217 c -1 -8 5 -14 12 -15 c 1 0 1 0 1 0 z m 210 0 c 0 0 0 0 1 0 c 7 1 13 7 12 15 l -19 217 c -1 7 -7 12 -14 12 c -8 -1 -13 -7 -12 -14 l 19 -218 c 0 -6 6 -12 13 -12 z" ] []
+                , Svg.path [ fill "#555", d "m 200,0 c -7,0 -13,6 -13,13 V 30 L 13,45 A 15,15 0 0 0 0,60 v 0 29 H 446 v -29 0 a 15,15 0 0 0 -13,-15 l -173,-15 V 13 c 0,-7 -5,-13 -12,-13 z" ] []
+                ]
            ]
 
 
@@ -682,6 +688,24 @@ view modl =
                 ]
 
         NowWaitingForAdditionalSacrifice { mover, remaining } ->
+            let
+                isSacrificingCircleRequired =
+                    case List.filter (\c -> c.coord == mover.coord) remaining.board of
+                        {- If there is no stepping, circle is never required -}
+                        [] ->
+                            False
+
+                        steppedOn :: _ ->
+                            case ( mover.pieceColor, steppedOn.pieceColor ) of
+                                ( Ship, Ship ) ->
+                                    True
+
+                                ( _, Ship ) ->
+                                    False
+
+                                ( _, _ ) ->
+                                    True
+            in
             Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
                 [ svg
                     [ viewBox "0 -200 900 900", width "600" ]
@@ -690,14 +714,14 @@ view modl =
                             (\piece ->
                                 { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
                                     |> pieceSvg False None
-                             {- You cannot click the piece on board while waiting for additional sacrifices. -}
+                             {- You cannot click any piece on the board while waiting for additional sacrifices. -}
                             )
                             remaining.board
                         ++ List.indexedMap
                             (\i prof ->
                                 pieceSvg False
-                                    (if remaining.whoseTurn == KeseTurn then
-                                        GiveFocusTo (PieceInKeseHand i)
+                                    (if remaining.whoseTurn == KeseTurn && (isSacrificingCircleRequired == (prof == Circle)) then
+                                        SendToGrave { whoseHand = KeseTurn, index = i }
 
                                      else
                                         None
@@ -708,8 +732,8 @@ view modl =
                         ++ List.indexedMap
                             (\i prof ->
                                 pieceSvg False
-                                    (if remaining.whoseTurn == RimaTurn then
-                                        GiveFocusTo (PieceInRimaHand i)
+                                    (if remaining.whoseTurn == RimaTurn && (isSacrificingCircleRequired == (prof == Circle)) then
+                                        SendToGrave { whoseHand = RimaTurn, index = i }
 
                                      else
                                         None
