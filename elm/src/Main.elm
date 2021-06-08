@@ -190,13 +190,29 @@ update_ msg modl =
                         [ Diagonal ] ->
                             AfterSacrifice Diag { mover = mover, remaining = { remaining | keseHand = newKeseHand } }
 
-                        {- shall not be taken -}
+                        {- this path shall not be taken -}
                         _ ->
                             modl
 
-                {- FIXME -}
                 RimaTurn ->
-                    modl
+                    let
+                        ( sacrifices {- always a singleton -}, newRimaHand ) =
+                            robIth index remaining.rimaHand
+                    in
+                    case sacrifices of
+                        {- FIXME -}
+                        [ Circle ] ->
+                            modl
+
+                        [ HorizontalVertical ] ->
+                            AfterSacrifice HorizVert { mover = mover, remaining = { remaining | rimaHand = newRimaHand } }
+
+                        [ Diagonal ] ->
+                            AfterSacrifice Diag { mover = mover, remaining = { remaining | rimaHand = newRimaHand } }
+
+                        {- this path shall not be taken -}
+                        _ ->
+                            modl
 
         _ ->
             modl
