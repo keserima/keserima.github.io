@@ -5500,7 +5500,7 @@ var $author$project$Main$robIth = F2(
 var $author$project$Main$update_ = F2(
 	function (msg, modl) {
 		var _v0 = _Utils_Tuple2(modl, msg);
-		_v0$5:
+		_v0$6:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'NothingSelected':
@@ -5509,7 +5509,7 @@ var $author$project$Main$update_ = F2(
 						var focus = _v0.b.a;
 						return A2($author$project$Main$MoverIsSelected, focus, cardState);
 					} else {
-						break _v0$5;
+						break _v0$6;
 					}
 				case 'MoverIsSelected':
 					switch (_v0.b.$) {
@@ -5579,18 +5579,37 @@ var $author$project$Main$update_ = F2(
 											{board: newBoard, rimaHand: newRimaHand, whoseTurn: $author$project$Main$KeseTurn}));
 							}
 						default:
-							break _v0$5;
+							break _v0$6;
 					}
 				case 'NowWaitingForAdditionalSacrifice':
-					if (_v0.b.$ === 'SendToTrashBinPart1') {
-						var mover = _v0.a.a.mover;
-						var remaining = _v0.a.a.remaining;
-						var whoseHand = _v0.b.a.whoseHand;
-						var index = _v0.b.a.index;
-						return $author$project$Main$WaitForTrashBinClick(
-							{index: index, mover: mover, remaining: remaining, whoseHand: whoseHand});
-					} else {
-						break _v0$5;
+					switch (_v0.b.$) {
+						case 'SendToTrashBinPart1':
+							var mover = _v0.a.a.mover;
+							var remaining = _v0.a.a.remaining;
+							var whoseHand = _v0.b.a.whoseHand;
+							var index = _v0.b.a.index;
+							return $author$project$Main$WaitForTrashBinClick(
+								{index: index, mover: mover, remaining: remaining, whoseHand: whoseHand});
+						case 'TurnEnd':
+							var mover = _v0.a.a.mover;
+							var remaining = _v0.a.a.remaining;
+							var _v9 = _v0.b;
+							return $author$project$Main$NothingSelected(
+								_Utils_update(
+									remaining,
+									{
+										board: A2($elm$core$List$cons, mover, remaining.board),
+										whoseTurn: function () {
+											var _v10 = remaining.whoseTurn;
+											if (_v10.$ === 'KeseTurn') {
+												return $author$project$Main$RimaTurn;
+											} else {
+												return $author$project$Main$KeseTurn;
+											}
+										}()
+									}));
+						default:
+							break _v0$6;
 					}
 				case 'WaitForTrashBinClick':
 					if (_v0.b.$ === 'SendToTrashBinPart2') {
@@ -5598,20 +5617,20 @@ var $author$project$Main$update_ = F2(
 						var remaining = _v0.a.a.remaining;
 						var whoseHand = _v0.a.a.whoseHand;
 						var index = _v0.a.a.index;
-						var _v9 = _v0.b;
+						var _v11 = _v0.b;
 						if (whoseHand.$ === 'KeseTurn') {
-							var _v11 = A2($author$project$Main$robIth, index, remaining.keseHand);
-							var sacrifices = _v11.a;
-							var newKeseHand = _v11.b;
-							_v12$3:
+							var _v13 = A2($author$project$Main$robIth, index, remaining.keseHand);
+							var sacrifices = _v13.a;
+							var newKeseHand = _v13.b;
+							_v14$3:
 							while (true) {
 								if (sacrifices.b && (!sacrifices.b.b)) {
 									switch (sacrifices.a.$) {
 										case 'Circle':
-											var _v13 = sacrifices.a;
+											var _v15 = sacrifices.a;
 											return modl;
 										case 'HorizontalVertical':
-											var _v14 = sacrifices.a;
+											var _v16 = sacrifices.a;
 											return A2(
 												$author$project$Main$AfterSacrifice,
 												$author$project$Main$HorizVert,
@@ -5622,7 +5641,7 @@ var $author$project$Main$update_ = F2(
 														{keseHand: newKeseHand})
 												});
 										case 'Diagonal':
-											var _v15 = sacrifices.a;
+											var _v17 = sacrifices.a;
 											return A2(
 												$author$project$Main$AfterSacrifice,
 												$author$project$Main$Diag,
@@ -5633,21 +5652,60 @@ var $author$project$Main$update_ = F2(
 														{keseHand: newKeseHand})
 												});
 										default:
-											break _v12$3;
+											break _v14$3;
 									}
 								} else {
-									break _v12$3;
+									break _v14$3;
 								}
 							}
 							return modl;
 						} else {
+							var _v18 = A2($author$project$Main$robIth, index, remaining.rimaHand);
+							var sacrifices = _v18.a;
+							var newRimaHand = _v18.b;
+							_v19$3:
+							while (true) {
+								if (sacrifices.b && (!sacrifices.b.b)) {
+									switch (sacrifices.a.$) {
+										case 'Circle':
+											var _v20 = sacrifices.a;
+											return modl;
+										case 'HorizontalVertical':
+											var _v21 = sacrifices.a;
+											return A2(
+												$author$project$Main$AfterSacrifice,
+												$author$project$Main$HorizVert,
+												{
+													mover: mover,
+													remaining: _Utils_update(
+														remaining,
+														{rimaHand: newRimaHand})
+												});
+										case 'Diagonal':
+											var _v22 = sacrifices.a;
+											return A2(
+												$author$project$Main$AfterSacrifice,
+												$author$project$Main$Diag,
+												{
+													mover: mover,
+													remaining: _Utils_update(
+														remaining,
+														{rimaHand: newRimaHand})
+												});
+										default:
+											break _v19$3;
+									}
+								} else {
+									break _v19$3;
+								}
+							}
 							return modl;
 						}
 					} else {
-						break _v0$5;
+						break _v0$6;
 					}
 				default:
-					break _v0$5;
+					break _v0$6;
 			}
 		}
 		return modl;

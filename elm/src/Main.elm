@@ -172,6 +172,19 @@ update_ msg modl =
         ( NowWaitingForAdditionalSacrifice { mover, remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->
             WaitForTrashBinClick { mover = mover, remaining = remaining, whoseHand = whoseHand, index = index }
 
+        ( NowWaitingForAdditionalSacrifice { mover, remaining }, TurnEnd ) ->
+            NothingSelected
+                { remaining
+                    | whoseTurn =
+                        case remaining.whoseTurn of
+                            KeseTurn ->
+                                RimaTurn
+
+                            RimaTurn ->
+                                KeseTurn
+                    , board = mover :: remaining.board
+                }
+
         ( WaitForTrashBinClick { mover, remaining, whoseHand, index }, SendToTrashBinPart2 ) ->
             case whoseHand of
                 KeseTurn ->
