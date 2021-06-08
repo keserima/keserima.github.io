@@ -45,7 +45,19 @@ type alias PieceWithFloatPosition =
 type Model
     = NothingSelected StateOfCards
     | MoverIsSelected Focus StateOfCards
-    | {- Sacrifice is necessary if currently stepping; otherwise not necessary -} NowWaitingForAdditionalSacrifice { mover : PieceOnBoard, remaining : StateOfCards }
+    | {- Sacrifice is necessary if currently stepping; otherwise not necessary -} NowWaitingForAdditionalSacrifice FloatingMover
+    | WaitForTrashBinClick { mover : PieceOnBoard, remaining : StateOfCards, whoseHand : WhoseTurn, index : Int }
+    | AfterSacrifice MoveCommand FloatingMover
+    | AfterCircleSacrifice FloatingMover
+
+
+type alias FloatingMover =
+    { mover : PieceOnBoard, remaining : StateOfCards }
+
+
+type MoveCommand
+    = HorizVert
+    | Diag
 
 
 type alias StateOfCards =
@@ -69,7 +81,8 @@ type Msg
     | Cancel
     | TurnEnd
     | GiveFocusTo Focus
-    | SendToGrave { whoseHand : WhoseTurn, index : Int }
+    | SendToTrashBinPart1 { whoseHand : WhoseTurn, index : Int }
+    | SendToTrashBinPart2
     | FirstMove { to : Coordinate }
 
 
@@ -120,7 +133,6 @@ update_ msg modl =
 
         ( MoverIsSelected from cardState, FirstMove { to } ) ->
             case from of
-                {- FIXME -}
                 PieceOnTheBoard coord ->
                     case robFocusedPieceFromBoard coord cardState.board of
                         {- This branch is not taken -}
@@ -136,39 +148,76 @@ update_ msg modl =
                 {- Parachuting from KeseHand -}
                 PieceInKeseHand ind ->
                     let
-                        newKeseHand =
-                            List.take ind cardState.keseHand ++ List.drop (ind + 1) cardState.keseHand
+                        ( profs {- always a singleton -}, newKeseHand ) =
+                            robIth ind cardState.keseHand
 
                         newBoard =
-                            case List.drop ind cardState.keseHand of
-                                profession :: _ ->
-                                    { pieceColor = Kese, coord = to, prof = profession } :: cardState.board
-
-                                {- This path is never taken -}
-                                [] ->
-                                    cardState.board
+                            List.map (\prof -> { pieceColor = Kese, coord = to, prof = prof }) profs
+                                ++ cardState.board
                     in
                     NothingSelected { cardState | board = newBoard, keseHand = newKeseHand, whoseTurn = RimaTurn }
 
                 {- Parachuting from RimaHand -}
                 PieceInRimaHand ind ->
                     let
-                        newRimaHand =
-                            List.take ind cardState.rimaHand ++ List.drop (ind + 1) cardState.rimaHand
+                        ( profs {- always a singleton -}, newRimaHand ) =
+                            robIth ind cardState.rimaHand
 
                         newBoard =
-                            case List.drop ind cardState.rimaHand of
-                                profession :: _ ->
-                                    { pieceColor = Rima, coord = to, prof = profession } :: cardState.board
-
-                                {- This path is never taken -}
-                                [] ->
-                                    cardState.board
+                            List.map (\prof -> { pieceColor = Rima, coord = to, prof = prof }) profs
+                                ++ cardState.board
                     in
                     NothingSelected { cardState | board = newBoard, rimaHand = newRimaHand, whoseTurn = KeseTurn }
 
+        ( NowWaitingForAdditionalSacrifice { mover, remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->
+            WaitForTrashBinClick { mover = mover, remaining = remaining, whoseHand = whoseHand, index = index }
+
+        ( WaitForTrashBinClick { mover, remaining, whoseHand, index }, SendToTrashBinPart2 ) ->
+            case whoseHand of
+                KeseTurn ->
+                    let
+                        ( sacrifices {- always a singleton -}, newKeseHand ) =
+                            robIth index remaining.keseHand
+                    in
+                    case sacrifices of
+                        {- FIXME -}
+                        [ Circle ] ->
+                            modl
+
+                        [ HorizontalVertical ] ->
+                            AfterSacrifice HorizVert { mover = mover, remaining = { remaining | keseHand = newKeseHand } }
+
+                        [ Diagonal ] ->
+                            AfterSacrifice Diag { mover = mover, remaining = { remaining | keseHand = newKeseHand } }
+
+                        {- shall not be taken -}
+                        _ ->
+                            modl
+
+                {- FIXME -}
+                RimaTurn ->
+                    modl
+
         _ ->
             modl
+
+
+robIth : Int -> List a -> ( List a, List a )
+robIth ind list =
+    let
+        newList =
+            List.take ind list ++ List.drop (ind + 1) list
+
+        xs =
+            case List.drop ind list of
+                x :: _ ->
+                    [ x ]
+
+                {- This path is never taken -}
+                [] ->
+                    []
+    in
+    ( xs, newList )
 
 
 isWater : Coordinate -> Bool
@@ -294,6 +343,23 @@ goalCandidateSvg msgToBeSent coord =
         [ circle [ cx "52", cy "52", r "16", fill "#ffff00" ] [] ]
 
 
+clickableButtonOnTrashBinSvg : WhoseTurn -> Msg -> Svg Msg
+clickableButtonOnTrashBinSvg whoseTurn msgToBeSent =
+    g
+        [ transform
+            (case whoseTurn of
+                KeseTurn ->
+                    "translate(575 615)"
+
+                RimaTurn ->
+                    "translate(575 -95)"
+            )
+        , Svg.Events.onClick msgToBeSent
+        , Html.Attributes.style "cursor" "pointer"
+        ]
+        [ circle [ cx "0", cy "0", r "16", fill "#ffff00" ] [] ]
+
+
 pieceSvg : Bool -> Msg -> PieceWithFloatPosition -> Svg Msg
 pieceSvg focused msgToBeSent p =
     g
@@ -415,8 +481,8 @@ displayCapturedCardsAndTwoDecks model =
             model.capturedByRima
 
 
-stationaryPart : StateOfCards -> List (Svg Msg)
-stationaryPart cardState =
+stationaryPart : Maybe WhoseTurn -> StateOfCards -> List (Svg Msg)
+stationaryPart trashBinFocus cardState =
     defs []
         [ Svg.filter [ Svg.Attributes.style "color-interpolation-filters:sRGB", id "blur" ]
             [ feGaussianBlur [ stdDeviation "1.5 1.5", result "blur" ] []
@@ -426,12 +492,36 @@ stationaryPart cardState =
         ++ displayCapturedCardsAndTwoDecks cardState
         ++ [ playerSvg (RimaTurn == cardState.whoseTurn) RimaTurn
            , playerSvg (KeseTurn == cardState.whoseTurn) KeseTurn
-           , g [ transform "translate(660 180) scale(0.3)" ]
-                {- trash bin -}
-                [ Svg.path [ fill "#555", d "M 4 112 l 59 337 c 5 22 25 37 47 37 c 0 0 0 0 0 0 h 227 c 22 0 41 -16 47 -37 v 0 l 59 -337 z m 219 58 c 8 0 13 6 13 13 v 218 c 0 7 -5 13 -13 13 c -7 0 -13 -6 -13 -13 v -218 c 0 -7 6 -13 13 -13 z m -105 0 c 7 0 13 6 13 12 l 19 218 c 1 7 -4 13 -12 14 c -7 0 -13 -5 -14 -12 l -19 -217 c -1 -8 5 -14 12 -15 c 1 0 1 0 1 0 z m 210 0 c 0 0 0 0 1 0 c 7 1 13 7 12 15 l -19 217 c -1 7 -7 12 -14 12 c -8 -1 -13 -7 -12 -14 l 19 -218 c 0 -6 6 -12 13 -12 z" ] []
-                , Svg.path [ fill "#555", d "m 200,0 c -7,0 -13,6 -13,13 V 30 L 13,45 A 15,15 0 0 0 0,60 v 0 29 H 446 v -29 0 a 15,15 0 0 0 -13,-15 l -173,-15 V 13 c 0,-7 -5,-13 -12,-13 z" ] []
-                ]
+           , trashBinSvg
+                { transform = "translate(530 560) scale(0.2)"
+                , color =
+                    case trashBinFocus of
+                        Just KeseTurn ->
+                            "#555"
+
+                        _ ->
+                            "#eee"
+                }
+           , trashBinSvg
+                { transform = "translate(530 -150) scale(0.2)"
+                , color =
+                    case trashBinFocus of
+                        Just RimaTurn ->
+                            "#555"
+
+                        _ ->
+                            "#eee"
+                }
            ]
+
+
+trashBinSvg : { a | transform : String, color : String } -> Svg msg
+trashBinSvg o =
+    g [ transform o.transform ]
+        {- trash bin -}
+        [ Svg.path [ fill o.color, d "M 4 112 l 59 337 c 5 22 25 37 47 37 c 0 0 0 0 0 0 h 227 c 22 0 41 -16 47 -37 v 0 l 59 -337 z m 219 58 c 8 0 13 6 13 13 v 218 c 0 7 -5 13 -13 13 c -7 0 -13 -6 -13 -13 v -218 c 0 -7 6 -13 13 -13 z m -105 0 c 7 0 13 6 13 12 l 19 218 c 1 7 -4 13 -12 14 c -7 0 -13 -5 -14 -12 l -19 -217 c -1 -8 5 -14 12 -15 c 1 0 1 0 1 0 z m 210 0 c 0 0 0 0 1 0 c 7 1 13 7 12 15 l -19 217 c -1 7 -7 12 -14 12 c -8 -1 -13 -7 -12 -14 l 19 -218 c 0 -6 6 -12 13 -12 z" ] []
+        , Svg.path [ fill o.color, d "m 200,0 c -7,0 -13,6 -13,13 V 30 L 13,45 A 15,15 0 0 0 0,60 v 0 29 H 446 v -29 0 a 15,15 0 0 0 -13,-15 l -173,-15 V 13 c 0,-7 -5,-13 -12,-13 z" ] []
+        ]
 
 
 playerSvg : Bool -> WhoseTurn -> Svg msg
@@ -510,24 +600,30 @@ robFocusedPieceFromBoard coord board =
 
 getCandidates : Bool -> PieceOnBoard -> List PieceOnBoard -> List Coordinate
 getCandidates hasCircleInHand piece robbedBoard =
+    getCandidates_ piece
+        hasCircleInHand
+        robbedBoard
+        (case piece.prof of
+            Circle ->
+                [ piece.coord ]
+
+            HorizontalVertical ->
+                List.concatMap (\delta -> addDelta delta piece.coord) [ ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ) ]
+
+            Diagonal ->
+                List.concatMap (\delta -> addDelta delta piece.coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
+
+            All ->
+                List.concatMap (\delta -> addDelta delta piece.coord)
+                    [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ), ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ), ( 0, 0 ) ]
+        )
+
+
+getCandidates_ : PieceOnBoard -> Bool -> List PieceOnBoard -> List Coordinate -> List Coordinate
+getCandidates_ piece hasCircleInHand robbedBoard raw_candidates =
     let
         ship_positions =
             robbedBoard |> List.filter (\p -> p.pieceColor == Ship) |> List.map (\p -> p.coord)
-
-        raw_candidates =
-            case piece.prof of
-                Circle ->
-                    [ piece.coord ]
-
-                HorizontalVertical ->
-                    List.concatMap (\delta -> addDelta delta piece.coord) [ ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ) ]
-
-                Diagonal ->
-                    List.concatMap (\delta -> addDelta delta piece.coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
-
-                All ->
-                    List.concatMap (\delta -> addDelta delta piece.coord)
-                        [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ), ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ), ( 0, 0 ) ]
     in
     case piece.pieceColor of
         {- If ship, cannot leave water -}
@@ -554,6 +650,20 @@ getCandidates hasCircleInHand piece robbedBoard =
                     ++ List.filter (\coord -> List.member coord ship_positions) raw_candidates
 
 
+getCandidatesWithCommand : MoveCommand -> Bool -> PieceOnBoard -> List PieceOnBoard -> List Coordinate
+getCandidatesWithCommand moveCommand hasCircleInHand piece robbedBoard =
+    getCandidates_ piece
+        hasCircleInHand
+        robbedBoard
+        (case moveCommand of
+            HorizVert ->
+                List.concatMap (\delta -> addDelta delta piece.coord) [ ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ) ]
+
+            Diag ->
+                List.concatMap (\delta -> addDelta delta piece.coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
+        )
+
+
 view : Model -> Html Msg
 view modl =
     case modl of
@@ -563,7 +673,7 @@ view modl =
                     [ viewBox "0 -200 900 900"
                     , width "600"
                     ]
-                    (stationaryPart cardState
+                    (stationaryPart Nothing cardState
                         ++ List.map
                             (\piece ->
                                 { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
@@ -683,7 +793,7 @@ view modl =
             Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
                 [ svg
                     [ viewBox "0 -200 900 900", width "600" ]
-                    (stationaryPart cardState ++ dynamicPart)
+                    (stationaryPart Nothing cardState ++ dynamicPart)
                 , Html.button [ onClick Cancel ] [ text "キャンセル" ]
                 ]
 
@@ -709,7 +819,7 @@ view modl =
             Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
                 [ svg
                     [ viewBox "0 -200 900 900", width "600" ]
-                    (stationaryPart remaining
+                    (stationaryPart Nothing remaining
                         ++ List.map
                             (\piece ->
                                 { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
@@ -721,7 +831,7 @@ view modl =
                             (\i prof ->
                                 pieceSvg False
                                     (if remaining.whoseTurn == KeseTurn && (isSacrificingCircleRequired == (prof == Circle)) then
-                                        SendToGrave { whoseHand = KeseTurn, index = i }
+                                        SendToTrashBinPart1 { whoseHand = KeseTurn, index = i }
 
                                      else
                                         None
@@ -733,7 +843,7 @@ view modl =
                             (\i prof ->
                                 pieceSvg False
                                     (if remaining.whoseTurn == RimaTurn && (isSacrificingCircleRequired == (prof == Circle)) then
-                                        SendToGrave { whoseHand = RimaTurn, index = i }
+                                        SendToTrashBinPart1 { whoseHand = RimaTurn, index = i }
 
                                      else
                                         None
@@ -744,6 +854,95 @@ view modl =
                         ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
                     )
                 , Html.button [ onClick TurnEnd ] [ text "ターンエンド" ]
+                ]
+
+        WaitForTrashBinClick { mover, remaining, whoseHand, index } ->
+            Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
+                [ svg
+                    [ viewBox "0 -200 900 900", width "600" ]
+                    (stationaryPart (Just whoseHand) remaining
+                        ++ List.map
+                            (\piece ->
+                                { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                    |> pieceSvg False None
+                             {- You cannot click any piece on the board while waiting for additional sacrifices. -}
+                            )
+                            remaining.board
+                        ++ List.indexedMap
+                            (\i prof ->
+                                pieceSvg (whoseHand == KeseTurn && i == index)
+                                    None
+                                    { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                            )
+                            remaining.keseHand
+                        ++ List.indexedMap
+                            (\i prof ->
+                                pieceSvg (whoseHand == RimaTurn && i == index)
+                                    None
+                                    { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                            )
+                            remaining.rimaHand
+                        ++ [ clickableButtonOnTrashBinSvg whoseHand SendToTrashBinPart2
+                           , pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor }
+                           ]
+                    )
+                ]
+
+        AfterSacrifice command { mover, remaining } ->
+            let
+                focus_coord =
+                    mover.coord
+
+                robbedBoard =
+                    remaining.board
+
+                hasCircleInHand =
+                    List.any (\c -> c == Circle)
+                        (case remaining.whoseTurn of
+                            KeseTurn ->
+                                remaining.keseHand
+
+                            RimaTurn ->
+                                remaining.rimaHand
+                        )
+
+                candidates =
+                    getCandidatesWithCommand command hasCircleInHand mover robbedBoard
+
+                dynamicPart =
+                    List.map
+                        (\piece ->
+                            { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                |> pieceSvg (piece.coord == focus_coord) None
+                        )
+                        remaining.board
+                        ++ (candidates
+                                |> List.map (\coord -> goalCandidateSvg (FirstMove { to = coord }) coord)
+                           )
+                        ++ List.indexedMap
+                            (\i prof ->
+                                pieceSvg False None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                            )
+                            remaining.keseHand
+                        ++ List.indexedMap
+                            (\i prof ->
+                                pieceSvg False None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                            )
+                            remaining.rimaHand
+                        ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
+            in
+            Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
+                [ svg
+                    [ viewBox "0 -200 900 900", width "600" ]
+                    (stationaryPart Nothing remaining ++ dynamicPart)
+                ]
+
+        AfterCircleSacrifice internal ->
+            Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
+                [ svg
+                    [ viewBox "0 -200 900 900", width "600" ]
+                    []
+                , Html.button [ onClick Cancel ] [ text "キャンセル" ]
                 ]
 
 

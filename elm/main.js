@@ -5282,6 +5282,12 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
+var $author$project$Main$AfterSacrifice = F2(
+	function (a, b) {
+		return {$: 'AfterSacrifice', a: a, b: b};
+	});
+var $author$project$Main$Diag = {$: 'Diag'};
+var $author$project$Main$HorizVert = {$: 'HorizVert'};
 var $author$project$Main$MoverIsSelected = F2(
 	function (a, b) {
 		return {$: 'MoverIsSelected', a: a, b: b};
@@ -5289,27 +5295,9 @@ var $author$project$Main$MoverIsSelected = F2(
 var $author$project$Main$NowWaitingForAdditionalSacrifice = function (a) {
 	return {$: 'NowWaitingForAdditionalSacrifice', a: a};
 };
-var $elm$core$List$drop = F2(
-	function (n, list) {
-		drop:
-		while (true) {
-			if (n <= 0) {
-				return list;
-			} else {
-				if (!list.b) {
-					return list;
-				} else {
-					var x = list.a;
-					var xs = list.b;
-					var $temp$n = n - 1,
-						$temp$list = xs;
-					n = $temp$n;
-					list = $temp$list;
-					continue drop;
-				}
-			}
-		}
-	});
+var $author$project$Main$WaitForTrashBinClick = function (a) {
+	return {$: 'WaitForTrashBinClick', a: a};
+};
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -5343,6 +5331,27 @@ var $author$project$Main$robFocusedPieceFromBoard = F2(
 						board)));
 		} else {
 			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$List$drop = F2(
+	function (n, list) {
+		drop:
+		while (true) {
+			if (n <= 0) {
+				return list;
+			} else {
+				if (!list.b) {
+					return list;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs;
+					n = $temp$n;
+					list = $temp$list;
+					continue drop;
+				}
+			}
 		}
 	});
 var $elm$core$List$takeReverse = F3(
@@ -5471,10 +5480,27 @@ var $elm$core$List$take = F2(
 	function (n, list) {
 		return A3($elm$core$List$takeFast, 0, n, list);
 	});
+var $author$project$Main$robIth = F2(
+	function (ind, list) {
+		var xs = function () {
+			var _v0 = A2($elm$core$List$drop, ind, list);
+			if (_v0.b) {
+				var x = _v0.a;
+				return _List_fromArray(
+					[x]);
+			} else {
+				return _List_Nil;
+			}
+		}();
+		var newList = _Utils_ap(
+			A2($elm$core$List$take, ind, list),
+			A2($elm$core$List$drop, ind + 1, list));
+		return _Utils_Tuple2(xs, newList);
+	});
 var $author$project$Main$update_ = F2(
 	function (msg, modl) {
 		var _v0 = _Utils_Tuple2(modl, msg);
-		_v0$3:
+		_v0$5:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'NothingSelected':
@@ -5483,7 +5509,7 @@ var $author$project$Main$update_ = F2(
 						var focus = _v0.b.a;
 						return A2($author$project$Main$MoverIsSelected, focus, cardState);
 					} else {
-						break _v0$3;
+						break _v0$5;
 					}
 				case 'MoverIsSelected':
 					switch (_v0.b.$) {
@@ -5519,52 +5545,109 @@ var $author$project$Main$update_ = F2(
 									}
 								case 'PieceInKeseHand':
 									var ind = from.a;
-									var newKeseHand = _Utils_ap(
-										A2($elm$core$List$take, ind, cardState.keseHand),
-										A2($elm$core$List$drop, ind + 1, cardState.keseHand));
-									var newBoard = function () {
-										var _v7 = A2($elm$core$List$drop, ind, cardState.keseHand);
-										if (_v7.b) {
-											var profession = _v7.a;
-											return A2(
-												$elm$core$List$cons,
-												{coord: to, pieceColor: $author$project$Main$Kese, prof: profession},
-												cardState.board);
-										} else {
-											return cardState.board;
-										}
-									}();
+									var _v7 = A2($author$project$Main$robIth, ind, cardState.keseHand);
+									var profs = _v7.a;
+									var newKeseHand = _v7.b;
+									var newBoard = _Utils_ap(
+										A2(
+											$elm$core$List$map,
+											function (prof) {
+												return {coord: to, pieceColor: $author$project$Main$Kese, prof: prof};
+											},
+											profs),
+										cardState.board);
 									return $author$project$Main$NothingSelected(
 										_Utils_update(
 											cardState,
 											{board: newBoard, keseHand: newKeseHand, whoseTurn: $author$project$Main$RimaTurn}));
 								default:
 									var ind = from.a;
-									var newRimaHand = _Utils_ap(
-										A2($elm$core$List$take, ind, cardState.rimaHand),
-										A2($elm$core$List$drop, ind + 1, cardState.rimaHand));
-									var newBoard = function () {
-										var _v8 = A2($elm$core$List$drop, ind, cardState.rimaHand);
-										if (_v8.b) {
-											var profession = _v8.a;
-											return A2(
-												$elm$core$List$cons,
-												{coord: to, pieceColor: $author$project$Main$Rima, prof: profession},
-												cardState.board);
-										} else {
-											return cardState.board;
-										}
-									}();
+									var _v8 = A2($author$project$Main$robIth, ind, cardState.rimaHand);
+									var profs = _v8.a;
+									var newRimaHand = _v8.b;
+									var newBoard = _Utils_ap(
+										A2(
+											$elm$core$List$map,
+											function (prof) {
+												return {coord: to, pieceColor: $author$project$Main$Rima, prof: prof};
+											},
+											profs),
+										cardState.board);
 									return $author$project$Main$NothingSelected(
 										_Utils_update(
 											cardState,
 											{board: newBoard, rimaHand: newRimaHand, whoseTurn: $author$project$Main$KeseTurn}));
 							}
 						default:
-							break _v0$3;
+							break _v0$5;
+					}
+				case 'NowWaitingForAdditionalSacrifice':
+					if (_v0.b.$ === 'SendToTrashBinPart1') {
+						var mover = _v0.a.a.mover;
+						var remaining = _v0.a.a.remaining;
+						var whoseHand = _v0.b.a.whoseHand;
+						var index = _v0.b.a.index;
+						return $author$project$Main$WaitForTrashBinClick(
+							{index: index, mover: mover, remaining: remaining, whoseHand: whoseHand});
+					} else {
+						break _v0$5;
+					}
+				case 'WaitForTrashBinClick':
+					if (_v0.b.$ === 'SendToTrashBinPart2') {
+						var mover = _v0.a.a.mover;
+						var remaining = _v0.a.a.remaining;
+						var whoseHand = _v0.a.a.whoseHand;
+						var index = _v0.a.a.index;
+						var _v9 = _v0.b;
+						if (whoseHand.$ === 'KeseTurn') {
+							var _v11 = A2($author$project$Main$robIth, index, remaining.keseHand);
+							var sacrifices = _v11.a;
+							var newKeseHand = _v11.b;
+							_v12$3:
+							while (true) {
+								if (sacrifices.b && (!sacrifices.b.b)) {
+									switch (sacrifices.a.$) {
+										case 'Circle':
+											var _v13 = sacrifices.a;
+											return modl;
+										case 'HorizontalVertical':
+											var _v14 = sacrifices.a;
+											return A2(
+												$author$project$Main$AfterSacrifice,
+												$author$project$Main$HorizVert,
+												{
+													mover: mover,
+													remaining: _Utils_update(
+														remaining,
+														{keseHand: newKeseHand})
+												});
+										case 'Diagonal':
+											var _v15 = sacrifices.a;
+											return A2(
+												$author$project$Main$AfterSacrifice,
+												$author$project$Main$Diag,
+												{
+													mover: mover,
+													remaining: _Utils_update(
+														remaining,
+														{keseHand: newKeseHand})
+												});
+										default:
+											break _v12$3;
+									}
+								} else {
+									break _v12$3;
+								}
+							}
+							return modl;
+						} else {
+							return modl;
+						}
+					} else {
+						break _v0$5;
 					}
 				default:
-					break _v0$3;
+					break _v0$5;
 			}
 		}
 		return modl;
@@ -5592,9 +5675,10 @@ var $author$project$Main$PieceInRimaHand = function (a) {
 var $author$project$Main$PieceOnTheBoard = function (a) {
 	return {$: 'PieceOnTheBoard', a: a};
 };
-var $author$project$Main$SendToGrave = function (a) {
-	return {$: 'SendToGrave', a: a};
+var $author$project$Main$SendToTrashBinPart1 = function (a) {
+	return {$: 'SendToTrashBinPart1', a: a};
 };
+var $author$project$Main$SendToTrashBinPart2 = {$: 'SendToTrashBinPart2'};
 var $author$project$Main$TurnEnd = {$: 'TurnEnd'};
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
@@ -5618,6 +5702,64 @@ var $elm$core$List$any = F2(
 		}
 	});
 var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
+var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
+var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
+var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$svg$Svg$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
+var $author$project$Main$clickableButtonOnTrashBinSvg = F2(
+	function (whoseTurn, msgToBeSent) {
+		return A2(
+			$elm$svg$Svg$g,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$transform(
+					function () {
+						if (whoseTurn.$ === 'KeseTurn') {
+							return 'translate(575 615)';
+						} else {
+							return 'translate(575 -95)';
+						}
+					}()),
+					$elm$svg$Svg$Events$onClick(msgToBeSent),
+					A2($elm$html$Html$Attributes$style, 'cursor', 'pointer')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$cx('0'),
+							$elm$svg$Svg$Attributes$cy('0'),
+							$elm$svg$Svg$Attributes$r('16'),
+							$elm$svg$Svg$Attributes$fill('#ffff00')
+						]),
+					_List_Nil)
+				]));
+	});
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $author$project$Main$addDelta = F2(
 	function (_v0, coord) {
@@ -5689,9 +5831,6 @@ var $elm$core$List$member = F2(
 			},
 			xs);
 	});
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
 var $author$project$Main$all_coord = A2(
 	$elm$core$List$concatMap,
 	function (y_ind) {
@@ -5726,8 +5865,8 @@ var $author$project$Main$neitherOccupiedNorWater = function (board) {
 			},
 			$author$project$Main$all_coord));
 };
-var $author$project$Main$getCandidates = F3(
-	function (hasCircleInHand, piece, robbedBoard) {
+var $author$project$Main$getCandidates_ = F4(
+	function (piece, hasCircleInHand, robbedBoard, raw_candidates) {
 		var ship_positions = A2(
 			$elm$core$List$map,
 			function (p) {
@@ -5739,58 +5878,6 @@ var $author$project$Main$getCandidates = F3(
 					return _Utils_eq(p.pieceColor, $author$project$Main$Ship);
 				},
 				robbedBoard));
-		var raw_candidates = function () {
-			var _v1 = piece.prof;
-			switch (_v1.$) {
-				case 'Circle':
-					return _List_fromArray(
-						[piece.coord]);
-				case 'HorizontalVertical':
-					return A2(
-						$elm$core$List$concatMap,
-						function (delta) {
-							return A2($author$project$Main$addDelta, delta, piece.coord);
-						},
-						_List_fromArray(
-							[
-								_Utils_Tuple2(1, 0),
-								_Utils_Tuple2(-1, 0),
-								_Utils_Tuple2(0, 1),
-								_Utils_Tuple2(0, -1)
-							]));
-				case 'Diagonal':
-					return A2(
-						$elm$core$List$concatMap,
-						function (delta) {
-							return A2($author$project$Main$addDelta, delta, piece.coord);
-						},
-						_List_fromArray(
-							[
-								_Utils_Tuple2(1, 1),
-								_Utils_Tuple2(-1, -1),
-								_Utils_Tuple2(-1, 1),
-								_Utils_Tuple2(1, -1)
-							]));
-				default:
-					return A2(
-						$elm$core$List$concatMap,
-						function (delta) {
-							return A2($author$project$Main$addDelta, delta, piece.coord);
-						},
-						_List_fromArray(
-							[
-								_Utils_Tuple2(1, 1),
-								_Utils_Tuple2(-1, -1),
-								_Utils_Tuple2(-1, 1),
-								_Utils_Tuple2(1, -1),
-								_Utils_Tuple2(1, 0),
-								_Utils_Tuple2(-1, 0),
-								_Utils_Tuple2(0, 1),
-								_Utils_Tuple2(0, -1),
-								_Utils_Tuple2(0, 0)
-							]));
-			}
-		}();
 		var _v0 = piece.pieceColor;
 		if (_v0.$ === 'Ship') {
 			return hasCircleInHand ? _Utils_ap(
@@ -5832,33 +5919,106 @@ var $author$project$Main$getCandidates = F3(
 					raw_candidates));
 		}
 	});
-var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
-var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
-var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
-var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
-var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
-var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
+var $elm$core$Basics$negate = function (n) {
+	return -n;
 };
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
+var $author$project$Main$getCandidates = F3(
+	function (hasCircleInHand, piece, robbedBoard) {
+		return A4(
+			$author$project$Main$getCandidates_,
+			piece,
+			hasCircleInHand,
+			robbedBoard,
+			function () {
+				var _v0 = piece.prof;
+				switch (_v0.$) {
+					case 'Circle':
+						return _List_fromArray(
+							[piece.coord]);
+					case 'HorizontalVertical':
+						return A2(
+							$elm$core$List$concatMap,
+							function (delta) {
+								return A2($author$project$Main$addDelta, delta, piece.coord);
+							},
+							_List_fromArray(
+								[
+									_Utils_Tuple2(1, 0),
+									_Utils_Tuple2(-1, 0),
+									_Utils_Tuple2(0, 1),
+									_Utils_Tuple2(0, -1)
+								]));
+					case 'Diagonal':
+						return A2(
+							$elm$core$List$concatMap,
+							function (delta) {
+								return A2($author$project$Main$addDelta, delta, piece.coord);
+							},
+							_List_fromArray(
+								[
+									_Utils_Tuple2(1, 1),
+									_Utils_Tuple2(-1, -1),
+									_Utils_Tuple2(-1, 1),
+									_Utils_Tuple2(1, -1)
+								]));
+					default:
+						return A2(
+							$elm$core$List$concatMap,
+							function (delta) {
+								return A2($author$project$Main$addDelta, delta, piece.coord);
+							},
+							_List_fromArray(
+								[
+									_Utils_Tuple2(1, 1),
+									_Utils_Tuple2(-1, -1),
+									_Utils_Tuple2(-1, 1),
+									_Utils_Tuple2(1, -1),
+									_Utils_Tuple2(1, 0),
+									_Utils_Tuple2(-1, 0),
+									_Utils_Tuple2(0, 1),
+									_Utils_Tuple2(0, -1),
+									_Utils_Tuple2(0, 0)
+								]));
+				}
+			}());
 	});
-var $elm$svg$Svg$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
-var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
+var $author$project$Main$getCandidatesWithCommand = F4(
+	function (moveCommand, hasCircleInHand, piece, robbedBoard) {
+		return A4(
+			$author$project$Main$getCandidates_,
+			piece,
+			hasCircleInHand,
+			robbedBoard,
+			function () {
+				if (moveCommand.$ === 'HorizVert') {
+					return A2(
+						$elm$core$List$concatMap,
+						function (delta) {
+							return A2($author$project$Main$addDelta, delta, piece.coord);
+						},
+						_List_fromArray(
+							[
+								_Utils_Tuple2(1, 0),
+								_Utils_Tuple2(-1, 0),
+								_Utils_Tuple2(0, 1),
+								_Utils_Tuple2(0, -1)
+							]));
+				} else {
+					return A2(
+						$elm$core$List$concatMap,
+						function (delta) {
+							return A2($author$project$Main$addDelta, delta, piece.coord);
+						},
+						_List_fromArray(
+							[
+								_Utils_Tuple2(1, 1),
+								_Utils_Tuple2(-1, -1),
+								_Utils_Tuple2(-1, 1),
+								_Utils_Tuple2(1, -1)
+							]));
+				}
+			}());
+	});
 var $author$project$Main$goalCandidateSvg = F2(
 	function (msgToBeSent, coord) {
 		return A2(
@@ -6254,74 +6414,101 @@ var $author$project$Main$playerSvg = F2(
 	});
 var $elm$svg$Svg$Attributes$result = _VirtualDom_attribute('result');
 var $elm$svg$Svg$Attributes$stdDeviation = _VirtualDom_attribute('stdDeviation');
-var $author$project$Main$stationaryPart = function (cardState) {
+var $author$project$Main$trashBinSvg = function (o) {
 	return A2(
-		$elm$core$List$cons,
-		A2(
-			$elm$svg$Svg$defs,
-			_List_Nil,
-			_List_fromArray(
-				[
-					A2(
-					$elm$svg$Svg$filter,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Attributes$style('color-interpolation-filters:sRGB'),
-							$elm$svg$Svg$Attributes$id('blur')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$svg$Svg$feGaussianBlur,
-							_List_fromArray(
-								[
-									$elm$svg$Svg$Attributes$stdDeviation('1.5 1.5'),
-									$elm$svg$Svg$Attributes$result('blur')
-								]),
-							_List_Nil)
-						]))
-				])),
-		_Utils_ap(
-			$author$project$Main$boardSvg,
-			_Utils_ap(
-				$author$project$Main$displayCapturedCardsAndTwoDecks(cardState),
+		$elm$svg$Svg$g,
+		_List_fromArray(
+			[
+				$elm$svg$Svg$Attributes$transform(o.transform)
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$svg$Svg$path,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$fill(o.color),
+						$elm$svg$Svg$Attributes$d('M 4 112 l 59 337 c 5 22 25 37 47 37 c 0 0 0 0 0 0 h 227 c 22 0 41 -16 47 -37 v 0 l 59 -337 z m 219 58 c 8 0 13 6 13 13 v 218 c 0 7 -5 13 -13 13 c -7 0 -13 -6 -13 -13 v -218 c 0 -7 6 -13 13 -13 z m -105 0 c 7 0 13 6 13 12 l 19 218 c 1 7 -4 13 -12 14 c -7 0 -13 -5 -14 -12 l -19 -217 c -1 -8 5 -14 12 -15 c 1 0 1 0 1 0 z m 210 0 c 0 0 0 0 1 0 c 7 1 13 7 12 15 l -19 217 c -1 7 -7 12 -14 12 c -8 -1 -13 -7 -12 -14 l 19 -218 c 0 -6 6 -12 13 -12 z')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$path,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$fill(o.color),
+						$elm$svg$Svg$Attributes$d('m 200,0 c -7,0 -13,6 -13,13 V 30 L 13,45 A 15,15 0 0 0 0,60 v 0 29 H 446 v -29 0 a 15,15 0 0 0 -13,-15 l -173,-15 V 13 c 0,-7 -5,-13 -12,-13 z')
+					]),
+				_List_Nil)
+			]));
+};
+var $author$project$Main$stationaryPart = F2(
+	function (trashBinFocus, cardState) {
+		return A2(
+			$elm$core$List$cons,
+			A2(
+				$elm$svg$Svg$defs,
+				_List_Nil,
 				_List_fromArray(
 					[
 						A2(
-						$author$project$Main$playerSvg,
-						_Utils_eq($author$project$Main$RimaTurn, cardState.whoseTurn),
-						$author$project$Main$RimaTurn),
-						A2(
-						$author$project$Main$playerSvg,
-						_Utils_eq($author$project$Main$KeseTurn, cardState.whoseTurn),
-						$author$project$Main$KeseTurn),
-						A2(
-						$elm$svg$Svg$g,
+						$elm$svg$Svg$filter,
 						_List_fromArray(
 							[
-								$elm$svg$Svg$Attributes$transform('translate(660 180) scale(0.3)')
+								$elm$svg$Svg$Attributes$style('color-interpolation-filters:sRGB'),
+								$elm$svg$Svg$Attributes$id('blur')
 							]),
 						_List_fromArray(
 							[
 								A2(
-								$elm$svg$Svg$path,
+								$elm$svg$Svg$feGaussianBlur,
 								_List_fromArray(
 									[
-										$elm$svg$Svg$Attributes$fill('#555'),
-										$elm$svg$Svg$Attributes$d('M 4 112 l 59 337 c 5 22 25 37 47 37 c 0 0 0 0 0 0 h 227 c 22 0 41 -16 47 -37 v 0 l 59 -337 z m 219 58 c 8 0 13 6 13 13 v 218 c 0 7 -5 13 -13 13 c -7 0 -13 -6 -13 -13 v -218 c 0 -7 6 -13 13 -13 z m -105 0 c 7 0 13 6 13 12 l 19 218 c 1 7 -4 13 -12 14 c -7 0 -13 -5 -14 -12 l -19 -217 c -1 -8 5 -14 12 -15 c 1 0 1 0 1 0 z m 210 0 c 0 0 0 0 1 0 c 7 1 13 7 12 15 l -19 217 c -1 7 -7 12 -14 12 c -8 -1 -13 -7 -12 -14 l 19 -218 c 0 -6 6 -12 13 -12 z')
-									]),
-								_List_Nil),
-								A2(
-								$elm$svg$Svg$path,
-								_List_fromArray(
-									[
-										$elm$svg$Svg$Attributes$fill('#555'),
-										$elm$svg$Svg$Attributes$d('m 200,0 c -7,0 -13,6 -13,13 V 30 L 13,45 A 15,15 0 0 0 0,60 v 0 29 H 446 v -29 0 a 15,15 0 0 0 -13,-15 l -173,-15 V 13 c 0,-7 -5,-13 -12,-13 z')
+										$elm$svg$Svg$Attributes$stdDeviation('1.5 1.5'),
+										$elm$svg$Svg$Attributes$result('blur')
 									]),
 								_List_Nil)
 							]))
-					]))));
-};
+					])),
+			_Utils_ap(
+				$author$project$Main$boardSvg,
+				_Utils_ap(
+					$author$project$Main$displayCapturedCardsAndTwoDecks(cardState),
+					_List_fromArray(
+						[
+							A2(
+							$author$project$Main$playerSvg,
+							_Utils_eq($author$project$Main$RimaTurn, cardState.whoseTurn),
+							$author$project$Main$RimaTurn),
+							A2(
+							$author$project$Main$playerSvg,
+							_Utils_eq($author$project$Main$KeseTurn, cardState.whoseTurn),
+							$author$project$Main$KeseTurn),
+							$author$project$Main$trashBinSvg(
+							{
+								color: function () {
+									if ((trashBinFocus.$ === 'Just') && (trashBinFocus.a.$ === 'KeseTurn')) {
+										var _v1 = trashBinFocus.a;
+										return '#555';
+									} else {
+										return '#eee';
+									}
+								}(),
+								transform: 'translate(530 560) scale(0.2)'
+							}),
+							$author$project$Main$trashBinSvg(
+							{
+								color: function () {
+									if ((trashBinFocus.$ === 'Just') && (trashBinFocus.a.$ === 'RimaTurn')) {
+										var _v3 = trashBinFocus.a;
+										return '#555';
+									} else {
+										return '#eee';
+									}
+								}(),
+								transform: 'translate(530 -150) scale(0.2)'
+							})
+						]))));
+	});
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
@@ -6346,7 +6533,7 @@ var $author$project$Main$view = function (modl) {
 								$elm$svg$Svg$Attributes$width('600')
 							]),
 						_Utils_ap(
-							$author$project$Main$stationaryPart(cardState),
+							A2($author$project$Main$stationaryPart, $elm$core$Maybe$Nothing, cardState),
 							_Utils_ap(
 								A2(
 									$elm$core$List$map,
@@ -6586,7 +6773,7 @@ var $author$project$Main$view = function (modl) {
 								$elm$svg$Svg$Attributes$width('600')
 							]),
 						_Utils_ap(
-							$author$project$Main$stationaryPart(cardState),
+							A2($author$project$Main$stationaryPart, $elm$core$Maybe$Nothing, cardState),
 							dynamicPart)),
 						A2(
 						$elm$html$Html$button,
@@ -6599,7 +6786,7 @@ var $author$project$Main$view = function (modl) {
 								$elm$svg$Svg$text('キャンセル')
 							]))
 					]));
-		default:
+		case 'NowWaitingForAdditionalSacrifice':
 			var mover = modl.a.mover;
 			var remaining = modl.a.remaining;
 			var isSacrificingCircleRequired = function () {
@@ -6644,7 +6831,7 @@ var $author$project$Main$view = function (modl) {
 								$elm$svg$Svg$Attributes$width('600')
 							]),
 						_Utils_ap(
-							$author$project$Main$stationaryPart(remaining),
+							A2($author$project$Main$stationaryPart, $elm$core$Maybe$Nothing, remaining),
 							_Utils_ap(
 								A2(
 									$elm$core$List$map,
@@ -6670,7 +6857,7 @@ var $author$project$Main$view = function (modl) {
 													false,
 													(_Utils_eq(remaining.whoseTurn, $author$project$Main$KeseTurn) && _Utils_eq(
 														isSacrificingCircleRequired,
-														_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToGrave(
+														_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
 														{index: i, whoseHand: $author$project$Main$KeseTurn}) : $author$project$Main$None,
 													{
 														coord: {x: i + 1.0, y: 5.0},
@@ -6689,7 +6876,7 @@ var $author$project$Main$view = function (modl) {
 														false,
 														(_Utils_eq(remaining.whoseTurn, $author$project$Main$RimaTurn) && _Utils_eq(
 															isSacrificingCircleRequired,
-															_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToGrave(
+															_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
 															{index: i, whoseHand: $author$project$Main$RimaTurn}) : $author$project$Main$None,
 														{
 															coord: {x: 3.0 - i, y: -1.0},
@@ -6716,6 +6903,224 @@ var $author$project$Main$view = function (modl) {
 						_List_fromArray(
 							[
 								$elm$svg$Svg$text('ターンエンド')
+							]))
+					]));
+		case 'WaitForTrashBinClick':
+			var mover = modl.a.mover;
+			var remaining = modl.a.remaining;
+			var whoseHand = modl.a.whoseHand;
+			var index = modl.a.index;
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$svg$Svg$svg,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
+								$elm$svg$Svg$Attributes$width('600')
+							]),
+						_Utils_ap(
+							A2(
+								$author$project$Main$stationaryPart,
+								$elm$core$Maybe$Just(whoseHand),
+								remaining),
+							_Utils_ap(
+								A2(
+									$elm$core$List$map,
+									function (piece) {
+										return A3(
+											$author$project$Main$pieceSvg,
+											false,
+											$author$project$Main$None,
+											{
+												coord: {x: piece.coord.x, y: piece.coord.y},
+												pieceColor: piece.pieceColor,
+												prof: piece.prof
+											});
+									},
+									remaining.board),
+								_Utils_ap(
+									A2(
+										$elm$core$List$indexedMap,
+										F2(
+											function (i, prof) {
+												return A3(
+													$author$project$Main$pieceSvg,
+													_Utils_eq(whoseHand, $author$project$Main$KeseTurn) && _Utils_eq(i, index),
+													$author$project$Main$None,
+													{
+														coord: {x: i + 1.0, y: 5.0},
+														pieceColor: $author$project$Main$Kese,
+														prof: prof
+													});
+											}),
+										remaining.keseHand),
+									_Utils_ap(
+										A2(
+											$elm$core$List$indexedMap,
+											F2(
+												function (i, prof) {
+													return A3(
+														$author$project$Main$pieceSvg,
+														_Utils_eq(whoseHand, $author$project$Main$RimaTurn) && _Utils_eq(i, index),
+														$author$project$Main$None,
+														{
+															coord: {x: 3.0 - i, y: -1.0},
+															pieceColor: $author$project$Main$Rima,
+															prof: prof
+														});
+												}),
+											remaining.rimaHand),
+										_List_fromArray(
+											[
+												A2($author$project$Main$clickableButtonOnTrashBinSvg, whoseHand, $author$project$Main$SendToTrashBinPart2),
+												$author$project$Main$pieceWaitingForAdditionalCommandSvg(
+												{
+													coord: {x: mover.coord.x, y: mover.coord.y},
+													pieceColor: mover.pieceColor,
+													prof: mover.prof
+												})
+											]))))))
+					]));
+		case 'AfterSacrifice':
+			var command = modl.a;
+			var mover = modl.b.mover;
+			var remaining = modl.b.remaining;
+			var robbedBoard = remaining.board;
+			var hasCircleInHand = A2(
+				$elm$core$List$any,
+				function (c) {
+					return _Utils_eq(c, $author$project$Main$Circle);
+				},
+				function () {
+					var _v12 = remaining.whoseTurn;
+					if (_v12.$ === 'KeseTurn') {
+						return remaining.keseHand;
+					} else {
+						return remaining.rimaHand;
+					}
+				}());
+			var focus_coord = mover.coord;
+			var candidates = A4($author$project$Main$getCandidatesWithCommand, command, hasCircleInHand, mover, robbedBoard);
+			var dynamicPart = _Utils_ap(
+				A2(
+					$elm$core$List$map,
+					function (piece) {
+						return A3(
+							$author$project$Main$pieceSvg,
+							_Utils_eq(piece.coord, focus_coord),
+							$author$project$Main$None,
+							{
+								coord: {x: piece.coord.x, y: piece.coord.y},
+								pieceColor: piece.pieceColor,
+								prof: piece.prof
+							});
+					},
+					remaining.board),
+				_Utils_ap(
+					A2(
+						$elm$core$List$map,
+						function (coord) {
+							return A2(
+								$author$project$Main$goalCandidateSvg,
+								$author$project$Main$FirstMove(
+									{to: coord}),
+								coord);
+						},
+						candidates),
+					_Utils_ap(
+						A2(
+							$elm$core$List$indexedMap,
+							F2(
+								function (i, prof) {
+									return A3(
+										$author$project$Main$pieceSvg,
+										false,
+										$author$project$Main$None,
+										{
+											coord: {x: i + 1.0, y: 5.0},
+											pieceColor: $author$project$Main$Kese,
+											prof: prof
+										});
+								}),
+							remaining.keseHand),
+						_Utils_ap(
+							A2(
+								$elm$core$List$indexedMap,
+								F2(
+									function (i, prof) {
+										return A3(
+											$author$project$Main$pieceSvg,
+											false,
+											$author$project$Main$None,
+											{
+												coord: {x: 3.0 - i, y: -1.0},
+												pieceColor: $author$project$Main$Rima,
+												prof: prof
+											});
+									}),
+								remaining.rimaHand),
+							_List_fromArray(
+								[
+									$author$project$Main$pieceWaitingForAdditionalCommandSvg(
+									{
+										coord: {x: mover.coord.x, y: mover.coord.y},
+										pieceColor: mover.pieceColor,
+										prof: mover.prof
+									})
+								])))));
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$svg$Svg$svg,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
+								$elm$svg$Svg$Attributes$width('600')
+							]),
+						_Utils_ap(
+							A2($author$project$Main$stationaryPart, $elm$core$Maybe$Nothing, remaining),
+							dynamicPart))
+					]));
+		default:
+			var internal = modl.a;
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$svg$Svg$svg,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
+								$elm$svg$Svg$Attributes$width('600')
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Events$onClick($author$project$Main$Cancel)
+							]),
+						_List_fromArray(
+							[
+								$elm$svg$Svg$text('キャンセル')
 							]))
 					]));
 	}
