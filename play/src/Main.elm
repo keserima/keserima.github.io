@@ -293,20 +293,23 @@ boardBackgroundColor coord =
 
 boardSvg : List (Svg Msg)
 boardSvg =
-    List.map
-        (\coord ->
-            rect
-                [ x (String.fromInt (coord.x * 100 + 2))
-                , y (String.fromInt (coord.y * 100 + 2))
-                , width "100"
-                , height "100"
-                , fill (boardBackgroundColor coord)
-                , stroke "#000"
-                , strokeWidth "4"
-                ]
-                []
+    [ g [ id "board" ]
+        (List.map
+            (\coord ->
+                rect
+                    [ x (String.fromInt (coord.x * 100 + 2))
+                    , y (String.fromInt (coord.y * 100 + 2))
+                    , width "100"
+                    , height "100"
+                    , fill (boardBackgroundColor coord)
+                    , stroke "#000"
+                    , strokeWidth "4"
+                    ]
+                    []
+            )
+            all_coord
         )
-        all_coord
+    ]
 
 
 all_coord : List Coordinate
@@ -485,21 +488,24 @@ drawUpToThree xs =
 
 displayCapturedCardsAndTwoDecks : StateOfCards -> List (Svg Msg)
 displayCapturedCardsAndTwoDecks model =
-    List.indexedMap
-        (\i _ ->
-            rect
-                [ x "535.7"
-                , y (String.fromInt (-10 + 10 * i))
-                , width "80"
-                , height "80"
-                , fill (backgroundColor Rima)
-                , strokeWidth "1"
-                , stroke "#000"
-                ]
-                []
+    [ g [ id "rimaDeck" ]
+        (List.indexedMap
+            (\i _ ->
+                rect
+                    [ x "535.7"
+                    , y (String.fromInt (-10 + 10 * i))
+                    , width "80"
+                    , height "80"
+                    , fill (backgroundColor Rima)
+                    , strokeWidth "1"
+                    , stroke "#000"
+                    ]
+                    []
+            )
+            model.rimaDeck
         )
-        model.rimaDeck
-        ++ List.indexedMap
+    , g [ id "keseDeck" ]
+        (List.indexedMap
             (\i _ ->
                 rect
                     [ x "535.7"
@@ -513,12 +519,18 @@ displayCapturedCardsAndTwoDecks model =
                     []
             )
             model.keseDeck
-        ++ List.indexedMap
+        )
+    , g [ id "capturedByKese" ]
+        (List.indexedMap
             (\i prof -> pieceSvg False None { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
             model.capturedByKese
-        ++ List.indexedMap
+        )
+    , g [ id "capturedByRima" ]
+        (List.indexedMap
             (\i prof -> pieceSvg False None { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
             model.capturedByRima
+        )
+    ]
 
 
 stationaryPart : Maybe WhoseTurn -> StateOfCards -> List (Svg Msg)
@@ -530,8 +542,8 @@ stationaryPart trashBinFocus cardState =
         ]
         :: boardSvg
         ++ displayCapturedCardsAndTwoDecks cardState
-        ++ [ playerSvg (RimaTurn == cardState.whoseTurn) RimaTurn
-           , playerSvg (KeseTurn == cardState.whoseTurn) KeseTurn
+        ++ [ playerSvg "rimaPlayer" (RimaTurn == cardState.whoseTurn) RimaTurn
+           , playerSvg "kesePlayer" (KeseTurn == cardState.whoseTurn) KeseTurn
            , trashBinSvg
                 { transform = "translate(530 560) scale(0.2)"
                 , color =
@@ -564,8 +576,8 @@ trashBinSvg o =
         ]
 
 
-playerSvg : Bool -> WhoseTurn -> Svg msg
-playerSvg isOwnTurn turn =
+playerSvg : String -> Bool -> WhoseTurn -> Svg msg
+playerSvg id_ isOwnTurn turn =
     let
         translateY =
             case turn of
@@ -598,10 +610,10 @@ playerSvg isOwnTurn turn =
             circle [ cx "0", cy "0", r "12", fill (backgroundColor color), Svg.Attributes.style "fill:#483e37;fill-opacity:1;filter:url(#blur)" ] []
     in
     if isOwnTurn then
-        g [ transform transf ] (blur :: person)
+        g [ id id_, transform transf ] (blur :: person)
 
     else
-        g [ transform transf ] person
+        g [ id id_, transform transf ] person
 
 
 neitherOccupiedNorWater : List PieceOnBoard -> List Coordinate
@@ -736,7 +748,7 @@ view modl =
                                      else
                                         None
                                     )
-                                    { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                                    (keseHandPos i prof)
                             )
                             cardState.keseHand
                         ++ List.indexedMap
@@ -748,7 +760,7 @@ view modl =
                                      else
                                         None
                                     )
-                                    { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                                    (rimaHandPos i prof)
                             )
                             cardState.rimaHand
                     )
@@ -790,12 +802,12 @@ view modl =
                                            )
                                         ++ List.indexedMap
                                             (\i prof ->
-                                                pieceSvg False None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                                                pieceSvg False None (keseHandPos i prof)
                                             )
                                             cardState.keseHand
                                         ++ List.indexedMap
                                             (\i prof ->
-                                                pieceSvg False None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                                                pieceSvg False None (rimaHandPos i prof)
                                             )
                                             cardState.rimaHand
 
@@ -813,20 +825,20 @@ view modl =
                                     (\i prof ->
                                         case focus of
                                             PieceInKeseHand ind ->
-                                                pieceSvg (ind == i) None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                                                pieceSvg (ind == i) None (keseHandPos i prof)
 
                                             _ ->
-                                                pieceSvg False None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                                                pieceSvg False None (keseHandPos i prof)
                                     )
                                     cardState.keseHand
                                 ++ List.indexedMap
                                     (\i prof ->
                                         case focus of
                                             PieceInRimaHand ind ->
-                                                pieceSvg (ind == i) None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                                                pieceSvg (ind == i) None (rimaHandPos i prof)
 
                                             _ ->
-                                                pieceSvg False None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                                                pieceSvg False None (rimaHandPos i prof)
                                     )
                                     cardState.rimaHand
             in
@@ -876,7 +888,7 @@ view modl =
                                      else
                                         None
                                     )
-                                    { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                                    (keseHandPos i prof)
                             )
                             remaining.keseHand
                         ++ List.indexedMap
@@ -888,7 +900,7 @@ view modl =
                                      else
                                         None
                                     )
-                                    { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                                    (rimaHandPos i prof)
                             )
                             remaining.rimaHand
                         ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
@@ -912,14 +924,14 @@ view modl =
                             (\i prof ->
                                 pieceSvg (whoseHand == KeseTurn && i == index)
                                     None
-                                    { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                                    (keseHandPos i prof)
                             )
                             remaining.keseHand
                         ++ List.indexedMap
                             (\i prof ->
                                 pieceSvg (whoseHand == RimaTurn && i == index)
                                     None
-                                    { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                                    (rimaHandPos i prof)
                             )
                             remaining.rimaHand
                         ++ [ clickableButtonOnTrashBinSvg whoseHand SendToTrashBinPart2
@@ -953,16 +965,8 @@ view modl =
                         ++ (candidates
                                 |> List.map (\coord -> goalCandidateSvg (MovementToward coord) coord)
                            )
-                        ++ List.indexedMap
-                            (\i prof ->
-                                pieceSvg False None { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
-                            )
-                            remaining.keseHand
-                        ++ List.indexedMap
-                            (\i prof ->
-                                pieceSvg False None { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
-                            )
-                            remaining.rimaHand
+                        ++ List.indexedMap (\i prof -> pieceSvg False None (keseHandPos i prof)) remaining.keseHand
+                        ++ List.indexedMap (\i prof -> pieceSvg False None (rimaHandPos i prof)) remaining.rimaHand
                         ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
             in
             Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
@@ -992,7 +996,7 @@ view modl =
                                      else
                                         None
                                     )
-                                    { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+                                    (keseHandPos i prof)
                             )
                             remaining.keseHand
                         ++ List.indexedMap
@@ -1004,12 +1008,22 @@ view modl =
                                      else
                                         None
                                     )
-                                    { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
+                                    (rimaHandPos i prof)
                             )
                             remaining.rimaHand
                         ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
                     )
                 ]
+
+
+keseHandPos : Int -> Profession -> PieceWithFloatPosition
+keseHandPos i prof =
+    { coord = { x = toFloat i + 1.0, y = 5.0 }, prof = prof, pieceColor = Kese }
+
+
+rimaHandPos : Int -> Profession -> PieceWithFloatPosition
+rimaHandPos i prof =
+    { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
 
 
 numToProf : Int -> Profession
