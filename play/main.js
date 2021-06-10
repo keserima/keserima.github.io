@@ -5780,10 +5780,32 @@ var $elm$core$List$any = F2(
 		}
 	});
 var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
+var $elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
+var $author$project$Main$filterWhetherMemberOf = function (judges) {
+	return $elm$core$List$filter(
+		function (c) {
+			return A2($elm$core$List$member, c, judges);
+		});
+};
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
 		return g(
 			f(x));
+	});
+var $elm_community$list_extra$List$Extra$filterNot = F2(
+	function (pred, list) {
+		return A2(
+			$elm$core$List$filter,
+			A2($elm$core$Basics$composeL, $elm$core$Basics$not, pred),
+			list);
 	});
 var $author$project$Main$isWater = function (coord) {
 	var _v0 = _Utils_Tuple2(coord.x, coord.y);
@@ -5819,15 +5841,6 @@ var $author$project$Main$isWater = function (coord) {
 	}
 	return false;
 };
-var $elm$core$List$member = F2(
-	function (x, xs) {
-		return A2(
-			$elm$core$List$any,
-			function (a) {
-				return _Utils_eq(a, x);
-			},
-			xs);
-	});
 var $elm$core$List$append = F2(
 	function (xs, ys) {
 		if (!ys.b) {
@@ -5859,12 +5872,12 @@ var $author$project$Main$allCoord = A2(
 		[0, 1, 2, 3, 4]));
 var $author$project$Main$neitherOccupiedNorWater = function (board) {
 	return A2(
-		$elm$core$List$filter,
-		A2($elm$core$Basics$composeR, $author$project$Main$isWater, $elm$core$Basics$not),
+		$elm_community$list_extra$List$Extra$filterNot,
+		$author$project$Main$isWater,
 		A2(
-			$elm$core$List$filter,
+			$elm_community$list_extra$List$Extra$filterNot,
 			function (coord) {
-				return !A2(
+				return A2(
 					$elm$core$List$member,
 					coord,
 					A2(
@@ -5878,7 +5891,7 @@ var $author$project$Main$neitherOccupiedNorWater = function (board) {
 };
 var $author$project$Main$getCandidatesYellow_ = F4(
 	function (piece, hasCircleInHand, robbedBoard, raw_candidates) {
-		var ship_positions = A2(
+		var shipPositions = A2(
 			$elm$core$List$map,
 			function ($) {
 				return $.coord;
@@ -5893,39 +5906,16 @@ var $author$project$Main$getCandidatesYellow_ = F4(
 		if (_v0.$ === 'Ship') {
 			return hasCircleInHand ? _Utils_ap(
 				A2($elm$core$List$filter, $author$project$Main$isWater, raw_candidates),
-				A2(
-					$elm$core$List$filter,
-					function (coord) {
-						return A2($elm$core$List$member, coord, ship_positions);
-					},
-					raw_candidates)) : A2($elm$core$List$filter, $author$project$Main$isWater, raw_candidates);
+				A2($author$project$Main$filterWhetherMemberOf, shipPositions, raw_candidates)) : A2($elm$core$List$filter, $author$project$Main$isWater, raw_candidates);
 		} else {
 			return hasCircleInHand ? _Utils_ap(
+				A2($elm_community$list_extra$List$Extra$filterNot, $author$project$Main$isWater, raw_candidates),
+				A2($author$project$Main$filterWhetherMemberOf, shipPositions, raw_candidates)) : _Utils_ap(
 				A2(
-					$elm$core$List$filter,
-					A2($elm$core$Basics$composeR, $author$project$Main$isWater, $elm$core$Basics$not),
+					$author$project$Main$filterWhetherMemberOf,
+					$author$project$Main$neitherOccupiedNorWater(robbedBoard),
 					raw_candidates),
-				A2(
-					$elm$core$List$filter,
-					function (coord) {
-						return A2($elm$core$List$member, coord, ship_positions);
-					},
-					raw_candidates)) : _Utils_ap(
-				A2(
-					$elm$core$List$filter,
-					function (coord) {
-						return A2(
-							$elm$core$List$member,
-							coord,
-							$author$project$Main$neitherOccupiedNorWater(robbedBoard));
-					},
-					raw_candidates),
-				A2(
-					$elm$core$List$filter,
-					function (coord) {
-						return A2($elm$core$List$member, coord, ship_positions);
-					},
-					raw_candidates));
+				A2($author$project$Main$filterWhetherMemberOf, shipPositions, raw_candidates));
 		}
 	});
 var $author$project$Main$addDelta = F2(
@@ -6778,23 +6768,13 @@ var $author$project$Main$view = function (modl) {
 									return _List_Nil;
 								case 'Kese':
 									return A2(
-										$elm$core$List$filter,
-										function (c) {
-											return A2(
-												$elm$core$List$member,
-												c,
-												A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Rima, robbedBoard));
-										},
+										$author$project$Main$filterWhetherMemberOf,
+										A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Rima, robbedBoard),
 										A3($author$project$Main$getCandidatesYellow, true, focused_piece, robbedBoard));
 								default:
 									return A2(
-										$elm$core$List$filter,
-										function (c) {
-											return A2(
-												$elm$core$List$member,
-												c,
-												A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Kese, robbedBoard));
-										},
+										$author$project$Main$filterWhetherMemberOf,
+										A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Kese, robbedBoard),
 										A3($author$project$Main$getCandidatesYellow, true, focused_piece, robbedBoard));
 							}
 						}();
@@ -7088,23 +7068,13 @@ var $author$project$Main$view = function (modl) {
 						return _List_Nil;
 					case 'Kese':
 						return A2(
-							$elm$core$List$filter,
-							function (c) {
-								return A2(
-									$elm$core$List$member,
-									c,
-									A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Rima, remaining.board));
-							},
+							$author$project$Main$filterWhetherMemberOf,
+							A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Rima, remaining.board),
 							A4($author$project$Main$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 					default:
 						return A2(
-							$elm$core$List$filter,
-							function (c) {
-								return A2(
-									$elm$core$List$member,
-									c,
-									A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Kese, remaining.board));
-							},
+							$author$project$Main$filterWhetherMemberOf,
+							A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Kese, remaining.board),
 							A4($author$project$Main$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 				}
 			}();

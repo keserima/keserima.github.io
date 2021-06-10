@@ -3,6 +3,7 @@ module Main exposing (Model, Msg, init, main, view)
 import Browser
 import Html exposing (Html)
 import Html.Attributes exposing (style)
+import List.Extra exposing (filterNot)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (..)
@@ -240,6 +241,11 @@ update_ msg modl =
 
         _ ->
             modl
+
+
+filterWhetherMemberOf : List a -> List a -> List a
+filterWhetherMemberOf judges =
+    List.filter (\c -> List.member c judges)
 
 
 robIth : Int -> List a -> ( List a, List a )
@@ -615,8 +621,8 @@ playerSvg id_ isOwnTurn turn =
 neitherOccupiedNorWater : List PieceOnBoard -> List Coordinate
 neitherOccupiedNorWater board =
     allCoord
-        |> List.filter (\coord -> not (List.member coord (List.map .coord board)))
-        |> List.filter (isWater >> not)
+        |> filterNot (\coord -> List.member coord (List.map .coord board))
+        |> filterNot isWater
 
 
 addDelta : Coordinate -> ( Int, Int ) -> List Coordinate
@@ -674,7 +680,7 @@ rawCandidates prof coord =
 getCandidatesYellow_ : PieceOnBoard -> Bool -> List PieceOnBoard -> List Coordinate -> List Coordinate
 getCandidatesYellow_ piece hasCircleInHand robbedBoard raw_candidates =
     let
-        ship_positions =
+        shipPositions =
             robbedBoard |> List.filter (\p -> p.pieceColor == Ship) |> List.map .coord
     in
     case piece.pieceColor of
@@ -683,7 +689,7 @@ getCandidatesYellow_ piece hasCircleInHand robbedBoard raw_candidates =
             if hasCircleInHand then
                 {- Allowed location: water OR ships -}
                 List.filter isWater raw_candidates
-                    ++ List.filter (\coord -> List.member coord ship_positions) raw_candidates
+                    ++ filterWhetherMemberOf shipPositions raw_candidates
 
             else
                 {- Allowed location: water -}
@@ -693,13 +699,13 @@ getCandidatesYellow_ piece hasCircleInHand robbedBoard raw_candidates =
         _ ->
             if hasCircleInHand then
                 {- Allowed location: non-water OR ships -}
-                List.filter (isWater >> not) raw_candidates
-                    ++ List.filter (\coord -> List.member coord ship_positions) raw_candidates
+                filterNot isWater raw_candidates
+                    ++ filterWhetherMemberOf shipPositions raw_candidates
 
             else
                 {- Allowed location: (non-water AND unoccupied) OR ships -}
-                List.filter (\coord -> List.member coord (neitherOccupiedNorWater robbedBoard)) raw_candidates
-                    ++ List.filter (\coord -> List.member coord ship_positions) raw_candidates
+                filterWhetherMemberOf (neitherOccupiedNorWater robbedBoard) raw_candidates
+                    ++ filterWhetherMemberOf shipPositions raw_candidates
 
 
 getCandidatesYellowWithCommand : MoveCommand -> Bool -> PieceOnBoard -> List PieceOnBoard -> List Coordinate
@@ -806,13 +812,11 @@ view modl =
 
                                                 Kese ->
                                                     getCandidatesYellow True focused_piece robbedBoard
-                                                        |> List.filter
-                                                            (\c -> allCoordsOccupiedBy Rima robbedBoard |> List.member c)
+                                                        |> filterWhetherMemberOf (allCoordsOccupiedBy Rima robbedBoard)
 
                                                 Rima ->
                                                     getCandidatesYellow True focused_piece robbedBoard
-                                                        |> List.filter
-                                                            (\c -> allCoordsOccupiedBy Kese robbedBoard |> List.member c)
+                                                        |> filterWhetherMemberOf (allCoordsOccupiedBy Kese robbedBoard)
                                     in
                                     List.map
                                         (\piece -> pieceSvgOnGrid (piece.coord == focus_coord) None piece)
@@ -964,13 +968,11 @@ view modl =
 
                         Kese ->
                             getCandidatesYellowWithCommand command True mover remaining.board
-                                |> List.filter
-                                    (\c -> allCoordsOccupiedBy Rima remaining.board |> List.member c)
+                                |> filterWhetherMemberOf (allCoordsOccupiedBy Rima remaining.board)
 
                         Rima ->
                             getCandidatesYellowWithCommand command True mover remaining.board
-                                |> List.filter
-                                    (\c -> allCoordsOccupiedBy Kese remaining.board |> List.member c)
+                                |> filterWhetherMemberOf (allCoordsOccupiedBy Kese remaining.board)
 
                 dynamicPart =
                     List.map
