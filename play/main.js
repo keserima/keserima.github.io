@@ -5153,6 +5153,10 @@ var $author$project$Main$Diagonal = {$: 'Diagonal'};
 var $author$project$Main$HorizontalVertical = {$: 'HorizontalVertical'};
 var $author$project$Main$Kese = {$: 'Kese'};
 var $author$project$Main$KeseTurn = {$: 'KeseTurn'};
+var $author$project$Main$Model = F2(
+	function (a, b) {
+		return {$: 'Model', a: a, b: b};
+	});
 var $author$project$Main$NothingSelected = function (a) {
 	return {$: 'NothingSelected', a: a};
 };
@@ -5198,79 +5202,82 @@ var $author$project$Main$init = function (flags) {
 	var keseHand = _v1.a;
 	var keseDeck = _v1.b;
 	return _Utils_Tuple2(
-		$author$project$Main$NothingSelected(
-			{
-				board: _List_fromArray(
-					[
-						{
-						coord: {x: 0, y: 0},
-						pieceColor: $author$project$Main$Rima,
-						prof: flags.rimaDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
-					},
-						{
-						coord: {x: 1, y: 0},
-						pieceColor: $author$project$Main$Rima,
-						prof: $author$project$Main$Circle
-					},
-						{
-						coord: {x: 2, y: 0},
-						pieceColor: $author$project$Main$Rima,
-						prof: $author$project$Main$All
-					},
-						{
-						coord: {x: 3, y: 0},
-						pieceColor: $author$project$Main$Rima,
-						prof: $author$project$Main$Circle
-					},
-						{
-						coord: {x: 4, y: 0},
-						pieceColor: $author$project$Main$Rima,
-						prof: (!flags.rimaDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
-					},
-						{
-						coord: {x: 0, y: 4},
-						pieceColor: $author$project$Main$Kese,
-						prof: flags.keseDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
-					},
-						{
-						coord: {x: 1, y: 4},
-						pieceColor: $author$project$Main$Kese,
-						prof: $author$project$Main$Circle
-					},
-						{
-						coord: {x: 2, y: 4},
-						pieceColor: $author$project$Main$Kese,
-						prof: $author$project$Main$All
-					},
-						{
-						coord: {x: 3, y: 4},
-						pieceColor: $author$project$Main$Kese,
-						prof: $author$project$Main$Circle
-					},
-						{
-						coord: {x: 4, y: 4},
-						pieceColor: $author$project$Main$Kese,
-						prof: (!flags.keseDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
-					},
-						{
-						coord: {x: 1, y: 2},
-						pieceColor: $author$project$Main$Ship,
-						prof: flags.shipDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
-					},
-						{
-						coord: {x: 3, y: 2},
-						pieceColor: $author$project$Main$Ship,
-						prof: (!flags.shipDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
-					}
-					]),
-				capturedByKese: _List_Nil,
-				capturedByRima: _List_Nil,
-				keseDeck: keseDeck,
-				keseHand: keseHand,
-				rimaDeck: rimaDeck,
-				rimaHand: rimaHand,
-				whoseTurn: flags.keseGoesFirst ? $author$project$Main$KeseTurn : $author$project$Main$RimaTurn
-			}),
+		A2(
+			$author$project$Main$Model,
+			'Hello, World!',
+			$author$project$Main$NothingSelected(
+				{
+					board: _List_fromArray(
+						[
+							{
+							coord: {x: 0, y: 0},
+							pieceColor: $author$project$Main$Rima,
+							prof: flags.rimaDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+						},
+							{
+							coord: {x: 1, y: 0},
+							pieceColor: $author$project$Main$Rima,
+							prof: $author$project$Main$Circle
+						},
+							{
+							coord: {x: 2, y: 0},
+							pieceColor: $author$project$Main$Rima,
+							prof: $author$project$Main$All
+						},
+							{
+							coord: {x: 3, y: 0},
+							pieceColor: $author$project$Main$Rima,
+							prof: $author$project$Main$Circle
+						},
+							{
+							coord: {x: 4, y: 0},
+							pieceColor: $author$project$Main$Rima,
+							prof: (!flags.rimaDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+						},
+							{
+							coord: {x: 0, y: 4},
+							pieceColor: $author$project$Main$Kese,
+							prof: flags.keseDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+						},
+							{
+							coord: {x: 1, y: 4},
+							pieceColor: $author$project$Main$Kese,
+							prof: $author$project$Main$Circle
+						},
+							{
+							coord: {x: 2, y: 4},
+							pieceColor: $author$project$Main$Kese,
+							prof: $author$project$Main$All
+						},
+							{
+							coord: {x: 3, y: 4},
+							pieceColor: $author$project$Main$Kese,
+							prof: $author$project$Main$Circle
+						},
+							{
+							coord: {x: 4, y: 4},
+							pieceColor: $author$project$Main$Kese,
+							prof: (!flags.keseDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+						},
+							{
+							coord: {x: 1, y: 2},
+							pieceColor: $author$project$Main$Ship,
+							prof: flags.shipDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+						},
+							{
+							coord: {x: 3, y: 2},
+							pieceColor: $author$project$Main$Ship,
+							prof: (!flags.shipDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+						}
+						]),
+					capturedByKese: _List_Nil,
+					capturedByRima: _List_Nil,
+					keseDeck: keseDeck,
+					keseHand: keseHand,
+					rimaDeck: rimaDeck,
+					rimaHand: rimaHand,
+					whoseTurn: flags.keseGoesFirst ? $author$project$Main$KeseTurn : $author$project$Main$RimaTurn
+				})),
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$json$Json$Decode$int = _Json_decodeInt;
@@ -5647,16 +5654,17 @@ var $author$project$Main$update_ = F2(
 										}));
 							} else {
 								var captured = _v11.a;
+								var newBoard = A2(
+									$elm$core$List$cons,
+									mover,
+									A2($elm_community$list_extra$List$Extra$remove, captured, remaining.board));
 								var _v13 = remaining.whoseTurn;
 								if (_v13.$ === 'KeseTurn') {
 									return $author$project$Main$NothingSelected(
 										_Utils_update(
 											remaining,
 											{
-												board: A2(
-													$elm$core$List$cons,
-													mover,
-													A2($elm_community$list_extra$List$Extra$remove, captured, remaining.board)),
+												board: newBoard,
 												capturedByKese: A2($elm$core$List$cons, captured.prof, remaining.capturedByKese),
 												whoseTurn: $author$project$Main$RimaTurn
 											}));
@@ -5665,10 +5673,7 @@ var $author$project$Main$update_ = F2(
 										_Utils_update(
 											remaining,
 											{
-												board: A2(
-													$elm$core$List$cons,
-													mover,
-													A2($elm_community$list_extra$List$Extra$remove, captured, remaining.board)),
+												board: newBoard,
 												capturedByRima: A2($elm$core$List$cons, captured.prof, remaining.capturedByRima),
 												whoseTurn: $author$project$Main$KeseTurn
 											}));
@@ -5766,9 +5771,14 @@ var $author$project$Main$update_ = F2(
 		return modl;
 	});
 var $author$project$Main$update = F2(
-	function (msg, modl) {
+	function (msg, _v0) {
+		var history = _v0.a;
+		var modl = _v0.b;
 		return _Utils_Tuple2(
-			A2($author$project$Main$update_, msg, modl),
+			A2(
+				$author$project$Main$Model,
+				history,
+				A2($author$project$Main$update_, msg, modl)),
 			$elm$core$Platform$Cmd$none);
 	});
 var $author$project$Main$Cancel = {$: 'Cancel'};
@@ -6711,11 +6721,34 @@ var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 				]))
 		]);
 };
+var $elm$html$Html$Attributes$cols = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'cols',
+		$elm$core$String$fromInt(n));
+};
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$readonly = $elm$html$Html$Attributes$boolProperty('readOnly');
+var $elm$html$Html$Attributes$rows = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'rows',
+		$elm$core$String$fromInt(n));
+};
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$html$Html$textarea = _VirtualDom_node('textarea');
 var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
-var $author$project$Main$view_ = F2(
-	function (svgContent, buttons) {
+var $author$project$Main$view_ = F3(
+	function (history, svgContent, buttons) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -6732,14 +6765,33 @@ var $author$project$Main$view_ = F2(
 							$elm$svg$Svg$Attributes$width('600')
 						]),
 					svgContent),
-				buttons));
+				_Utils_ap(
+					buttons,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$textarea,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$rows(50),
+									$elm$html$Html$Attributes$cols(80),
+									$elm$html$Html$Attributes$readonly(true)
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text(history)
+								]))
+						]))));
 	});
-var $author$project$Main$view = function (modl) {
+var $author$project$Main$view = function (_v0) {
+	var history = _v0.a;
+	var modl = _v0.b;
 	switch (modl.$) {
 		case 'NothingSelected':
 			var cardState = modl.a;
-			return A2(
+			return A3(
 				$author$project$Main$view_,
+				history,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(cardState),
 					_Utils_ap(
@@ -6790,19 +6842,19 @@ var $author$project$Main$view = function (modl) {
 			var dynamicPart = function () {
 				if (focus.$ === 'PieceOnTheBoard') {
 					var focus_coord = focus.a;
-					var _v2 = A2($author$project$Main$robFocusedPieceFromBoard, focus_coord, cardState.board);
-					if (_v2.$ === 'Nothing') {
+					var _v3 = A2($author$project$Main$robFocusedPieceFromBoard, focus_coord, cardState.board);
+					if (_v3.$ === 'Nothing') {
 						return _List_Nil;
 					} else {
-						var _v3 = _v2.a;
-						var focused_piece = _v3.a;
-						var robbedBoard = _v3.b;
+						var _v4 = _v3.a;
+						var focused_piece = _v4.a;
+						var robbedBoard = _v4.b;
 						var hasCircleInHand = A2(
 							$elm$core$List$any,
 							$elm$core$Basics$eq($author$project$Main$Circle),
 							function () {
-								var _v5 = cardState.whoseTurn;
-								if (_v5.$ === 'KeseTurn') {
+								var _v6 = cardState.whoseTurn;
+								if (_v6.$ === 'KeseTurn') {
 									return cardState.keseHand;
 								} else {
 									return cardState.rimaHand;
@@ -6810,8 +6862,8 @@ var $author$project$Main$view = function (modl) {
 							}());
 						var candidatesYellow = A3($author$project$Main$getCandidatesYellow, hasCircleInHand, focused_piece, robbedBoard);
 						var candidatesRed = function () {
-							var _v4 = focused_piece.pieceColor;
-							switch (_v4.$) {
+							var _v5 = focused_piece.pieceColor;
+							switch (_v5.$) {
 								case 'Ship':
 									return _List_Nil;
 								case 'Kese':
@@ -6940,8 +6992,9 @@ var $author$project$Main$view = function (modl) {
 									cardState.rimaHand))));
 				}
 			}();
-			return A2(
+			return A3(
 				$author$project$Main$view_,
+				history,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(cardState),
 					_Utils_ap(
@@ -6964,24 +7017,24 @@ var $author$project$Main$view = function (modl) {
 			var mover = modl.a.mover;
 			var remaining = modl.a.remaining;
 			var isSacrificingCircleRequired = function () {
-				var _v10 = A2(
+				var _v11 = A2(
 					$elm$core$List$filter,
 					function (c) {
 						return _Utils_eq(c.coord, mover.coord);
 					},
 					remaining.board);
-				if (!_v10.b) {
+				if (!_v11.b) {
 					return false;
 				} else {
-					var steppedOn = _v10.a;
-					var _v11 = _Utils_Tuple2(mover.pieceColor, steppedOn.pieceColor);
-					if (_v11.b.$ === 'Ship') {
-						if (_v11.a.$ === 'Ship') {
-							var _v12 = _v11.a;
-							var _v13 = _v11.b;
+					var steppedOn = _v11.a;
+					var _v12 = _Utils_Tuple2(mover.pieceColor, steppedOn.pieceColor);
+					if (_v12.b.$ === 'Ship') {
+						if (_v12.a.$ === 'Ship') {
+							var _v13 = _v12.a;
+							var _v14 = _v12.b;
 							return true;
 						} else {
-							var _v14 = _v11.b;
+							var _v15 = _v12.b;
 							return false;
 						}
 					} else {
@@ -6989,8 +7042,9 @@ var $author$project$Main$view = function (modl) {
 					}
 				}
 			}();
-			return A2(
+			return A3(
 				$author$project$Main$view_,
+				history,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(remaining),
 					_Utils_ap(
@@ -7035,16 +7089,16 @@ var $author$project$Main$view = function (modl) {
 											$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
 										])))))),
 				function () {
-					var _v8 = A2(
+					var _v9 = A2(
 						$elm$core$List$filter,
 						function (p) {
 							return _Utils_eq(p.coord, mover.coord);
 						},
 						remaining.board);
-					if (_v8.b && (!_v8.b.b)) {
-						var p = _v8.a;
-						var _v9 = p.pieceColor;
-						switch (_v9.$) {
+					if (_v9.b && (!_v9.b.b)) {
+						var p = _v9.a;
+						var _v10 = p.pieceColor;
+						switch (_v10.$) {
 							case 'Ship':
 								return _List_Nil;
 							case 'Kese':
@@ -7097,8 +7151,9 @@ var $author$project$Main$view = function (modl) {
 			var remaining = modl.a.remaining;
 			var whoseHand = modl.a.whoseHand;
 			var index = modl.a.index;
-			return A2(
+			return A3(
 				$author$project$Main$view_,
+				history,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(remaining),
 					_Utils_ap(
@@ -7146,8 +7201,8 @@ var $author$project$Main$view = function (modl) {
 				$elm$core$List$any,
 				$elm$core$Basics$eq($author$project$Main$Circle),
 				function () {
-					var _v16 = remaining.whoseTurn;
-					if (_v16.$ === 'KeseTurn') {
+					var _v17 = remaining.whoseTurn;
+					if (_v17.$ === 'KeseTurn') {
 						return remaining.keseHand;
 					} else {
 						return remaining.rimaHand;
@@ -7155,8 +7210,8 @@ var $author$project$Main$view = function (modl) {
 				}());
 			var candidatesYellow = A4($author$project$Main$getCandidatesYellowWithCommand, command, hasCircleInHand, mover, remaining.board);
 			var candidatesRed = function () {
-				var _v15 = mover.pieceColor;
-				switch (_v15.$) {
+				var _v16 = mover.pieceColor;
+				switch (_v16.$) {
 					case 'Ship':
 						return _List_Nil;
 					case 'Kese':
@@ -7224,8 +7279,9 @@ var $author$project$Main$view = function (modl) {
 									[
 										$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
 									]))))));
-			return A2(
+			return A3(
 				$author$project$Main$view_,
+				history,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(remaining),
 					_Utils_ap(
@@ -7235,8 +7291,9 @@ var $author$project$Main$view = function (modl) {
 		default:
 			var mover = modl.a.mover;
 			var remaining = modl.a.remaining;
-			return A2(
+			return A3(
 				$author$project$Main$view_,
+				history,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(remaining),
 					_Utils_ap(

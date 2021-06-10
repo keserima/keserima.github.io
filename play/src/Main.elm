@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg, init, main, view)
+module Main exposing (CurrentStatus, Msg, init, main, view)
 
 import Browser
 import Html exposing (Html)
@@ -43,13 +43,21 @@ type alias PieceWithFloatPosition =
     { prof : Profession, pieceColor : PieceColor, coord : CoordinateFloat }
 
 
-type Model
+type CurrentStatus
     = NothingSelected StateOfCards
     | MoverIsSelected Focus StateOfCards
     | {- Sacrifice is necessary if currently stepping; otherwise not necessary -} NowWaitingForAdditionalSacrifice FloatingMover
     | WaitForTrashBinClick { mover : PieceOnBoard, remaining : StateOfCards, whoseHand : WhoseTurn, index : Int }
     | AfterSacrifice MoveCommand FloatingMover
     | AfterCircleSacrifice FloatingMover
+
+
+type Model
+    = Model History CurrentStatus
+
+
+type alias History =
+    String
 
 
 type alias FloatingMover =
@@ -119,11 +127,11 @@ subscriptions _ =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg modl =
-    ( update_ msg modl, Cmd.none )
+update msg (Model history modl) =
+    ( Model history (update_ msg modl), Cmd.none )
 
 
-update_ : Msg -> Model -> Model
+update_ : Msg -> CurrentStatus -> CurrentStatus
 update_ msg modl =
     case ( modl, msg ) of
         ( NothingSelected cardState, GiveFocusTo focus ) ->
@@ -193,12 +201,16 @@ update_ msg modl =
 
                 captured :: _ ->
                     {- capture -}
+                    let
+                        newBoard =
+                            mover :: List.Extra.remove captured remaining.board
+                    in
                     case remaining.whoseTurn of
                         KeseTurn ->
                             NothingSelected
                                 { remaining
                                     | whoseTurn = RimaTurn
-                                    , board = mover :: List.Extra.remove captured remaining.board
+                                    , board = newBoard
                                     , capturedByKese = captured.prof :: remaining.capturedByKese
                                 }
 
@@ -206,7 +218,7 @@ update_ msg modl =
                             NothingSelected
                                 { remaining
                                     | whoseTurn = KeseTurn
-                                    , board = mover :: List.Extra.remove captured remaining.board
+                                    , board = newBoard
                                     , capturedByRima = captured.prof :: remaining.capturedByRima
                                 }
 
@@ -743,10 +755,15 @@ getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
         )
 
 
-view_ : List (Svg msg) -> List (Html msg) -> Html msg
-view_ svgContent buttons =
-    Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
-        (svg [ viewBox "0 -200 900 900", width "600" ] svgContent :: buttons)
+view_ : History -> List (Svg msg) -> List (Html msg) -> Html msg
+view_ history svgContent buttons =
+    Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ] <|
+        svg [ viewBox "0 -200 900 900", width "600" ] svgContent
+            :: buttons
+            ++ [ Html.textarea
+                    [ Html.Attributes.rows 50, Html.Attributes.cols 80, Html.Attributes.readonly True ]
+                    [ Html.text history ]
+               ]
 
 
 allCoordsOccupiedBy : PieceColor -> List PieceOnBoard -> List Coordinate
@@ -755,10 +772,10 @@ allCoordsOccupiedBy color board =
 
 
 view : Model -> Html Msg
-view modl =
+view (Model history modl) =
     case modl of
         NothingSelected cardState ->
-            view_
+            view_ history
                 (stationaryPart cardState
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
@@ -885,7 +902,7 @@ view modl =
                                     )
                                     cardState.rimaHand
             in
-            view_
+            view_ history
                 (stationaryPart cardState ++ twoTrashBinsSvg Nothing ++ dynamicPart)
                 [ Html.button [ onClick Cancel ] [ text "キャンセル" ] ]
 
@@ -908,7 +925,7 @@ view modl =
                                 ( _, _ ) ->
                                     True
             in
-            view_
+            view_ history
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
@@ -967,7 +984,7 @@ view modl =
                 )
 
         WaitForTrashBinClick { mover, remaining, whoseHand, index } ->
-            view_
+            view_ history
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg (Just whoseHand)
                     ++ List.map
@@ -1033,10 +1050,10 @@ view modl =
                         ++ List.indexedMap (\i prof -> pieceSvg False None (rimaHandPos i prof)) remaining.rimaHand
                         ++ [ pieceWaitingForAdditionalCommandSvg mover ]
             in
-            view_ (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) []
+            view_ history (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) []
 
         AfterCircleSacrifice { mover, remaining } ->
-            view_
+            view_ history
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
@@ -1103,81 +1120,82 @@ init flags =
         ( rimaHand, rimaDeck ) =
             drawUpToThree (List.map numToProf flags.rimaDeck)
     in
-    ( NothingSelected
-        { whoseTurn =
-            if flags.keseGoesFirst then
-                KeseTurn
+    ( Model "Hello, World!" <|
+        NothingSelected
+            { whoseTurn =
+                if flags.keseGoesFirst then
+                    KeseTurn
 
-            else
-                RimaTurn
-        , keseDeck = keseDeck
-        , rimaDeck = rimaDeck
-        , keseHand = keseHand
-        , rimaHand = rimaHand
-        , board =
-            [ { coord = { x = 0, y = 0 }
-              , pieceColor = Rima
-              , prof =
-                    if flags.rimaDice then
-                        HorizontalVertical
+                else
+                    RimaTurn
+            , keseDeck = keseDeck
+            , rimaDeck = rimaDeck
+            , keseHand = keseHand
+            , rimaHand = rimaHand
+            , board =
+                [ { coord = { x = 0, y = 0 }
+                  , pieceColor = Rima
+                  , prof =
+                        if flags.rimaDice then
+                            HorizontalVertical
 
-                    else
-                        Diagonal
-              }
-            , { coord = { x = 1, y = 0 }, pieceColor = Rima, prof = Circle }
-            , { coord = { x = 2, y = 0 }, pieceColor = Rima, prof = All }
-            , { coord = { x = 3, y = 0 }, pieceColor = Rima, prof = Circle }
-            , { coord = { x = 4, y = 0 }
-              , pieceColor = Rima
-              , prof =
-                    if not flags.rimaDice then
-                        HorizontalVertical
+                        else
+                            Diagonal
+                  }
+                , { coord = { x = 1, y = 0 }, pieceColor = Rima, prof = Circle }
+                , { coord = { x = 2, y = 0 }, pieceColor = Rima, prof = All }
+                , { coord = { x = 3, y = 0 }, pieceColor = Rima, prof = Circle }
+                , { coord = { x = 4, y = 0 }
+                  , pieceColor = Rima
+                  , prof =
+                        if not flags.rimaDice then
+                            HorizontalVertical
 
-                    else
-                        Diagonal
-              }
-            , { coord = { x = 0, y = 4 }
-              , pieceColor = Kese
-              , prof =
-                    if flags.keseDice then
-                        HorizontalVertical
+                        else
+                            Diagonal
+                  }
+                , { coord = { x = 0, y = 4 }
+                  , pieceColor = Kese
+                  , prof =
+                        if flags.keseDice then
+                            HorizontalVertical
 
-                    else
-                        Diagonal
-              }
-            , { coord = { x = 1, y = 4 }, pieceColor = Kese, prof = Circle }
-            , { coord = { x = 2, y = 4 }, pieceColor = Kese, prof = All }
-            , { coord = { x = 3, y = 4 }, pieceColor = Kese, prof = Circle }
-            , { coord = { x = 4, y = 4 }
-              , pieceColor = Kese
-              , prof =
-                    if not flags.keseDice then
-                        HorizontalVertical
+                        else
+                            Diagonal
+                  }
+                , { coord = { x = 1, y = 4 }, pieceColor = Kese, prof = Circle }
+                , { coord = { x = 2, y = 4 }, pieceColor = Kese, prof = All }
+                , { coord = { x = 3, y = 4 }, pieceColor = Kese, prof = Circle }
+                , { coord = { x = 4, y = 4 }
+                  , pieceColor = Kese
+                  , prof =
+                        if not flags.keseDice then
+                            HorizontalVertical
 
-                    else
-                        Diagonal
-              }
-            , { coord = { x = 1, y = 2 }
-              , pieceColor = Ship
-              , prof =
-                    if flags.shipDice then
-                        HorizontalVertical
+                        else
+                            Diagonal
+                  }
+                , { coord = { x = 1, y = 2 }
+                  , pieceColor = Ship
+                  , prof =
+                        if flags.shipDice then
+                            HorizontalVertical
 
-                    else
-                        Diagonal
-              }
-            , { coord = { x = 3, y = 2 }
-              , pieceColor = Ship
-              , prof =
-                    if not flags.shipDice then
-                        HorizontalVertical
+                        else
+                            Diagonal
+                  }
+                , { coord = { x = 3, y = 2 }
+                  , pieceColor = Ship
+                  , prof =
+                        if not flags.shipDice then
+                            HorizontalVertical
 
-                    else
-                        Diagonal
-              }
-            ]
-        , capturedByKese = []
-        , capturedByRima = []
-        }
+                        else
+                            Diagonal
+                  }
+                ]
+            , capturedByKese = []
+            , capturedByRima = []
+            }
     , Cmd.none
     )
