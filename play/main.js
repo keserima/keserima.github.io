@@ -5468,9 +5468,9 @@ var $author$project$Main$newHistory = F2(
 								case 'PieceOnTheBoard':
 									return '-' + $author$project$Main$coordToHistoryStr(to);
 								case 'PieceInKeseHand':
-									return $author$project$Main$coordToHistoryStr(to) + '.\n';
+									return $author$project$Main$coordToHistoryStr(to) + '.\nR';
 								default:
-									return $author$project$Main$coordToHistoryStr(to) + '.\n';
+									return $author$project$Main$coordToHistoryStr(to) + '.\nK';
 							}
 						case 'AfterSacrifice':
 							var _v5 = _v0.a;

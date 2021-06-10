@@ -232,11 +232,11 @@ newHistory msg modl =
 
                 {- Parachuting from KeseHand -}
                 PieceInKeseHand _ ->
-                    coordToHistoryStr to ++ ".\n"
+                    coordToHistoryStr to ++ ".\nR"
 
                 {- Parachuting from RimaHand -}
                 PieceInRimaHand _ ->
-                    coordToHistoryStr to ++ ".\n"
+                    coordToHistoryStr to ++ ".\nK"
 
         ( AfterSacrifice _ _, MovementToward to ) ->
             coordToHistoryStr to
