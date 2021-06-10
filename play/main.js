@@ -6668,7 +6668,7 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 								[
 									$elm$svg$Svg$Attributes$x('535.7'),
 									$elm$svg$Svg$Attributes$y(
-									$elm$core$String$fromInt(410 - (10 * i))),
+									$elm$core$String$fromInt((504 - 80) - (10 * i))),
 									$elm$svg$Svg$Attributes$width('80'),
 									$elm$svg$Svg$Attributes$height('80'),
 									$elm$svg$Svg$Attributes$fill(
@@ -6695,7 +6695,7 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 								[
 									$elm$svg$Svg$Attributes$x('535.7'),
 									$elm$svg$Svg$Attributes$y(
-									$elm$core$String$fromInt((-10) + (10 * i))),
+									$elm$core$String$fromInt(10 * i)),
 									$elm$svg$Svg$Attributes$width('80'),
 									$elm$svg$Svg$Attributes$height('80'),
 									$elm$svg$Svg$Attributes$fill(

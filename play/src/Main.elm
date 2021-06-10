@@ -172,6 +172,7 @@ update msg (Model history modl) =
     ( Model (history ++ newHistory msg modl) (updateStatus msg modl), Cmd.none )
 
 
+getWhoseTurn : CurrentStatus -> WhoseTurn
 getWhoseTurn modl =
     case modl of
         NothingSelected { whoseTurn } ->
@@ -711,7 +712,7 @@ displayCapturedCardsAndTwoDecks model =
             (\i _ ->
                 rect
                     [ x "535.7"
-                    , y (String.fromInt (410 - 10 * i))
+                    , y (String.fromInt (504 - 80 - 10 * i))
                     , width "80"
                     , height "80"
                     , fill (backgroundColor Kese)
@@ -727,7 +728,7 @@ displayCapturedCardsAndTwoDecks model =
             (\i _ ->
                 rect
                     [ x "535.7"
-                    , y (String.fromInt (-10 + 10 * i))
+                    , y (String.fromInt (10 * i))
                     , width "80"
                     , height "80"
                     , fill (backgroundColor Rima)
