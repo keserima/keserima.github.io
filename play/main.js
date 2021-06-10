@@ -5743,7 +5743,6 @@ var $author$project$Main$PieceOnTheBoard = function (a) {
 var $author$project$Main$SendToTrashBinPart1 = function (a) {
 	return {$: 'SendToTrashBinPart1', a: a};
 };
-var $author$project$Main$SendToTrashBinPart2 = {$: 'SendToTrashBinPart2'};
 var $author$project$Main$TurnEnd = {$: 'TurnEnd'};
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
@@ -5767,64 +5766,6 @@ var $elm$core$List$any = F2(
 		}
 	});
 var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
-var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
-var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
-var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
-var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
-var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$svg$Svg$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
-var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
-var $author$project$Main$clickableButtonOnTrashBinSvg = F2(
-	function (whoseTurn, msgToBeSent) {
-		return A2(
-			$elm$svg$Svg$g,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$transform(
-					function () {
-						if (whoseTurn.$ === 'KeseTurn') {
-							return 'translate(575 615)';
-						} else {
-							return 'translate(575 -95)';
-						}
-					}()),
-					$elm$svg$Svg$Events$onClick(msgToBeSent),
-					A2($elm$html$Html$Attributes$style, 'cursor', 'pointer')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$svg$Svg$circle,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Attributes$cx('0'),
-							$elm$svg$Svg$Attributes$cy('0'),
-							$elm$svg$Svg$Attributes$r('16'),
-							$elm$svg$Svg$Attributes$fill('#ffff00')
-						]),
-					_List_Nil)
-				]));
-	});
 var $author$project$Main$addDelta = F2(
 	function (coord, _v0) {
 		var deltaX = _v0.a;
@@ -6074,6 +6015,33 @@ var $author$project$Main$getCandidatesWithCommand = F4(
 				}
 			}());
 	});
+var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
+var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
+var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
+var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$svg$Svg$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
 var $author$project$Main$goalCandidateSvg = F2(
 	function (msgToBeSent, coord) {
 		return A2(
@@ -6567,60 +6535,95 @@ var $author$project$Main$stationaryPart = function (cardState) {
 };
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$Main$trashBinSvg = function (o) {
-	return A2(
+var $author$project$Main$SendToTrashBinPart2 = {$: 'SendToTrashBinPart2'};
+var $author$project$Main$trashBinSvg = function (color) {
+	return _List_fromArray(
+		[
+			A2(
+			$elm$svg$Svg$g,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$transform('scale(0.2)')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$svg$Svg$path,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$fill(color),
+							$elm$svg$Svg$Attributes$d('M 4 112 l 59 337 c 5 22 25 37 47 37 c 0 0 0 0 0 0 h 227 c 22 0 41 -16 47 -37 v 0 l 59 -337 z m 219 58 c 8 0 13 6 13 13 v 218 c 0 7 -5 13 -13 13 c -7 0 -13 -6 -13 -13 v -218 c 0 -7 6 -13 13 -13 z m -105 0 c 7 0 13 6 13 12 l 19 218 c 1 7 -4 13 -12 14 c -7 0 -13 -5 -14 -12 l -19 -217 c -1 -8 5 -14 12 -15 c 1 0 1 0 1 0 z m 210 0 c 0 0 0 0 1 0 c 7 1 13 7 12 15 l -19 217 c -1 7 -7 12 -14 12 c -8 -1 -13 -7 -12 -14 l 19 -218 c 0 -6 6 -12 13 -12 z')
+						]),
+					_List_Nil),
+					A2(
+					$elm$svg$Svg$path,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$fill(color),
+							$elm$svg$Svg$Attributes$d('m 200,0 c -7,0 -13,6 -13,13 V 30 L 13,45 A 15,15 0 0 0 0,60 v 0 29 H 446 v -29 0 a 15,15 0 0 0 -13,-15 l -173,-15 V 13 c 0,-7 -5,-13 -12,-13 z')
+						]),
+					_List_Nil)
+				]))
+		]);
+};
+var $author$project$Main$trashBinSvg_ = function (clickable) {
+	return clickable ? A2(
 		$elm$svg$Svg$g,
 		_List_fromArray(
 			[
-				$elm$svg$Svg$Attributes$transform(o.transform)
+				$elm$svg$Svg$Events$onClick($author$project$Main$SendToTrashBinPart2),
+				A2($elm$html$Html$Attributes$style, 'cursor', 'pointer')
 			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$svg$Svg$path,
-				_List_fromArray(
-					[
-						$elm$svg$Svg$Attributes$fill(o.color),
-						$elm$svg$Svg$Attributes$d('M 4 112 l 59 337 c 5 22 25 37 47 37 c 0 0 0 0 0 0 h 227 c 22 0 41 -16 47 -37 v 0 l 59 -337 z m 219 58 c 8 0 13 6 13 13 v 218 c 0 7 -5 13 -13 13 c -7 0 -13 -6 -13 -13 v -218 c 0 -7 6 -13 13 -13 z m -105 0 c 7 0 13 6 13 12 l 19 218 c 1 7 -4 13 -12 14 c -7 0 -13 -5 -14 -12 l -19 -217 c -1 -8 5 -14 12 -15 c 1 0 1 0 1 0 z m 210 0 c 0 0 0 0 1 0 c 7 1 13 7 12 15 l -19 217 c -1 7 -7 12 -14 12 c -8 -1 -13 -7 -12 -14 l 19 -218 c 0 -6 6 -12 13 -12 z')
-					]),
-				_List_Nil),
-				A2(
-				$elm$svg$Svg$path,
-				_List_fromArray(
-					[
-						$elm$svg$Svg$Attributes$fill(o.color),
-						$elm$svg$Svg$Attributes$d('m 200,0 c -7,0 -13,6 -13,13 V 30 L 13,45 A 15,15 0 0 0 0,60 v 0 29 H 446 v -29 0 a 15,15 0 0 0 -13,-15 l -173,-15 V 13 c 0,-7 -5,-13 -12,-13 z')
-					]),
-				_List_Nil)
-			]));
+		_Utils_ap(
+			$author$project$Main$trashBinSvg('#555'),
+			_List_fromArray(
+				[
+					A2(
+					$elm$svg$Svg$circle,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$cx('45'),
+							$elm$svg$Svg$Attributes$cy('55'),
+							$elm$svg$Svg$Attributes$r('16'),
+							$elm$svg$Svg$Attributes$fill('#ffff00')
+						]),
+					_List_Nil)
+				]))) : A2(
+		$elm$svg$Svg$g,
+		_List_Nil,
+		$author$project$Main$trashBinSvg('#eee'));
 };
 var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 	return _List_fromArray(
 		[
-			$author$project$Main$trashBinSvg(
-			{
-				color: function () {
-					if ((trashBinFocus.$ === 'Just') && (trashBinFocus.a.$ === 'KeseTurn')) {
-						var _v1 = trashBinFocus.a;
-						return '#555';
-					} else {
-						return '#eee';
-					}
-				}(),
-				transform: 'translate(530 560) scale(0.2)'
-			}),
-			$author$project$Main$trashBinSvg(
-			{
-				color: function () {
-					if ((trashBinFocus.$ === 'Just') && (trashBinFocus.a.$ === 'RimaTurn')) {
-						var _v3 = trashBinFocus.a;
-						return '#555';
-					} else {
-						return '#eee';
-					}
-				}(),
-				transform: 'translate(530 -150) scale(0.2)'
-			})
+			A2(
+			$elm$svg$Svg$g,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$id('keseTrashBin'),
+					$elm$svg$Svg$Attributes$transform('translate(530 560)')
+				]),
+			_List_fromArray(
+				[
+					$author$project$Main$trashBinSvg_(
+					_Utils_eq(
+						trashBinFocus,
+						$elm$core$Maybe$Just($author$project$Main$KeseTurn)))
+				])),
+			A2(
+			$elm$svg$Svg$g,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$id('rimaTrashBin'),
+					$elm$svg$Svg$Attributes$transform('translate(530 -150)')
+				]),
+			_List_fromArray(
+				[
+					$author$project$Main$trashBinSvg_(
+					_Utils_eq(
+						trashBinFocus,
+						$elm$core$Maybe$Just($author$project$Main$RimaTurn)))
+				]))
 		]);
 };
 var $elm$html$Html$div = _VirtualDom_node('div');
@@ -7024,7 +7027,6 @@ var $author$project$Main$view = function (modl) {
 										remaining.rimaHand),
 									_List_fromArray(
 										[
-											A2($author$project$Main$clickableButtonOnTrashBinSvg, whoseHand, $author$project$Main$SendToTrashBinPart2),
 											$author$project$Main$pieceWaitingForAdditionalCommandSvg(
 											{
 												coord: {x: mover.coord.x, y: mover.coord.y},

@@ -386,23 +386,6 @@ goalCandidateSvg msgToBeSent coord =
         [ circle [ cx "52", cy "52", r "16", fill "#ffff00" ] [] ]
 
 
-clickableButtonOnTrashBinSvg : WhoseTurn -> Msg -> Svg Msg
-clickableButtonOnTrashBinSvg whoseTurn msgToBeSent =
-    g
-        [ transform
-            (case whoseTurn of
-                KeseTurn ->
-                    "translate(575 615)"
-
-                RimaTurn ->
-                    "translate(575 -95)"
-            )
-        , Svg.Events.onClick msgToBeSent
-        , Html.Attributes.style "cursor" "pointer"
-        ]
-        [ circle [ cx "0", cy "0", r "16", fill "#ffff00" ] [] ]
-
-
 pieceSvg : Bool -> Msg -> PieceWithFloatPosition -> Svg Msg
 pieceSvg focused msgToBeSent p =
     g
@@ -547,38 +530,34 @@ stationaryPart cardState =
            ]
 
 
-twoTrashBinsSvg : Maybe WhoseTurn -> List (Svg msg)
+twoTrashBinsSvg : Maybe WhoseTurn -> List (Svg Msg)
 twoTrashBinsSvg trashBinFocus =
-    [ trashBinSvg
-        { transform = "translate(530 560) scale(0.2)"
-        , color =
-            case trashBinFocus of
-                Just KeseTurn ->
-                    "#555"
-
-                _ ->
-                    "#eee"
-        }
-    , trashBinSvg
-        { transform = "translate(530 -150) scale(0.2)"
-        , color =
-            case trashBinFocus of
-                Just RimaTurn ->
-                    "#555"
-
-                _ ->
-                    "#eee"
-        }
+    [ g [ id "keseTrashBin", transform "translate(530 560)" ] [ trashBinSvg_ (trashBinFocus == Just KeseTurn) ]
+    , g [ id "rimaTrashBin", transform "translate(530 -150)" ] [ trashBinSvg_ (trashBinFocus == Just RimaTurn) ]
     ]
 
 
-trashBinSvg : { a | transform : String, color : String } -> Svg msg
-trashBinSvg o =
-    g [ transform o.transform ]
+trashBinSvg_ : Bool -> Svg Msg
+trashBinSvg_ clickable =
+    if clickable then
+        g
+            [ Svg.Events.onClick SendToTrashBinPart2
+            , Html.Attributes.style "cursor" "pointer"
+            ]
+            (trashBinSvg "#555" ++ [ circle [ cx "45", cy "55", r "16", fill "#ffff00" ] [] ])
+
+    else
+        g [] (trashBinSvg "#eee")
+
+
+trashBinSvg : String -> List (Svg msg)
+trashBinSvg color =
+    [ g [ transform "scale(0.2)" ]
         {- trash bin -}
-        [ Svg.path [ fill o.color, d "M 4 112 l 59 337 c 5 22 25 37 47 37 c 0 0 0 0 0 0 h 227 c 22 0 41 -16 47 -37 v 0 l 59 -337 z m 219 58 c 8 0 13 6 13 13 v 218 c 0 7 -5 13 -13 13 c -7 0 -13 -6 -13 -13 v -218 c 0 -7 6 -13 13 -13 z m -105 0 c 7 0 13 6 13 12 l 19 218 c 1 7 -4 13 -12 14 c -7 0 -13 -5 -14 -12 l -19 -217 c -1 -8 5 -14 12 -15 c 1 0 1 0 1 0 z m 210 0 c 0 0 0 0 1 0 c 7 1 13 7 12 15 l -19 217 c -1 7 -7 12 -14 12 c -8 -1 -13 -7 -12 -14 l 19 -218 c 0 -6 6 -12 13 -12 z" ] []
-        , Svg.path [ fill o.color, d "m 200,0 c -7,0 -13,6 -13,13 V 30 L 13,45 A 15,15 0 0 0 0,60 v 0 29 H 446 v -29 0 a 15,15 0 0 0 -13,-15 l -173,-15 V 13 c 0,-7 -5,-13 -12,-13 z" ] []
+        [ Svg.path [ fill color, d "M 4 112 l 59 337 c 5 22 25 37 47 37 c 0 0 0 0 0 0 h 227 c 22 0 41 -16 47 -37 v 0 l 59 -337 z m 219 58 c 8 0 13 6 13 13 v 218 c 0 7 -5 13 -13 13 c -7 0 -13 -6 -13 -13 v -218 c 0 -7 6 -13 13 -13 z m -105 0 c 7 0 13 6 13 12 l 19 218 c 1 7 -4 13 -12 14 c -7 0 -13 -5 -14 -12 l -19 -217 c -1 -8 5 -14 12 -15 c 1 0 1 0 1 0 z m 210 0 c 0 0 0 0 1 0 c 7 1 13 7 12 15 l -19 217 c -1 7 -7 12 -14 12 c -8 -1 -13 -7 -12 -14 l 19 -218 c 0 -6 6 -12 13 -12 z" ] []
+        , Svg.path [ fill color, d "m 200,0 c -7,0 -13,6 -13,13 V 30 L 13,45 A 15,15 0 0 0 0,60 v 0 29 H 446 v -29 0 a 15,15 0 0 0 -13,-15 l -173,-15 V 13 c 0,-7 -5,-13 -12,-13 z" ] []
         ]
+    ]
 
 
 playerSvg : String -> Bool -> WhoseTurn -> Svg msg
@@ -936,8 +915,7 @@ view modl =
                                 (rimaHandPos i prof)
                         )
                         remaining.rimaHand
-                    ++ [ clickableButtonOnTrashBinSvg whoseHand SendToTrashBinPart2
-                       , pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor }
+                    ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor }
                        ]
                 )
                 []
