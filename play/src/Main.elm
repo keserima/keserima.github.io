@@ -716,55 +716,57 @@ getCandidatesWithCommand moveCommand hasCircleInHand piece robbedBoard =
         )
 
 
+view_ : List (Svg msg) -> List (Html msg) -> Html msg
+view_ svgContent buttons =
+    Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
+        (svg [ viewBox "0 -200 900 900", width "600" ] svgContent :: buttons)
+
+
 view : Model -> Html Msg
 view modl =
     case modl of
         NothingSelected cardState ->
-            Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
-                [ svg
-                    [ viewBox "0 -200 900 900"
-                    , width "600"
-                    ]
-                    (stationaryPart Nothing cardState
-                        ++ List.map
-                            (\{ coord, prof, pieceColor } ->
-                                { coord = { x = toFloat coord.x, y = toFloat coord.y }, prof = prof, pieceColor = pieceColor }
-                                    |> pieceSvg False
-                                        {- You can move the piece if it is a ship or if it belongs to you. -}
-                                        (if pieceColor == Ship || pieceColor == toColor cardState.whoseTurn then
-                                            GiveFocusTo (PieceOnTheBoard coord)
-
-                                         else
-                                            None
-                                        )
-                            )
-                            cardState.board
-                        ++ List.indexedMap
-                            (\i prof ->
-                                pieceSvg False
-                                    (if cardState.whoseTurn == KeseTurn then
-                                        GiveFocusTo (PieceInKeseHand i)
+            view_
+                (stationaryPart Nothing cardState
+                    ++ List.map
+                        (\{ coord, prof, pieceColor } ->
+                            { coord = { x = toFloat coord.x, y = toFloat coord.y }, prof = prof, pieceColor = pieceColor }
+                                |> pieceSvg False
+                                    {- You can move the piece if it is a ship or if it belongs to you. -}
+                                    (if pieceColor == Ship || pieceColor == toColor cardState.whoseTurn then
+                                        GiveFocusTo (PieceOnTheBoard coord)
 
                                      else
                                         None
                                     )
-                                    (keseHandPos i prof)
-                            )
-                            cardState.keseHand
-                        ++ List.indexedMap
-                            (\i prof ->
-                                pieceSvg False
-                                    (if cardState.whoseTurn == RimaTurn then
-                                        GiveFocusTo (PieceInRimaHand i)
+                        )
+                        cardState.board
+                    ++ List.indexedMap
+                        (\i prof ->
+                            pieceSvg False
+                                (if cardState.whoseTurn == KeseTurn then
+                                    GiveFocusTo (PieceInKeseHand i)
 
-                                     else
-                                        None
-                                    )
-                                    (rimaHandPos i prof)
-                            )
-                            cardState.rimaHand
-                    )
-                ]
+                                 else
+                                    None
+                                )
+                                (keseHandPos i prof)
+                        )
+                        cardState.keseHand
+                    ++ List.indexedMap
+                        (\i prof ->
+                            pieceSvg False
+                                (if cardState.whoseTurn == RimaTurn then
+                                    GiveFocusTo (PieceInRimaHand i)
+
+                                 else
+                                    None
+                                )
+                                (rimaHandPos i prof)
+                        )
+                        cardState.rimaHand
+                )
+                []
 
         MoverIsSelected focus cardState ->
             let
@@ -842,12 +844,9 @@ view modl =
                                     )
                                     cardState.rimaHand
             in
-            Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
-                [ svg
-                    [ viewBox "0 -200 900 900", width "600" ]
-                    (stationaryPart Nothing cardState ++ dynamicPart)
-                , Html.button [ onClick Cancel ] [ text "キャンセル" ]
-                ]
+            view_
+                (stationaryPart Nothing cardState ++ dynamicPart)
+                [ Html.button [ onClick Cancel ] [ text "キャンセル" ] ]
 
         NowWaitingForAdditionalSacrifice { mover, remaining } ->
             let
@@ -868,77 +867,72 @@ view modl =
                                 ( _, _ ) ->
                                     True
             in
-            Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
-                [ svg
-                    [ viewBox "0 -200 900 900", width "600" ]
-                    (stationaryPart Nothing remaining
-                        ++ List.map
-                            (\piece ->
-                                { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                    |> pieceSvg False None
-                             {- You cannot click any piece on the board while waiting for additional sacrifices. -}
-                            )
-                            remaining.board
-                        ++ List.indexedMap
-                            (\i prof ->
-                                pieceSvg False
-                                    (if remaining.whoseTurn == KeseTurn && (isSacrificingCircleRequired == (prof == Circle)) then
-                                        SendToTrashBinPart1 { whoseHand = KeseTurn, index = i }
+            view_
+                (stationaryPart Nothing remaining
+                    ++ List.map
+                        (\piece ->
+                            { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                |> pieceSvg False None
+                         {- You cannot click any piece on the board while waiting for additional sacrifices. -}
+                        )
+                        remaining.board
+                    ++ List.indexedMap
+                        (\i prof ->
+                            pieceSvg False
+                                (if remaining.whoseTurn == KeseTurn && (isSacrificingCircleRequired == (prof == Circle)) then
+                                    SendToTrashBinPart1 { whoseHand = KeseTurn, index = i }
 
-                                     else
-                                        None
-                                    )
-                                    (keseHandPos i prof)
-                            )
-                            remaining.keseHand
-                        ++ List.indexedMap
-                            (\i prof ->
-                                pieceSvg False
-                                    (if remaining.whoseTurn == RimaTurn && (isSacrificingCircleRequired == (prof == Circle)) then
-                                        SendToTrashBinPart1 { whoseHand = RimaTurn, index = i }
+                                 else
+                                    None
+                                )
+                                (keseHandPos i prof)
+                        )
+                        remaining.keseHand
+                    ++ List.indexedMap
+                        (\i prof ->
+                            pieceSvg False
+                                (if remaining.whoseTurn == RimaTurn && (isSacrificingCircleRequired == (prof == Circle)) then
+                                    SendToTrashBinPart1 { whoseHand = RimaTurn, index = i }
 
-                                     else
-                                        None
-                                    )
-                                    (rimaHandPos i prof)
-                            )
-                            remaining.rimaHand
-                        ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
-                    )
-                , Html.button [ onClick TurnEnd ] [ text "ターンエンド" ]
-                ]
+                                 else
+                                    None
+                                )
+                                (rimaHandPos i prof)
+                        )
+                        remaining.rimaHand
+                    ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
+                )
+                [ Html.button [ onClick TurnEnd ] [ text "ターンエンド" ] ]
 
         WaitForTrashBinClick { mover, remaining, whoseHand, index } ->
-            Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
-                [ svg
-                    [ viewBox "0 -200 900 900", width "600" ]
-                    (stationaryPart (Just whoseHand) remaining
-                        ++ List.map
-                            (\piece ->
-                                { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                    |> pieceSvg False None
-                             {- You cannot click any piece on the board while waiting for additional sacrifices. -}
-                            )
-                            remaining.board
-                        ++ List.indexedMap
-                            (\i prof ->
-                                pieceSvg (whoseHand == KeseTurn && i == index)
-                                    None
-                                    (keseHandPos i prof)
-                            )
-                            remaining.keseHand
-                        ++ List.indexedMap
-                            (\i prof ->
-                                pieceSvg (whoseHand == RimaTurn && i == index)
-                                    None
-                                    (rimaHandPos i prof)
-                            )
-                            remaining.rimaHand
-                        ++ [ clickableButtonOnTrashBinSvg whoseHand SendToTrashBinPart2
-                           , pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor }
-                           ]
-                    )
-                ]
+            view_
+                (stationaryPart (Just whoseHand) remaining
+                    ++ List.map
+                        (\piece ->
+                            { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                |> pieceSvg False None
+                         {- You cannot click any piece on the board while waiting for additional sacrifices. -}
+                        )
+                        remaining.board
+                    ++ List.indexedMap
+                        (\i prof ->
+                            pieceSvg (whoseHand == KeseTurn && i == index)
+                                None
+                                (keseHandPos i prof)
+                        )
+                        remaining.keseHand
+                    ++ List.indexedMap
+                        (\i prof ->
+                            pieceSvg (whoseHand == RimaTurn && i == index)
+                                None
+                                (rimaHandPos i prof)
+                        )
+                        remaining.rimaHand
+                    ++ [ clickableButtonOnTrashBinSvg whoseHand SendToTrashBinPart2
+                       , pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor }
+                       ]
+                )
+                []
 
         AfterSacrifice command { mover, remaining } ->
             let
@@ -969,51 +963,45 @@ view modl =
                         ++ List.indexedMap (\i prof -> pieceSvg False None (rimaHandPos i prof)) remaining.rimaHand
                         ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
             in
-            Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
-                [ svg
-                    [ viewBox "0 -200 900 900", width "600" ]
-                    (stationaryPart Nothing remaining ++ dynamicPart)
-                ]
+            view_ (stationaryPart Nothing remaining ++ dynamicPart) []
 
         AfterCircleSacrifice { mover, remaining } ->
-            Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ]
-                [ svg
-                    [ viewBox "0 -200 900 900", width "600" ]
-                    (stationaryPart Nothing remaining
-                        ++ List.map
-                            (\piece ->
-                                { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                    |> pieceSvg False None
-                             {- You cannot click any piece on the board while waiting for additional sacrifices. -}
-                            )
-                            remaining.board
-                        ++ List.indexedMap
-                            (\i prof ->
-                                pieceSvg False
-                                    (if remaining.whoseTurn == KeseTurn && prof /= Circle then
-                                        SendToTrashBinPart1 { whoseHand = KeseTurn, index = i }
+            view_
+                (stationaryPart Nothing remaining
+                    ++ List.map
+                        (\piece ->
+                            { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                                |> pieceSvg False None
+                         {- You cannot click any piece on the board while waiting for additional sacrifices. -}
+                        )
+                        remaining.board
+                    ++ List.indexedMap
+                        (\i prof ->
+                            pieceSvg False
+                                (if remaining.whoseTurn == KeseTurn && prof /= Circle then
+                                    SendToTrashBinPart1 { whoseHand = KeseTurn, index = i }
 
-                                     else
-                                        None
-                                    )
-                                    (keseHandPos i prof)
-                            )
-                            remaining.keseHand
-                        ++ List.indexedMap
-                            (\i prof ->
-                                pieceSvg False
-                                    (if remaining.whoseTurn == RimaTurn && prof /= Circle then
-                                        SendToTrashBinPart1 { whoseHand = RimaTurn, index = i }
+                                 else
+                                    None
+                                )
+                                (keseHandPos i prof)
+                        )
+                        remaining.keseHand
+                    ++ List.indexedMap
+                        (\i prof ->
+                            pieceSvg False
+                                (if remaining.whoseTurn == RimaTurn && prof /= Circle then
+                                    SendToTrashBinPart1 { whoseHand = RimaTurn, index = i }
 
-                                     else
-                                        None
-                                    )
-                                    (rimaHandPos i prof)
-                            )
-                            remaining.rimaHand
-                        ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
-                    )
-                ]
+                                 else
+                                    None
+                                )
+                                (rimaHandPos i prof)
+                        )
+                        remaining.rimaHand
+                    ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
+                )
+                []
 
 
 keseHandPos : Int -> Profession -> PieceWithFloatPosition
