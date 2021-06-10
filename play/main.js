@@ -5367,6 +5367,16 @@ var $author$project$Main$invertWhoseTurn = function (w) {
 		return $author$project$Main$KeseTurn;
 	}
 };
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
 var $author$project$Main$profToHistoryStr = function (prof) {
 	switch (prof.$) {
 		case 'Circle':
@@ -5386,8 +5396,18 @@ var $author$project$Main$whoseTurnToHistoryStr = function (w) {
 		return 'R';
 	}
 };
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
 var $author$project$Main$newHistory = F2(
 	function (msg, modl) {
+		var unwrap = $elm$core$Maybe$withDefault('ERROR!!!!!!!!!!!!!!!!!!!!');
 		var _v0 = _Utils_Tuple2(modl, msg);
 		_v0$10:
 		while (true) {
@@ -5402,34 +5422,30 @@ var $author$project$Main$newHistory = F2(
 							case 'PieceInKeseHand':
 								var cardState = _v0.a.a;
 								var index = _v0.b.a.a;
-								var _v2 = A2($elm_community$list_extra$List$Extra$getAt, index, cardState.keseHand);
-								if (_v2.$ === 'Just') {
-									var prof = _v2.a;
-									return $author$project$Main$profToHistoryStr(prof);
-								} else {
-									return 'ERROR!!!!!!!!!!!!!!!!!!!!';
-								}
+								return unwrap(
+									A2(
+										$elm$core$Maybe$map,
+										$author$project$Main$profToHistoryStr,
+										A2($elm_community$list_extra$List$Extra$getAt, index, cardState.keseHand)));
 							case 'PieceInRimaHand':
 								var cardState = _v0.a.a;
 								var index = _v0.b.a.a;
-								var _v3 = A2($elm_community$list_extra$List$Extra$getAt, index, cardState.rimaHand);
-								if (_v3.$ === 'Just') {
-									var prof = _v3.a;
-									return $author$project$Main$profToHistoryStr(prof);
-								} else {
-									return 'ERROR!!!!!!!!!!!!!!!!!!!!';
-								}
+								return unwrap(
+									A2(
+										$elm$core$Maybe$map,
+										$author$project$Main$profToHistoryStr,
+										A2($elm_community$list_extra$List$Extra$getAt, index, cardState.rimaHand)));
 							default:
 								var cardState = _v0.a.a;
 								var coord = _v0.b.a.a;
-								var _v4 = A2(
+								var _v2 = A2(
 									$elm$core$List$filter,
 									function (p) {
 										return _Utils_eq(p.coord, coord);
 									},
 									cardState.board);
-								if (_v4.b && (!_v4.b.b)) {
-									var p = _v4.a;
+								if (_v2.b && (!_v2.b.b)) {
+									var p = _v2.a;
 									return _Utils_ap(
 										_Utils_eq(p.pieceColor, $author$project$Main$Ship) ? 'S' : '',
 										_Utils_ap(
@@ -5445,32 +5461,19 @@ var $author$project$Main$newHistory = F2(
 				case 'MovementToward':
 					switch (_v0.a.$) {
 						case 'MoverIsSelected':
-							var _v5 = _v0.a;
-							var from = _v5.a;
-							var cardState = _v5.b;
+							var _v3 = _v0.a;
+							var from = _v3.a;
 							var to = _v0.b.a;
 							switch (from.$) {
 								case 'PieceOnTheBoard':
 									return '-' + $author$project$Main$coordToHistoryStr(to);
 								case 'PieceInKeseHand':
-									var ind = from.a;
-									var _v7 = A2($elm_community$list_extra$List$Extra$getAt, ind, cardState.keseHand);
-									if (_v7.$ === 'Nothing') {
-										return 'ERROR!!!!!!!!';
-									} else {
-										return $author$project$Main$coordToHistoryStr(to) + '.\n';
-									}
+									return $author$project$Main$coordToHistoryStr(to) + '.\n';
 								default:
-									var ind = from.a;
-									var _v8 = A2($elm_community$list_extra$List$Extra$getAt, ind, cardState.rimaHand);
-									if (_v8.$ === 'Nothing') {
-										return 'ERROR!!!!!!!!';
-									} else {
-										return $author$project$Main$coordToHistoryStr(to) + '.\n';
-									}
+									return $author$project$Main$coordToHistoryStr(to) + '.\n';
 							}
 						case 'AfterSacrifice':
-							var _v9 = _v0.a;
+							var _v5 = _v0.a;
 							var to = _v0.b.a;
 							return $author$project$Main$coordToHistoryStr(to);
 						default:
@@ -5480,19 +5483,19 @@ var $author$project$Main$newHistory = F2(
 					if (_v0.a.$ === 'NowWaitingForAdditionalSacrifice') {
 						var mover = _v0.a.a.mover;
 						var remaining = _v0.a.a.remaining;
-						var _v13 = _v0.b;
+						var _v7 = _v0.b;
 						return _Utils_ap(
 							function () {
-								var _v14 = A2(
+								var _v8 = A2(
 									$elm$core$List$filter,
 									function (p) {
 										return _Utils_eq(p.coord, mover.coord);
 									},
 									remaining.board);
-								if (!_v14.b) {
+								if (!_v8.b) {
 									return '.\n';
 								} else {
-									var captured = _v14.a;
+									var captured = _v8.a;
 									return '[' + ($author$project$Main$profToHistoryStr(captured.prof) + '].\n');
 								}
 							}(),
@@ -5503,7 +5506,7 @@ var $author$project$Main$newHistory = F2(
 					}
 				case 'SendToTrashBinPart2':
 					if (_v0.a.$ === 'WaitForTrashBinClick') {
-						var _v15 = _v0.b;
+						var _v9 = _v0.b;
 						return '';
 					} else {
 						break _v0$10;
@@ -5515,42 +5518,34 @@ var $author$project$Main$newHistory = F2(
 							var whoseHand = _v0.b.a.whoseHand;
 							var index = _v0.b.a.index;
 							if (whoseHand.$ === 'KeseTurn') {
-								var _v11 = A2($elm_community$list_extra$List$Extra$getAt, index, remaining.keseHand);
-								if (_v11.$ === 'Nothing') {
-									return 'ERROR!!!!!!!!';
-								} else {
-									var prof = _v11.a;
-									return $author$project$Main$profToHistoryStr(prof);
-								}
+								return unwrap(
+									A2(
+										$elm$core$Maybe$map,
+										$author$project$Main$profToHistoryStr,
+										A2($elm_community$list_extra$List$Extra$getAt, index, remaining.keseHand)));
 							} else {
-								var _v12 = A2($elm_community$list_extra$List$Extra$getAt, index, remaining.rimaHand);
-								if (_v12.$ === 'Nothing') {
-									return 'ERROR!!!!!!!!';
-								} else {
-									var prof = _v12.a;
-									return $author$project$Main$profToHistoryStr(prof);
-								}
+								return unwrap(
+									A2(
+										$elm$core$Maybe$map,
+										$author$project$Main$profToHistoryStr,
+										A2($elm_community$list_extra$List$Extra$getAt, index, remaining.rimaHand)));
 							}
 						case 'AfterCircleSacrifice':
 							var remaining = _v0.a.a.remaining;
 							var whoseHand = _v0.b.a.whoseHand;
 							var index = _v0.b.a.index;
 							if (whoseHand.$ === 'KeseTurn') {
-								var _v17 = A2($elm_community$list_extra$List$Extra$getAt, index, remaining.keseHand);
-								if (_v17.$ === 'Nothing') {
-									return 'ERROR!!!!!!!!';
-								} else {
-									var prof = _v17.a;
-									return $author$project$Main$profToHistoryStr(prof);
-								}
+								return unwrap(
+									A2(
+										$elm$core$Maybe$map,
+										$author$project$Main$profToHistoryStr,
+										A2($elm_community$list_extra$List$Extra$getAt, index, remaining.keseHand)));
 							} else {
-								var _v18 = A2($elm_community$list_extra$List$Extra$getAt, index, remaining.rimaHand);
-								if (_v18.$ === 'Nothing') {
-									return 'ERROR!!!!!!!!';
-								} else {
-									var prof = _v18.a;
-									return $author$project$Main$profToHistoryStr(prof);
-								}
+								return unwrap(
+									A2(
+										$elm$core$Maybe$map,
+										$author$project$Main$profToHistoryStr,
+										A2($elm_community$list_extra$List$Extra$getAt, index, remaining.rimaHand)));
 							}
 						default:
 							break _v0$10;

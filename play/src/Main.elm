@@ -196,26 +196,19 @@ getWhoseTurn modl =
 
 newHistory : Msg -> CurrentStatus -> String
 newHistory msg modl =
+    let
+        unwrap =
+            Maybe.withDefault "ERROR!!!!!!!!!!!!!!!!!!!!"
+    in
     case ( modl, msg ) of
         ( _, Cancel ) ->
             "~~~ " ++ whoseTurnToHistoryStr (getWhoseTurn modl)
 
         ( NothingSelected cardState, GiveFocusTo (PieceInKeseHand index) ) ->
-            case List.Extra.getAt index cardState.keseHand of
-                Just prof ->
-                    profToHistoryStr prof
-
-                Nothing ->
-                    "ERROR!!!!!!!!!!!!!!!!!!!!"
+            List.Extra.getAt index cardState.keseHand |> Maybe.map profToHistoryStr |> unwrap
 
         ( NothingSelected cardState, GiveFocusTo (PieceInRimaHand index) ) ->
-            case List.Extra.getAt index cardState.rimaHand of
-                Just prof ->
-                    profToHistoryStr prof
-
-                {- This branch is not taken -}
-                Nothing ->
-                    "ERROR!!!!!!!!!!!!!!!!!!!!"
+            List.Extra.getAt index cardState.rimaHand |> Maybe.map profToHistoryStr |> unwrap
 
         ( NothingSelected cardState, GiveFocusTo (PieceOnTheBoard coord) ) ->
             case List.filter (\p -> p.coord == coord) cardState.board of
@@ -232,28 +225,18 @@ newHistory msg modl =
                 _ ->
                     "ERROR!!!!!!!!"
 
-        ( MoverIsSelected from cardState, MovementToward to ) ->
+        ( MoverIsSelected from _, MovementToward to ) ->
             case from of
                 PieceOnTheBoard _ ->
                     "-" ++ coordToHistoryStr to
 
                 {- Parachuting from KeseHand -}
-                PieceInKeseHand ind ->
-                    case List.Extra.getAt ind cardState.keseHand of
-                        Nothing ->
-                            "ERROR!!!!!!!!"
-
-                        Just _ ->
-                            coordToHistoryStr to ++ ".\n"
+                PieceInKeseHand _ ->
+                    coordToHistoryStr to ++ ".\n"
 
                 {- Parachuting from RimaHand -}
-                PieceInRimaHand ind ->
-                    case List.Extra.getAt ind cardState.rimaHand of
-                        Nothing ->
-                            "ERROR!!!!!!!!"
-
-                        Just _ ->
-                            coordToHistoryStr to ++ ".\n"
+                PieceInRimaHand _ ->
+                    coordToHistoryStr to ++ ".\n"
 
         ( AfterSacrifice _ _, MovementToward to ) ->
             coordToHistoryStr to
@@ -261,20 +244,10 @@ newHistory msg modl =
         ( NowWaitingForAdditionalSacrifice { remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->
             case whoseHand of
                 KeseTurn ->
-                    case List.Extra.getAt index remaining.keseHand of
-                        Nothing ->
-                            "ERROR!!!!!!!!"
-
-                        Just prof ->
-                            profToHistoryStr prof
+                    List.Extra.getAt index remaining.keseHand |> Maybe.map profToHistoryStr |> unwrap
 
                 RimaTurn ->
-                    case List.Extra.getAt index remaining.rimaHand of
-                        Nothing ->
-                            "ERROR!!!!!!!!"
-
-                        Just prof ->
-                            profToHistoryStr prof
+                    List.Extra.getAt index remaining.rimaHand |> Maybe.map profToHistoryStr |> unwrap
 
         ( NowWaitingForAdditionalSacrifice { mover, remaining }, TurnEnd ) ->
             (case List.filter (\p -> p.coord == mover.coord) remaining.board of
@@ -293,20 +266,10 @@ newHistory msg modl =
         ( AfterCircleSacrifice { remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->
             case whoseHand of
                 KeseTurn ->
-                    case List.Extra.getAt index remaining.keseHand of
-                        Nothing ->
-                            "ERROR!!!!!!!!"
-
-                        Just prof ->
-                            profToHistoryStr prof
+                    List.Extra.getAt index remaining.keseHand |> Maybe.map profToHistoryStr |> unwrap
 
                 RimaTurn ->
-                    case List.Extra.getAt index remaining.rimaHand of
-                        Nothing ->
-                            "ERROR!!!!!!!!"
-
-                        Just prof ->
-                            profToHistoryStr prof
+                    List.Extra.getAt index remaining.rimaHand |> Maybe.map profToHistoryStr |> unwrap
 
         _ ->
             {- Do nothing -}
