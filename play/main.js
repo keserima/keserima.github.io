@@ -5204,7 +5204,7 @@ var $author$project$Main$init = function (flags) {
 	return _Utils_Tuple2(
 		A2(
 			$author$project$Main$Model,
-			'R' + ((flags.rimaDice ? '+' : 'x') + ('@11 ' + ('S' + ((flags.shipDice ? '+' : 'x') + ('@23 K' + ((flags.keseDice ? '+' : 'x') + '@15\n')))))),
+			'R' + ((flags.rimaDice ? '+' : 'x') + ('@11 ' + ('S' + ((flags.shipDice ? '+' : 'x') + ('@23 K' + ((flags.keseDice ? '+' : 'x') + ('@15\n' + (flags.keseGoesFirst ? 'K' : 'R')))))))),
 			$author$project$Main$NothingSelected(
 				{
 					board: _List_fromArray(
@@ -5287,6 +5287,257 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
+var $author$project$Main$coordToHistoryStr = function (coord) {
+	return _Utils_ap(
+		$elm$core$String$fromInt(coord.x + 1),
+		$elm$core$String$fromInt(coord.y + 1));
+};
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$List$drop = F2(
+	function (n, list) {
+		drop:
+		while (true) {
+			if (n <= 0) {
+				return list;
+			} else {
+				if (!list.b) {
+					return list;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs;
+					n = $temp$n;
+					list = $temp$list;
+					continue drop;
+				}
+			}
+		}
+	});
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm_community$list_extra$List$Extra$getAt = F2(
+	function (idx, xs) {
+		return (idx < 0) ? $elm$core$Maybe$Nothing : $elm$core$List$head(
+			A2($elm$core$List$drop, idx, xs));
+	});
+var $author$project$Main$invertWhoseTurn = function (w) {
+	if (w.$ === 'KeseTurn') {
+		return $author$project$Main$RimaTurn;
+	} else {
+		return $author$project$Main$KeseTurn;
+	}
+};
+var $author$project$Main$profToHistoryStr = function (prof) {
+	switch (prof.$) {
+		case 'Circle':
+			return 'o';
+		case 'HorizontalVertical':
+			return '+';
+		case 'Diagonal':
+			return 'x';
+		default:
+			return '*';
+	}
+};
+var $author$project$Main$whoseTurnToHistoryStr = function (w) {
+	if (w.$ === 'KeseTurn') {
+		return 'K';
+	} else {
+		return 'R';
+	}
+};
+var $author$project$Main$newHistory = F2(
+	function (msg, modl) {
+		var _v0 = _Utils_Tuple2(modl, msg);
+		_v0$10:
+		while (true) {
+			switch (_v0.b.$) {
+				case 'Cancel':
+					var _v1 = _v0.b;
+					return '~~~ ';
+				case 'GiveFocusTo':
+					if (_v0.a.$ === 'NothingSelected') {
+						switch (_v0.b.a.$) {
+							case 'PieceInKeseHand':
+								var cardState = _v0.a.a;
+								var index = _v0.b.a.a;
+								var _v2 = A2($elm_community$list_extra$List$Extra$getAt, index, cardState.keseHand);
+								if (_v2.$ === 'Just') {
+									var prof = _v2.a;
+									return $author$project$Main$profToHistoryStr(prof);
+								} else {
+									return 'ERROR!!!!!!!!!!!!!!!!!!!!';
+								}
+							case 'PieceInRimaHand':
+								var cardState = _v0.a.a;
+								var index = _v0.b.a.a;
+								var _v3 = A2($elm_community$list_extra$List$Extra$getAt, index, cardState.rimaHand);
+								if (_v3.$ === 'Just') {
+									var prof = _v3.a;
+									return $author$project$Main$profToHistoryStr(prof);
+								} else {
+									return 'ERROR!!!!!!!!!!!!!!!!!!!!';
+								}
+							default:
+								var cardState = _v0.a.a;
+								var coord = _v0.b.a.a;
+								var _v4 = A2(
+									$elm$core$List$filter,
+									function (p) {
+										return _Utils_eq(p.coord, coord);
+									},
+									cardState.board);
+								if (_v4.b && (!_v4.b.b)) {
+									var p = _v4.a;
+									return _Utils_ap(
+										_Utils_eq(p.pieceColor, $author$project$Main$Ship) ? 'S' : '',
+										_Utils_ap(
+											$author$project$Main$profToHistoryStr(p.prof),
+											$author$project$Main$coordToHistoryStr(p.coord)));
+								} else {
+									return 'ERROR!!!!!!!!';
+								}
+						}
+					} else {
+						break _v0$10;
+					}
+				case 'MovementToward':
+					switch (_v0.a.$) {
+						case 'MoverIsSelected':
+							var _v5 = _v0.a;
+							var from = _v5.a;
+							var cardState = _v5.b;
+							var to = _v0.b.a;
+							switch (from.$) {
+								case 'PieceOnTheBoard':
+									return '-' + $author$project$Main$coordToHistoryStr(to);
+								case 'PieceInKeseHand':
+									var ind = from.a;
+									var _v7 = A2($elm_community$list_extra$List$Extra$getAt, ind, cardState.keseHand);
+									if (_v7.$ === 'Nothing') {
+										return 'ERROR!!!!!!!!';
+									} else {
+										return $author$project$Main$coordToHistoryStr(to) + '.\n';
+									}
+								default:
+									var ind = from.a;
+									var _v8 = A2($elm_community$list_extra$List$Extra$getAt, ind, cardState.rimaHand);
+									if (_v8.$ === 'Nothing') {
+										return 'ERROR!!!!!!!!';
+									} else {
+										return $author$project$Main$coordToHistoryStr(to) + '.\n';
+									}
+							}
+						case 'AfterSacrifice':
+							var _v9 = _v0.a;
+							var to = _v0.b.a;
+							return $author$project$Main$coordToHistoryStr(to);
+						default:
+							break _v0$10;
+					}
+				case 'TurnEnd':
+					if (_v0.a.$ === 'NowWaitingForAdditionalSacrifice') {
+						var mover = _v0.a.a.mover;
+						var remaining = _v0.a.a.remaining;
+						var _v13 = _v0.b;
+						return _Utils_ap(
+							function () {
+								var _v14 = A2(
+									$elm$core$List$filter,
+									function (p) {
+										return _Utils_eq(p.coord, mover.coord);
+									},
+									remaining.board);
+								if (!_v14.b) {
+									return '.\n';
+								} else {
+									var captured = _v14.a;
+									return '[' + ($author$project$Main$profToHistoryStr(captured.prof) + '].\n');
+								}
+							}(),
+							$author$project$Main$whoseTurnToHistoryStr(
+								$author$project$Main$invertWhoseTurn(remaining.whoseTurn)));
+					} else {
+						break _v0$10;
+					}
+				case 'SendToTrashBinPart2':
+					if (_v0.a.$ === 'WaitForTrashBinClick') {
+						var _v15 = _v0.b;
+						return '';
+					} else {
+						break _v0$10;
+					}
+				case 'SendToTrashBinPart1':
+					switch (_v0.a.$) {
+						case 'NowWaitingForAdditionalSacrifice':
+							var remaining = _v0.a.a.remaining;
+							var whoseHand = _v0.b.a.whoseHand;
+							var index = _v0.b.a.index;
+							if (whoseHand.$ === 'KeseTurn') {
+								var _v11 = A2($elm_community$list_extra$List$Extra$getAt, index, remaining.keseHand);
+								if (_v11.$ === 'Nothing') {
+									return 'ERROR!!!!!!!!';
+								} else {
+									var prof = _v11.a;
+									return $author$project$Main$profToHistoryStr(prof);
+								}
+							} else {
+								var _v12 = A2($elm_community$list_extra$List$Extra$getAt, index, remaining.rimaHand);
+								if (_v12.$ === 'Nothing') {
+									return 'ERROR!!!!!!!!';
+								} else {
+									var prof = _v12.a;
+									return $author$project$Main$profToHistoryStr(prof);
+								}
+							}
+						case 'AfterCircleSacrifice':
+							var remaining = _v0.a.a.remaining;
+							var whoseHand = _v0.b.a.whoseHand;
+							var index = _v0.b.a.index;
+							if (whoseHand.$ === 'KeseTurn') {
+								var _v17 = A2($elm_community$list_extra$List$Extra$getAt, index, remaining.keseHand);
+								if (_v17.$ === 'Nothing') {
+									return 'ERROR!!!!!!!!';
+								} else {
+									var prof = _v17.a;
+									return $author$project$Main$profToHistoryStr(prof);
+								}
+							} else {
+								var _v18 = A2($elm_community$list_extra$List$Extra$getAt, index, remaining.rimaHand);
+								if (_v18.$ === 'Nothing') {
+									return 'ERROR!!!!!!!!';
+								} else {
+									var prof = _v18.a;
+									return $author$project$Main$profToHistoryStr(prof);
+								}
+							}
+						default:
+							break _v0$10;
+					}
+				default:
+					break _v0$10;
+			}
+		}
+		return '';
+	});
 var $author$project$Main$AfterCircleSacrifice = function (a) {
 	return {$: 'AfterCircleSacrifice', a: a};
 };
@@ -5306,17 +5557,6 @@ var $author$project$Main$NowWaitingForAdditionalSacrifice = function (a) {
 var $author$project$Main$WaitForTrashBinClick = function (a) {
 	return {$: 'WaitForTrashBinClick', a: a};
 };
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
 var $elm_community$list_extra$List$Extra$remove = F2(
 	function (x, xs) {
 		if (!xs.b) {
@@ -5352,27 +5592,6 @@ var $author$project$Main$robFocusedPieceFromBoard = F2(
 						board)));
 		} else {
 			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $elm$core$List$drop = F2(
-	function (n, list) {
-		drop:
-		while (true) {
-			if (n <= 0) {
-				return list;
-			} else {
-				if (!list.b) {
-					return list;
-				} else {
-					var x = list.a;
-					var xs = list.b;
-					var $temp$n = n - 1,
-						$temp$list = xs;
-					n = $temp$n;
-					list = $temp$list;
-					continue drop;
-				}
-			}
 		}
 	});
 var $elm$core$List$takeReverse = F3(
@@ -5518,7 +5737,7 @@ var $author$project$Main$robIth = F2(
 			A2($elm$core$List$drop, ind + 1, list));
 		return _Utils_Tuple2(xs, newList);
 	});
-var $author$project$Main$update_ = F2(
+var $author$project$Main$updateStatus = F2(
 	function (msg, modl) {
 		var _v0 = _Utils_Tuple2(modl, msg);
 		_v0$8:
@@ -5777,8 +5996,10 @@ var $author$project$Main$update = F2(
 		return _Utils_Tuple2(
 			A2(
 				$author$project$Main$Model,
-				history,
-				A2($author$project$Main$update_, msg, modl)),
+				_Utils_ap(
+					history,
+					A2($author$project$Main$newHistory, msg, modl)),
+				A2($author$project$Main$updateStatus, msg, modl)),
 			$elm$core$Platform$Cmd$none);
 	});
 var $author$project$Main$Cancel = {$: 'Cancel'};
@@ -6721,6 +6942,7 @@ var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 				]))
 		]);
 };
+var $elm$html$Html$br = _VirtualDom_node('br');
 var $elm$html$Html$Attributes$cols = function (n) {
 	return A2(
 		_VirtualDom_attribute,
@@ -6755,33 +6977,32 @@ var $author$project$Main$view_ = F3(
 				[
 					A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
 				]),
-			A2(
-				$elm$core$List$cons,
-				A2(
-					$elm$svg$Svg$svg,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
-							$elm$svg$Svg$Attributes$width('600')
-						]),
-					svgContent),
-				_Utils_ap(
-					buttons,
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$textarea,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$rows(50),
-									$elm$html$Html$Attributes$cols(80),
-									$elm$html$Html$Attributes$readonly(true)
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text(history)
-								]))
-						]))));
+			_Utils_ap(
+				_List_fromArray(
+					[
+						A2(
+						$elm$svg$Svg$svg,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
+								$elm$svg$Svg$Attributes$width('600')
+							]),
+						svgContent),
+						A2(
+						$elm$html$Html$textarea,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$rows(50),
+								$elm$html$Html$Attributes$cols(80),
+								$elm$html$Html$Attributes$readonly(true)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(history)
+							])),
+						A2($elm$html$Html$br, _List_Nil, _List_Nil)
+					]),
+				buttons));
 	});
 var $author$project$Main$view = function (_v0) {
 	var history = _v0.a;

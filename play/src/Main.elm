@@ -126,13 +126,173 @@ subscriptions _ =
     Sub.none
 
 
+profToHistoryStr : Profession -> String
+profToHistoryStr prof =
+    case prof of
+        Circle ->
+            "o"
+
+        HorizontalVertical ->
+            "+"
+
+        Diagonal ->
+            "x"
+
+        All ->
+            "*"
+
+
+whoseTurnToHistoryStr : WhoseTurn -> String
+whoseTurnToHistoryStr w =
+    case w of
+        KeseTurn ->
+            "K"
+
+        RimaTurn ->
+            "R"
+
+
+invertWhoseTurn : WhoseTurn -> WhoseTurn
+invertWhoseTurn w =
+    case w of
+        KeseTurn ->
+            RimaTurn
+
+        RimaTurn ->
+            KeseTurn
+
+
+coordToHistoryStr : Coordinate -> String
+coordToHistoryStr coord =
+    String.fromInt (coord.x + 1) ++ String.fromInt (coord.y + 1)
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg (Model history modl) =
-    ( Model history (update_ msg modl), Cmd.none )
+    ( Model (history ++ newHistory msg modl) (updateStatus msg modl), Cmd.none )
 
 
-update_ : Msg -> CurrentStatus -> CurrentStatus
-update_ msg modl =
+newHistory : Msg -> CurrentStatus -> String
+newHistory msg modl =
+    case ( modl, msg ) of
+        ( _, Cancel ) ->
+            "~~~ "
+
+        ( NothingSelected cardState, GiveFocusTo (PieceInKeseHand index) ) ->
+            case List.Extra.getAt index cardState.keseHand of
+                Just prof ->
+                    profToHistoryStr prof
+
+                Nothing ->
+                    "ERROR!!!!!!!!!!!!!!!!!!!!"
+
+        ( NothingSelected cardState, GiveFocusTo (PieceInRimaHand index) ) ->
+            case List.Extra.getAt index cardState.rimaHand of
+                Just prof ->
+                    profToHistoryStr prof
+
+                {- This branch is not taken -}
+                Nothing ->
+                    "ERROR!!!!!!!!!!!!!!!!!!!!"
+
+        ( NothingSelected cardState, GiveFocusTo (PieceOnTheBoard coord) ) ->
+            case List.filter (\p -> p.coord == coord) cardState.board of
+                [ p ] ->
+                    (if p.pieceColor == Ship then
+                        "S"
+
+                     else
+                        ""
+                    )
+                        ++ profToHistoryStr p.prof
+                        ++ coordToHistoryStr p.coord
+
+                _ ->
+                    "ERROR!!!!!!!!"
+
+        ( MoverIsSelected from cardState, MovementToward to ) ->
+            case from of
+                PieceOnTheBoard _ ->
+                    "-" ++ coordToHistoryStr to
+
+                {- Parachuting from KeseHand -}
+                PieceInKeseHand ind ->
+                    case List.Extra.getAt ind cardState.keseHand of
+                        Nothing ->
+                            "ERROR!!!!!!!!"
+
+                        Just _ ->
+                            coordToHistoryStr to ++ ".\n"
+
+                {- Parachuting from RimaHand -}
+                PieceInRimaHand ind ->
+                    case List.Extra.getAt ind cardState.rimaHand of
+                        Nothing ->
+                            "ERROR!!!!!!!!"
+
+                        Just _ ->
+                            coordToHistoryStr to ++ ".\n"
+
+        ( AfterSacrifice _ _, MovementToward to ) ->
+            coordToHistoryStr to
+
+        ( NowWaitingForAdditionalSacrifice { remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->
+            case whoseHand of
+                KeseTurn ->
+                    case List.Extra.getAt index remaining.keseHand of
+                        Nothing ->
+                            "ERROR!!!!!!!!"
+
+                        Just prof ->
+                            profToHistoryStr prof
+
+                RimaTurn ->
+                    case List.Extra.getAt index remaining.rimaHand of
+                        Nothing ->
+                            "ERROR!!!!!!!!"
+
+                        Just prof ->
+                            profToHistoryStr prof
+
+        ( NowWaitingForAdditionalSacrifice { mover, remaining }, TurnEnd ) ->
+            (case List.filter (\p -> p.coord == mover.coord) remaining.board of
+                [] ->
+                    ".\n"
+
+                captured :: _ ->
+                    {- capture -}
+                    "[" ++ profToHistoryStr captured.prof ++ "].\n"
+            )
+                ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
+
+        ( WaitForTrashBinClick _, SendToTrashBinPart2 ) ->
+            ""
+
+        ( AfterCircleSacrifice { remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->
+            case whoseHand of
+                KeseTurn ->
+                    case List.Extra.getAt index remaining.keseHand of
+                        Nothing ->
+                            "ERROR!!!!!!!!"
+
+                        Just prof ->
+                            profToHistoryStr prof
+
+                RimaTurn ->
+                    case List.Extra.getAt index remaining.rimaHand of
+                        Nothing ->
+                            "ERROR!!!!!!!!"
+
+                        Just prof ->
+                            profToHistoryStr prof
+
+        _ ->
+            {- Do nothing -}
+            ""
+
+
+updateStatus : Msg -> CurrentStatus -> CurrentStatus
+updateStatus msg modl =
     case ( modl, msg ) of
         ( NothingSelected cardState, GiveFocusTo focus ) ->
             MoverIsSelected focus cardState
@@ -758,12 +918,13 @@ getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
 view_ : History -> List (Svg msg) -> List (Html msg) -> Html msg
 view_ history svgContent buttons =
     Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ] <|
-        svg [ viewBox "0 -200 900 900", width "600" ] svgContent
-            :: buttons
-            ++ [ Html.textarea
-                    [ Html.Attributes.rows 50, Html.Attributes.cols 80, Html.Attributes.readonly True ]
-                    [ Html.text history ]
-               ]
+        [ svg [ viewBox "0 -200 900 900", width "600" ] svgContent
+        , Html.textarea
+            [ Html.Attributes.rows 50, Html.Attributes.cols 80, Html.Attributes.readonly True ]
+            [ Html.text history ]
+        , Html.br [] []
+        ]
+            ++ buttons
 
 
 allCoordsOccupiedBy : PieceColor -> List PieceOnBoard -> List Coordinate
@@ -1144,6 +1305,12 @@ init flags =
                     "x"
                )
             ++ "@15\n"
+            ++ (if flags.keseGoesFirst then
+                    "K"
+
+                else
+                    "R"
+               )
         )
       <|
         NothingSelected
