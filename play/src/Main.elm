@@ -901,8 +901,7 @@ view modl =
                                 (rimaHandPos i prof)
                         )
                         remaining.rimaHand
-                    ++ [ pieceWaitingForAdditionalCommandSvg mover
-                       ]
+                    ++ [ pieceWaitingForAdditionalCommandSvg mover ]
                 )
                 []
 
