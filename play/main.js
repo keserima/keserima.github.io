@@ -5744,6 +5744,20 @@ var $author$project$Main$SendToTrashBinPart1 = function (a) {
 	return {$: 'SendToTrashBinPart1', a: a};
 };
 var $author$project$Main$TurnEnd = {$: 'TurnEnd'};
+var $author$project$Main$allCoordsOccupiedBy = F2(
+	function (color, board) {
+		return A2(
+			$elm$core$List$map,
+			function ($) {
+				return $.coord;
+			},
+			A2(
+				$elm$core$List$filter,
+				function (p) {
+					return _Utils_eq(p.pieceColor, color);
+				},
+				board));
+	});
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
 		any:
@@ -5830,7 +5844,7 @@ var $elm$core$List$concatMap = F2(
 		return $elm$core$List$concat(
 			A2($elm$core$List$map, f, list));
 	});
-var $author$project$Main$all_coord = A2(
+var $author$project$Main$allCoord = A2(
 	$elm$core$List$concatMap,
 	function (y_ind) {
 		return A2(
@@ -5860,7 +5874,7 @@ var $author$project$Main$neitherOccupiedNorWater = function (board) {
 						},
 						board));
 			},
-			$author$project$Main$all_coord));
+			$author$project$Main$allCoord));
 };
 var $author$project$Main$getCandidatesYellow_ = F4(
 	function (piece, hasCircleInHand, robbedBoard, raw_candidates) {
@@ -6016,12 +6030,10 @@ var $author$project$Main$getCandidatesYellowWithCommand = F4(
 				}
 			}());
 	});
-var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
-var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
-var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
-var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
 var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
+var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
 var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
+var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6039,10 +6051,43 @@ var $elm$svg$Svg$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $elm$svg$Svg$rect = $elm$svg$Svg$trustedNode('rect');
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
+var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
+var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
+var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
+var $author$project$Main$goalCandidateRedSvg = F2(
+	function (msgToBeSent, coord) {
+		return A2(
+			$elm$svg$Svg$g,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$transform(
+					'translate(' + ($elm$core$String$fromInt(coord.x * 100) + (' ' + ($elm$core$String$fromInt(coord.y * 100) + ')')))),
+					$elm$svg$Svg$Events$onClick(msgToBeSent),
+					A2($elm$html$Html$Attributes$style, 'cursor', 'pointer')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$svg$Svg$rect,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$x('36'),
+							$elm$svg$Svg$Attributes$y('36'),
+							$elm$svg$Svg$Attributes$width('32'),
+							$elm$svg$Svg$Attributes$height('32'),
+							$elm$svg$Svg$Attributes$fill('#ff0000')
+						]),
+					_List_Nil)
+				]));
+	});
+var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
+var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
 var $author$project$Main$goalCandidateYellowSvg = F2(
 	function (msgToBeSent, coord) {
 		return A2(
@@ -6181,11 +6226,6 @@ var $author$project$Main$glyph = F2(
 						A2($author$project$Main$glyph, $author$project$Main$Circle, color)));
 		}
 	});
-var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
-var $elm$svg$Svg$rect = $elm$svg$Svg$trustedNode('rect');
-var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
-var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
-var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
 var $author$project$Main$pieceSvg = F3(
 	function (focused, msgToBeSent, p) {
 		return A2(
@@ -6314,7 +6354,7 @@ var $author$project$Main$boardSvg = _List_fromArray(
 						]),
 					_List_Nil);
 			},
-			$author$project$Main$all_coord))
+			$author$project$Main$allCoord))
 	]);
 var $elm$svg$Svg$defs = $elm$svg$Svg$trustedNode('defs');
 var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
@@ -6723,14 +6763,41 @@ var $author$project$Main$view = function (modl) {
 							$elm$core$List$any,
 							$elm$core$Basics$eq($author$project$Main$Circle),
 							function () {
-								var _v4 = cardState.whoseTurn;
-								if (_v4.$ === 'KeseTurn') {
+								var _v5 = cardState.whoseTurn;
+								if (_v5.$ === 'KeseTurn') {
 									return cardState.keseHand;
 								} else {
 									return cardState.rimaHand;
 								}
 							}());
 						var candidatesYellow = A3($author$project$Main$getCandidatesYellow, hasCircleInHand, focused_piece, robbedBoard);
+						var candidatesRed = function () {
+							var _v4 = focused_piece.pieceColor;
+							switch (_v4.$) {
+								case 'Ship':
+									return _List_Nil;
+								case 'Kese':
+									return A2(
+										$elm$core$List$filter,
+										function (c) {
+											return A2(
+												$elm$core$List$member,
+												c,
+												A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Rima, robbedBoard));
+										},
+										A3($author$project$Main$getCandidatesYellow, true, focused_piece, robbedBoard));
+								default:
+									return A2(
+										$elm$core$List$filter,
+										function (c) {
+											return A2(
+												$elm$core$List$member,
+												c,
+												A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Kese, robbedBoard));
+										},
+										A3($author$project$Main$getCandidatesYellow, true, focused_piece, robbedBoard));
+							}
+						}();
 						return _Utils_ap(
 							A2(
 								$elm$core$List$map,
@@ -6747,34 +6814,44 @@ var $author$project$Main$view = function (modl) {
 									$elm$core$List$map,
 									function (coord) {
 										return A2(
-											$author$project$Main$goalCandidateYellowSvg,
+											$author$project$Main$goalCandidateRedSvg,
 											$author$project$Main$MovementToward(coord),
 											coord);
 									},
-									candidatesYellow),
+									candidatesRed),
 								_Utils_ap(
 									A2(
-										$elm$core$List$indexedMap,
-										F2(
-											function (i, prof) {
-												return A3(
-													$author$project$Main$pieceSvg,
-													false,
-													$author$project$Main$None,
-													A2($author$project$Main$keseHandPos, i, prof));
-											}),
-										cardState.keseHand),
-									A2(
-										$elm$core$List$indexedMap,
-										F2(
-											function (i, prof) {
-												return A3(
-													$author$project$Main$pieceSvg,
-													false,
-													$author$project$Main$None,
-													A2($author$project$Main$rimaHandPos, i, prof));
-											}),
-										cardState.rimaHand))));
+										$elm$core$List$map,
+										function (coord) {
+											return A2(
+												$author$project$Main$goalCandidateYellowSvg,
+												$author$project$Main$MovementToward(coord),
+												coord);
+										},
+										candidatesYellow),
+									_Utils_ap(
+										A2(
+											$elm$core$List$indexedMap,
+											F2(
+												function (i, prof) {
+													return A3(
+														$author$project$Main$pieceSvg,
+														false,
+														$author$project$Main$None,
+														A2($author$project$Main$keseHandPos, i, prof));
+												}),
+											cardState.keseHand),
+										A2(
+											$elm$core$List$indexedMap,
+											F2(
+												function (i, prof) {
+													return A3(
+														$author$project$Main$pieceSvg,
+														false,
+														$author$project$Main$None,
+														A2($author$project$Main$rimaHandPos, i, prof));
+												}),
+											cardState.rimaHand)))));
 					}
 				} else {
 					return _Utils_ap(
@@ -6859,24 +6936,24 @@ var $author$project$Main$view = function (modl) {
 			var mover = modl.a.mover;
 			var remaining = modl.a.remaining;
 			var isSacrificingCircleRequired = function () {
-				var _v7 = A2(
+				var _v8 = A2(
 					$elm$core$List$filter,
 					function (c) {
 						return _Utils_eq(c.coord, mover.coord);
 					},
 					remaining.board);
-				if (!_v7.b) {
+				if (!_v8.b) {
 					return false;
 				} else {
-					var steppedOn = _v7.a;
-					var _v8 = _Utils_Tuple2(mover.pieceColor, steppedOn.pieceColor);
-					if (_v8.b.$ === 'Ship') {
-						if (_v8.a.$ === 'Ship') {
-							var _v9 = _v8.a;
-							var _v10 = _v8.b;
+					var steppedOn = _v8.a;
+					var _v9 = _Utils_Tuple2(mover.pieceColor, steppedOn.pieceColor);
+					if (_v9.b.$ === 'Ship') {
+						if (_v9.a.$ === 'Ship') {
+							var _v10 = _v9.a;
+							var _v11 = _v9.b;
 							return true;
 						} else {
-							var _v11 = _v8.b;
+							var _v12 = _v9.b;
 							return false;
 						}
 					} else {
@@ -6996,14 +7073,41 @@ var $author$project$Main$view = function (modl) {
 				$elm$core$List$any,
 				$elm$core$Basics$eq($author$project$Main$Circle),
 				function () {
-					var _v12 = remaining.whoseTurn;
-					if (_v12.$ === 'KeseTurn') {
+					var _v14 = remaining.whoseTurn;
+					if (_v14.$ === 'KeseTurn') {
 						return remaining.keseHand;
 					} else {
 						return remaining.rimaHand;
 					}
 				}());
 			var candidatesYellow = A4($author$project$Main$getCandidatesYellowWithCommand, command, hasCircleInHand, mover, remaining.board);
+			var candidatesRed = function () {
+				var _v13 = mover.pieceColor;
+				switch (_v13.$) {
+					case 'Ship':
+						return _List_Nil;
+					case 'Kese':
+						return A2(
+							$elm$core$List$filter,
+							function (c) {
+								return A2(
+									$elm$core$List$member,
+									c,
+									A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Rima, remaining.board));
+							},
+							A4($author$project$Main$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
+					default:
+						return A2(
+							$elm$core$List$filter,
+							function (c) {
+								return A2(
+									$elm$core$List$member,
+									c,
+									A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Kese, remaining.board));
+							},
+							A4($author$project$Main$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
+				}
+			}();
 			var dynamicPart = _Utils_ap(
 				A2(
 					$elm$core$List$map,
@@ -7014,23 +7118,21 @@ var $author$project$Main$view = function (modl) {
 						$elm$core$List$map,
 						function (coord) {
 							return A2(
-								$author$project$Main$goalCandidateYellowSvg,
+								$author$project$Main$goalCandidateRedSvg,
 								$author$project$Main$MovementToward(coord),
 								coord);
 						},
-						candidatesYellow),
+						candidatesRed),
 					_Utils_ap(
 						A2(
-							$elm$core$List$indexedMap,
-							F2(
-								function (i, prof) {
-									return A3(
-										$author$project$Main$pieceSvg,
-										false,
-										$author$project$Main$None,
-										A2($author$project$Main$keseHandPos, i, prof));
-								}),
-							remaining.keseHand),
+							$elm$core$List$map,
+							function (coord) {
+								return A2(
+									$author$project$Main$goalCandidateYellowSvg,
+									$author$project$Main$MovementToward(coord),
+									coord);
+							},
+							candidatesYellow),
 						_Utils_ap(
 							A2(
 								$elm$core$List$indexedMap,
@@ -7040,13 +7142,25 @@ var $author$project$Main$view = function (modl) {
 											$author$project$Main$pieceSvg,
 											false,
 											$author$project$Main$None,
-											A2($author$project$Main$rimaHandPos, i, prof));
+											A2($author$project$Main$keseHandPos, i, prof));
 									}),
-								remaining.rimaHand),
-							_List_fromArray(
-								[
-									$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
-								])))));
+								remaining.keseHand),
+							_Utils_ap(
+								A2(
+									$elm$core$List$indexedMap,
+									F2(
+										function (i, prof) {
+											return A3(
+												$author$project$Main$pieceSvg,
+												false,
+												$author$project$Main$None,
+												A2($author$project$Main$rimaHandPos, i, prof));
+										}),
+									remaining.rimaHand),
+								_List_fromArray(
+									[
+										$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
+									]))))));
 			return A2(
 				$author$project$Main$view_,
 				_Utils_ap(

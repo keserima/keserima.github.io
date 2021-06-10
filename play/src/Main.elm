@@ -307,13 +307,13 @@ boardSvg =
                     ]
                     []
             )
-            all_coord
+            allCoord
         )
     ]
 
 
-all_coord : List Coordinate
-all_coord =
+allCoord : List Coordinate
+allCoord =
     List.concatMap
         (\y_ind ->
             List.map
@@ -384,6 +384,16 @@ goalCandidateYellowSvg msgToBeSent coord =
         , Html.Attributes.style "cursor" "pointer"
         ]
         [ circle [ cx "52", cy "52", r "16", fill "#ffff00" ] [] ]
+
+
+goalCandidateRedSvg : Msg -> Coordinate -> Svg Msg
+goalCandidateRedSvg msgToBeSent coord =
+    g
+        [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")")
+        , Svg.Events.onClick msgToBeSent
+        , Html.Attributes.style "cursor" "pointer"
+        ]
+        [ rect [ x "36", y "36", width "32", height "32", fill "#ff0000" ] [] ]
 
 
 pieceSvgOnGrid : Bool -> Msg -> PieceOnBoard -> Svg Msg
@@ -604,7 +614,7 @@ playerSvg id_ isOwnTurn turn =
 
 neitherOccupiedNorWater : List PieceOnBoard -> List Coordinate
 neitherOccupiedNorWater board =
-    all_coord
+    allCoord
         |> List.filter (\coord -> not (List.member coord (List.map .coord board)))
         |> List.filter (isWater >> not)
 
@@ -712,6 +722,11 @@ view_ svgContent buttons =
         (svg [ viewBox "0 -200 900 900", width "600" ] svgContent :: buttons)
 
 
+allCoordsOccupiedBy : PieceColor -> List PieceOnBoard -> List Coordinate
+allCoordsOccupiedBy color board =
+    board |> List.filter (\p -> p.pieceColor == color) |> List.map .coord
+
+
 view : Model -> Html Msg
 view modl =
     case modl of
@@ -783,10 +798,26 @@ view modl =
 
                                         candidatesYellow =
                                             getCandidatesYellow hasCircleInHand focused_piece robbedBoard
+
+                                        candidatesRed =
+                                            case focused_piece.pieceColor of
+                                                Ship ->
+                                                    []
+
+                                                Kese ->
+                                                    getCandidatesYellow True focused_piece robbedBoard
+                                                        |> List.filter
+                                                            (\c -> allCoordsOccupiedBy Rima robbedBoard |> List.member c)
+
+                                                Rima ->
+                                                    getCandidatesYellow True focused_piece robbedBoard
+                                                        |> List.filter
+                                                            (\c -> allCoordsOccupiedBy Kese robbedBoard |> List.member c)
                                     in
                                     List.map
                                         (\piece -> pieceSvgOnGrid (piece.coord == focus_coord) None piece)
                                         cardState.board
+                                        ++ (candidatesRed |> List.map (\coord -> goalCandidateRedSvg (MovementToward coord) coord))
                                         ++ (candidatesYellow
                                                 |> List.map (\coord -> goalCandidateYellowSvg (MovementToward coord) coord)
                                            )
@@ -802,7 +833,9 @@ view modl =
                                             cardState.rimaHand
 
                         _ ->
+                            {- Parachuting -}
                             List.map (pieceSvgOnGrid False None) cardState.board
+                                {- You cannot capture a piece by parachuting; hence no red -}
                                 ++ (neitherOccupiedNorWater cardState.board
                                         |> List.map (\coord -> goalCandidateYellowSvg (MovementToward coord) coord)
                                    )
@@ -924,10 +957,28 @@ view modl =
                 candidatesYellow =
                     getCandidatesYellowWithCommand command hasCircleInHand mover remaining.board
 
+                candidatesRed =
+                    case mover.pieceColor of
+                        Ship ->
+                            []
+
+                        Kese ->
+                            getCandidatesYellowWithCommand command True mover remaining.board
+                                |> List.filter
+                                    (\c -> allCoordsOccupiedBy Rima remaining.board |> List.member c)
+
+                        Rima ->
+                            getCandidatesYellowWithCommand command True mover remaining.board
+                                |> List.filter
+                                    (\c -> allCoordsOccupiedBy Kese remaining.board |> List.member c)
+
                 dynamicPart =
                     List.map
                         (pieceSvgOnGrid False None)
                         remaining.board
+                        ++ (candidatesRed
+                                |> List.map (\coord -> goalCandidateRedSvg (MovementToward coord) coord)
+                           )
                         ++ (candidatesYellow
                                 |> List.map (\coord -> goalCandidateYellowSvg (MovementToward coord) coord)
                            )
