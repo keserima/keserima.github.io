@@ -5338,6 +5338,28 @@ var $elm_community$list_extra$List$Extra$getAt = F2(
 		return (idx < 0) ? $elm$core$Maybe$Nothing : $elm$core$List$head(
 			A2($elm$core$List$drop, idx, xs));
 	});
+var $author$project$Main$getWhoseTurn = function (modl) {
+	switch (modl.$) {
+		case 'NothingSelected':
+			var whoseTurn = modl.a.whoseTurn;
+			return whoseTurn;
+		case 'MoverIsSelected':
+			var whoseTurn = modl.b.whoseTurn;
+			return whoseTurn;
+		case 'NowWaitingForAdditionalSacrifice':
+			var remaining = modl.a.remaining;
+			return remaining.whoseTurn;
+		case 'AfterSacrifice':
+			var remaining = modl.b.remaining;
+			return remaining.whoseTurn;
+		case 'AfterCircleSacrifice':
+			var remaining = modl.a.remaining;
+			return remaining.whoseTurn;
+		default:
+			var remaining = modl.a.remaining;
+			return remaining.whoseTurn;
+	}
+};
 var $author$project$Main$invertWhoseTurn = function (w) {
 	if (w.$ === 'KeseTurn') {
 		return $author$project$Main$RimaTurn;
@@ -5372,7 +5394,8 @@ var $author$project$Main$newHistory = F2(
 			switch (_v0.b.$) {
 				case 'Cancel':
 					var _v1 = _v0.b;
-					return '~~~ ';
+					return '~~~ ' + $author$project$Main$whoseTurnToHistoryStr(
+						$author$project$Main$getWhoseTurn(modl));
 				case 'GiveFocusTo':
 					if (_v0.a.$ === 'NothingSelected') {
 						switch (_v0.b.a.$) {
@@ -6992,7 +7015,7 @@ var $author$project$Main$view_ = F3(
 						$elm$html$Html$textarea,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$rows(50),
+								$elm$html$Html$Attributes$rows(20),
 								$elm$html$Html$Attributes$cols(80),
 								$elm$html$Html$Attributes$readonly(true)
 							]),

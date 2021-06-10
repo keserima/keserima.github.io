@@ -172,11 +172,32 @@ update msg (Model history modl) =
     ( Model (history ++ newHistory msg modl) (updateStatus msg modl), Cmd.none )
 
 
+getWhoseTurn modl =
+    case modl of
+        NothingSelected { whoseTurn } ->
+            whoseTurn
+
+        MoverIsSelected _ { whoseTurn } ->
+            whoseTurn
+
+        NowWaitingForAdditionalSacrifice { remaining } ->
+            remaining.whoseTurn
+
+        AfterSacrifice _ { remaining } ->
+            remaining.whoseTurn
+
+        AfterCircleSacrifice { remaining } ->
+            remaining.whoseTurn
+
+        WaitForTrashBinClick { remaining } ->
+            remaining.whoseTurn
+
+
 newHistory : Msg -> CurrentStatus -> String
 newHistory msg modl =
     case ( modl, msg ) of
         ( _, Cancel ) ->
-            "~~~ "
+            "~~~ " ++ whoseTurnToHistoryStr (getWhoseTurn modl)
 
         ( NothingSelected cardState, GiveFocusTo (PieceInKeseHand index) ) ->
             case List.Extra.getAt index cardState.keseHand of
@@ -920,7 +941,7 @@ view_ history svgContent buttons =
     Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ] <|
         [ svg [ viewBox "0 -200 900 900", width "600" ] svgContent
         , Html.textarea
-            [ Html.Attributes.rows 50, Html.Attributes.cols 80, Html.Attributes.readonly True ]
+            [ Html.Attributes.rows 20, Html.Attributes.cols 80, Html.Attributes.readonly True ]
             [ Html.text history ]
         , Html.br [] []
         ]
