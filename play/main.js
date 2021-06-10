@@ -6228,6 +6228,21 @@ var $author$project$Main$pieceSvg = F3(
 					p.prof,
 					$author$project$Main$foregroundColor(p.pieceColor))));
 	});
+var $author$project$Main$pieceSvgOnGrid = F3(
+	function (focused, msg, _v0) {
+		var coord = _v0.coord;
+		var prof = _v0.prof;
+		var pieceColor = _v0.pieceColor;
+		return A3(
+			$author$project$Main$pieceSvg,
+			focused,
+			msg,
+			{
+				coord: {x: coord.x, y: coord.y},
+				pieceColor: pieceColor,
+				prof: prof
+			});
+	});
 var $author$project$Main$pieceWaitingForAdditionalCommandSvg = function (p) {
 	return A2(
 		$elm$svg$Svg$g,
@@ -6653,22 +6668,15 @@ var $author$project$Main$view = function (modl) {
 						_Utils_ap(
 							A2(
 								$elm$core$List$map,
-								function (_v1) {
-									var coord = _v1.coord;
-									var prof = _v1.prof;
-									var pieceColor = _v1.pieceColor;
+								function (piece) {
 									return A3(
-										$author$project$Main$pieceSvg,
+										$author$project$Main$pieceSvgOnGrid,
 										false,
-										(_Utils_eq(pieceColor, $author$project$Main$Ship) || _Utils_eq(
-											pieceColor,
+										(_Utils_eq(piece.pieceColor, $author$project$Main$Ship) || _Utils_eq(
+											piece.pieceColor,
 											$author$project$Main$toColor(cardState.whoseTurn))) ? $author$project$Main$GiveFocusTo(
-											$author$project$Main$PieceOnTheBoard(coord)) : $author$project$Main$None,
-										{
-											coord: {x: coord.x, y: coord.y},
-											pieceColor: pieceColor,
-											prof: prof
-										});
+											$author$project$Main$PieceOnTheBoard(piece.coord)) : $author$project$Main$None,
+										piece);
 								},
 								cardState.board),
 							_Utils_ap(
@@ -6703,19 +6711,19 @@ var $author$project$Main$view = function (modl) {
 			var dynamicPart = function () {
 				if (focus.$ === 'PieceOnTheBoard') {
 					var focus_coord = focus.a;
-					var _v3 = A2($author$project$Main$robFocusedPieceFromBoard, focus_coord, cardState.board);
-					if (_v3.$ === 'Nothing') {
+					var _v2 = A2($author$project$Main$robFocusedPieceFromBoard, focus_coord, cardState.board);
+					if (_v2.$ === 'Nothing') {
 						return _List_Nil;
 					} else {
-						var _v4 = _v3.a;
-						var focused_piece = _v4.a;
-						var robbedBoard = _v4.b;
+						var _v3 = _v2.a;
+						var focused_piece = _v3.a;
+						var robbedBoard = _v3.b;
 						var hasCircleInHand = A2(
 							$elm$core$List$any,
 							$elm$core$Basics$eq($author$project$Main$Circle),
 							function () {
-								var _v6 = cardState.whoseTurn;
-								if (_v6.$ === 'KeseTurn') {
+								var _v4 = cardState.whoseTurn;
+								if (_v4.$ === 'KeseTurn') {
 									return cardState.keseHand;
 								} else {
 									return cardState.rimaHand;
@@ -6725,19 +6733,12 @@ var $author$project$Main$view = function (modl) {
 						return _Utils_ap(
 							A2(
 								$elm$core$List$map,
-								function (_v5) {
-									var coord = _v5.coord;
-									var prof = _v5.prof;
-									var pieceColor = _v5.pieceColor;
+								function (piece) {
 									return A3(
-										$author$project$Main$pieceSvg,
-										_Utils_eq(coord, focus_coord),
+										$author$project$Main$pieceSvgOnGrid,
+										_Utils_eq(piece.coord, focus_coord),
 										$author$project$Main$None,
-										{
-											coord: {x: coord.x, y: coord.y},
-											pieceColor: pieceColor,
-											prof: prof
-										});
+										piece);
 								},
 								cardState.board),
 							_Utils_ap(
@@ -6778,17 +6779,7 @@ var $author$project$Main$view = function (modl) {
 					return _Utils_ap(
 						A2(
 							$elm$core$List$map,
-							function (piece) {
-								return A3(
-									$author$project$Main$pieceSvg,
-									false,
-									$author$project$Main$None,
-									{
-										coord: {x: piece.coord.x, y: piece.coord.y},
-										pieceColor: piece.pieceColor,
-										prof: piece.prof
-									});
-							},
+							A2($author$project$Main$pieceSvgOnGrid, false, $author$project$Main$None),
 							cardState.board),
 						_Utils_ap(
 							A2(
@@ -6867,24 +6858,24 @@ var $author$project$Main$view = function (modl) {
 			var mover = modl.a.mover;
 			var remaining = modl.a.remaining;
 			var isSacrificingCircleRequired = function () {
-				var _v9 = A2(
+				var _v7 = A2(
 					$elm$core$List$filter,
 					function (c) {
 						return _Utils_eq(c.coord, mover.coord);
 					},
 					remaining.board);
-				if (!_v9.b) {
+				if (!_v7.b) {
 					return false;
 				} else {
-					var steppedOn = _v9.a;
-					var _v10 = _Utils_Tuple2(mover.pieceColor, steppedOn.pieceColor);
-					if (_v10.b.$ === 'Ship') {
-						if (_v10.a.$ === 'Ship') {
-							var _v11 = _v10.a;
-							var _v12 = _v10.b;
+					var steppedOn = _v7.a;
+					var _v8 = _Utils_Tuple2(mover.pieceColor, steppedOn.pieceColor);
+					if (_v8.b.$ === 'Ship') {
+						if (_v8.a.$ === 'Ship') {
+							var _v9 = _v8.a;
+							var _v10 = _v8.b;
 							return true;
 						} else {
-							var _v13 = _v10.b;
+							var _v11 = _v8.b;
 							return false;
 						}
 					} else {
@@ -6901,17 +6892,7 @@ var $author$project$Main$view = function (modl) {
 						_Utils_ap(
 							A2(
 								$elm$core$List$map,
-								function (piece) {
-									return A3(
-										$author$project$Main$pieceSvg,
-										false,
-										$author$project$Main$None,
-										{
-											coord: {x: piece.coord.x, y: piece.coord.y},
-											pieceColor: piece.pieceColor,
-											prof: piece.prof
-										});
-								},
+								A2($author$project$Main$pieceSvgOnGrid, false, $author$project$Main$None),
 								remaining.board),
 							_Utils_ap(
 								A2(
@@ -6945,12 +6926,7 @@ var $author$project$Main$view = function (modl) {
 										remaining.rimaHand),
 									_List_fromArray(
 										[
-											$author$project$Main$pieceWaitingForAdditionalCommandSvg(
-											{
-												coord: {x: mover.coord.x, y: mover.coord.y},
-												pieceColor: mover.pieceColor,
-												prof: mover.prof
-											})
+											$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
 										])))))),
 				_List_fromArray(
 					[
@@ -6980,17 +6956,7 @@ var $author$project$Main$view = function (modl) {
 						_Utils_ap(
 							A2(
 								$elm$core$List$map,
-								function (piece) {
-									return A3(
-										$author$project$Main$pieceSvg,
-										false,
-										$author$project$Main$None,
-										{
-											coord: {x: piece.coord.x, y: piece.coord.y},
-											pieceColor: piece.pieceColor,
-											prof: piece.prof
-										});
-								},
+								A2($author$project$Main$pieceSvgOnGrid, false, $author$project$Main$None),
 								remaining.board),
 							_Utils_ap(
 								A2(
@@ -7018,12 +6984,7 @@ var $author$project$Main$view = function (modl) {
 										remaining.rimaHand),
 									_List_fromArray(
 										[
-											$author$project$Main$pieceWaitingForAdditionalCommandSvg(
-											{
-												coord: {x: mover.coord.x, y: mover.coord.y},
-												pieceColor: mover.pieceColor,
-												prof: mover.prof
-											})
+											$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
 										])))))),
 				_List_Nil);
 		case 'AfterSacrifice':
@@ -7034,8 +6995,8 @@ var $author$project$Main$view = function (modl) {
 				$elm$core$List$any,
 				$elm$core$Basics$eq($author$project$Main$Circle),
 				function () {
-					var _v14 = remaining.whoseTurn;
-					if (_v14.$ === 'KeseTurn') {
+					var _v12 = remaining.whoseTurn;
+					if (_v12.$ === 'KeseTurn') {
 						return remaining.keseHand;
 					} else {
 						return remaining.rimaHand;
@@ -7045,17 +7006,7 @@ var $author$project$Main$view = function (modl) {
 			var dynamicPart = _Utils_ap(
 				A2(
 					$elm$core$List$map,
-					function (piece) {
-						return A3(
-							$author$project$Main$pieceSvg,
-							false,
-							$author$project$Main$None,
-							{
-								coord: {x: piece.coord.x, y: piece.coord.y},
-								pieceColor: piece.pieceColor,
-								prof: piece.prof
-							});
-					},
+					A2($author$project$Main$pieceSvgOnGrid, false, $author$project$Main$None),
 					remaining.board),
 				_Utils_ap(
 					A2(
@@ -7093,12 +7044,7 @@ var $author$project$Main$view = function (modl) {
 								remaining.rimaHand),
 							_List_fromArray(
 								[
-									$author$project$Main$pieceWaitingForAdditionalCommandSvg(
-									{
-										coord: {x: mover.coord.x, y: mover.coord.y},
-										pieceColor: mover.pieceColor,
-										prof: mover.prof
-									})
+									$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
 								])))));
 			return A2(
 				$author$project$Main$view_,
@@ -7120,17 +7066,7 @@ var $author$project$Main$view = function (modl) {
 						_Utils_ap(
 							A2(
 								$elm$core$List$map,
-								function (piece) {
-									return A3(
-										$author$project$Main$pieceSvg,
-										false,
-										$author$project$Main$None,
-										{
-											coord: {x: piece.coord.x, y: piece.coord.y},
-											pieceColor: piece.pieceColor,
-											prof: piece.prof
-										});
-								},
+								A2($author$project$Main$pieceSvgOnGrid, false, $author$project$Main$None),
 								remaining.board),
 							_Utils_ap(
 								A2(
@@ -7160,12 +7096,7 @@ var $author$project$Main$view = function (modl) {
 										remaining.rimaHand),
 									_List_fromArray(
 										[
-											$author$project$Main$pieceWaitingForAdditionalCommandSvg(
-											{
-												coord: {x: mover.coord.x, y: mover.coord.y},
-												pieceColor: mover.pieceColor,
-												prof: mover.prof
-											})
+											$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
 										])))))),
 				_List_Nil);
 	}

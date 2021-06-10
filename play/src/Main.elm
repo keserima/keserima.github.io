@@ -386,6 +386,11 @@ goalCandidateSvg msgToBeSent coord =
         [ circle [ cx "52", cy "52", r "16", fill "#ffff00" ] [] ]
 
 
+pieceSvgOnGrid : Bool -> Msg -> PieceOnBoard -> Svg Msg
+pieceSvgOnGrid focused msg { coord, prof, pieceColor } =
+    pieceSvg focused msg { coord = { x = toFloat coord.x, y = toFloat coord.y }, prof = prof, pieceColor = pieceColor }
+
+
 pieceSvg : Bool -> Msg -> PieceWithFloatPosition -> Svg Msg
 pieceSvg focused msgToBeSent p =
     g
@@ -426,10 +431,10 @@ pieceSvg focused msgToBeSent p =
         )
 
 
-pieceWaitingForAdditionalCommandSvg : PieceWithFloatPosition -> Svg Msg
+pieceWaitingForAdditionalCommandSvg : PieceOnBoard -> Svg Msg
 pieceWaitingForAdditionalCommandSvg p =
     g
-        [ transform ("translate(" ++ String.fromFloat (p.coord.x * 100.0 - 5.0) ++ " " ++ String.fromFloat (p.coord.y * 100.0 + 5.0) ++ ")")
+        [ transform ("translate(" ++ String.fromFloat (toFloat p.coord.x * 100.0 - 5.0) ++ " " ++ String.fromFloat (toFloat p.coord.y * 100.0 + 5.0) ++ ")")
         , Html.Attributes.style "cursor" "not-allowed"
         ]
         (rect
@@ -525,7 +530,7 @@ stationaryPart cardState =
         ]
         :: boardSvg
         ++ displayCapturedCardsAndTwoDecks cardState
-        ++ [ playerSvg "kesePlayer" (KeseTurn == cardState.whoseTurn) KeseTurn 
+        ++ [ playerSvg "kesePlayer" (KeseTurn == cardState.whoseTurn) KeseTurn
            , playerSvg "rimaPlayer" (RimaTurn == cardState.whoseTurn) RimaTurn
            ]
 
@@ -711,16 +716,16 @@ view modl =
                 (stationaryPart cardState
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
-                        (\{ coord, prof, pieceColor } ->
-                            { coord = { x = toFloat coord.x, y = toFloat coord.y }, prof = prof, pieceColor = pieceColor }
-                                |> pieceSvg False
-                                    {- You can move the piece if it is a ship or if it belongs to you. -}
-                                    (if pieceColor == Ship || pieceColor == toColor cardState.whoseTurn then
-                                        GiveFocusTo (PieceOnTheBoard coord)
+                        (\piece ->
+                            pieceSvgOnGrid False
+                                {- You can move the piece if it is a ship or if it belongs to you. -}
+                                (if piece.pieceColor == Ship || piece.pieceColor == toColor cardState.whoseTurn then
+                                    GiveFocusTo (PieceOnTheBoard piece.coord)
 
-                                     else
-                                        None
-                                    )
+                                 else
+                                    None
+                                )
+                                piece
                         )
                         cardState.board
                     ++ List.indexedMap
@@ -776,10 +781,7 @@ view modl =
                                             getCandidates hasCircleInHand focused_piece robbedBoard
                                     in
                                     List.map
-                                        (\{ coord, prof, pieceColor } ->
-                                            { coord = { x = toFloat coord.x, y = toFloat coord.y }, prof = prof, pieceColor = pieceColor }
-                                                |> pieceSvg (coord == focus_coord) None
-                                        )
+                                        (\piece -> pieceSvgOnGrid (piece.coord == focus_coord) None piece)
                                         cardState.board
                                         ++ (candidates
                                                 |> List.map (\coord -> goalCandidateSvg (MovementToward coord) coord)
@@ -796,12 +798,7 @@ view modl =
                                             cardState.rimaHand
 
                         _ ->
-                            List.map
-                                (\piece ->
-                                    { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                        |> pieceSvg False None
-                                )
-                                cardState.board
+                            List.map (pieceSvgOnGrid False None) cardState.board
                                 ++ (neitherOccupiedNorWater cardState.board
                                         |> List.map (\coord -> goalCandidateSvg (MovementToward coord) coord)
                                    )
@@ -853,11 +850,7 @@ view modl =
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
-                        (\piece ->
-                            { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                |> pieceSvg False None
-                         {- You cannot click any piece on the board while waiting for additional sacrifices. -}
-                        )
+                        (pieceSvgOnGrid False None {- You cannot click any piece on the board while waiting for additional sacrifices. -})
                         remaining.board
                     ++ List.indexedMap
                         (\i prof ->
@@ -883,7 +876,7 @@ view modl =
                                 (rimaHandPos i prof)
                         )
                         remaining.rimaHand
-                    ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
+                    ++ [ pieceWaitingForAdditionalCommandSvg mover ]
                 )
                 [ Html.button [ onClick TurnEnd ] [ text "ターンエンド" ] ]
 
@@ -892,11 +885,7 @@ view modl =
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg (Just whoseHand)
                     ++ List.map
-                        (\piece ->
-                            { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                |> pieceSvg False None
-                         {- You cannot click any piece on the board while waiting for additional sacrifices. -}
-                        )
+                        (pieceSvgOnGrid False None {- You cannot click any piece on the board while waiting for additional sacrifices. -})
                         remaining.board
                     ++ List.indexedMap
                         (\i prof ->
@@ -912,7 +901,7 @@ view modl =
                                 (rimaHandPos i prof)
                         )
                         remaining.rimaHand
-                    ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor }
+                    ++ [ pieceWaitingForAdditionalCommandSvg mover
                        ]
                 )
                 []
@@ -934,17 +923,14 @@ view modl =
 
                 dynamicPart =
                     List.map
-                        (\piece ->
-                            { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                |> pieceSvg False None
-                        )
+                        (pieceSvgOnGrid False None)
                         remaining.board
                         ++ (candidates
                                 |> List.map (\coord -> goalCandidateSvg (MovementToward coord) coord)
                            )
                         ++ List.indexedMap (\i prof -> pieceSvg False None (keseHandPos i prof)) remaining.keseHand
                         ++ List.indexedMap (\i prof -> pieceSvg False None (rimaHandPos i prof)) remaining.rimaHand
-                        ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
+                        ++ [ pieceWaitingForAdditionalCommandSvg mover ]
             in
             view_ (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) []
 
@@ -953,11 +939,7 @@ view modl =
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
-                        (\piece ->
-                            { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                |> pieceSvg False None
-                         {- You cannot click any piece on the board while waiting for additional sacrifices. -}
-                        )
+                        (pieceSvgOnGrid False None {- You cannot click any piece on the board while waiting for additional sacrifices. -})
                         remaining.board
                     ++ List.indexedMap
                         (\i prof ->
@@ -983,7 +965,7 @@ view modl =
                                 (rimaHandPos i prof)
                         )
                         remaining.rimaHand
-                    ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
+                    ++ [ pieceWaitingForAdditionalCommandSvg mover ]
                 )
                 []
 
