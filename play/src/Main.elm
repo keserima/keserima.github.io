@@ -471,23 +471,7 @@ drawUpToThree xs =
 
 displayCapturedCardsAndTwoDecks : StateOfCards -> List (Svg Msg)
 displayCapturedCardsAndTwoDecks model =
-    [ g [ id "rimaDeck" ]
-        (List.indexedMap
-            (\i _ ->
-                rect
-                    [ x "535.7"
-                    , y (String.fromInt (-10 + 10 * i))
-                    , width "80"
-                    , height "80"
-                    , fill (backgroundColor Rima)
-                    , strokeWidth "1"
-                    , stroke "#000"
-                    ]
-                    []
-            )
-            model.rimaDeck
-        )
-    , g [ id "keseDeck" ]
+    [ g [ id "keseDeck" ]
         (List.indexedMap
             (\i _ ->
                 rect
@@ -502,6 +486,22 @@ displayCapturedCardsAndTwoDecks model =
                     []
             )
             model.keseDeck
+        )
+    , g [ id "rimaDeck" ]
+        (List.indexedMap
+            (\i _ ->
+                rect
+                    [ x "535.7"
+                    , y (String.fromInt (-10 + 10 * i))
+                    , width "80"
+                    , height "80"
+                    , fill (backgroundColor Rima)
+                    , strokeWidth "1"
+                    , stroke "#000"
+                    ]
+                    []
+            )
+            model.rimaDeck
         )
     , g [ id "capturedByKese" ]
         (List.indexedMap
@@ -525,8 +525,8 @@ stationaryPart cardState =
         ]
         :: boardSvg
         ++ displayCapturedCardsAndTwoDecks cardState
-        ++ [ playerSvg "rimaPlayer" (RimaTurn == cardState.whoseTurn) RimaTurn
-           , playerSvg "kesePlayer" (KeseTurn == cardState.whoseTurn) KeseTurn
+        ++ [ playerSvg "kesePlayer" (KeseTurn == cardState.whoseTurn) KeseTurn 
+           , playerSvg "rimaPlayer" (RimaTurn == cardState.whoseTurn) RimaTurn
            ]
 
 
@@ -539,6 +539,13 @@ twoTrashBinsSvg trashBinFocus =
 
 trashBinSvg_ : Bool -> Svg Msg
 trashBinSvg_ clickable =
+    let
+        trashBinSvg color =
+            {- trash bin -}
+            [ Svg.path [ fill color, d "M 0.8 22.4 l 11.8 67.4 c 1 4.4 5 7.4 9.4 7.4 c 0 0 0 0 0 0 h 45.4 c 4.4 0 8.2 -3.2 9.4 -7.4 v 0 l 11.8 -67.4 z m 43.8 11.6 c 1.6 0 2.6 1.2 2.6 2.6 v 43.6 c 0 1.4 -1 2.6 -2.6 2.6 c -1.4 0 -2.6 -1.2 -2.6 -2.6 v -43.6 c 0 -1.4 1.2 -2.6 2.6 -2.6 z m -21 0 c 1.4 0 2.6 1.2 2.6 2.4 l 3.8 43.6 c 0.2 1.4 -0.8 2.6 -2.4 2.8 c -1.4 0 -2.6 -1 -2.8 -2.4 l -3.8 -43.4 c -0.2 -1.6 1 -2.8 2.4 -3 c 0.2 0 0.2 0 0.2 0 z m 42 0 c 0 0 0 0 0.2 0 c 1.4 0.2 2.6 1.4 2.4 3 l -3.8 43.4 c -0.2 1.4 -1.4 2.4 -2.8 2.4 c -1.6 -0.2 -2.6 -1.4 -2.4 -2.8 l 3.8 -43.6 c 0 -1.2 1.2 -2.4 2.6 -2.4 z" ] []
+            , Svg.path [ fill color, d "m 40 0 c -1.4 0 -2.6 1.2 -2.6 2.6 V 6 L 2.6 9 A 3 3 90 0 0 0 12 v 0 v 5.8 H 89.2 v -5.8 v 0 a 3 3 90 0 0 -2.6 -3 l -34.6 -3 V 2.6 c 0 -1.4 -1 -2.6 -2.4 -2.6 z" ] []
+            ]
+    in
     if clickable then
         g
             [ Svg.Events.onClick SendToTrashBinPart2
@@ -548,16 +555,6 @@ trashBinSvg_ clickable =
 
     else
         g [] (trashBinSvg "#eee")
-
-
-trashBinSvg : String -> List (Svg msg)
-trashBinSvg color =
-    [ g [ transform "scale(0.2)" ]
-        {- trash bin -}
-        [ Svg.path [ fill color, d "M 4 112 l 59 337 c 5 22 25 37 47 37 c 0 0 0 0 0 0 h 227 c 22 0 41 -16 47 -37 v 0 l 59 -337 z m 219 58 c 8 0 13 6 13 13 v 218 c 0 7 -5 13 -13 13 c -7 0 -13 -6 -13 -13 v -218 c 0 -7 6 -13 13 -13 z m -105 0 c 7 0 13 6 13 12 l 19 218 c 1 7 -4 13 -12 14 c -7 0 -13 -5 -14 -12 l -19 -217 c -1 -8 5 -14 12 -15 c 1 0 1 0 1 0 z m 210 0 c 0 0 0 0 1 0 c 7 1 13 7 12 15 l -19 217 c -1 7 -7 12 -14 12 c -8 -1 -13 -7 -12 -14 l 19 -218 c 0 -6 6 -12 13 -12 z" ] []
-        , Svg.path [ fill color, d "m 200,0 c -7,0 -13,6 -13,13 V 30 L 13,45 A 15,15 0 0 0 0,60 v 0 29 H 446 v -29 0 a 15,15 0 0 0 -13,-15 l -173,-15 V 13 c 0,-7 -5,-13 -12,-13 z" ] []
-        ]
-    ]
 
 
 playerSvg : String -> Bool -> WhoseTurn -> Svg msg

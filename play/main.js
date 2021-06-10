@@ -6308,39 +6308,12 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 			$elm$svg$Svg$g,
 			_List_fromArray(
 				[
-					$elm$svg$Svg$Attributes$id('rimaDeck')
-				]),
-			A2(
-				$elm$core$List$indexedMap,
-				F2(
-					function (i, _v0) {
-						return A2(
-							$elm$svg$Svg$rect,
-							_List_fromArray(
-								[
-									$elm$svg$Svg$Attributes$x('535.7'),
-									$elm$svg$Svg$Attributes$y(
-									$elm$core$String$fromInt((-10) + (10 * i))),
-									$elm$svg$Svg$Attributes$width('80'),
-									$elm$svg$Svg$Attributes$height('80'),
-									$elm$svg$Svg$Attributes$fill(
-									$author$project$Main$backgroundColor($author$project$Main$Rima)),
-									$elm$svg$Svg$Attributes$strokeWidth('1'),
-									$elm$svg$Svg$Attributes$stroke('#000')
-								]),
-							_List_Nil);
-					}),
-				model.rimaDeck)),
-			A2(
-			$elm$svg$Svg$g,
-			_List_fromArray(
-				[
 					$elm$svg$Svg$Attributes$id('keseDeck')
 				]),
 			A2(
 				$elm$core$List$indexedMap,
 				F2(
-					function (i, _v1) {
+					function (i, _v0) {
 						return A2(
 							$elm$svg$Svg$rect,
 							_List_fromArray(
@@ -6358,6 +6331,33 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 							_List_Nil);
 					}),
 				model.keseDeck)),
+			A2(
+			$elm$svg$Svg$g,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$id('rimaDeck')
+				]),
+			A2(
+				$elm$core$List$indexedMap,
+				F2(
+					function (i, _v1) {
+						return A2(
+							$elm$svg$Svg$rect,
+							_List_fromArray(
+								[
+									$elm$svg$Svg$Attributes$x('535.7'),
+									$elm$svg$Svg$Attributes$y(
+									$elm$core$String$fromInt((-10) + (10 * i))),
+									$elm$svg$Svg$Attributes$width('80'),
+									$elm$svg$Svg$Attributes$height('80'),
+									$elm$svg$Svg$Attributes$fill(
+									$author$project$Main$backgroundColor($author$project$Main$Rima)),
+									$elm$svg$Svg$Attributes$strokeWidth('1'),
+									$elm$svg$Svg$Attributes$stroke('#000')
+								]),
+							_List_Nil);
+					}),
+				model.rimaDeck)),
 			A2(
 			$elm$svg$Svg$g,
 			_List_fromArray(
@@ -6523,50 +6523,41 @@ var $author$project$Main$stationaryPart = function (cardState) {
 					[
 						A3(
 						$author$project$Main$playerSvg,
-						'rimaPlayer',
-						_Utils_eq($author$project$Main$RimaTurn, cardState.whoseTurn),
-						$author$project$Main$RimaTurn),
-						A3(
-						$author$project$Main$playerSvg,
 						'kesePlayer',
 						_Utils_eq($author$project$Main$KeseTurn, cardState.whoseTurn),
-						$author$project$Main$KeseTurn)
+						$author$project$Main$KeseTurn),
+						A3(
+						$author$project$Main$playerSvg,
+						'rimaPlayer',
+						_Utils_eq($author$project$Main$RimaTurn, cardState.whoseTurn),
+						$author$project$Main$RimaTurn)
 					]))));
 };
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Main$SendToTrashBinPart2 = {$: 'SendToTrashBinPart2'};
-var $author$project$Main$trashBinSvg = function (color) {
-	return _List_fromArray(
-		[
-			A2(
-			$elm$svg$Svg$g,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$transform('scale(0.2)')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$svg$Svg$path,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Attributes$fill(color),
-							$elm$svg$Svg$Attributes$d('M 4 112 l 59 337 c 5 22 25 37 47 37 c 0 0 0 0 0 0 h 227 c 22 0 41 -16 47 -37 v 0 l 59 -337 z m 219 58 c 8 0 13 6 13 13 v 218 c 0 7 -5 13 -13 13 c -7 0 -13 -6 -13 -13 v -218 c 0 -7 6 -13 13 -13 z m -105 0 c 7 0 13 6 13 12 l 19 218 c 1 7 -4 13 -12 14 c -7 0 -13 -5 -14 -12 l -19 -217 c -1 -8 5 -14 12 -15 c 1 0 1 0 1 0 z m 210 0 c 0 0 0 0 1 0 c 7 1 13 7 12 15 l -19 217 c -1 7 -7 12 -14 12 c -8 -1 -13 -7 -12 -14 l 19 -218 c 0 -6 6 -12 13 -12 z')
-						]),
-					_List_Nil),
-					A2(
-					$elm$svg$Svg$path,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Attributes$fill(color),
-							$elm$svg$Svg$Attributes$d('m 200,0 c -7,0 -13,6 -13,13 V 30 L 13,45 A 15,15 0 0 0 0,60 v 0 29 H 446 v -29 0 a 15,15 0 0 0 -13,-15 l -173,-15 V 13 c 0,-7 -5,-13 -12,-13 z')
-						]),
-					_List_Nil)
-				]))
-		]);
-};
 var $author$project$Main$trashBinSvg_ = function (clickable) {
+	var trashBinSvg = function (color) {
+		return _List_fromArray(
+			[
+				A2(
+				$elm$svg$Svg$path,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$fill(color),
+						$elm$svg$Svg$Attributes$d('M 0.8 22.4 l 11.8 67.4 c 1 4.4 5 7.4 9.4 7.4 c 0 0 0 0 0 0 h 45.4 c 4.4 0 8.2 -3.2 9.4 -7.4 v 0 l 11.8 -67.4 z m 43.8 11.6 c 1.6 0 2.6 1.2 2.6 2.6 v 43.6 c 0 1.4 -1 2.6 -2.6 2.6 c -1.4 0 -2.6 -1.2 -2.6 -2.6 v -43.6 c 0 -1.4 1.2 -2.6 2.6 -2.6 z m -21 0 c 1.4 0 2.6 1.2 2.6 2.4 l 3.8 43.6 c 0.2 1.4 -0.8 2.6 -2.4 2.8 c -1.4 0 -2.6 -1 -2.8 -2.4 l -3.8 -43.4 c -0.2 -1.6 1 -2.8 2.4 -3 c 0.2 0 0.2 0 0.2 0 z m 42 0 c 0 0 0 0 0.2 0 c 1.4 0.2 2.6 1.4 2.4 3 l -3.8 43.4 c -0.2 1.4 -1.4 2.4 -2.8 2.4 c -1.6 -0.2 -2.6 -1.4 -2.4 -2.8 l 3.8 -43.6 c 0 -1.2 1.2 -2.4 2.6 -2.4 z')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$path,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$fill(color),
+						$elm$svg$Svg$Attributes$d('m 40 0 c -1.4 0 -2.6 1.2 -2.6 2.6 V 6 L 2.6 9 A 3 3 90 0 0 0 12 v 0 v 5.8 H 89.2 v -5.8 v 0 a 3 3 90 0 0 -2.6 -3 l -34.6 -3 V 2.6 c 0 -1.4 -1 -2.6 -2.4 -2.6 z')
+					]),
+				_List_Nil)
+			]);
+	};
 	return clickable ? A2(
 		$elm$svg$Svg$g,
 		_List_fromArray(
@@ -6575,7 +6566,7 @@ var $author$project$Main$trashBinSvg_ = function (clickable) {
 				A2($elm$html$Html$Attributes$style, 'cursor', 'pointer')
 			]),
 		_Utils_ap(
-			$author$project$Main$trashBinSvg('#555'),
+			trashBinSvg('#555'),
 			_List_fromArray(
 				[
 					A2(
@@ -6591,7 +6582,7 @@ var $author$project$Main$trashBinSvg_ = function (clickable) {
 				]))) : A2(
 		$elm$svg$Svg$g,
 		_List_Nil,
-		$author$project$Main$trashBinSvg('#eee'));
+		trashBinSvg('#eee'));
 };
 var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 	return _List_fromArray(
