@@ -1120,7 +1120,32 @@ init flags =
         ( rimaHand, rimaDeck ) =
             drawUpToThree (List.map numToProf flags.rimaDeck)
     in
-    ( Model "Hello, World!" <|
+    ( Model
+        ("R"
+            ++ (if flags.rimaDice then
+                    "+"
+
+                else
+                    "x"
+               )
+            ++ "@11 "
+            ++ "S"
+            ++ (if flags.shipDice then
+                    "+"
+
+                else
+                    "x"
+               )
+            ++ "@23 K"
+            ++ (if flags.keseDice then
+                    "+"
+
+                else
+                    "x"
+               )
+            ++ "@15\n"
+        )
+      <|
         NothingSelected
             { whoseTurn =
                 if flags.keseGoesFirst then

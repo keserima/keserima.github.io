@@ -5204,7 +5204,7 @@ var $author$project$Main$init = function (flags) {
 	return _Utils_Tuple2(
 		A2(
 			$author$project$Main$Model,
-			'Hello, World!',
+			'R' + ((flags.rimaDice ? '+' : 'x') + ('@11 ' + ('S' + ((flags.shipDice ? '+' : 'x') + ('@23 K' + ((flags.keseDice ? '+' : 'x') + '@15\n')))))),
 			$author$project$Main$NothingSelected(
 				{
 					board: _List_fromArray(
