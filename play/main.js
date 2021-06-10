@@ -5310,6 +5310,19 @@ var $elm$core$List$filter = F2(
 			_List_Nil,
 			list);
 	});
+var $elm_community$list_extra$List$Extra$remove = F2(
+	function (x, xs) {
+		if (!xs.b) {
+			return _List_Nil;
+		} else {
+			var y = xs.a;
+			var ys = xs.b;
+			return _Utils_eq(x, y) ? ys : A2(
+				$elm$core$List$cons,
+				y,
+				A2($elm_community$list_extra$List$Extra$remove, x, ys));
+		}
+	});
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $author$project$Main$robFocusedPieceFromBoard = F2(
 	function (coord, board) {
@@ -5612,20 +5625,56 @@ var $author$project$Main$update_ = F2(
 							var mover = _v0.a.a.mover;
 							var remaining = _v0.a.a.remaining;
 							var _v10 = _v0.b;
-							return $author$project$Main$NothingSelected(
-								_Utils_update(
-									remaining,
-									{
-										board: A2($elm$core$List$cons, mover, remaining.board),
-										whoseTurn: function () {
-											var _v11 = remaining.whoseTurn;
-											if (_v11.$ === 'KeseTurn') {
-												return $author$project$Main$RimaTurn;
-											} else {
-												return $author$project$Main$KeseTurn;
-											}
-										}()
-									}));
+							var _v11 = A2(
+								$elm$core$List$filter,
+								function (p) {
+									return _Utils_eq(p.coord, mover.coord);
+								},
+								remaining.board);
+							if (!_v11.b) {
+								return $author$project$Main$NothingSelected(
+									_Utils_update(
+										remaining,
+										{
+											board: A2($elm$core$List$cons, mover, remaining.board),
+											whoseTurn: function () {
+												var _v12 = remaining.whoseTurn;
+												if (_v12.$ === 'KeseTurn') {
+													return $author$project$Main$RimaTurn;
+												} else {
+													return $author$project$Main$KeseTurn;
+												}
+											}()
+										}));
+							} else {
+								var captured = _v11.a;
+								var _v13 = remaining.whoseTurn;
+								if (_v13.$ === 'KeseTurn') {
+									return $author$project$Main$NothingSelected(
+										_Utils_update(
+											remaining,
+											{
+												board: A2(
+													$elm$core$List$cons,
+													mover,
+													A2($elm_community$list_extra$List$Extra$remove, captured, remaining.board)),
+												capturedByKese: A2($elm$core$List$cons, captured.prof, remaining.capturedByKese),
+												whoseTurn: $author$project$Main$RimaTurn
+											}));
+								} else {
+									return $author$project$Main$NothingSelected(
+										_Utils_update(
+											remaining,
+											{
+												board: A2(
+													$elm$core$List$cons,
+													mover,
+													A2($elm_community$list_extra$List$Extra$remove, captured, remaining.board)),
+												capturedByRima: A2($elm$core$List$cons, captured.prof, remaining.capturedByRima),
+												whoseTurn: $author$project$Main$KeseTurn
+											}));
+								}
+							}
 						default:
 							break _v0$8;
 					}
@@ -5635,66 +5684,66 @@ var $author$project$Main$update_ = F2(
 						var remaining = _v0.a.a.remaining;
 						var whoseHand = _v0.a.a.whoseHand;
 						var index = _v0.a.a.index;
-						var _v12 = _v0.b;
+						var _v14 = _v0.b;
 						if (whoseHand.$ === 'KeseTurn') {
-							var _v14 = A2($author$project$Main$robIth, index, remaining.keseHand);
-							var sacrifices = _v14.a;
-							var newKeseHand = _v14.b;
+							var _v16 = A2($author$project$Main$robIth, index, remaining.keseHand);
+							var sacrifices = _v16.a;
+							var newKeseHand = _v16.b;
 							var _new = {
 								mover: mover,
 								remaining: _Utils_update(
 									remaining,
 									{keseHand: newKeseHand})
 							};
-							_v15$3:
+							_v17$3:
 							while (true) {
 								if (sacrifices.b && (!sacrifices.b.b)) {
 									switch (sacrifices.a.$) {
 										case 'Circle':
-											var _v16 = sacrifices.a;
+											var _v18 = sacrifices.a;
 											return $author$project$Main$AfterCircleSacrifice(_new);
 										case 'HorizontalVertical':
-											var _v17 = sacrifices.a;
+											var _v19 = sacrifices.a;
 											return A2($author$project$Main$AfterSacrifice, $author$project$Main$HorizVert, _new);
 										case 'Diagonal':
-											var _v18 = sacrifices.a;
+											var _v20 = sacrifices.a;
 											return A2($author$project$Main$AfterSacrifice, $author$project$Main$Diag, _new);
 										default:
-											break _v15$3;
+											break _v17$3;
 									}
 								} else {
-									break _v15$3;
+									break _v17$3;
 								}
 							}
 							return modl;
 						} else {
-							var _v19 = A2($author$project$Main$robIth, index, remaining.rimaHand);
-							var sacrifices = _v19.a;
-							var newRimaHand = _v19.b;
+							var _v21 = A2($author$project$Main$robIth, index, remaining.rimaHand);
+							var sacrifices = _v21.a;
+							var newRimaHand = _v21.b;
 							var _new = {
 								mover: mover,
 								remaining: _Utils_update(
 									remaining,
 									{rimaHand: newRimaHand})
 							};
-							_v20$3:
+							_v22$3:
 							while (true) {
 								if (sacrifices.b && (!sacrifices.b.b)) {
 									switch (sacrifices.a.$) {
 										case 'Circle':
-											var _v21 = sacrifices.a;
+											var _v23 = sacrifices.a;
 											return $author$project$Main$AfterCircleSacrifice(_new);
 										case 'HorizontalVertical':
-											var _v22 = sacrifices.a;
+											var _v24 = sacrifices.a;
 											return A2($author$project$Main$AfterSacrifice, $author$project$Main$HorizVert, _new);
 										case 'Diagonal':
-											var _v23 = sacrifices.a;
+											var _v25 = sacrifices.a;
 											return A2($author$project$Main$AfterSacrifice, $author$project$Main$Diag, _new);
 										default:
-											break _v20$3;
+											break _v22$3;
 									}
 								} else {
-									break _v20$3;
+									break _v22$3;
 								}
 							}
 							return modl;
@@ -5744,7 +5793,6 @@ var $author$project$Main$SendToTrashBinPart1 = function (a) {
 	return {$: 'SendToTrashBinPart1', a: a};
 };
 var $author$project$Main$TurnEnd = {$: 'TurnEnd'};
-var $author$project$Main$TurnEndByCapture = {$: 'TurnEndByCapture'};
 var $author$project$Main$allCoordsOccupiedBy = F2(
 	function (color, board) {
 		return A2(
@@ -7007,7 +7055,7 @@ var $author$project$Main$view = function (modl) {
 										$elm$html$Html$button,
 										_List_fromArray(
 											[
-												$elm$svg$Svg$Events$onClick($author$project$Main$TurnEndByCapture)
+												$elm$svg$Svg$Events$onClick($author$project$Main$TurnEnd)
 											]),
 										_List_fromArray(
 											[
@@ -7021,7 +7069,7 @@ var $author$project$Main$view = function (modl) {
 										$elm$html$Html$button,
 										_List_fromArray(
 											[
-												$elm$svg$Svg$Events$onClick($author$project$Main$TurnEndByCapture)
+												$elm$svg$Svg$Events$onClick($author$project$Main$TurnEnd)
 											]),
 										_List_fromArray(
 											[

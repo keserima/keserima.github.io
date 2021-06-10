@@ -80,8 +80,7 @@ type alias Flags =
 type Msg
     = None
     | Cancel
-    | TurnEnd
-    | TurnEndByCapture
+    | TurnEnd {- whether it is a capture or not is determined by whether there is an overlap -}
     | GiveFocusTo Focus
     | SendToTrashBinPart1 { whoseHand : WhoseTurn, index : Int }
     | SendToTrashBinPart2
@@ -178,17 +177,38 @@ update_ msg modl =
             WaitForTrashBinClick { mover = mover, remaining = remaining, whoseHand = whoseHand, index = index }
 
         ( NowWaitingForAdditionalSacrifice { mover, remaining }, TurnEnd ) ->
-            NothingSelected
-                { remaining
-                    | whoseTurn =
-                        case remaining.whoseTurn of
-                            KeseTurn ->
-                                RimaTurn
+            case List.filter (\p -> p.coord == mover.coord) remaining.board of
+                [] ->
+                    NothingSelected
+                        { remaining
+                            | whoseTurn =
+                                case remaining.whoseTurn of
+                                    KeseTurn ->
+                                        RimaTurn
 
-                            RimaTurn ->
-                                KeseTurn
-                    , board = mover :: remaining.board
-                }
+                                    RimaTurn ->
+                                        KeseTurn
+                            , board = mover :: remaining.board
+                        }
+
+                captured :: _ ->
+                    {- capture -}
+                    case remaining.whoseTurn of
+                        KeseTurn ->
+                            NothingSelected
+                                { remaining
+                                    | whoseTurn = RimaTurn
+                                    , board = mover :: List.Extra.remove captured remaining.board
+                                    , capturedByKese = captured.prof :: remaining.capturedByKese
+                                }
+
+                        RimaTurn ->
+                            NothingSelected
+                                { remaining
+                                    | whoseTurn = KeseTurn
+                                    , board = mover :: List.Extra.remove captured remaining.board
+                                    , capturedByRima = captured.prof :: remaining.capturedByRima
+                                }
 
         ( WaitForTrashBinClick { mover, remaining, whoseHand, index }, SendToTrashBinPart2 ) ->
             case whoseHand of
@@ -929,14 +949,14 @@ view modl =
 
                             Kese ->
                                 if mover.pieceColor == Rima then
-                                    [ Html.button [ onClick TurnEndByCapture ] [ text "駒を取ってターンエンド" ] ]
+                                    [ Html.button [ onClick TurnEnd ] [ text "駒を取ってターンエンド" ] ]
 
                                 else
                                     []
 
                             Rima ->
                                 if mover.pieceColor == Kese then
-                                    [ Html.button [ onClick TurnEndByCapture ] [ text "駒を取ってターンエンド" ] ]
+                                    [ Html.button [ onClick TurnEnd ] [ text "駒を取ってターンエンド" ] ]
 
                                 else
                                     []
