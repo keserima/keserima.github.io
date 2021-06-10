@@ -170,7 +170,7 @@ update_ msg modl =
                     in
                     NothingSelected { cardState | board = newBoard, rimaHand = newRimaHand, whoseTurn = KeseTurn }
 
-        ( AfterSacrifice command { mover, remaining }, MovementToward to ) ->
+        ( AfterSacrifice _ { mover, remaining }, MovementToward to ) ->
             NowWaitingForAdditionalSacrifice { mover = { mover | coord = to }, remaining = remaining }
 
         ( NowWaitingForAdditionalSacrifice { mover, remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->

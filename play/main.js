@@ -5598,7 +5598,6 @@ var $author$project$Main$update_ = F2(
 				case 'AfterSacrifice':
 					if (_v0.b.$ === 'MovementToward') {
 						var _v9 = _v0.a;
-						var command = _v9.a;
 						var mover = _v9.b.mover;
 						var remaining = _v9.b.remaining;
 						var to = _v0.b.a;
