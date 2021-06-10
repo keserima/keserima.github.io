@@ -5827,7 +5827,7 @@ var $author$project$Main$clickableButtonOnTrashBinSvg = F2(
 	});
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $author$project$Main$addDelta = F2(
-	function (_v0, coord) {
+	function (coord, _v0) {
 		var deltaX = _v0.a;
 		var deltaY = _v0.b;
 		var y = coord.y + deltaY;
@@ -5852,6 +5852,11 @@ var $elm$core$List$concatMap = F2(
 	function (f, list) {
 		return $elm$core$List$concat(
 			A2($elm$core$List$map, f, list));
+	});
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
 	});
 var $author$project$Main$isWater = function (coord) {
 	var _v0 = _Utils_Tuple2(coord.x, coord.y);
@@ -5912,9 +5917,7 @@ var $author$project$Main$all_coord = A2(
 var $author$project$Main$neitherOccupiedNorWater = function (board) {
 	return A2(
 		$elm$core$List$filter,
-		function (coord) {
-			return !$author$project$Main$isWater(coord);
-		},
+		A2($elm$core$Basics$composeR, $author$project$Main$isWater, $elm$core$Basics$not),
 		A2(
 			$elm$core$List$filter,
 			function (coord) {
@@ -5934,8 +5937,8 @@ var $author$project$Main$getCandidates_ = F4(
 	function (piece, hasCircleInHand, robbedBoard, raw_candidates) {
 		var ship_positions = A2(
 			$elm$core$List$map,
-			function (p) {
-				return p.coord;
+			function ($) {
+				return $.coord;
 			},
 			A2(
 				$elm$core$List$filter,
@@ -5957,9 +5960,7 @@ var $author$project$Main$getCandidates_ = F4(
 			return hasCircleInHand ? _Utils_ap(
 				A2(
 					$elm$core$List$filter,
-					function (coord) {
-						return !$author$project$Main$isWater(coord);
-					},
+					A2($elm$core$Basics$composeR, $author$project$Main$isWater, $elm$core$Basics$not),
 					raw_candidates),
 				A2(
 					$elm$core$List$filter,
@@ -6003,9 +6004,7 @@ var $author$project$Main$getCandidates = F3(
 					case 'HorizontalVertical':
 						return A2(
 							$elm$core$List$concatMap,
-							function (delta) {
-								return A2($author$project$Main$addDelta, delta, piece.coord);
-							},
+							$author$project$Main$addDelta(piece.coord),
 							_List_fromArray(
 								[
 									_Utils_Tuple2(1, 0),
@@ -6016,9 +6015,7 @@ var $author$project$Main$getCandidates = F3(
 					case 'Diagonal':
 						return A2(
 							$elm$core$List$concatMap,
-							function (delta) {
-								return A2($author$project$Main$addDelta, delta, piece.coord);
-							},
+							$author$project$Main$addDelta(piece.coord),
 							_List_fromArray(
 								[
 									_Utils_Tuple2(1, 1),
@@ -6029,9 +6026,7 @@ var $author$project$Main$getCandidates = F3(
 					default:
 						return A2(
 							$elm$core$List$concatMap,
-							function (delta) {
-								return A2($author$project$Main$addDelta, delta, piece.coord);
-							},
+							$author$project$Main$addDelta(piece.coord),
 							_List_fromArray(
 								[
 									_Utils_Tuple2(1, 1),
@@ -6058,9 +6053,7 @@ var $author$project$Main$getCandidatesWithCommand = F4(
 				if (moveCommand.$ === 'HorizVert') {
 					return A2(
 						$elm$core$List$concatMap,
-						function (delta) {
-							return A2($author$project$Main$addDelta, delta, piece.coord);
-						},
+						$author$project$Main$addDelta(piece.coord),
 						_List_fromArray(
 							[
 								_Utils_Tuple2(1, 0),
@@ -6071,9 +6064,7 @@ var $author$project$Main$getCandidatesWithCommand = F4(
 				} else {
 					return A2(
 						$elm$core$List$concatMap,
-						function (delta) {
-							return A2($author$project$Main$addDelta, delta, piece.coord);
-						},
+						$author$project$Main$addDelta(piece.coord),
 						_List_fromArray(
 							[
 								_Utils_Tuple2(1, 1),
@@ -6602,18 +6593,21 @@ var $author$project$Main$view = function (modl) {
 							_Utils_ap(
 								A2(
 									$elm$core$List$map,
-									function (piece) {
+									function (_v1) {
+										var coord = _v1.coord;
+										var prof = _v1.prof;
+										var pieceColor = _v1.pieceColor;
 										return A3(
 											$author$project$Main$pieceSvg,
 											false,
-											(_Utils_eq(piece.pieceColor, $author$project$Main$Ship) || _Utils_eq(
-												piece.pieceColor,
+											(_Utils_eq(pieceColor, $author$project$Main$Ship) || _Utils_eq(
+												pieceColor,
 												$author$project$Main$toColor(cardState.whoseTurn))) ? $author$project$Main$GiveFocusTo(
-												$author$project$Main$PieceOnTheBoard(piece.coord)) : $author$project$Main$None,
+												$author$project$Main$PieceOnTheBoard(coord)) : $author$project$Main$None,
 											{
-												coord: {x: piece.coord.x, y: piece.coord.y},
-												pieceColor: piece.pieceColor,
-												prof: piece.prof
+												coord: {x: coord.x, y: coord.y},
+												pieceColor: pieceColor,
+												prof: prof
 											});
 									},
 									cardState.board),
@@ -6657,21 +6651,19 @@ var $author$project$Main$view = function (modl) {
 			var dynamicPart = function () {
 				if (focus.$ === 'PieceOnTheBoard') {
 					var focus_coord = focus.a;
-					var _v2 = A2($author$project$Main$robFocusedPieceFromBoard, focus_coord, cardState.board);
-					if (_v2.$ === 'Nothing') {
+					var _v3 = A2($author$project$Main$robFocusedPieceFromBoard, focus_coord, cardState.board);
+					if (_v3.$ === 'Nothing') {
 						return _List_Nil;
 					} else {
-						var _v3 = _v2.a;
-						var focused_piece = _v3.a;
-						var robbedBoard = _v3.b;
+						var _v4 = _v3.a;
+						var focused_piece = _v4.a;
+						var robbedBoard = _v4.b;
 						var hasCircleInHand = A2(
 							$elm$core$List$any,
-							function (c) {
-								return _Utils_eq(c, $author$project$Main$Circle);
-							},
+							$elm$core$Basics$eq($author$project$Main$Circle),
 							function () {
-								var _v4 = cardState.whoseTurn;
-								if (_v4.$ === 'KeseTurn') {
+								var _v6 = cardState.whoseTurn;
+								if (_v6.$ === 'KeseTurn') {
 									return cardState.keseHand;
 								} else {
 									return cardState.rimaHand;
@@ -6681,15 +6673,18 @@ var $author$project$Main$view = function (modl) {
 						return _Utils_ap(
 							A2(
 								$elm$core$List$map,
-								function (piece) {
+								function (_v5) {
+									var coord = _v5.coord;
+									var prof = _v5.prof;
+									var pieceColor = _v5.pieceColor;
 									return A3(
 										$author$project$Main$pieceSvg,
-										_Utils_eq(piece.coord, focus_coord),
+										_Utils_eq(coord, focus_coord),
 										$author$project$Main$None,
 										{
-											coord: {x: piece.coord.x, y: piece.coord.y},
-											pieceColor: piece.pieceColor,
-											prof: piece.prof
+											coord: {x: coord.x, y: coord.y},
+											pieceColor: pieceColor,
+											prof: prof
 										});
 								},
 								cardState.board),
@@ -6853,24 +6848,24 @@ var $author$project$Main$view = function (modl) {
 			var mover = modl.a.mover;
 			var remaining = modl.a.remaining;
 			var isSacrificingCircleRequired = function () {
-				var _v7 = A2(
+				var _v9 = A2(
 					$elm$core$List$filter,
 					function (c) {
 						return _Utils_eq(c.coord, mover.coord);
 					},
 					remaining.board);
-				if (!_v7.b) {
+				if (!_v9.b) {
 					return false;
 				} else {
-					var steppedOn = _v7.a;
-					var _v8 = _Utils_Tuple2(mover.pieceColor, steppedOn.pieceColor);
-					if (_v8.b.$ === 'Ship') {
-						if (_v8.a.$ === 'Ship') {
-							var _v9 = _v8.a;
-							var _v10 = _v8.b;
+					var steppedOn = _v9.a;
+					var _v10 = _Utils_Tuple2(mover.pieceColor, steppedOn.pieceColor);
+					if (_v10.b.$ === 'Ship') {
+						if (_v10.a.$ === 'Ship') {
+							var _v11 = _v10.a;
+							var _v12 = _v10.b;
 							return true;
 						} else {
-							var _v11 = _v8.b;
+							var _v13 = _v10.b;
 							return false;
 						}
 					} else {
@@ -7057,12 +7052,10 @@ var $author$project$Main$view = function (modl) {
 			var remaining = modl.b.remaining;
 			var hasCircleInHand = A2(
 				$elm$core$List$any,
-				function (c) {
-					return _Utils_eq(c, $author$project$Main$Circle);
-				},
+				$elm$core$Basics$eq($author$project$Main$Circle),
 				function () {
-					var _v12 = remaining.whoseTurn;
-					if (_v12.$ === 'KeseTurn') {
+					var _v14 = remaining.whoseTurn;
+					if (_v14.$ === 'KeseTurn') {
 						return remaining.keseHand;
 					} else {
 						return remaining.rimaHand;

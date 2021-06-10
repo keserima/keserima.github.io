@@ -608,11 +608,11 @@ neitherOccupiedNorWater : List PieceOnBoard -> List Coordinate
 neitherOccupiedNorWater board =
     all_coord
         |> List.filter (\coord -> not (List.member coord (List.map .coord board)))
-        |> List.filter (\coord -> not (isWater coord))
+        |> List.filter (isWater >> not)
 
 
-addDelta : ( Int, Int ) -> Coordinate -> List Coordinate
-addDelta ( deltaX, deltaY ) coord =
+addDelta : Coordinate -> ( Int, Int ) -> List Coordinate
+addDelta coord ( deltaX, deltaY ) =
     let
         x =
             coord.x + deltaX
@@ -648,13 +648,13 @@ getCandidates hasCircleInHand piece robbedBoard =
                 [ piece.coord ]
 
             HorizontalVertical ->
-                List.concatMap (\delta -> addDelta delta piece.coord) [ ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ) ]
+                List.concatMap (addDelta piece.coord) [ ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ) ]
 
             Diagonal ->
-                List.concatMap (\delta -> addDelta delta piece.coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
+                List.concatMap (addDelta piece.coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
 
             All ->
-                List.concatMap (\delta -> addDelta delta piece.coord)
+                List.concatMap (addDelta piece.coord)
                     [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ), ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ), ( 0, 0 ) ]
         )
 
@@ -663,7 +663,7 @@ getCandidates_ : PieceOnBoard -> Bool -> List PieceOnBoard -> List Coordinate ->
 getCandidates_ piece hasCircleInHand robbedBoard raw_candidates =
     let
         ship_positions =
-            robbedBoard |> List.filter (\p -> p.pieceColor == Ship) |> List.map (\p -> p.coord)
+            robbedBoard |> List.filter (\p -> p.pieceColor == Ship) |> List.map .coord
     in
     case piece.pieceColor of
         {- If ship, cannot leave water -}
@@ -681,7 +681,7 @@ getCandidates_ piece hasCircleInHand robbedBoard raw_candidates =
         _ ->
             if hasCircleInHand then
                 {- Allowed location: non-water OR ships -}
-                List.filter (\coord -> not (isWater coord)) raw_candidates
+                List.filter (isWater >> not) raw_candidates
                     ++ List.filter (\coord -> List.member coord ship_positions) raw_candidates
 
             else
@@ -697,10 +697,10 @@ getCandidatesWithCommand moveCommand hasCircleInHand piece robbedBoard =
         robbedBoard
         (case moveCommand of
             HorizVert ->
-                List.concatMap (\delta -> addDelta delta piece.coord) [ ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ) ]
+                List.concatMap (addDelta piece.coord) [ ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ) ]
 
             Diag ->
-                List.concatMap (\delta -> addDelta delta piece.coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
+                List.concatMap (addDelta piece.coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
         )
 
 
@@ -715,12 +715,12 @@ view modl =
                     ]
                     (stationaryPart Nothing cardState
                         ++ List.map
-                            (\piece ->
-                                { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
+                            (\{ coord, prof, pieceColor } ->
+                                { coord = { x = toFloat coord.x, y = toFloat coord.y }, prof = prof, pieceColor = pieceColor }
                                     |> pieceSvg False
                                         {- You can move the piece if it is a ship or if it belongs to you. -}
-                                        (if piece.pieceColor == Ship || piece.pieceColor == toColor cardState.whoseTurn then
-                                            GiveFocusTo (PieceOnTheBoard piece.coord)
+                                        (if pieceColor == Ship || pieceColor == toColor cardState.whoseTurn then
+                                            GiveFocusTo (PieceOnTheBoard coord)
 
                                          else
                                             None
@@ -767,7 +767,7 @@ view modl =
                                 Just ( focused_piece, robbedBoard ) ->
                                     let
                                         hasCircleInHand =
-                                            List.any (\c -> c == Circle)
+                                            List.any ((==) Circle)
                                                 (case cardState.whoseTurn of
                                                     KeseTurn ->
                                                         cardState.keseHand
@@ -780,9 +780,9 @@ view modl =
                                             getCandidates hasCircleInHand focused_piece robbedBoard
                                     in
                                     List.map
-                                        (\piece ->
-                                            { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
-                                                |> pieceSvg (piece.coord == focus_coord) None
+                                        (\{ coord, prof, pieceColor } ->
+                                            { coord = { x = toFloat coord.x, y = toFloat coord.y }, prof = prof, pieceColor = pieceColor }
+                                                |> pieceSvg (coord == focus_coord) None
                                         )
                                         cardState.board
                                         ++ (candidates
@@ -931,7 +931,7 @@ view modl =
         AfterSacrifice command { mover, remaining } ->
             let
                 hasCircleInHand =
-                    List.any (\c -> c == Circle)
+                    List.any ((==) Circle)
                         (case remaining.whoseTurn of
                             KeseTurn ->
                                 remaining.keseHand
