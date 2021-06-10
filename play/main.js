@@ -5744,6 +5744,7 @@ var $author$project$Main$SendToTrashBinPart1 = function (a) {
 	return {$: 'SendToTrashBinPart1', a: a};
 };
 var $author$project$Main$TurnEnd = {$: 'TurnEnd'};
+var $author$project$Main$TurnEndByCapture = {$: 'TurnEndByCapture'};
 var $author$project$Main$allCoordsOccupiedBy = F2(
 	function (color, board) {
 		return A2(
@@ -6916,24 +6917,24 @@ var $author$project$Main$view = function (modl) {
 			var mover = modl.a.mover;
 			var remaining = modl.a.remaining;
 			var isSacrificingCircleRequired = function () {
-				var _v8 = A2(
+				var _v10 = A2(
 					$elm$core$List$filter,
 					function (c) {
 						return _Utils_eq(c.coord, mover.coord);
 					},
 					remaining.board);
-				if (!_v8.b) {
+				if (!_v10.b) {
 					return false;
 				} else {
-					var steppedOn = _v8.a;
-					var _v9 = _Utils_Tuple2(mover.pieceColor, steppedOn.pieceColor);
-					if (_v9.b.$ === 'Ship') {
-						if (_v9.a.$ === 'Ship') {
-							var _v10 = _v9.a;
-							var _v11 = _v9.b;
+					var steppedOn = _v10.a;
+					var _v11 = _Utils_Tuple2(mover.pieceColor, steppedOn.pieceColor);
+					if (_v11.b.$ === 'Ship') {
+						if (_v11.a.$ === 'Ship') {
+							var _v12 = _v11.a;
+							var _v13 = _v11.b;
 							return true;
 						} else {
-							var _v12 = _v9.b;
+							var _v14 = _v11.b;
 							return false;
 						}
 					} else {
@@ -6986,19 +6987,64 @@ var $author$project$Main$view = function (modl) {
 										[
 											$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
 										])))))),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
+				function () {
+					var _v8 = A2(
+						$elm$core$List$filter,
+						function (p) {
+							return _Utils_eq(p.coord, mover.coord);
+						},
+						remaining.board);
+					if (_v8.b && (!_v8.b.b)) {
+						var p = _v8.a;
+						var _v9 = p.pieceColor;
+						switch (_v9.$) {
+							case 'Ship':
+								return _List_Nil;
+							case 'Kese':
+								return _Utils_eq(mover.pieceColor, $author$project$Main$Rima) ? _List_fromArray(
+									[
+										A2(
+										$elm$html$Html$button,
+										_List_fromArray(
+											[
+												$elm$svg$Svg$Events$onClick($author$project$Main$TurnEndByCapture)
+											]),
+										_List_fromArray(
+											[
+												$elm$svg$Svg$text('駒を取ってターンエンド')
+											]))
+									]) : _List_Nil;
+							default:
+								return _Utils_eq(mover.pieceColor, $author$project$Main$Kese) ? _List_fromArray(
+									[
+										A2(
+										$elm$html$Html$button,
+										_List_fromArray(
+											[
+												$elm$svg$Svg$Events$onClick($author$project$Main$TurnEndByCapture)
+											]),
+										_List_fromArray(
+											[
+												$elm$svg$Svg$text('駒を取ってターンエンド')
+											]))
+									]) : _List_Nil;
+						}
+					} else {
+						return _List_fromArray(
 							[
-								$elm$svg$Svg$Events$onClick($author$project$Main$TurnEnd)
-							]),
-						_List_fromArray(
-							[
-								$elm$svg$Svg$text('ターンエンド')
-							]))
-					]));
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$svg$Svg$Events$onClick($author$project$Main$TurnEnd)
+									]),
+								_List_fromArray(
+									[
+										$elm$svg$Svg$text('ターンエンド')
+									]))
+							]);
+					}
+				}());
 		case 'WaitForTrashBinClick':
 			var mover = modl.a.mover;
 			var remaining = modl.a.remaining;
@@ -7053,8 +7099,8 @@ var $author$project$Main$view = function (modl) {
 				$elm$core$List$any,
 				$elm$core$Basics$eq($author$project$Main$Circle),
 				function () {
-					var _v14 = remaining.whoseTurn;
-					if (_v14.$ === 'KeseTurn') {
+					var _v16 = remaining.whoseTurn;
+					if (_v16.$ === 'KeseTurn') {
 						return remaining.keseHand;
 					} else {
 						return remaining.rimaHand;
@@ -7062,8 +7108,8 @@ var $author$project$Main$view = function (modl) {
 				}());
 			var candidatesYellow = A4($author$project$Main$getCandidatesYellowWithCommand, command, hasCircleInHand, mover, remaining.board);
 			var candidatesRed = function () {
-				var _v13 = mover.pieceColor;
-				switch (_v13.$) {
+				var _v15 = mover.pieceColor;
+				switch (_v15.$) {
 					case 'Ship':
 						return _List_Nil;
 					case 'Kese':

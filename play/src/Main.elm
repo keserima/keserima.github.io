@@ -81,6 +81,7 @@ type Msg
     = None
     | Cancel
     | TurnEnd
+    | TurnEndByCapture
     | GiveFocusTo Focus
     | SendToTrashBinPart1 { whoseHand : WhoseTurn, index : Int }
     | SendToTrashBinPart2
@@ -919,7 +920,31 @@ view modl =
                         remaining.rimaHand
                     ++ [ pieceWaitingForAdditionalCommandSvg mover ]
                 )
-                [ Html.button [ onClick TurnEnd ] [ text "ターンエンド" ] ]
+                (case List.filter (\p -> p.coord == mover.coord) remaining.board of
+                    [ p ] ->
+                        case p.pieceColor of
+                            Ship ->
+                                {- cannot end the turn if stepping on a Ship -}
+                                []
+
+                            Kese ->
+                                if mover.pieceColor == Rima then
+                                    [ Html.button [ onClick TurnEndByCapture ] [ text "駒を取ってターンエンド" ] ]
+
+                                else
+                                    []
+
+                            Rima ->
+                                if mover.pieceColor == Kese then
+                                    [ Html.button [ onClick TurnEndByCapture ] [ text "駒を取ってターンエンド" ] ]
+
+                                else
+                                    []
+
+                    _ ->
+                        {- The resulting square is empty, so it is always possible to declare TurnEnd -}
+                        [ Html.button [ onClick TurnEnd ] [ text "ターンエンド" ] ]
+                )
 
         WaitForTrashBinClick { mover, remaining, whoseHand, index } ->
             view_
