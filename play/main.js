@@ -5766,33 +5766,6 @@ var $elm$core$List$any = F2(
 		}
 	});
 var $elm$html$Html$button = _VirtualDom_node('button');
-var $author$project$Main$addDelta = F2(
-	function (coord, _v0) {
-		var deltaX = _v0.a;
-		var deltaY = _v0.b;
-		var y = coord.y + deltaY;
-		var x = coord.x + deltaX;
-		return ((0 <= x) && ((x <= 4) && ((0 <= y) && (y <= 4)))) ? _List_fromArray(
-			[
-				{x: x, y: y}
-			]) : _List_Nil;
-	});
-var $elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
-		}
-	});
-var $elm$core$List$concat = function (lists) {
-	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
-};
-var $elm$core$List$concatMap = F2(
-	function (f, list) {
-		return $elm$core$List$concat(
-			A2($elm$core$List$map, f, list));
-	});
 var $elm$core$Basics$composeR = F3(
 	function (f, g, x) {
 		return g(
@@ -5841,6 +5814,22 @@ var $elm$core$List$member = F2(
 			},
 			xs);
 	});
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $elm$core$List$concat = function (lists) {
+	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
+};
+var $elm$core$List$concatMap = F2(
+	function (f, list) {
+		return $elm$core$List$concat(
+			A2($elm$core$List$map, f, list));
+	});
 var $author$project$Main$all_coord = A2(
 	$elm$core$List$concatMap,
 	function (y_ind) {
@@ -5873,7 +5862,7 @@ var $author$project$Main$neitherOccupiedNorWater = function (board) {
 			},
 			$author$project$Main$all_coord));
 };
-var $author$project$Main$getCandidates_ = F4(
+var $author$project$Main$getCandidatesYellow_ = F4(
 	function (piece, hasCircleInHand, robbedBoard, raw_candidates) {
 		var ship_positions = A2(
 			$elm$core$List$map,
@@ -5925,67 +5914,79 @@ var $author$project$Main$getCandidates_ = F4(
 					raw_candidates));
 		}
 	});
+var $author$project$Main$addDelta = F2(
+	function (coord, _v0) {
+		var deltaX = _v0.a;
+		var deltaY = _v0.b;
+		var y = coord.y + deltaY;
+		var x = coord.x + deltaX;
+		return ((0 <= x) && ((x <= 4) && ((0 <= y) && (y <= 4)))) ? _List_fromArray(
+			[
+				{x: x, y: y}
+			]) : _List_Nil;
+	});
 var $elm$core$Basics$negate = function (n) {
 	return -n;
 };
-var $author$project$Main$getCandidates = F3(
+var $author$project$Main$rawCandidates = F2(
+	function (prof, coord) {
+		switch (prof.$) {
+			case 'Circle':
+				return _List_fromArray(
+					[coord]);
+			case 'HorizontalVertical':
+				return A2(
+					$elm$core$List$concatMap,
+					$author$project$Main$addDelta(coord),
+					_List_fromArray(
+						[
+							_Utils_Tuple2(1, 0),
+							_Utils_Tuple2(-1, 0),
+							_Utils_Tuple2(0, 1),
+							_Utils_Tuple2(0, -1)
+						]));
+			case 'Diagonal':
+				return A2(
+					$elm$core$List$concatMap,
+					$author$project$Main$addDelta(coord),
+					_List_fromArray(
+						[
+							_Utils_Tuple2(1, 1),
+							_Utils_Tuple2(-1, -1),
+							_Utils_Tuple2(-1, 1),
+							_Utils_Tuple2(1, -1)
+						]));
+			default:
+				return A2(
+					$elm$core$List$concatMap,
+					$author$project$Main$addDelta(coord),
+					_List_fromArray(
+						[
+							_Utils_Tuple2(1, 1),
+							_Utils_Tuple2(-1, -1),
+							_Utils_Tuple2(-1, 1),
+							_Utils_Tuple2(1, -1),
+							_Utils_Tuple2(1, 0),
+							_Utils_Tuple2(-1, 0),
+							_Utils_Tuple2(0, 1),
+							_Utils_Tuple2(0, -1),
+							_Utils_Tuple2(0, 0)
+						]));
+		}
+	});
+var $author$project$Main$getCandidatesYellow = F3(
 	function (hasCircleInHand, piece, robbedBoard) {
 		return A4(
-			$author$project$Main$getCandidates_,
+			$author$project$Main$getCandidatesYellow_,
 			piece,
 			hasCircleInHand,
 			robbedBoard,
-			function () {
-				var _v0 = piece.prof;
-				switch (_v0.$) {
-					case 'Circle':
-						return _List_fromArray(
-							[piece.coord]);
-					case 'HorizontalVertical':
-						return A2(
-							$elm$core$List$concatMap,
-							$author$project$Main$addDelta(piece.coord),
-							_List_fromArray(
-								[
-									_Utils_Tuple2(1, 0),
-									_Utils_Tuple2(-1, 0),
-									_Utils_Tuple2(0, 1),
-									_Utils_Tuple2(0, -1)
-								]));
-					case 'Diagonal':
-						return A2(
-							$elm$core$List$concatMap,
-							$author$project$Main$addDelta(piece.coord),
-							_List_fromArray(
-								[
-									_Utils_Tuple2(1, 1),
-									_Utils_Tuple2(-1, -1),
-									_Utils_Tuple2(-1, 1),
-									_Utils_Tuple2(1, -1)
-								]));
-					default:
-						return A2(
-							$elm$core$List$concatMap,
-							$author$project$Main$addDelta(piece.coord),
-							_List_fromArray(
-								[
-									_Utils_Tuple2(1, 1),
-									_Utils_Tuple2(-1, -1),
-									_Utils_Tuple2(-1, 1),
-									_Utils_Tuple2(1, -1),
-									_Utils_Tuple2(1, 0),
-									_Utils_Tuple2(-1, 0),
-									_Utils_Tuple2(0, 1),
-									_Utils_Tuple2(0, -1),
-									_Utils_Tuple2(0, 0)
-								]));
-				}
-			}());
+			A2($author$project$Main$rawCandidates, piece.prof, piece.coord));
 	});
-var $author$project$Main$getCandidatesWithCommand = F4(
+var $author$project$Main$getCandidatesYellowWithCommand = F4(
 	function (moveCommand, hasCircleInHand, piece, robbedBoard) {
 		return A4(
-			$author$project$Main$getCandidates_,
+			$author$project$Main$getCandidatesYellow_,
 			piece,
 			hasCircleInHand,
 			robbedBoard,
@@ -6042,7 +6043,7 @@ var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
-var $author$project$Main$goalCandidateSvg = F2(
+var $author$project$Main$goalCandidateYellowSvg = F2(
 	function (msgToBeSent, coord) {
 		return A2(
 			$elm$svg$Svg$g,
@@ -6729,7 +6730,7 @@ var $author$project$Main$view = function (modl) {
 									return cardState.rimaHand;
 								}
 							}());
-						var candidates = A3($author$project$Main$getCandidates, hasCircleInHand, focused_piece, robbedBoard);
+						var candidatesYellow = A3($author$project$Main$getCandidatesYellow, hasCircleInHand, focused_piece, robbedBoard);
 						return _Utils_ap(
 							A2(
 								$elm$core$List$map,
@@ -6746,11 +6747,11 @@ var $author$project$Main$view = function (modl) {
 									$elm$core$List$map,
 									function (coord) {
 										return A2(
-											$author$project$Main$goalCandidateSvg,
+											$author$project$Main$goalCandidateYellowSvg,
 											$author$project$Main$MovementToward(coord),
 											coord);
 									},
-									candidates),
+									candidatesYellow),
 								_Utils_ap(
 									A2(
 										$elm$core$List$indexedMap,
@@ -6786,7 +6787,7 @@ var $author$project$Main$view = function (modl) {
 								$elm$core$List$map,
 								function (coord) {
 									return A2(
-										$author$project$Main$goalCandidateSvg,
+										$author$project$Main$goalCandidateYellowSvg,
 										$author$project$Main$MovementToward(coord),
 										coord);
 								},
@@ -7002,7 +7003,7 @@ var $author$project$Main$view = function (modl) {
 						return remaining.rimaHand;
 					}
 				}());
-			var candidates = A4($author$project$Main$getCandidatesWithCommand, command, hasCircleInHand, mover, remaining.board);
+			var candidatesYellow = A4($author$project$Main$getCandidatesYellowWithCommand, command, hasCircleInHand, mover, remaining.board);
 			var dynamicPart = _Utils_ap(
 				A2(
 					$elm$core$List$map,
@@ -7013,11 +7014,11 @@ var $author$project$Main$view = function (modl) {
 						$elm$core$List$map,
 						function (coord) {
 							return A2(
-								$author$project$Main$goalCandidateSvg,
+								$author$project$Main$goalCandidateYellowSvg,
 								$author$project$Main$MovementToward(coord),
 								coord);
 						},
-						candidates),
+						candidatesYellow),
 					_Utils_ap(
 						A2(
 							$elm$core$List$indexedMap,

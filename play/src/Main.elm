@@ -376,8 +376,8 @@ glyph profession color =
             glyph HorizontalVertical color ++ glyph Diagonal color ++ glyph Circle color
 
 
-goalCandidateSvg : Msg -> Coordinate -> Svg Msg
-goalCandidateSvg msgToBeSent coord =
+goalCandidateYellowSvg : Msg -> Coordinate -> Svg Msg
+goalCandidateYellowSvg msgToBeSent coord =
     g
         [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")")
         , Svg.Events.onClick msgToBeSent
@@ -636,29 +636,33 @@ robFocusedPieceFromBoard coord board =
             Nothing
 
 
-getCandidates : Bool -> PieceOnBoard -> List PieceOnBoard -> List Coordinate
-getCandidates hasCircleInHand piece robbedBoard =
-    getCandidates_ piece
+getCandidatesYellow : Bool -> PieceOnBoard -> List PieceOnBoard -> List Coordinate
+getCandidatesYellow hasCircleInHand piece robbedBoard =
+    getCandidatesYellow_ piece
         hasCircleInHand
         robbedBoard
-        (case piece.prof of
-            Circle ->
-                [ piece.coord ]
-
-            HorizontalVertical ->
-                List.concatMap (addDelta piece.coord) [ ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ) ]
-
-            Diagonal ->
-                List.concatMap (addDelta piece.coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
-
-            All ->
-                List.concatMap (addDelta piece.coord)
-                    [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ), ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ), ( 0, 0 ) ]
-        )
+        (rawCandidates piece.prof piece.coord)
 
 
-getCandidates_ : PieceOnBoard -> Bool -> List PieceOnBoard -> List Coordinate -> List Coordinate
-getCandidates_ piece hasCircleInHand robbedBoard raw_candidates =
+rawCandidates : Profession -> Coordinate -> List Coordinate
+rawCandidates prof coord =
+    case prof of
+        Circle ->
+            [ coord ]
+
+        HorizontalVertical ->
+            List.concatMap (addDelta coord) [ ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ) ]
+
+        Diagonal ->
+            List.concatMap (addDelta coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
+
+        All ->
+            List.concatMap (addDelta coord)
+                [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ), ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ), ( 0, 0 ) ]
+
+
+getCandidatesYellow_ : PieceOnBoard -> Bool -> List PieceOnBoard -> List Coordinate -> List Coordinate
+getCandidatesYellow_ piece hasCircleInHand robbedBoard raw_candidates =
     let
         ship_positions =
             robbedBoard |> List.filter (\p -> p.pieceColor == Ship) |> List.map .coord
@@ -688,9 +692,9 @@ getCandidates_ piece hasCircleInHand robbedBoard raw_candidates =
                     ++ List.filter (\coord -> List.member coord ship_positions) raw_candidates
 
 
-getCandidatesWithCommand : MoveCommand -> Bool -> PieceOnBoard -> List PieceOnBoard -> List Coordinate
-getCandidatesWithCommand moveCommand hasCircleInHand piece robbedBoard =
-    getCandidates_ piece
+getCandidatesYellowWithCommand : MoveCommand -> Bool -> PieceOnBoard -> List PieceOnBoard -> List Coordinate
+getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
+    getCandidatesYellow_ piece
         hasCircleInHand
         robbedBoard
         (case moveCommand of
@@ -777,14 +781,14 @@ view modl =
                                                         cardState.rimaHand
                                                 )
 
-                                        candidates =
-                                            getCandidates hasCircleInHand focused_piece robbedBoard
+                                        candidatesYellow =
+                                            getCandidatesYellow hasCircleInHand focused_piece robbedBoard
                                     in
                                     List.map
                                         (\piece -> pieceSvgOnGrid (piece.coord == focus_coord) None piece)
                                         cardState.board
-                                        ++ (candidates
-                                                |> List.map (\coord -> goalCandidateSvg (MovementToward coord) coord)
+                                        ++ (candidatesYellow
+                                                |> List.map (\coord -> goalCandidateYellowSvg (MovementToward coord) coord)
                                            )
                                         ++ List.indexedMap
                                             (\i prof ->
@@ -800,7 +804,7 @@ view modl =
                         _ ->
                             List.map (pieceSvgOnGrid False None) cardState.board
                                 ++ (neitherOccupiedNorWater cardState.board
-                                        |> List.map (\coord -> goalCandidateSvg (MovementToward coord) coord)
+                                        |> List.map (\coord -> goalCandidateYellowSvg (MovementToward coord) coord)
                                    )
                                 ++ List.indexedMap
                                     (\i prof ->
@@ -917,15 +921,15 @@ view modl =
                                 remaining.rimaHand
                         )
 
-                candidates =
-                    getCandidatesWithCommand command hasCircleInHand mover remaining.board
+                candidatesYellow =
+                    getCandidatesYellowWithCommand command hasCircleInHand mover remaining.board
 
                 dynamicPart =
                     List.map
                         (pieceSvgOnGrid False None)
                         remaining.board
-                        ++ (candidates
-                                |> List.map (\coord -> goalCandidateSvg (MovementToward coord) coord)
+                        ++ (candidatesYellow
+                                |> List.map (\coord -> goalCandidateYellowSvg (MovementToward coord) coord)
                            )
                         ++ List.indexedMap (\i prof -> pieceSvg False None (keseHandPos i prof)) remaining.keseHand
                         ++ List.indexedMap (\i prof -> pieceSvg False None (rimaHandPos i prof)) remaining.rimaHand
