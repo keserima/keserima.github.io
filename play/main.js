@@ -5825,7 +5825,6 @@ var $author$project$Main$clickableButtonOnTrashBinSvg = F2(
 					_List_Nil)
 				]));
 	});
-var $elm$html$Html$div = _VirtualDom_node('div');
 var $author$project$Main$addDelta = F2(
 	function (coord, _v0) {
 		var deltaX = _v0.a;
@@ -6521,6 +6520,53 @@ var $author$project$Main$playerSvg = F3(
 	});
 var $elm$svg$Svg$Attributes$result = _VirtualDom_attribute('result');
 var $elm$svg$Svg$Attributes$stdDeviation = _VirtualDom_attribute('stdDeviation');
+var $author$project$Main$stationaryPart = function (cardState) {
+	return A2(
+		$elm$core$List$cons,
+		A2(
+			$elm$svg$Svg$defs,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$svg$Svg$filter,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$style('color-interpolation-filters:sRGB'),
+							$elm$svg$Svg$Attributes$id('blur')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$svg$Svg$feGaussianBlur,
+							_List_fromArray(
+								[
+									$elm$svg$Svg$Attributes$stdDeviation('1.5 1.5'),
+									$elm$svg$Svg$Attributes$result('blur')
+								]),
+							_List_Nil)
+						]))
+				])),
+		_Utils_ap(
+			$author$project$Main$boardSvg,
+			_Utils_ap(
+				$author$project$Main$displayCapturedCardsAndTwoDecks(cardState),
+				_List_fromArray(
+					[
+						A3(
+						$author$project$Main$playerSvg,
+						'rimaPlayer',
+						_Utils_eq($author$project$Main$RimaTurn, cardState.whoseTurn),
+						$author$project$Main$RimaTurn),
+						A3(
+						$author$project$Main$playerSvg,
+						'kesePlayer',
+						_Utils_eq($author$project$Main$KeseTurn, cardState.whoseTurn),
+						$author$project$Main$KeseTurn)
+					]))));
+};
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Main$trashBinSvg = function (o) {
 	return A2(
 		$elm$svg$Svg$g,
@@ -6548,148 +6594,115 @@ var $author$project$Main$trashBinSvg = function (o) {
 				_List_Nil)
 			]));
 };
-var $author$project$Main$stationaryPart = F2(
-	function (trashBinFocus, cardState) {
+var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
+	return _List_fromArray(
+		[
+			$author$project$Main$trashBinSvg(
+			{
+				color: function () {
+					if ((trashBinFocus.$ === 'Just') && (trashBinFocus.a.$ === 'KeseTurn')) {
+						var _v1 = trashBinFocus.a;
+						return '#555';
+					} else {
+						return '#eee';
+					}
+				}(),
+				transform: 'translate(530 560) scale(0.2)'
+			}),
+			$author$project$Main$trashBinSvg(
+			{
+				color: function () {
+					if ((trashBinFocus.$ === 'Just') && (trashBinFocus.a.$ === 'RimaTurn')) {
+						var _v3 = trashBinFocus.a;
+						return '#555';
+					} else {
+						return '#eee';
+					}
+				}(),
+				transform: 'translate(530 -150) scale(0.2)'
+			})
+		]);
+};
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
+var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
+var $author$project$Main$view_ = F2(
+	function (svgContent, buttons) {
 		return A2(
-			$elm$core$List$cons,
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
+				]),
 			A2(
-				$elm$svg$Svg$defs,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$svg$Svg$filter,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Attributes$style('color-interpolation-filters:sRGB'),
-								$elm$svg$Svg$Attributes$id('blur')
-							]),
-						_List_fromArray(
-							[
-								A2(
-								$elm$svg$Svg$feGaussianBlur,
-								_List_fromArray(
-									[
-										$elm$svg$Svg$Attributes$stdDeviation('1.5 1.5'),
-										$elm$svg$Svg$Attributes$result('blur')
-									]),
-								_List_Nil)
-							]))
-					])),
-			_Utils_ap(
-				$author$project$Main$boardSvg,
-				_Utils_ap(
-					$author$project$Main$displayCapturedCardsAndTwoDecks(cardState),
+				$elm$core$List$cons,
+				A2(
+					$elm$svg$Svg$svg,
 					_List_fromArray(
 						[
-							A3(
-							$author$project$Main$playerSvg,
-							'rimaPlayer',
-							_Utils_eq($author$project$Main$RimaTurn, cardState.whoseTurn),
-							$author$project$Main$RimaTurn),
-							A3(
-							$author$project$Main$playerSvg,
-							'kesePlayer',
-							_Utils_eq($author$project$Main$KeseTurn, cardState.whoseTurn),
-							$author$project$Main$KeseTurn),
-							$author$project$Main$trashBinSvg(
-							{
-								color: function () {
-									if ((trashBinFocus.$ === 'Just') && (trashBinFocus.a.$ === 'KeseTurn')) {
-										var _v1 = trashBinFocus.a;
-										return '#555';
-									} else {
-										return '#eee';
-									}
-								}(),
-								transform: 'translate(530 560) scale(0.2)'
-							}),
-							$author$project$Main$trashBinSvg(
-							{
-								color: function () {
-									if ((trashBinFocus.$ === 'Just') && (trashBinFocus.a.$ === 'RimaTurn')) {
-										var _v3 = trashBinFocus.a;
-										return '#555';
-									} else {
-										return '#eee';
-									}
-								}(),
-								transform: 'translate(530 -150) scale(0.2)'
-							})
-						]))));
+							$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
+							$elm$svg$Svg$Attributes$width('600')
+						]),
+					svgContent),
+				buttons));
 	});
-var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
 var $author$project$Main$view = function (modl) {
 	switch (modl.$) {
 		case 'NothingSelected':
 			var cardState = modl.a;
 			return A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$svg$Svg$svg,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
-								$elm$svg$Svg$Attributes$width('600')
-							]),
+				$author$project$Main$view_,
+				_Utils_ap(
+					$author$project$Main$stationaryPart(cardState),
+					_Utils_ap(
+						$author$project$Main$twoTrashBinsSvg($elm$core$Maybe$Nothing),
 						_Utils_ap(
-							A2($author$project$Main$stationaryPart, $elm$core$Maybe$Nothing, cardState),
+							A2(
+								$elm$core$List$map,
+								function (_v1) {
+									var coord = _v1.coord;
+									var prof = _v1.prof;
+									var pieceColor = _v1.pieceColor;
+									return A3(
+										$author$project$Main$pieceSvg,
+										false,
+										(_Utils_eq(pieceColor, $author$project$Main$Ship) || _Utils_eq(
+											pieceColor,
+											$author$project$Main$toColor(cardState.whoseTurn))) ? $author$project$Main$GiveFocusTo(
+											$author$project$Main$PieceOnTheBoard(coord)) : $author$project$Main$None,
+										{
+											coord: {x: coord.x, y: coord.y},
+											pieceColor: pieceColor,
+											prof: prof
+										});
+								},
+								cardState.board),
 							_Utils_ap(
 								A2(
-									$elm$core$List$map,
-									function (_v1) {
-										var coord = _v1.coord;
-										var prof = _v1.prof;
-										var pieceColor = _v1.pieceColor;
-										return A3(
-											$author$project$Main$pieceSvg,
-											false,
-											(_Utils_eq(pieceColor, $author$project$Main$Ship) || _Utils_eq(
-												pieceColor,
-												$author$project$Main$toColor(cardState.whoseTurn))) ? $author$project$Main$GiveFocusTo(
-												$author$project$Main$PieceOnTheBoard(coord)) : $author$project$Main$None,
-											{
-												coord: {x: coord.x, y: coord.y},
-												pieceColor: pieceColor,
-												prof: prof
-											});
-									},
-									cardState.board),
-								_Utils_ap(
-									A2(
-										$elm$core$List$indexedMap,
-										F2(
-											function (i, prof) {
-												return A3(
-													$author$project$Main$pieceSvg,
-													false,
-													_Utils_eq(cardState.whoseTurn, $author$project$Main$KeseTurn) ? $author$project$Main$GiveFocusTo(
-														$author$project$Main$PieceInKeseHand(i)) : $author$project$Main$None,
-													A2($author$project$Main$keseHandPos, i, prof));
-											}),
-										cardState.keseHand),
-									A2(
-										$elm$core$List$indexedMap,
-										F2(
-											function (i, prof) {
-												return A3(
-													$author$project$Main$pieceSvg,
-													false,
-													_Utils_eq(cardState.whoseTurn, $author$project$Main$RimaTurn) ? $author$project$Main$GiveFocusTo(
-														$author$project$Main$PieceInRimaHand(i)) : $author$project$Main$None,
-													A2($author$project$Main$rimaHandPos, i, prof));
-											}),
-										cardState.rimaHand)))))
-					]));
+									$elm$core$List$indexedMap,
+									F2(
+										function (i, prof) {
+											return A3(
+												$author$project$Main$pieceSvg,
+												false,
+												_Utils_eq(cardState.whoseTurn, $author$project$Main$KeseTurn) ? $author$project$Main$GiveFocusTo(
+													$author$project$Main$PieceInKeseHand(i)) : $author$project$Main$None,
+												A2($author$project$Main$keseHandPos, i, prof));
+										}),
+									cardState.keseHand),
+								A2(
+									$elm$core$List$indexedMap,
+									F2(
+										function (i, prof) {
+											return A3(
+												$author$project$Main$pieceSvg,
+												false,
+												_Utils_eq(cardState.whoseTurn, $author$project$Main$RimaTurn) ? $author$project$Main$GiveFocusTo(
+													$author$project$Main$PieceInRimaHand(i)) : $author$project$Main$None,
+												A2($author$project$Main$rimaHandPos, i, prof));
+										}),
+									cardState.rimaHand))))),
+				_List_Nil);
 		case 'MoverIsSelected':
 			var focus = modl.a;
 			var cardState = modl.b;
@@ -6837,23 +6850,14 @@ var $author$project$Main$view = function (modl) {
 				}
 			}();
 			return A2(
-				$elm$html$Html$div,
+				$author$project$Main$view_,
+				_Utils_ap(
+					$author$project$Main$stationaryPart(cardState),
+					_Utils_ap(
+						$author$project$Main$twoTrashBinsSvg($elm$core$Maybe$Nothing),
+						dynamicPart)),
 				_List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$svg$Svg$svg,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
-								$elm$svg$Svg$Attributes$width('600')
-							]),
-						_Utils_ap(
-							A2($author$project$Main$stationaryPart, $elm$core$Maybe$Nothing, cardState),
-							dynamicPart)),
 						A2(
 						$elm$html$Html$button,
 						_List_fromArray(
@@ -6895,37 +6899,41 @@ var $author$project$Main$view = function (modl) {
 				}
 			}();
 			return A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$svg$Svg$svg,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
-								$elm$svg$Svg$Attributes$width('600')
-							]),
+				$author$project$Main$view_,
+				_Utils_ap(
+					$author$project$Main$stationaryPart(remaining),
+					_Utils_ap(
+						$author$project$Main$twoTrashBinsSvg($elm$core$Maybe$Nothing),
 						_Utils_ap(
-							A2($author$project$Main$stationaryPart, $elm$core$Maybe$Nothing, remaining),
+							A2(
+								$elm$core$List$map,
+								function (piece) {
+									return A3(
+										$author$project$Main$pieceSvg,
+										false,
+										$author$project$Main$None,
+										{
+											coord: {x: piece.coord.x, y: piece.coord.y},
+											pieceColor: piece.pieceColor,
+											prof: piece.prof
+										});
+								},
+								remaining.board),
 							_Utils_ap(
 								A2(
-									$elm$core$List$map,
-									function (piece) {
-										return A3(
-											$author$project$Main$pieceSvg,
-											false,
-											$author$project$Main$None,
-											{
-												coord: {x: piece.coord.x, y: piece.coord.y},
-												pieceColor: piece.pieceColor,
-												prof: piece.prof
-											});
-									},
-									remaining.board),
+									$elm$core$List$indexedMap,
+									F2(
+										function (i, prof) {
+											return A3(
+												$author$project$Main$pieceSvg,
+												false,
+												(_Utils_eq(remaining.whoseTurn, $author$project$Main$KeseTurn) && _Utils_eq(
+													isSacrificingCircleRequired,
+													_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
+													{index: i, whoseHand: $author$project$Main$KeseTurn}) : $author$project$Main$None,
+												A2($author$project$Main$keseHandPos, i, prof));
+										}),
+									remaining.keseHand),
 								_Utils_ap(
 									A2(
 										$elm$core$List$indexedMap,
@@ -6934,37 +6942,24 @@ var $author$project$Main$view = function (modl) {
 												return A3(
 													$author$project$Main$pieceSvg,
 													false,
-													(_Utils_eq(remaining.whoseTurn, $author$project$Main$KeseTurn) && _Utils_eq(
+													(_Utils_eq(remaining.whoseTurn, $author$project$Main$RimaTurn) && _Utils_eq(
 														isSacrificingCircleRequired,
 														_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
-														{index: i, whoseHand: $author$project$Main$KeseTurn}) : $author$project$Main$None,
-													A2($author$project$Main$keseHandPos, i, prof));
+														{index: i, whoseHand: $author$project$Main$RimaTurn}) : $author$project$Main$None,
+													A2($author$project$Main$rimaHandPos, i, prof));
 											}),
-										remaining.keseHand),
-									_Utils_ap(
-										A2(
-											$elm$core$List$indexedMap,
-											F2(
-												function (i, prof) {
-													return A3(
-														$author$project$Main$pieceSvg,
-														false,
-														(_Utils_eq(remaining.whoseTurn, $author$project$Main$RimaTurn) && _Utils_eq(
-															isSacrificingCircleRequired,
-															_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
-															{index: i, whoseHand: $author$project$Main$RimaTurn}) : $author$project$Main$None,
-														A2($author$project$Main$rimaHandPos, i, prof));
-												}),
-											remaining.rimaHand),
-										_List_fromArray(
-											[
-												$author$project$Main$pieceWaitingForAdditionalCommandSvg(
-												{
-													coord: {x: mover.coord.x, y: mover.coord.y},
-													pieceColor: mover.pieceColor,
-													prof: mover.prof
-												})
-											])))))),
+										remaining.rimaHand),
+									_List_fromArray(
+										[
+											$author$project$Main$pieceWaitingForAdditionalCommandSvg(
+											{
+												coord: {x: mover.coord.x, y: mover.coord.y},
+												pieceColor: mover.pieceColor,
+												prof: mover.prof
+											})
+										])))))),
+				_List_fromArray(
+					[
 						A2(
 						$elm$html$Html$button,
 						_List_fromArray(
@@ -6982,40 +6977,39 @@ var $author$project$Main$view = function (modl) {
 			var whoseHand = modl.a.whoseHand;
 			var index = modl.a.index;
 			return A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$svg$Svg$svg,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
-								$elm$svg$Svg$Attributes$width('600')
-							]),
+				$author$project$Main$view_,
+				_Utils_ap(
+					$author$project$Main$stationaryPart(remaining),
+					_Utils_ap(
+						$author$project$Main$twoTrashBinsSvg(
+							$elm$core$Maybe$Just(whoseHand)),
 						_Utils_ap(
 							A2(
-								$author$project$Main$stationaryPart,
-								$elm$core$Maybe$Just(whoseHand),
-								remaining),
+								$elm$core$List$map,
+								function (piece) {
+									return A3(
+										$author$project$Main$pieceSvg,
+										false,
+										$author$project$Main$None,
+										{
+											coord: {x: piece.coord.x, y: piece.coord.y},
+											pieceColor: piece.pieceColor,
+											prof: piece.prof
+										});
+								},
+								remaining.board),
 							_Utils_ap(
 								A2(
-									$elm$core$List$map,
-									function (piece) {
-										return A3(
-											$author$project$Main$pieceSvg,
-											false,
-											$author$project$Main$None,
-											{
-												coord: {x: piece.coord.x, y: piece.coord.y},
-												pieceColor: piece.pieceColor,
-												prof: piece.prof
-											});
-									},
-									remaining.board),
+									$elm$core$List$indexedMap,
+									F2(
+										function (i, prof) {
+											return A3(
+												$author$project$Main$pieceSvg,
+												_Utils_eq(whoseHand, $author$project$Main$KeseTurn) && _Utils_eq(i, index),
+												$author$project$Main$None,
+												A2($author$project$Main$keseHandPos, i, prof));
+										}),
+									remaining.keseHand),
 								_Utils_ap(
 									A2(
 										$elm$core$List$indexedMap,
@@ -7023,34 +7017,22 @@ var $author$project$Main$view = function (modl) {
 											function (i, prof) {
 												return A3(
 													$author$project$Main$pieceSvg,
-													_Utils_eq(whoseHand, $author$project$Main$KeseTurn) && _Utils_eq(i, index),
+													_Utils_eq(whoseHand, $author$project$Main$RimaTurn) && _Utils_eq(i, index),
 													$author$project$Main$None,
-													A2($author$project$Main$keseHandPos, i, prof));
+													A2($author$project$Main$rimaHandPos, i, prof));
 											}),
-										remaining.keseHand),
-									_Utils_ap(
-										A2(
-											$elm$core$List$indexedMap,
-											F2(
-												function (i, prof) {
-													return A3(
-														$author$project$Main$pieceSvg,
-														_Utils_eq(whoseHand, $author$project$Main$RimaTurn) && _Utils_eq(i, index),
-														$author$project$Main$None,
-														A2($author$project$Main$rimaHandPos, i, prof));
-												}),
-											remaining.rimaHand),
-										_List_fromArray(
-											[
-												A2($author$project$Main$clickableButtonOnTrashBinSvg, whoseHand, $author$project$Main$SendToTrashBinPart2),
-												$author$project$Main$pieceWaitingForAdditionalCommandSvg(
-												{
-													coord: {x: mover.coord.x, y: mover.coord.y},
-													pieceColor: mover.pieceColor,
-													prof: mover.prof
-												})
-											]))))))
-					]));
+										remaining.rimaHand),
+									_List_fromArray(
+										[
+											A2($author$project$Main$clickableButtonOnTrashBinSvg, whoseHand, $author$project$Main$SendToTrashBinPart2),
+											$author$project$Main$pieceWaitingForAdditionalCommandSvg(
+											{
+												coord: {x: mover.coord.x, y: mover.coord.y},
+												pieceColor: mover.pieceColor,
+												prof: mover.prof
+											})
+										])))))),
+				_List_Nil);
 		case 'AfterSacrifice':
 			var command = modl.a;
 			var mover = modl.b.mover;
@@ -7126,59 +7108,50 @@ var $author$project$Main$view = function (modl) {
 									})
 								])))));
 			return A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$svg$Svg$svg,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
-								$elm$svg$Svg$Attributes$width('600')
-							]),
-						_Utils_ap(
-							A2($author$project$Main$stationaryPart, $elm$core$Maybe$Nothing, remaining),
-							dynamicPart))
-					]));
+				$author$project$Main$view_,
+				_Utils_ap(
+					$author$project$Main$stationaryPart(remaining),
+					_Utils_ap(
+						$author$project$Main$twoTrashBinsSvg($elm$core$Maybe$Nothing),
+						dynamicPart)),
+				_List_Nil);
 		default:
 			var mover = modl.a.mover;
 			var remaining = modl.a.remaining;
 			return A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$svg$Svg$svg,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
-								$elm$svg$Svg$Attributes$width('600')
-							]),
+				$author$project$Main$view_,
+				_Utils_ap(
+					$author$project$Main$stationaryPart(remaining),
+					_Utils_ap(
+						$author$project$Main$twoTrashBinsSvg($elm$core$Maybe$Nothing),
 						_Utils_ap(
-							A2($author$project$Main$stationaryPart, $elm$core$Maybe$Nothing, remaining),
+							A2(
+								$elm$core$List$map,
+								function (piece) {
+									return A3(
+										$author$project$Main$pieceSvg,
+										false,
+										$author$project$Main$None,
+										{
+											coord: {x: piece.coord.x, y: piece.coord.y},
+											pieceColor: piece.pieceColor,
+											prof: piece.prof
+										});
+								},
+								remaining.board),
 							_Utils_ap(
 								A2(
-									$elm$core$List$map,
-									function (piece) {
-										return A3(
-											$author$project$Main$pieceSvg,
-											false,
-											$author$project$Main$None,
-											{
-												coord: {x: piece.coord.x, y: piece.coord.y},
-												pieceColor: piece.pieceColor,
-												prof: piece.prof
-											});
-									},
-									remaining.board),
+									$elm$core$List$indexedMap,
+									F2(
+										function (i, prof) {
+											return A3(
+												$author$project$Main$pieceSvg,
+												false,
+												(_Utils_eq(remaining.whoseTurn, $author$project$Main$KeseTurn) && (!_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
+													{index: i, whoseHand: $author$project$Main$KeseTurn}) : $author$project$Main$None,
+												A2($author$project$Main$keseHandPos, i, prof));
+										}),
+									remaining.keseHand),
 								_Utils_ap(
 									A2(
 										$elm$core$List$indexedMap,
@@ -7187,34 +7160,21 @@ var $author$project$Main$view = function (modl) {
 												return A3(
 													$author$project$Main$pieceSvg,
 													false,
-													(_Utils_eq(remaining.whoseTurn, $author$project$Main$KeseTurn) && (!_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
-														{index: i, whoseHand: $author$project$Main$KeseTurn}) : $author$project$Main$None,
-													A2($author$project$Main$keseHandPos, i, prof));
+													(_Utils_eq(remaining.whoseTurn, $author$project$Main$RimaTurn) && (!_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
+														{index: i, whoseHand: $author$project$Main$RimaTurn}) : $author$project$Main$None,
+													A2($author$project$Main$rimaHandPos, i, prof));
 											}),
-										remaining.keseHand),
-									_Utils_ap(
-										A2(
-											$elm$core$List$indexedMap,
-											F2(
-												function (i, prof) {
-													return A3(
-														$author$project$Main$pieceSvg,
-														false,
-														(_Utils_eq(remaining.whoseTurn, $author$project$Main$RimaTurn) && (!_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
-															{index: i, whoseHand: $author$project$Main$RimaTurn}) : $author$project$Main$None,
-														A2($author$project$Main$rimaHandPos, i, prof));
-												}),
-											remaining.rimaHand),
-										_List_fromArray(
-											[
-												$author$project$Main$pieceWaitingForAdditionalCommandSvg(
-												{
-													coord: {x: mover.coord.x, y: mover.coord.y},
-													pieceColor: mover.pieceColor,
-													prof: mover.prof
-												})
-											]))))))
-					]));
+										remaining.rimaHand),
+									_List_fromArray(
+										[
+											$author$project$Main$pieceWaitingForAdditionalCommandSvg(
+											{
+												coord: {x: mover.coord.x, y: mover.coord.y},
+												pieceColor: mover.pieceColor,
+												prof: mover.prof
+											})
+										])))))),
+				_List_Nil);
 	}
 };
 var $author$project$Main$main = $elm$browser$Browser$element(

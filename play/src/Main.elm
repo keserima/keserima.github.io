@@ -533,8 +533,8 @@ displayCapturedCardsAndTwoDecks model =
     ]
 
 
-stationaryPart : Maybe WhoseTurn -> StateOfCards -> List (Svg Msg)
-stationaryPart trashBinFocus cardState =
+stationaryPart : StateOfCards -> List (Svg Msg)
+stationaryPart cardState =
     defs []
         [ Svg.filter [ Svg.Attributes.style "color-interpolation-filters:sRGB", id "blur" ]
             [ feGaussianBlur [ stdDeviation "1.5 1.5", result "blur" ] []
@@ -544,27 +544,32 @@ stationaryPart trashBinFocus cardState =
         ++ displayCapturedCardsAndTwoDecks cardState
         ++ [ playerSvg "rimaPlayer" (RimaTurn == cardState.whoseTurn) RimaTurn
            , playerSvg "kesePlayer" (KeseTurn == cardState.whoseTurn) KeseTurn
-           , trashBinSvg
-                { transform = "translate(530 560) scale(0.2)"
-                , color =
-                    case trashBinFocus of
-                        Just KeseTurn ->
-                            "#555"
-
-                        _ ->
-                            "#eee"
-                }
-           , trashBinSvg
-                { transform = "translate(530 -150) scale(0.2)"
-                , color =
-                    case trashBinFocus of
-                        Just RimaTurn ->
-                            "#555"
-
-                        _ ->
-                            "#eee"
-                }
            ]
+
+
+twoTrashBinsSvg : Maybe WhoseTurn -> List (Svg msg)
+twoTrashBinsSvg trashBinFocus =
+    [ trashBinSvg
+        { transform = "translate(530 560) scale(0.2)"
+        , color =
+            case trashBinFocus of
+                Just KeseTurn ->
+                    "#555"
+
+                _ ->
+                    "#eee"
+        }
+    , trashBinSvg
+        { transform = "translate(530 -150) scale(0.2)"
+        , color =
+            case trashBinFocus of
+                Just RimaTurn ->
+                    "#555"
+
+                _ ->
+                    "#eee"
+        }
+    ]
 
 
 trashBinSvg : { a | transform : String, color : String } -> Svg msg
@@ -727,7 +732,8 @@ view modl =
     case modl of
         NothingSelected cardState ->
             view_
-                (stationaryPart Nothing cardState
+                (stationaryPart cardState
+                    ++ twoTrashBinsSvg Nothing
                     ++ List.map
                         (\{ coord, prof, pieceColor } ->
                             { coord = { x = toFloat coord.x, y = toFloat coord.y }, prof = prof, pieceColor = pieceColor }
@@ -845,7 +851,7 @@ view modl =
                                     cardState.rimaHand
             in
             view_
-                (stationaryPart Nothing cardState ++ dynamicPart)
+                (stationaryPart cardState ++ twoTrashBinsSvg Nothing ++ dynamicPart)
                 [ Html.button [ onClick Cancel ] [ text "キャンセル" ] ]
 
         NowWaitingForAdditionalSacrifice { mover, remaining } ->
@@ -868,7 +874,8 @@ view modl =
                                     True
             in
             view_
-                (stationaryPart Nothing remaining
+                (stationaryPart remaining
+                    ++ twoTrashBinsSvg Nothing
                     ++ List.map
                         (\piece ->
                             { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
@@ -906,7 +913,8 @@ view modl =
 
         WaitForTrashBinClick { mover, remaining, whoseHand, index } ->
             view_
-                (stationaryPart (Just whoseHand) remaining
+                (stationaryPart remaining
+                    ++ twoTrashBinsSvg (Just whoseHand)
                     ++ List.map
                         (\piece ->
                             { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
@@ -963,11 +971,12 @@ view modl =
                         ++ List.indexedMap (\i prof -> pieceSvg False None (rimaHandPos i prof)) remaining.rimaHand
                         ++ [ pieceWaitingForAdditionalCommandSvg { coord = { x = toFloat mover.coord.x, y = toFloat mover.coord.y }, prof = mover.prof, pieceColor = mover.pieceColor } ]
             in
-            view_ (stationaryPart Nothing remaining ++ dynamicPart) []
+            view_ (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) []
 
         AfterCircleSacrifice { mover, remaining } ->
             view_
-                (stationaryPart Nothing remaining
+                (stationaryPart remaining
+                    ++ twoTrashBinsSvg Nothing
                     ++ List.map
                         (\piece ->
                             { coord = { x = toFloat piece.coord.x, y = toFloat piece.coord.y }, prof = piece.prof, pieceColor = piece.pieceColor }
