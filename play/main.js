@@ -4355,7 +4355,24 @@ function _Browser_load(url)
 		}
 	}));
 }
-var $elm$core$List$cons = _List_cons;
+
+
+function _Url_percentEncode(string)
+{
+	return encodeURIComponent(string);
+}
+
+function _Url_percentDecode(string)
+{
+	try
+	{
+		return $elm$core$Maybe$Just(decodeURIComponent(string));
+	}
+	catch (e)
+	{
+		return $elm$core$Maybe$Nothing;
+	}
+}var $elm$core$List$cons = _List_cons;
 var $elm$core$Elm$JsArray$foldr = _JsArray_foldr;
 var $elm$core$Array$foldr = F3(
 	function (func, baseCase, _v0) {
@@ -7114,6 +7131,7 @@ var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 				]))
 		]);
 };
+var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$html$Html$br = _VirtualDom_node('br');
 var $elm$html$Html$Attributes$cols = function (n) {
 	return A2(
@@ -7121,7 +7139,40 @@ var $elm$html$Html$Attributes$cols = function (n) {
 		'cols',
 		$elm$core$String$fromInt(n));
 };
+var $elm$url$Url$Builder$toQueryPair = function (_v0) {
+	var key = _v0.a;
+	var value = _v0.b;
+	return key + ('=' + value);
+};
+var $elm$url$Url$Builder$toQuery = function (parameters) {
+	if (!parameters.b) {
+		return '';
+	} else {
+		return '?' + A2(
+			$elm$core$String$join,
+			'&',
+			A2($elm$core$List$map, $elm$url$Url$Builder$toQueryPair, parameters));
+	}
+};
+var $elm$url$Url$Builder$crossOrigin = F3(
+	function (prePath, pathSegments, parameters) {
+		return prePath + ('/' + (A2($elm$core$String$join, '/', pathSegments) + $elm$url$Url$Builder$toQuery(parameters)));
+	});
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
 var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -7137,7 +7188,20 @@ var $elm$html$Html$Attributes$rows = function (n) {
 		'rows',
 		$elm$core$String$fromInt(n));
 };
+var $elm$url$Url$Builder$QueryParameter = F2(
+	function (a, b) {
+		return {$: 'QueryParameter', a: a, b: b};
+	});
+var $elm$url$Url$percentEncode = _Url_percentEncode;
+var $elm$url$Url$Builder$string = F2(
+	function (key, value) {
+		return A2(
+			$elm$url$Url$Builder$QueryParameter,
+			$elm$url$Url$percentEncode(key),
+			$elm$url$Url$percentEncode(value));
+	});
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
+var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$textarea = _VirtualDom_node('textarea');
 var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
@@ -7147,35 +7211,80 @@ var $author$project$Main$view_ = F3(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px')
+					A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px'),
+					A2($elm$html$Html$Attributes$style, 'display', 'flex')
 				]),
-			_Utils_ap(
-				_List_fromArray(
-					[
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					A2(
+						$elm$core$List$cons,
 						A2(
-						$elm$svg$Svg$svg,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
-								$elm$svg$Svg$Attributes$width('600')
-							]),
-						svgContent),
+							$elm$svg$Svg$svg,
+							_List_fromArray(
+								[
+									$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
+									$elm$svg$Svg$Attributes$width('600')
+								]),
+							svgContent),
 						A2(
-						$elm$html$Html$textarea,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$rows(20),
-								$elm$html$Html$Attributes$cols(80),
-								$elm$html$Html$Attributes$readonly(true),
-								A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text(history)
-							])),
-						A2($elm$html$Html$br, _List_Nil, _List_Nil)
-					]),
-				buttons));
+							$elm$core$List$cons,
+							A2($elm$html$Html$br, _List_Nil, _List_Nil),
+							buttons))),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$textarea,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$rows(20),
+									$elm$html$Html$Attributes$cols(80),
+									$elm$html$Html$Attributes$readonly(true),
+									A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text(history)
+								])),
+							A2($elm$html$Html$br, _List_Nil, _List_Nil),
+							A2(
+							$elm$html$Html$a,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$target('_blank'),
+									$elm$html$Html$Attributes$href(
+									A3(
+										$elm$url$Url$Builder$crossOrigin,
+										'https://twitter.com',
+										_List_fromArray(
+											['intent', 'tweet']),
+										_List_fromArray(
+											[
+												A2(
+												$elm$url$Url$Builder$string,
+												'text',
+												'架空伝統ゲーム「ケセリマ」(@keserima)を遊びました！ #keserima #ケセリマ\u000D\n' + A3(
+													$elm$url$Url$Builder$crossOrigin,
+													'https://keserima.github.io',
+													_List_fromArray(
+														['playback', 'index.html']),
+													_List_fromArray(
+														[
+															A2($elm$url$Url$Builder$string, 'playback', history)
+														])))
+											])))
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('ここまでの棋譜をツイートする')
+								]))
+						]))
+				]));
 	});
 var $author$project$Main$view = function (_v0) {
 	var history = _v0.a;

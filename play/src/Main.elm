@@ -7,6 +7,7 @@ import List.Extra exposing (filterNot)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (..)
+import Url.Builder
 
 
 type alias Coordinate =
@@ -1026,18 +1027,36 @@ getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
 
 view_ : History -> List (Svg msg) -> List (Html msg) -> Html msg
 view_ history svgContent buttons =
-    Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ] <|
-        [ svg [ viewBox "0 -200 900 900", width "600" ] svgContent
-        , Html.textarea
-            [ Html.Attributes.rows 20
-            , Html.Attributes.cols 80
-            , Html.Attributes.readonly True
-            , Html.Attributes.style "font-family" "monospace"
+    Html.div [ Html.Attributes.style "padding" "0 0 0 20px", Html.Attributes.style "display" "flex" ] <|
+        [ Html.div [] (svg [ viewBox "0 -200 900 900", width "600" ] svgContent :: Html.br [] [] :: buttons)
+        , Html.div []
+            [ Html.textarea
+                [ Html.Attributes.rows 20
+                , Html.Attributes.cols 80
+                , Html.Attributes.readonly True
+                , Html.Attributes.style "font-family" "monospace"
+                ]
+                [ Html.text history ]
+            , Html.br [] []
+            , Html.a
+                [ Html.Attributes.target "_blank"
+                , Html.Attributes.href
+                    (Url.Builder.crossOrigin
+                        "https://twitter.com"
+                        [ "intent", "tweet" ]
+                        [ Url.Builder.string "text"
+                            ("架空伝統ゲーム「ケセリマ」(@keserima)を遊びました！ #keserima #ケセリマ\u{000D}\n"
+                                ++ Url.Builder.crossOrigin "https://keserima.github.io"
+                                    [ "playback", "index.html" ]
+                                    [ Url.Builder.string "playback" history
+                                    ]
+                            )
+                        ]
+                    )
+                ]
+                [ Html.text "ここまでの棋譜をツイートする" ]
             ]
-            [ Html.text history ]
-        , Html.br [] []
         ]
-            ++ buttons
 
 
 allCoordsOccupiedBy : PieceColor -> List PieceOnBoard -> List Coordinate
