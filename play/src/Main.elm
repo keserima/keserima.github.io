@@ -1,48 +1,20 @@
-module Main exposing (CurrentStatus, Msg, init, main, view)
+module Main exposing (init, main, view)
 
 import Browser
 import Html exposing (Html)
 import Html.Attributes
+import KeseRimaTypes exposing (..)
 import List.Extra exposing (filterNot)
 import Regex
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (..)
+import SvgColor exposing (..)
 import Url.Builder exposing (..)
 
 
-type alias Coordinate =
-    { x : Int, y : Int }
-
-
-type alias CoordinateFloat =
-    { x : Float, y : Float }
-
-
-type PieceColor
-    = Kese
-    | Rima
-    | Ship
-
-
-type Profession
-    = HorizontalVertical
-    | Diagonal
-    | Circle
-    | All
-
-
-type WhoseTurn
-    = KeseTurn
-    | RimaTurn
-
-
-type alias PieceOnBoard =
-    { prof : Profession, pieceColor : PieceColor, coord : Coordinate }
-
-
-type alias PieceWithFloatPosition =
-    { prof : Profession, pieceColor : PieceColor, coord : CoordinateFloat }
+type alias Flags =
+    { keseGoesFirst : Bool, keseDice : Bool, rimaDice : Bool, shipDice : Bool, keseDeck : List Int, rimaDeck : List Int }
 
 
 type CurrentStatus
@@ -64,39 +36,6 @@ type CurrentStatus
     | AfterCircleSacrifice FloatingMover
 
 
-type Model
-    = Model History CurrentStatus
-
-
-type alias History =
-    String
-
-
-type alias FloatingMover =
-    { mover : PieceOnBoard, remaining : StateOfCards }
-
-
-type MoveCommand
-    = HorizVert
-    | Diag
-
-
-type alias StateOfCards =
-    { board : List PieceOnBoard
-    , capturedByKese : List Profession
-    , capturedByRima : List Profession
-    , keseDeck : List Profession
-    , rimaDeck : List Profession
-    , keseHand : List Profession
-    , rimaHand : List Profession
-    , whoseTurn : WhoseTurn
-    }
-
-
-type alias Flags =
-    { keseGoesFirst : Bool, keseDice : Bool, rimaDice : Bool, shipDice : Bool, keseDeck : List Int, rimaDeck : List Int }
-
-
 type Msg
     = None
     | Cancel
@@ -107,10 +46,8 @@ type Msg
     | MovementToward Coordinate
 
 
-type Focus
-    = PieceOnTheBoard Coordinate
-    | PieceInKeseHand Int
-    | PieceInRimaHand Int
+type Model
+    = Model History CurrentStatus
 
 
 toColor : WhoseTurn -> PieceColor
@@ -631,37 +568,6 @@ robIth ind list =
     ( xs, newList )
 
 
-isWater : Coordinate -> Bool
-isWater coord =
-    case ( coord.x, coord.y ) of
-        ( 1, 2 ) ->
-            True
-
-        ( 2, 1 ) ->
-            True
-
-        ( 2, 2 ) ->
-            True
-
-        ( 2, 3 ) ->
-            True
-
-        ( 3, 2 ) ->
-            True
-
-        _ ->
-            False
-
-
-boardBackgroundColor : Coordinate -> String
-boardBackgroundColor coord =
-    if isWater coord then
-        "rgb(94, 147, 184)"
-
-    else
-        "#ccc"
-
-
 boardSvg : List (Svg Msg)
 boardSvg =
     [ g [ id "board" ]
@@ -673,7 +579,7 @@ boardSvg =
                     , width "100"
                     , height "100"
                     , fill (boardBackgroundColor coord)
-                    , stroke "#000"
+                    , stroke boardBorderColor
                     , strokeWidth "4"
                     ]
                     []
@@ -694,32 +600,6 @@ allCoord =
                 [ 0, 1, 2, 3, 4 ]
         )
         [ 0, 1, 2, 3, 4 ]
-
-
-backgroundColor : PieceColor -> String
-backgroundColor pieceColor =
-    case pieceColor of
-        Rima ->
-            "rgb(200, 190, 183)"
-
-        Kese ->
-            "rgb(72, 62, 55)"
-
-        Ship ->
-            "rgb(96, 133, 157)"
-
-
-foregroundColor : PieceColor -> String
-foregroundColor pieceColor =
-    case pieceColor of
-        Kese ->
-            "rgb(200, 190, 183)"
-
-        Rima ->
-            "rgb(72, 62, 55)"
-
-        Ship ->
-            "rgb(34, 44, 47)"
 
 
 glyph : Profession -> String -> List (Svg msg)
@@ -754,7 +634,7 @@ goalCandidateYellowSvg msgToBeSent coord =
         , Svg.Events.onClick msgToBeSent
         , Html.Attributes.style "cursor" "pointer"
         ]
-        [ circle [ cx "52", cy "52", r "16", fill "#ffff00" ] [] ]
+        [ circle [ cx "52", cy "52", r "16", fill yellowCandidateColor ] [] ]
 
 
 goalCandidateRedSvg : Msg -> Coordinate -> Svg Msg
@@ -764,7 +644,7 @@ goalCandidateRedSvg msgToBeSent coord =
         , Svg.Events.onClick msgToBeSent
         , Html.Attributes.style "cursor" "pointer"
         ]
-        [ rect [ x "36", y "36", width "32", height "32", fill "#ff0000" ] [] ]
+        [ rect [ x "36", y "36", width "32", height "32", fill redCandidateColor ] [] ]
 
 
 pieceSvgOnGrid : Bool -> Msg -> PieceOnBoard -> Svg Msg
@@ -824,25 +704,12 @@ pieceWaitingForAdditionalCommandSvg p =
             , width "80"
             , height "80"
             , fill (backgroundColor p.pieceColor)
-            , stroke "#ffff00"
+            , stroke floatingPieceBorderColor
             , strokeWidth "2"
             ]
             []
             :: glyph p.prof (foregroundColor p.pieceColor)
         )
-
-
-borderColor : PieceColor -> String
-borderColor c =
-    case c of
-        Rima ->
-            "#005242"
-
-        Kese ->
-            "#00b592"
-
-        Ship ->
-            "#005242"
 
 
 drawUpToThree : List a -> ( List a, List a )
@@ -867,7 +734,7 @@ displayCapturedCardsAndTwoDecks model =
                     , height "80"
                     , fill (backgroundColor Kese)
                     , strokeWidth "1"
-                    , stroke "#eee"
+                    , stroke (strokeColor Kese)
                     ]
                     []
             )
@@ -883,7 +750,7 @@ displayCapturedCardsAndTwoDecks model =
                     , height "80"
                     , fill (backgroundColor Rima)
                     , strokeWidth "1"
-                    , stroke "#000"
+                    , stroke (strokeColor Rima)
                     ]
                     []
             )
@@ -926,21 +793,22 @@ twoTrashBinsSvg trashBinFocus =
 trashBinSvg_ : Bool -> Svg Msg
 trashBinSvg_ clickable =
     let
-        trashBinSvg color =
+        trashBinSvg =
             {- trash bin -}
-            [ Svg.path [ fill color, d "M 0.8 22.4 l 11.8 67.4 c 1 4.4 5 7.4 9.4 7.4 c 0 0 0 0 0 0 h 45.4 c 4.4 0 8.2 -3.2 9.4 -7.4 v 0 l 11.8 -67.4 z m 43.8 11.6 c 1.6 0 2.6 1.2 2.6 2.6 v 43.6 c 0 1.4 -1 2.6 -2.6 2.6 c -1.4 0 -2.6 -1.2 -2.6 -2.6 v -43.6 c 0 -1.4 1.2 -2.6 2.6 -2.6 z m -21 0 c 1.4 0 2.6 1.2 2.6 2.4 l 3.8 43.6 c 0.2 1.4 -0.8 2.6 -2.4 2.8 c -1.4 0 -2.6 -1 -2.8 -2.4 l -3.8 -43.4 c -0.2 -1.6 1 -2.8 2.4 -3 c 0.2 0 0.2 0 0.2 0 z m 42 0 c 0 0 0 0 0.2 0 c 1.4 0.2 2.6 1.4 2.4 3 l -3.8 43.4 c -0.2 1.4 -1.4 2.4 -2.8 2.4 c -1.6 -0.2 -2.6 -1.4 -2.4 -2.8 l 3.8 -43.6 c 0 -1.2 1.2 -2.4 2.6 -2.4 z" ] []
-            , Svg.path [ fill color, d "m 40 0 c -1.4 0 -2.6 1.2 -2.6 2.6 V 6 L 2.6 9 A 3 3 90 0 0 0 12 v 0 v 5.8 H 89.2 v -5.8 v 0 a 3 3 90 0 0 -2.6 -3 l -34.6 -3 V 2.6 c 0 -1.4 -1 -2.6 -2.4 -2.6 z" ] []
+            [ Svg.path [ d "M 0.8 22.4 l 11.8 67.4 c 1 4.4 5 7.4 9.4 7.4 c 0 0 0 0 0 0 h 45.4 c 4.4 0 8.2 -3.2 9.4 -7.4 v 0 l 11.8 -67.4 z m 43.8 11.6 c 1.6 0 2.6 1.2 2.6 2.6 v 43.6 c 0 1.4 -1 2.6 -2.6 2.6 c -1.4 0 -2.6 -1.2 -2.6 -2.6 v -43.6 c 0 -1.4 1.2 -2.6 2.6 -2.6 z m -21 0 c 1.4 0 2.6 1.2 2.6 2.4 l 3.8 43.6 c 0.2 1.4 -0.8 2.6 -2.4 2.8 c -1.4 0 -2.6 -1 -2.8 -2.4 l -3.8 -43.4 c -0.2 -1.6 1 -2.8 2.4 -3 c 0.2 0 0.2 0 0.2 0 z m 42 0 c 0 0 0 0 0.2 0 c 1.4 0.2 2.6 1.4 2.4 3 l -3.8 43.4 c -0.2 1.4 -1.4 2.4 -2.8 2.4 c -1.6 -0.2 -2.6 -1.4 -2.4 -2.8 l 3.8 -43.6 c 0 -1.2 1.2 -2.4 2.6 -2.4 z" ] []
+            , Svg.path [ d "m 40 0 c -1.4 0 -2.6 1.2 -2.6 2.6 V 6 L 2.6 9 A 3 3 90 0 0 0 12 v 0 v 5.8 H 89.2 v -5.8 v 0 a 3 3 90 0 0 -2.6 -3 l -34.6 -3 V 2.6 c 0 -1.4 -1 -2.6 -2.4 -2.6 z" ] []
             ]
     in
     if clickable then
         g
             [ Svg.Events.onClick SendToTrashBinPart2
             , Html.Attributes.style "cursor" "pointer"
+            , fill (trashBinColor clickable)
             ]
-            (trashBinSvg "#555" ++ [ circle [ cx "45", cy "55", r "16", fill "#ffff00" ] [] ])
+            (trashBinSvg ++ [ circle [ cx "45", cy "55", r "16", fill yellowCandidateColor ] [] ])
 
     else
-        g [] (trashBinSvg "#eee")
+        g [ fill (trashBinColor clickable) ] trashBinSvg
 
 
 playerSvg : WhoseTurn -> { a | victoryCrown : Bool, bigAndBlurred : Bool } -> Svg msg
@@ -982,7 +850,7 @@ playerSvg playerColor o =
             ]
 
         crownStyle =
-            [ x "-12", y "-12", width "24", height "24", fill "#ffff00" ]
+            [ x "-12", y "-12", width "24", height "24", fill crownColor ]
 
         crown =
             [ rect crownStyle []
@@ -991,7 +859,7 @@ playerSvg playerColor o =
             ]
 
         blur =
-            circle [ cx "0", cy "0", r "12", fill (backgroundColor color), Svg.Attributes.style "fill:#483e37;fill-opacity:1;filter:url(#blur)" ] []
+            circle [ cx "0", cy "0", r "12", fill (backgroundColor color), Svg.Attributes.style ("fill:" ++ blurShadowColor ++ ";fill-opacity:1;filter:url(#blur)") ] []
     in
     if o.bigAndBlurred then
         if o.victoryCrown then

@@ -5265,12 +5265,12 @@ var $elm$core$Task$perform = F2(
 	});
 var $elm$browser$Browser$element = _Browser_element;
 var $elm$json$Json$Decode$field = _Json_decodeField;
-var $author$project$Main$All = {$: 'All'};
-var $author$project$Main$Circle = {$: 'Circle'};
-var $author$project$Main$Diagonal = {$: 'Diagonal'};
-var $author$project$Main$HorizontalVertical = {$: 'HorizontalVertical'};
-var $author$project$Main$Kese = {$: 'Kese'};
-var $author$project$Main$KeseTurn = {$: 'KeseTurn'};
+var $author$project$KeseRimaTypes$All = {$: 'All'};
+var $author$project$KeseRimaTypes$Circle = {$: 'Circle'};
+var $author$project$KeseRimaTypes$Diagonal = {$: 'Diagonal'};
+var $author$project$KeseRimaTypes$HorizontalVertical = {$: 'HorizontalVertical'};
+var $author$project$KeseRimaTypes$Kese = {$: 'Kese'};
+var $author$project$KeseRimaTypes$KeseTurn = {$: 'KeseTurn'};
 var $author$project$Main$Model = F2(
 	function (a, b) {
 		return {$: 'Model', a: a, b: b};
@@ -5278,9 +5278,9 @@ var $author$project$Main$Model = F2(
 var $author$project$Main$NothingSelected = function (a) {
 	return {$: 'NothingSelected', a: a};
 };
-var $author$project$Main$Rima = {$: 'Rima'};
-var $author$project$Main$RimaTurn = {$: 'RimaTurn'};
-var $author$project$Main$Ship = {$: 'Ship'};
+var $author$project$KeseRimaTypes$Rima = {$: 'Rima'};
+var $author$project$KeseRimaTypes$RimaTurn = {$: 'RimaTurn'};
+var $author$project$KeseRimaTypes$Ship = {$: 'Ship'};
 var $author$project$Main$drawUpToThree = function (xs) {
 	if ((xs.b && xs.b.b) && xs.b.b.b) {
 		var a = xs.a;
@@ -5303,11 +5303,11 @@ var $elm$core$Basics$not = _Basics_not;
 var $author$project$Main$numToProf = function (n) {
 	switch (n) {
 		case 0:
-			return $author$project$Main$Circle;
+			return $author$project$KeseRimaTypes$Circle;
 		case 1:
-			return $author$project$Main$HorizontalVertical;
+			return $author$project$KeseRimaTypes$HorizontalVertical;
 		default:
-			return $author$project$Main$Diagonal;
+			return $author$project$KeseRimaTypes$Diagonal;
 	}
 };
 var $author$project$Main$init = function (flags) {
@@ -5329,63 +5329,63 @@ var $author$project$Main$init = function (flags) {
 						[
 							{
 							coord: {x: 0, y: 0},
-							pieceColor: $author$project$Main$Rima,
-							prof: flags.rimaDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+							pieceColor: $author$project$KeseRimaTypes$Rima,
+							prof: flags.rimaDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
 						},
 							{
 							coord: {x: 1, y: 0},
-							pieceColor: $author$project$Main$Rima,
-							prof: $author$project$Main$Circle
+							pieceColor: $author$project$KeseRimaTypes$Rima,
+							prof: $author$project$KeseRimaTypes$Circle
 						},
 							{
 							coord: {x: 2, y: 0},
-							pieceColor: $author$project$Main$Rima,
-							prof: $author$project$Main$All
+							pieceColor: $author$project$KeseRimaTypes$Rima,
+							prof: $author$project$KeseRimaTypes$All
 						},
 							{
 							coord: {x: 3, y: 0},
-							pieceColor: $author$project$Main$Rima,
-							prof: $author$project$Main$Circle
+							pieceColor: $author$project$KeseRimaTypes$Rima,
+							prof: $author$project$KeseRimaTypes$Circle
 						},
 							{
 							coord: {x: 4, y: 0},
-							pieceColor: $author$project$Main$Rima,
-							prof: (!flags.rimaDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+							pieceColor: $author$project$KeseRimaTypes$Rima,
+							prof: (!flags.rimaDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
 						},
 							{
 							coord: {x: 0, y: 4},
-							pieceColor: $author$project$Main$Kese,
-							prof: flags.keseDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+							pieceColor: $author$project$KeseRimaTypes$Kese,
+							prof: flags.keseDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
 						},
 							{
 							coord: {x: 1, y: 4},
-							pieceColor: $author$project$Main$Kese,
-							prof: $author$project$Main$Circle
+							pieceColor: $author$project$KeseRimaTypes$Kese,
+							prof: $author$project$KeseRimaTypes$Circle
 						},
 							{
 							coord: {x: 2, y: 4},
-							pieceColor: $author$project$Main$Kese,
-							prof: $author$project$Main$All
+							pieceColor: $author$project$KeseRimaTypes$Kese,
+							prof: $author$project$KeseRimaTypes$All
 						},
 							{
 							coord: {x: 3, y: 4},
-							pieceColor: $author$project$Main$Kese,
-							prof: $author$project$Main$Circle
+							pieceColor: $author$project$KeseRimaTypes$Kese,
+							prof: $author$project$KeseRimaTypes$Circle
 						},
 							{
 							coord: {x: 4, y: 4},
-							pieceColor: $author$project$Main$Kese,
-							prof: (!flags.keseDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+							pieceColor: $author$project$KeseRimaTypes$Kese,
+							prof: (!flags.keseDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
 						},
 							{
 							coord: {x: 1, y: 2},
-							pieceColor: $author$project$Main$Ship,
-							prof: flags.shipDice ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+							pieceColor: $author$project$KeseRimaTypes$Ship,
+							prof: flags.shipDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
 						},
 							{
 							coord: {x: 3, y: 2},
-							pieceColor: $author$project$Main$Ship,
-							prof: (!flags.shipDice) ? $author$project$Main$HorizontalVertical : $author$project$Main$Diagonal
+							pieceColor: $author$project$KeseRimaTypes$Ship,
+							prof: (!flags.shipDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
 						}
 						]),
 					capturedByKese: _List_Nil,
@@ -5394,7 +5394,7 @@ var $author$project$Main$init = function (flags) {
 					keseHand: keseHand,
 					rimaDeck: rimaDeck,
 					rimaHand: rimaHand,
-					whoseTurn: flags.keseGoesFirst ? $author$project$Main$KeseTurn : $author$project$Main$RimaTurn
+					whoseTurn: flags.keseGoesFirst ? $author$project$KeseRimaTypes$KeseTurn : $author$project$KeseRimaTypes$RimaTurn
 				})),
 		$elm$core$Platform$Cmd$none);
 };
@@ -5497,9 +5497,9 @@ var $author$project$Main$getWhoseTurn = function (modl) {
 };
 var $author$project$Main$invertWhoseTurn = function (w) {
 	if (w.$ === 'KeseTurn') {
-		return $author$project$Main$RimaTurn;
+		return $author$project$KeseRimaTypes$RimaTurn;
 	} else {
-		return $author$project$Main$KeseTurn;
+		return $author$project$KeseRimaTypes$KeseTurn;
 	}
 };
 var $elm$core$List$isEmpty = function (xs) {
@@ -5552,13 +5552,13 @@ var $elm$core$List$member = F2(
 			xs);
 	});
 var $author$project$Main$isVictorious = function (list) {
-	return A2($elm$core$List$member, $author$project$Main$All, list) || A2(
+	return A2($elm$core$List$member, $author$project$KeseRimaTypes$All, list) || A2(
 		$elm$core$List$all,
 		function (p) {
 			return A2($elm$core$List$member, p, list);
 		},
 		_List_fromArray(
-			[$author$project$Main$Diagonal, $author$project$Main$HorizontalVertical, $author$project$Main$Circle]));
+			[$author$project$KeseRimaTypes$Diagonal, $author$project$KeseRimaTypes$HorizontalVertical, $author$project$KeseRimaTypes$Circle]));
 };
 var $elm$core$Maybe$map = F2(
 	function (f, maybe) {
@@ -5643,7 +5643,7 @@ var $author$project$Main$newHistory = F2(
 								if (_v2.b && (!_v2.b.b)) {
 									var p = _v2.a;
 									return _Utils_ap(
-										_Utils_eq(p.pieceColor, $author$project$Main$Ship) ? 'S' : '',
+										_Utils_eq(p.pieceColor, $author$project$KeseRimaTypes$Ship) ? 'S' : '',
 										_Utils_ap(
 											$author$project$Main$profToHistoryStr(p.prof),
 											$author$project$Main$coordToHistoryStr(p.coord)));
@@ -5836,8 +5836,8 @@ var $author$project$Main$AfterSacrifice = F2(
 	function (a, b) {
 		return {$: 'AfterSacrifice', a: a, b: b};
 	});
-var $author$project$Main$Diag = {$: 'Diag'};
-var $author$project$Main$HorizVert = {$: 'HorizVert'};
+var $author$project$KeseRimaTypes$Diag = {$: 'Diag'};
+var $author$project$KeseRimaTypes$HorizVert = {$: 'HorizVert'};
 var $author$project$Main$MoverIsSelected = F2(
 	function (a, b) {
 		return {$: 'MoverIsSelected', a: a, b: b};
@@ -6083,7 +6083,7 @@ var $author$project$Main$updateStatus = F2(
 										A2(
 											$elm$core$List$map,
 											function (prof) {
-												return {coord: to, pieceColor: $author$project$Main$Kese, prof: prof};
+												return {coord: to, pieceColor: $author$project$KeseRimaTypes$Kese, prof: prof};
 											},
 											profs),
 										cardState.board);
@@ -6104,13 +6104,13 @@ var $author$project$Main$updateStatus = F2(
 													keseDeck: zs,
 													keseHand: _List_fromArray(
 														[x, y, z]),
-													whoseTurn: $author$project$Main$RimaTurn
+													whoseTurn: $author$project$KeseRimaTypes$RimaTurn
 												}));
 									} else {
 										return $author$project$Main$NothingSelected(
 											_Utils_update(
 												cardState,
-												{board: newBoard, keseHand: newKeseHand, whoseTurn: $author$project$Main$RimaTurn}));
+												{board: newBoard, keseHand: newKeseHand, whoseTurn: $author$project$KeseRimaTypes$RimaTurn}));
 									}
 								default:
 									var ind = from.a;
@@ -6121,7 +6121,7 @@ var $author$project$Main$updateStatus = F2(
 										A2(
 											$elm$core$List$map,
 											function (prof) {
-												return {coord: to, pieceColor: $author$project$Main$Rima, prof: prof};
+												return {coord: to, pieceColor: $author$project$KeseRimaTypes$Rima, prof: prof};
 											},
 											profs),
 										cardState.board);
@@ -6142,13 +6142,13 @@ var $author$project$Main$updateStatus = F2(
 													rimaDeck: zs,
 													rimaHand: _List_fromArray(
 														[x, y, z]),
-													whoseTurn: $author$project$Main$KeseTurn
+													whoseTurn: $author$project$KeseRimaTypes$KeseTurn
 												}));
 									} else {
 										return $author$project$Main$NothingSelected(
 											_Utils_update(
 												cardState,
-												{board: newBoard, rimaHand: newRimaHand, whoseTurn: $author$project$Main$KeseTurn}));
+												{board: newBoard, rimaHand: newRimaHand, whoseTurn: $author$project$KeseRimaTypes$KeseTurn}));
 									}
 							}
 						default:
@@ -6219,9 +6219,9 @@ var $author$project$Main$updateStatus = F2(
 											whoseTurn: function () {
 												var _v20 = cardDrawn.whoseTurn;
 												if (_v20.$ === 'KeseTurn') {
-													return $author$project$Main$RimaTurn;
+													return $author$project$KeseRimaTypes$RimaTurn;
 												} else {
-													return $author$project$Main$KeseTurn;
+													return $author$project$KeseRimaTypes$KeseTurn;
 												}
 											}()
 										}));
@@ -6235,17 +6235,17 @@ var $author$project$Main$updateStatus = F2(
 								if (_v21.$ === 'KeseTurn') {
 									var newCapturedByKese = A2($elm$core$List$cons, captured.prof, remaining.capturedByKese);
 									return $author$project$Main$isVictorious(newCapturedByKese) ? $author$project$Main$GameTerminated(
-										{board: newBoard, capturedByKese: newCapturedByKese, capturedByRima: remaining.capturedByRima, keseDeck: remaining.keseDeck, keseHand: remaining.keseHand, rimaDeck: remaining.rimaDeck, rimaHand: remaining.rimaHand, whoseVictory: $author$project$Main$Kese}) : $author$project$Main$NothingSelected(
+										{board: newBoard, capturedByKese: newCapturedByKese, capturedByRima: remaining.capturedByRima, keseDeck: remaining.keseDeck, keseHand: remaining.keseHand, rimaDeck: remaining.rimaDeck, rimaHand: remaining.rimaHand, whoseVictory: $author$project$KeseRimaTypes$Kese}) : $author$project$Main$NothingSelected(
 										_Utils_update(
 											cardDrawn,
-											{board: newBoard, capturedByKese: newCapturedByKese, whoseTurn: $author$project$Main$RimaTurn}));
+											{board: newBoard, capturedByKese: newCapturedByKese, whoseTurn: $author$project$KeseRimaTypes$RimaTurn}));
 								} else {
 									var newCapturedByRima = A2($elm$core$List$cons, captured.prof, remaining.capturedByRima);
 									return $author$project$Main$isVictorious(newCapturedByRima) ? $author$project$Main$GameTerminated(
-										{board: newBoard, capturedByKese: remaining.capturedByKese, capturedByRima: newCapturedByRima, keseDeck: remaining.keseDeck, keseHand: remaining.keseHand, rimaDeck: remaining.rimaDeck, rimaHand: remaining.rimaHand, whoseVictory: $author$project$Main$Rima}) : $author$project$Main$NothingSelected(
+										{board: newBoard, capturedByKese: remaining.capturedByKese, capturedByRima: newCapturedByRima, keseDeck: remaining.keseDeck, keseHand: remaining.keseHand, rimaDeck: remaining.rimaDeck, rimaHand: remaining.rimaHand, whoseVictory: $author$project$KeseRimaTypes$Rima}) : $author$project$Main$NothingSelected(
 										_Utils_update(
 											cardDrawn,
-											{board: newBoard, capturedByRima: newCapturedByRima, whoseTurn: $author$project$Main$KeseTurn}));
+											{board: newBoard, capturedByRima: newCapturedByRima, whoseTurn: $author$project$KeseRimaTypes$KeseTurn}));
 								}
 							}
 						default:
@@ -6277,10 +6277,10 @@ var $author$project$Main$updateStatus = F2(
 											return $author$project$Main$AfterCircleSacrifice(_new);
 										case 'HorizontalVertical':
 											var _v29 = sacrifices.a;
-											return A2($author$project$Main$AfterSacrifice, $author$project$Main$HorizVert, _new);
+											return A2($author$project$Main$AfterSacrifice, $author$project$KeseRimaTypes$HorizVert, _new);
 										case 'Diagonal':
 											var _v30 = sacrifices.a;
-											return A2($author$project$Main$AfterSacrifice, $author$project$Main$Diag, _new);
+											return A2($author$project$Main$AfterSacrifice, $author$project$KeseRimaTypes$Diag, _new);
 										default:
 											break _v27$3;
 									}
@@ -6308,10 +6308,10 @@ var $author$project$Main$updateStatus = F2(
 											return $author$project$Main$AfterCircleSacrifice(_new);
 										case 'HorizontalVertical':
 											var _v34 = sacrifices.a;
-											return A2($author$project$Main$AfterSacrifice, $author$project$Main$HorizVert, _new);
+											return A2($author$project$Main$AfterSacrifice, $author$project$KeseRimaTypes$HorizVert, _new);
 										case 'Diagonal':
 											var _v35 = sacrifices.a;
-											return A2($author$project$Main$AfterSacrifice, $author$project$Main$Diag, _new);
+											return A2($author$project$Main$AfterSacrifice, $author$project$KeseRimaTypes$Diag, _new);
 										default:
 											break _v32$3;
 									}
@@ -6357,7 +6357,7 @@ var $author$project$Main$update = F2(
 						$author$project$Main$Model,
 						A2($elm$core$String$dropRight, 1, newHist) + '--------------------------------\nKeseRima',
 						$author$project$Main$GameTerminated(
-							{board: cardState.board, capturedByKese: cardState.capturedByKese, capturedByRima: cardState.capturedByRima, keseDeck: cardState.keseDeck, keseHand: cardState.keseHand, rimaDeck: cardState.rimaDeck, rimaHand: cardState.rimaHand, whoseVictory: $author$project$Main$Ship})),
+							{board: cardState.board, capturedByKese: cardState.capturedByKese, capturedByRima: cardState.capturedByRima, keseDeck: cardState.keseDeck, keseHand: cardState.keseHand, rimaDeck: cardState.rimaDeck, rimaHand: cardState.rimaHand, whoseVictory: $author$project$KeseRimaTypes$Ship})),
 					$elm$core$Platform$Cmd$none);
 			} else {
 				return _Utils_Tuple2(
@@ -6378,13 +6378,13 @@ var $author$project$Main$MovementToward = function (a) {
 	return {$: 'MovementToward', a: a};
 };
 var $author$project$Main$None = {$: 'None'};
-var $author$project$Main$PieceInKeseHand = function (a) {
+var $author$project$KeseRimaTypes$PieceInKeseHand = function (a) {
 	return {$: 'PieceInKeseHand', a: a};
 };
-var $author$project$Main$PieceInRimaHand = function (a) {
+var $author$project$KeseRimaTypes$PieceInRimaHand = function (a) {
 	return {$: 'PieceInRimaHand', a: a};
 };
-var $author$project$Main$PieceOnTheBoard = function (a) {
+var $author$project$KeseRimaTypes$PieceOnTheBoard = function (a) {
 	return {$: 'PieceOnTheBoard', a: a};
 };
 var $author$project$Main$SendToTrashBinPart1 = function (a) {
@@ -6434,7 +6434,7 @@ var $author$project$Main$allCoord = A2(
 	},
 	_List_fromArray(
 		[0, 1, 2, 3, 4]));
-var $author$project$Main$isWater = function (coord) {
+var $author$project$KeseRimaTypes$isWater = function (coord) {
 	var _v0 = _Utils_Tuple2(coord.x, coord.y);
 	_v0$5:
 	while (true) {
@@ -6468,9 +6468,10 @@ var $author$project$Main$isWater = function (coord) {
 	}
 	return false;
 };
-var $author$project$Main$boardBackgroundColor = function (coord) {
-	return $author$project$Main$isWater(coord) ? 'rgb(94, 147, 184)' : '#ccc';
+var $author$project$SvgColor$boardBackgroundColor = function (coord) {
+	return $author$project$KeseRimaTypes$isWater(coord) ? '#5e93b8' : '#ccc';
 };
+var $author$project$SvgColor$boardBorderColor = '#000';
 var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
 var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
 var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
@@ -6504,8 +6505,8 @@ var $author$project$Main$boardSvg = _List_fromArray(
 							$elm$svg$Svg$Attributes$width('100'),
 							$elm$svg$Svg$Attributes$height('100'),
 							$elm$svg$Svg$Attributes$fill(
-							$author$project$Main$boardBackgroundColor(coord)),
-							$elm$svg$Svg$Attributes$stroke('#000'),
+							$author$project$SvgColor$boardBackgroundColor(coord)),
+							$elm$svg$Svg$Attributes$stroke($author$project$SvgColor$boardBorderColor),
 							$elm$svg$Svg$Attributes$strokeWidth('4')
 						]),
 					_List_Nil);
@@ -6514,17 +6515,17 @@ var $author$project$Main$boardSvg = _List_fromArray(
 	]);
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$svg$Svg$defs = $elm$svg$Svg$trustedNode('defs');
-var $author$project$Main$backgroundColor = function (pieceColor) {
+var $author$project$SvgColor$backgroundColor = function (pieceColor) {
 	switch (pieceColor.$) {
 		case 'Rima':
-			return 'rgb(200, 190, 183)';
+			return '#c8beb7';
 		case 'Kese':
-			return 'rgb(72, 62, 55)';
+			return '#483e37';
 		default:
-			return 'rgb(96, 133, 157)';
+			return '#60859d';
 	}
 };
-var $author$project$Main$borderColor = function (c) {
+var $author$project$SvgColor$borderColor = function (c) {
 	switch (c.$) {
 		case 'Rima':
 			return '#005242';
@@ -6534,14 +6535,14 @@ var $author$project$Main$borderColor = function (c) {
 			return '#005242';
 	}
 };
-var $author$project$Main$foregroundColor = function (pieceColor) {
+var $author$project$SvgColor$foregroundColor = function (pieceColor) {
 	switch (pieceColor.$) {
 		case 'Kese':
-			return 'rgb(200, 190, 183)';
+			return '#c8beb7';
 		case 'Rima':
-			return 'rgb(72, 62, 55)';
+			return '#483e37';
 		default:
-			return 'rgb(34, 44, 47)';
+			return '#222c2f';
 	}
 };
 var $elm$core$String$fromFloat = _String_fromNumber;
@@ -6615,10 +6616,10 @@ var $author$project$Main$glyph = F2(
 					]);
 			default:
 				return _Utils_ap(
-					A2($author$project$Main$glyph, $author$project$Main$HorizontalVertical, color),
+					A2($author$project$Main$glyph, $author$project$KeseRimaTypes$HorizontalVertical, color),
 					_Utils_ap(
-						A2($author$project$Main$glyph, $author$project$Main$Diagonal, color),
-						A2($author$project$Main$glyph, $author$project$Main$Circle, color)));
+						A2($author$project$Main$glyph, $author$project$KeseRimaTypes$Diagonal, color),
+						A2($author$project$Main$glyph, $author$project$KeseRimaTypes$Circle, color)));
 		}
 	});
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
@@ -6672,9 +6673,9 @@ var $author$project$Main$pieceSvg = F3(
 							$elm$svg$Svg$Attributes$width('80'),
 							$elm$svg$Svg$Attributes$height('80'),
 							$elm$svg$Svg$Attributes$fill(
-							$author$project$Main$backgroundColor(p.pieceColor)),
+							$author$project$SvgColor$backgroundColor(p.pieceColor)),
 							$elm$svg$Svg$Attributes$stroke(
-							focused ? $author$project$Main$borderColor(p.pieceColor) : 'none'),
+							focused ? $author$project$SvgColor$borderColor(p.pieceColor) : 'none'),
 							$elm$svg$Svg$Attributes$strokeWidth(
 							focused ? '10' : 'none')
 						]),
@@ -6682,8 +6683,18 @@ var $author$project$Main$pieceSvg = F3(
 				A2(
 					$author$project$Main$glyph,
 					p.prof,
-					$author$project$Main$foregroundColor(p.pieceColor))));
+					$author$project$SvgColor$foregroundColor(p.pieceColor))));
 	});
+var $author$project$SvgColor$strokeColor = function (c) {
+	switch (c.$) {
+		case 'Rima':
+			return '#000';
+		case 'Kese':
+			return '#eee';
+		default:
+			return '#777';
+	}
+};
 var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 	return _List_fromArray(
 		[
@@ -6707,9 +6718,10 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 									$elm$svg$Svg$Attributes$width('80'),
 									$elm$svg$Svg$Attributes$height('80'),
 									$elm$svg$Svg$Attributes$fill(
-									$author$project$Main$backgroundColor($author$project$Main$Kese)),
+									$author$project$SvgColor$backgroundColor($author$project$KeseRimaTypes$Kese)),
 									$elm$svg$Svg$Attributes$strokeWidth('1'),
-									$elm$svg$Svg$Attributes$stroke('#eee')
+									$elm$svg$Svg$Attributes$stroke(
+									$author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Kese))
 								]),
 							_List_Nil);
 					}),
@@ -6734,9 +6746,10 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 									$elm$svg$Svg$Attributes$width('80'),
 									$elm$svg$Svg$Attributes$height('80'),
 									$elm$svg$Svg$Attributes$fill(
-									$author$project$Main$backgroundColor($author$project$Main$Rima)),
+									$author$project$SvgColor$backgroundColor($author$project$KeseRimaTypes$Rima)),
 									$elm$svg$Svg$Attributes$strokeWidth('1'),
-									$elm$svg$Svg$Attributes$stroke('#000')
+									$elm$svg$Svg$Attributes$stroke(
+									$author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Rima))
 								]),
 							_List_Nil);
 					}),
@@ -6757,7 +6770,7 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 							$author$project$Main$None,
 							{
 								coord: {x: i * 0.85, y: 6.0},
-								pieceColor: $author$project$Main$Rima,
+								pieceColor: $author$project$KeseRimaTypes$Rima,
 								prof: prof
 							});
 					}),
@@ -6778,7 +6791,7 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 							$author$project$Main$None,
 							{
 								coord: {x: 4.0 - (i * 0.85), y: -2.0},
-								pieceColor: $author$project$Main$Kese,
+								pieceColor: $author$project$KeseRimaTypes$Kese,
 								prof: prof
 							});
 					}),
@@ -6803,7 +6816,7 @@ var $elm_community$list_extra$List$Extra$filterNot = F2(
 var $author$project$Main$neitherOccupiedNorWater = function (board) {
 	return A2(
 		$elm_community$list_extra$List$Extra$filterNot,
-		$author$project$Main$isWater,
+		$author$project$KeseRimaTypes$isWater,
 		A2(
 			$elm_community$list_extra$List$Extra$filterNot,
 			function (coord) {
@@ -6829,17 +6842,17 @@ var $author$project$Main$getCandidatesYellow_ = F4(
 			A2(
 				$elm$core$List$filter,
 				function (p) {
-					return _Utils_eq(p.pieceColor, $author$project$Main$Ship);
+					return _Utils_eq(p.pieceColor, $author$project$KeseRimaTypes$Ship);
 				},
 				robbedBoard));
 		var _v0 = piece.pieceColor;
 		if (_v0.$ === 'Ship') {
 			return hasCircleInHand ? _Utils_ap(
-				A2($elm$core$List$filter, $author$project$Main$isWater, raw_candidates),
-				A2($author$project$Main$filterWhetherMemberOf, shipPositions, raw_candidates)) : A2($elm$core$List$filter, $author$project$Main$isWater, raw_candidates);
+				A2($elm$core$List$filter, $author$project$KeseRimaTypes$isWater, raw_candidates),
+				A2($author$project$Main$filterWhetherMemberOf, shipPositions, raw_candidates)) : A2($elm$core$List$filter, $author$project$KeseRimaTypes$isWater, raw_candidates);
 		} else {
 			return hasCircleInHand ? _Utils_ap(
-				A2($elm_community$list_extra$List$Extra$filterNot, $author$project$Main$isWater, raw_candidates),
+				A2($elm_community$list_extra$List$Extra$filterNot, $author$project$KeseRimaTypes$isWater, raw_candidates),
 				A2($author$project$Main$filterWhetherMemberOf, shipPositions, raw_candidates)) : _Utils_ap(
 				A2(
 					$author$project$Main$filterWhetherMemberOf,
@@ -6947,6 +6960,7 @@ var $author$project$Main$getCandidatesYellowWithCommand = F4(
 				}
 			}());
 	});
+var $author$project$SvgColor$redCandidateColor = '#ff0000';
 var $author$project$Main$goalCandidateRedSvg = F2(
 	function (msgToBeSent, coord) {
 		return A2(
@@ -6968,11 +6982,12 @@ var $author$project$Main$goalCandidateRedSvg = F2(
 							$elm$svg$Svg$Attributes$y('36'),
 							$elm$svg$Svg$Attributes$width('32'),
 							$elm$svg$Svg$Attributes$height('32'),
-							$elm$svg$Svg$Attributes$fill('#ff0000')
+							$elm$svg$Svg$Attributes$fill($author$project$SvgColor$redCandidateColor)
 						]),
 					_List_Nil)
 				]));
 	});
+var $author$project$SvgColor$yellowCandidateColor = '#ffff00';
 var $author$project$Main$goalCandidateYellowSvg = F2(
 	function (msgToBeSent, coord) {
 		return A2(
@@ -6993,7 +7008,7 @@ var $author$project$Main$goalCandidateYellowSvg = F2(
 							$elm$svg$Svg$Attributes$cx('52'),
 							$elm$svg$Svg$Attributes$cy('52'),
 							$elm$svg$Svg$Attributes$r('16'),
-							$elm$svg$Svg$Attributes$fill('#ffff00')
+							$elm$svg$Svg$Attributes$fill($author$project$SvgColor$yellowCandidateColor)
 						]),
 					_List_Nil)
 				]));
@@ -7002,7 +7017,7 @@ var $author$project$Main$keseHandPos = F2(
 	function (i, prof) {
 		return {
 			coord: {x: i + 1.0, y: 5.0},
-			pieceColor: $author$project$Main$Kese,
+			pieceColor: $author$project$KeseRimaTypes$Kese,
 			prof: prof
 		};
 	});
@@ -7021,6 +7036,7 @@ var $author$project$Main$pieceSvgOnGrid = F3(
 				prof: prof
 			});
 	});
+var $author$project$SvgColor$floatingPieceBorderColor = '#ffff00';
 var $author$project$Main$pieceWaitingForAdditionalCommandSvg = function (p) {
 	return A2(
 		$elm$svg$Svg$g,
@@ -7041,22 +7057,24 @@ var $author$project$Main$pieceWaitingForAdditionalCommandSvg = function (p) {
 						$elm$svg$Svg$Attributes$width('80'),
 						$elm$svg$Svg$Attributes$height('80'),
 						$elm$svg$Svg$Attributes$fill(
-						$author$project$Main$backgroundColor(p.pieceColor)),
-						$elm$svg$Svg$Attributes$stroke('#ffff00'),
+						$author$project$SvgColor$backgroundColor(p.pieceColor)),
+						$elm$svg$Svg$Attributes$stroke($author$project$SvgColor$floatingPieceBorderColor),
 						$elm$svg$Svg$Attributes$strokeWidth('2')
 					]),
 				_List_Nil),
 			A2(
 				$author$project$Main$glyph,
 				p.prof,
-				$author$project$Main$foregroundColor(p.pieceColor))));
+				$author$project$SvgColor$foregroundColor(p.pieceColor))));
 };
+var $author$project$SvgColor$blurShadowColor = '#404040';
+var $author$project$SvgColor$crownColor = '#ffff00';
 var $elm$svg$Svg$Attributes$style = _VirtualDom_attribute('style');
 var $author$project$Main$toColor = function (w) {
 	if (w.$ === 'KeseTurn') {
-		return $author$project$Main$Kese;
+		return $author$project$KeseRimaTypes$Kese;
 	} else {
-		return $author$project$Main$Rima;
+		return $author$project$KeseRimaTypes$Rima;
 	}
 };
 var $author$project$Main$playerSvg = F2(
@@ -7083,7 +7101,7 @@ var $author$project$Main$playerSvg = F2(
 				$elm$svg$Svg$Attributes$y('-12'),
 				$elm$svg$Svg$Attributes$width('24'),
 				$elm$svg$Svg$Attributes$height('24'),
-				$elm$svg$Svg$Attributes$fill('#ffff00')
+				$elm$svg$Svg$Attributes$fill($author$project$SvgColor$crownColor)
 			]);
 		var crown = _List_fromArray(
 			[
@@ -7114,7 +7132,7 @@ var $author$project$Main$playerSvg = F2(
 						$elm$svg$Svg$Attributes$cy('0'),
 						$elm$svg$Svg$Attributes$r('12'),
 						$elm$svg$Svg$Attributes$fill(
-						$author$project$Main$backgroundColor(color))
+						$author$project$SvgColor$backgroundColor(color))
 					]),
 				_List_Nil),
 				A2(
@@ -7125,7 +7143,7 @@ var $author$project$Main$playerSvg = F2(
 						$elm$svg$Svg$Attributes$cy('-5.5'),
 						$elm$svg$Svg$Attributes$r('4'),
 						$elm$svg$Svg$Attributes$fill(
-						$author$project$Main$foregroundColor(color))
+						$author$project$SvgColor$foregroundColor(color))
 					]),
 				_List_Nil),
 				A2(
@@ -7133,7 +7151,7 @@ var $author$project$Main$playerSvg = F2(
 				_List_fromArray(
 					[
 						$elm$svg$Svg$Attributes$fill(
-						$author$project$Main$foregroundColor(color)),
+						$author$project$SvgColor$foregroundColor(color)),
 						$elm$svg$Svg$Attributes$d('m 0,0.5 c -3,0 -5.8,1 -8,3 v 3 h 16 v -3 c -2.2,-2 -5,-3 -8,-3 z')
 					]),
 				_List_Nil)
@@ -7146,8 +7164,8 @@ var $author$project$Main$playerSvg = F2(
 					$elm$svg$Svg$Attributes$cy('0'),
 					$elm$svg$Svg$Attributes$r('12'),
 					$elm$svg$Svg$Attributes$fill(
-					$author$project$Main$backgroundColor(color)),
-					$elm$svg$Svg$Attributes$style('fill:#483e37;fill-opacity:1;filter:url(#blur)')
+					$author$project$SvgColor$backgroundColor(color)),
+					$elm$svg$Svg$Attributes$style('fill:' + ($author$project$SvgColor$blurShadowColor + ';fill-opacity:1;filter:url(#blur)'))
 				]),
 			_List_Nil);
 		return o.bigAndBlurred ? (o.victoryCrown ? A2(
@@ -7180,7 +7198,7 @@ var $author$project$Main$rimaHandPos = F2(
 	function (i, prof) {
 		return {
 			coord: {x: 3.0 - i, y: -1.0},
-			pieceColor: $author$project$Main$Rima,
+			pieceColor: $author$project$KeseRimaTypes$Rima,
 			prof: prof
 		};
 	});
@@ -7220,16 +7238,16 @@ var $author$project$Main$stationaryPart = function (cardState) {
 					[
 						A2(
 						$author$project$Main$playerSvg,
-						$author$project$Main$KeseTurn,
+						$author$project$KeseRimaTypes$KeseTurn,
 						{
-							bigAndBlurred: _Utils_eq($author$project$Main$KeseTurn, cardState.whoseTurn),
+							bigAndBlurred: _Utils_eq($author$project$KeseRimaTypes$KeseTurn, cardState.whoseTurn),
 							victoryCrown: false
 						}),
 						A2(
 						$author$project$Main$playerSvg,
-						$author$project$Main$RimaTurn,
+						$author$project$KeseRimaTypes$RimaTurn,
 						{
-							bigAndBlurred: _Utils_eq($author$project$Main$RimaTurn, cardState.whoseTurn),
+							bigAndBlurred: _Utils_eq($author$project$KeseRimaTypes$RimaTurn, cardState.whoseTurn),
 							victoryCrown: false
 						})
 					]))));
@@ -7237,37 +7255,38 @@ var $author$project$Main$stationaryPart = function (cardState) {
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Main$SendToTrashBinPart2 = {$: 'SendToTrashBinPart2'};
+var $author$project$SvgColor$trashBinColor = function (c) {
+	return c ? '#555' : '#eee';
+};
 var $author$project$Main$trashBinSvg_ = function (clickable) {
-	var trashBinSvg = function (color) {
-		return _List_fromArray(
-			[
-				A2(
-				$elm$svg$Svg$path,
-				_List_fromArray(
-					[
-						$elm$svg$Svg$Attributes$fill(color),
-						$elm$svg$Svg$Attributes$d('M 0.8 22.4 l 11.8 67.4 c 1 4.4 5 7.4 9.4 7.4 c 0 0 0 0 0 0 h 45.4 c 4.4 0 8.2 -3.2 9.4 -7.4 v 0 l 11.8 -67.4 z m 43.8 11.6 c 1.6 0 2.6 1.2 2.6 2.6 v 43.6 c 0 1.4 -1 2.6 -2.6 2.6 c -1.4 0 -2.6 -1.2 -2.6 -2.6 v -43.6 c 0 -1.4 1.2 -2.6 2.6 -2.6 z m -21 0 c 1.4 0 2.6 1.2 2.6 2.4 l 3.8 43.6 c 0.2 1.4 -0.8 2.6 -2.4 2.8 c -1.4 0 -2.6 -1 -2.8 -2.4 l -3.8 -43.4 c -0.2 -1.6 1 -2.8 2.4 -3 c 0.2 0 0.2 0 0.2 0 z m 42 0 c 0 0 0 0 0.2 0 c 1.4 0.2 2.6 1.4 2.4 3 l -3.8 43.4 c -0.2 1.4 -1.4 2.4 -2.8 2.4 c -1.6 -0.2 -2.6 -1.4 -2.4 -2.8 l 3.8 -43.6 c 0 -1.2 1.2 -2.4 2.6 -2.4 z')
-					]),
-				_List_Nil),
-				A2(
-				$elm$svg$Svg$path,
-				_List_fromArray(
-					[
-						$elm$svg$Svg$Attributes$fill(color),
-						$elm$svg$Svg$Attributes$d('m 40 0 c -1.4 0 -2.6 1.2 -2.6 2.6 V 6 L 2.6 9 A 3 3 90 0 0 0 12 v 0 v 5.8 H 89.2 v -5.8 v 0 a 3 3 90 0 0 -2.6 -3 l -34.6 -3 V 2.6 c 0 -1.4 -1 -2.6 -2.4 -2.6 z')
-					]),
-				_List_Nil)
-			]);
-	};
+	var trashBinSvg = _List_fromArray(
+		[
+			A2(
+			$elm$svg$Svg$path,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$d('M 0.8 22.4 l 11.8 67.4 c 1 4.4 5 7.4 9.4 7.4 c 0 0 0 0 0 0 h 45.4 c 4.4 0 8.2 -3.2 9.4 -7.4 v 0 l 11.8 -67.4 z m 43.8 11.6 c 1.6 0 2.6 1.2 2.6 2.6 v 43.6 c 0 1.4 -1 2.6 -2.6 2.6 c -1.4 0 -2.6 -1.2 -2.6 -2.6 v -43.6 c 0 -1.4 1.2 -2.6 2.6 -2.6 z m -21 0 c 1.4 0 2.6 1.2 2.6 2.4 l 3.8 43.6 c 0.2 1.4 -0.8 2.6 -2.4 2.8 c -1.4 0 -2.6 -1 -2.8 -2.4 l -3.8 -43.4 c -0.2 -1.6 1 -2.8 2.4 -3 c 0.2 0 0.2 0 0.2 0 z m 42 0 c 0 0 0 0 0.2 0 c 1.4 0.2 2.6 1.4 2.4 3 l -3.8 43.4 c -0.2 1.4 -1.4 2.4 -2.8 2.4 c -1.6 -0.2 -2.6 -1.4 -2.4 -2.8 l 3.8 -43.6 c 0 -1.2 1.2 -2.4 2.6 -2.4 z')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$path,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$d('m 40 0 c -1.4 0 -2.6 1.2 -2.6 2.6 V 6 L 2.6 9 A 3 3 90 0 0 0 12 v 0 v 5.8 H 89.2 v -5.8 v 0 a 3 3 90 0 0 -2.6 -3 l -34.6 -3 V 2.6 c 0 -1.4 -1 -2.6 -2.4 -2.6 z')
+				]),
+			_List_Nil)
+		]);
 	return clickable ? A2(
 		$elm$svg$Svg$g,
 		_List_fromArray(
 			[
 				$elm$svg$Svg$Events$onClick($author$project$Main$SendToTrashBinPart2),
-				A2($elm$html$Html$Attributes$style, 'cursor', 'pointer')
+				A2($elm$html$Html$Attributes$style, 'cursor', 'pointer'),
+				$elm$svg$Svg$Attributes$fill(
+				$author$project$SvgColor$trashBinColor(clickable))
 			]),
 		_Utils_ap(
-			trashBinSvg('#555'),
+			trashBinSvg,
 			_List_fromArray(
 				[
 					A2(
@@ -7277,13 +7296,17 @@ var $author$project$Main$trashBinSvg_ = function (clickable) {
 							$elm$svg$Svg$Attributes$cx('45'),
 							$elm$svg$Svg$Attributes$cy('55'),
 							$elm$svg$Svg$Attributes$r('16'),
-							$elm$svg$Svg$Attributes$fill('#ffff00')
+							$elm$svg$Svg$Attributes$fill($author$project$SvgColor$yellowCandidateColor)
 						]),
 					_List_Nil)
 				]))) : A2(
 		$elm$svg$Svg$g,
-		_List_Nil,
-		trashBinSvg('#eee'));
+		_List_fromArray(
+			[
+				$elm$svg$Svg$Attributes$fill(
+				$author$project$SvgColor$trashBinColor(clickable))
+			]),
+		trashBinSvg);
 };
 var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 	return _List_fromArray(
@@ -7300,7 +7323,7 @@ var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 					$author$project$Main$trashBinSvg_(
 					_Utils_eq(
 						trashBinFocus,
-						$elm$core$Maybe$Just($author$project$Main$KeseTurn)))
+						$elm$core$Maybe$Just($author$project$KeseRimaTypes$KeseTurn)))
 				])),
 			A2(
 			$elm$svg$Svg$g,
@@ -7314,7 +7337,7 @@ var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 					$author$project$Main$trashBinSvg_(
 					_Utils_eq(
 						trashBinFocus,
-						$elm$core$Maybe$Just($author$project$Main$RimaTurn)))
+						$elm$core$Maybe$Just($author$project$KeseRimaTypes$RimaTurn)))
 				]))
 		]);
 };
@@ -7517,10 +7540,10 @@ var $author$project$Main$view = function (_v0) {
 									return A3(
 										$author$project$Main$pieceSvgOnGrid,
 										false,
-										(_Utils_eq(piece.pieceColor, $author$project$Main$Ship) || _Utils_eq(
+										(_Utils_eq(piece.pieceColor, $author$project$KeseRimaTypes$Ship) || _Utils_eq(
 											piece.pieceColor,
 											$author$project$Main$toColor(cardState.whoseTurn))) ? $author$project$Main$GiveFocusTo(
-											$author$project$Main$PieceOnTheBoard(piece.coord)) : $author$project$Main$None,
+											$author$project$KeseRimaTypes$PieceOnTheBoard(piece.coord)) : $author$project$Main$None,
 										piece);
 								},
 								cardState.board),
@@ -7532,8 +7555,8 @@ var $author$project$Main$view = function (_v0) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												false,
-												_Utils_eq(cardState.whoseTurn, $author$project$Main$KeseTurn) ? $author$project$Main$GiveFocusTo(
-													$author$project$Main$PieceInKeseHand(i)) : $author$project$Main$None,
+												_Utils_eq(cardState.whoseTurn, $author$project$KeseRimaTypes$KeseTurn) ? $author$project$Main$GiveFocusTo(
+													$author$project$KeseRimaTypes$PieceInKeseHand(i)) : $author$project$Main$None,
 												A2($author$project$Main$keseHandPos, i, prof));
 										}),
 									cardState.keseHand),
@@ -7544,8 +7567,8 @@ var $author$project$Main$view = function (_v0) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												false,
-												_Utils_eq(cardState.whoseTurn, $author$project$Main$RimaTurn) ? $author$project$Main$GiveFocusTo(
-													$author$project$Main$PieceInRimaHand(i)) : $author$project$Main$None,
+												_Utils_eq(cardState.whoseTurn, $author$project$KeseRimaTypes$RimaTurn) ? $author$project$Main$GiveFocusTo(
+													$author$project$KeseRimaTypes$PieceInRimaHand(i)) : $author$project$Main$None,
 												A2($author$project$Main$rimaHandPos, i, prof));
 										}),
 									cardState.rimaHand))))),
@@ -7590,17 +7613,17 @@ var $author$project$Main$view = function (_v0) {
 									[
 										A2(
 										$author$project$Main$playerSvg,
-										$author$project$Main$KeseTurn,
+										$author$project$KeseRimaTypes$KeseTurn,
 										{
-											bigAndBlurred: !_Utils_eq($author$project$Main$Rima, cardState.whoseVictory),
-											victoryCrown: !_Utils_eq($author$project$Main$Rima, cardState.whoseVictory)
+											bigAndBlurred: !_Utils_eq($author$project$KeseRimaTypes$Rima, cardState.whoseVictory),
+											victoryCrown: !_Utils_eq($author$project$KeseRimaTypes$Rima, cardState.whoseVictory)
 										}),
 										A2(
 										$author$project$Main$playerSvg,
-										$author$project$Main$RimaTurn,
+										$author$project$KeseRimaTypes$RimaTurn,
 										{
-											bigAndBlurred: !_Utils_eq($author$project$Main$Kese, cardState.whoseVictory),
-											victoryCrown: !_Utils_eq($author$project$Main$Kese, cardState.whoseVictory)
+											bigAndBlurred: !_Utils_eq($author$project$KeseRimaTypes$Kese, cardState.whoseVictory),
+											victoryCrown: !_Utils_eq($author$project$KeseRimaTypes$Kese, cardState.whoseVictory)
 										})
 									]),
 								_Utils_ap(
@@ -7649,7 +7672,7 @@ var $author$project$Main$view = function (_v0) {
 						var robbedBoard = _v4.b;
 						var hasCircleInHand = A2(
 							$elm$core$List$any,
-							$elm$core$Basics$eq($author$project$Main$Circle),
+							$elm$core$Basics$eq($author$project$KeseRimaTypes$Circle),
 							function () {
 								var _v6 = cardState.whoseTurn;
 								if (_v6.$ === 'KeseTurn') {
@@ -7667,12 +7690,12 @@ var $author$project$Main$view = function (_v0) {
 								case 'Kese':
 									return A2(
 										$author$project$Main$filterWhetherMemberOf,
-										A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Rima, robbedBoard),
+										A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, robbedBoard),
 										A3($author$project$Main$getCandidatesYellow, true, focused_piece, robbedBoard));
 								default:
 									return A2(
 										$author$project$Main$filterWhetherMemberOf,
-										A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Kese, robbedBoard),
+										A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, robbedBoard),
 										A3($author$project$Main$getCandidatesYellow, true, focused_piece, robbedBoard));
 							}
 						}();
@@ -7860,10 +7883,10 @@ var $author$project$Main$view = function (_v0) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												false,
-												(_Utils_eq(remaining.whoseTurn, $author$project$Main$KeseTurn) && _Utils_eq(
+												(_Utils_eq(remaining.whoseTurn, $author$project$KeseRimaTypes$KeseTurn) && _Utils_eq(
 													isSacrificingCircleRequired,
-													_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
-													{index: i, whoseHand: $author$project$Main$KeseTurn}) : $author$project$Main$None,
+													_Utils_eq(prof, $author$project$KeseRimaTypes$Circle))) ? $author$project$Main$SendToTrashBinPart1(
+													{index: i, whoseHand: $author$project$KeseRimaTypes$KeseTurn}) : $author$project$Main$None,
 												A2($author$project$Main$keseHandPos, i, prof));
 										}),
 									remaining.keseHand),
@@ -7875,10 +7898,10 @@ var $author$project$Main$view = function (_v0) {
 												return A3(
 													$author$project$Main$pieceSvg,
 													false,
-													(_Utils_eq(remaining.whoseTurn, $author$project$Main$RimaTurn) && _Utils_eq(
+													(_Utils_eq(remaining.whoseTurn, $author$project$KeseRimaTypes$RimaTurn) && _Utils_eq(
 														isSacrificingCircleRequired,
-														_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
-														{index: i, whoseHand: $author$project$Main$RimaTurn}) : $author$project$Main$None,
+														_Utils_eq(prof, $author$project$KeseRimaTypes$Circle))) ? $author$project$Main$SendToTrashBinPart1(
+														{index: i, whoseHand: $author$project$KeseRimaTypes$RimaTurn}) : $author$project$Main$None,
 													A2($author$project$Main$rimaHandPos, i, prof));
 											}),
 										remaining.rimaHand),
@@ -7900,7 +7923,7 @@ var $author$project$Main$view = function (_v0) {
 							case 'Ship':
 								return _List_Nil;
 							case 'Kese':
-								return _Utils_eq(mover.pieceColor, $author$project$Main$Rima) ? _List_fromArray(
+								return _Utils_eq(mover.pieceColor, $author$project$KeseRimaTypes$Rima) ? _List_fromArray(
 									[
 										A2(
 										$elm$html$Html$button,
@@ -7914,7 +7937,7 @@ var $author$project$Main$view = function (_v0) {
 											]))
 									]) : _List_Nil;
 							default:
-								return _Utils_eq(mover.pieceColor, $author$project$Main$Kese) ? _List_fromArray(
+								return _Utils_eq(mover.pieceColor, $author$project$KeseRimaTypes$Kese) ? _List_fromArray(
 									[
 										A2(
 										$elm$html$Html$button,
@@ -7969,7 +7992,7 @@ var $author$project$Main$view = function (_v0) {
 										function (i, prof) {
 											return A3(
 												$author$project$Main$pieceSvg,
-												_Utils_eq(whoseHand, $author$project$Main$KeseTurn) && _Utils_eq(i, index),
+												_Utils_eq(whoseHand, $author$project$KeseRimaTypes$KeseTurn) && _Utils_eq(i, index),
 												$author$project$Main$None,
 												A2($author$project$Main$keseHandPos, i, prof));
 										}),
@@ -7981,7 +8004,7 @@ var $author$project$Main$view = function (_v0) {
 											function (i, prof) {
 												return A3(
 													$author$project$Main$pieceSvg,
-													_Utils_eq(whoseHand, $author$project$Main$RimaTurn) && _Utils_eq(i, index),
+													_Utils_eq(whoseHand, $author$project$KeseRimaTypes$RimaTurn) && _Utils_eq(i, index),
 													$author$project$Main$None,
 													A2($author$project$Main$rimaHandPos, i, prof));
 											}),
@@ -7997,7 +8020,7 @@ var $author$project$Main$view = function (_v0) {
 			var remaining = modl.b.remaining;
 			var hasCircleInHand = A2(
 				$elm$core$List$any,
-				$elm$core$Basics$eq($author$project$Main$Circle),
+				$elm$core$Basics$eq($author$project$KeseRimaTypes$Circle),
 				function () {
 					var _v17 = remaining.whoseTurn;
 					if (_v17.$ === 'KeseTurn') {
@@ -8015,12 +8038,12 @@ var $author$project$Main$view = function (_v0) {
 					case 'Kese':
 						return A2(
 							$author$project$Main$filterWhetherMemberOf,
-							A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Rima, remaining.board),
+							A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, remaining.board),
 							A4($author$project$Main$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 					default:
 						return A2(
 							$author$project$Main$filterWhetherMemberOf,
-							A2($author$project$Main$allCoordsOccupiedBy, $author$project$Main$Kese, remaining.board),
+							A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, remaining.board),
 							A4($author$project$Main$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 				}
 			}();
@@ -8109,8 +8132,8 @@ var $author$project$Main$view = function (_v0) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												false,
-												(_Utils_eq(remaining.whoseTurn, $author$project$Main$KeseTurn) && (!_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
-													{index: i, whoseHand: $author$project$Main$KeseTurn}) : $author$project$Main$None,
+												(_Utils_eq(remaining.whoseTurn, $author$project$KeseRimaTypes$KeseTurn) && (!_Utils_eq(prof, $author$project$KeseRimaTypes$Circle))) ? $author$project$Main$SendToTrashBinPart1(
+													{index: i, whoseHand: $author$project$KeseRimaTypes$KeseTurn}) : $author$project$Main$None,
 												A2($author$project$Main$keseHandPos, i, prof));
 										}),
 									remaining.keseHand),
@@ -8122,8 +8145,8 @@ var $author$project$Main$view = function (_v0) {
 												return A3(
 													$author$project$Main$pieceSvg,
 													false,
-													(_Utils_eq(remaining.whoseTurn, $author$project$Main$RimaTurn) && (!_Utils_eq(prof, $author$project$Main$Circle))) ? $author$project$Main$SendToTrashBinPart1(
-														{index: i, whoseHand: $author$project$Main$RimaTurn}) : $author$project$Main$None,
+													(_Utils_eq(remaining.whoseTurn, $author$project$KeseRimaTypes$RimaTurn) && (!_Utils_eq(prof, $author$project$KeseRimaTypes$Circle))) ? $author$project$Main$SendToTrashBinPart1(
+														{index: i, whoseHand: $author$project$KeseRimaTypes$RimaTurn}) : $author$project$Main$None,
 													A2($author$project$Main$rimaHandPos, i, prof));
 											}),
 										remaining.rimaHand),
