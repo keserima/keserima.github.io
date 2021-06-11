@@ -4,6 +4,7 @@ import Browser
 import Html exposing (Html)
 import Html.Attributes
 import List.Extra exposing (filterNot)
+import Regex
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (..)
@@ -180,7 +181,43 @@ coordToHistoryStr coord =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg (Model history modl) =
-    ( Model (history ++ newHistory msg modl) (updateStatus msg modl), Cmd.none )
+    let
+        newHist =
+            history ++ newHistory msg modl
+
+        newStat =
+            updateStatus msg modl
+    in
+    if Regex.contains twoConsecutivePasses newHist then
+        case newStat of
+            NothingSelected cardState ->
+                ( Model (String.dropRight 1 newHist ++ "--------------------------------\n!")
+                    (GameTerminated
+                        { whoseVictory = Ship
+                        , board = cardState.board
+                        , capturedByKese = cardState.capturedByKese
+                        , capturedByRima = cardState.capturedByRima
+                        , keseDeck = cardState.keseDeck
+                        , rimaDeck = cardState.rimaDeck
+                        , keseHand = cardState.keseHand
+                        , rimaHand = cardState.rimaHand
+                        }
+                    )
+                , Cmd.none
+                )
+
+            _ ->
+                ( Model newHist newStat, Cmd.none )
+
+    else
+        ( Model newHist newStat, Cmd.none )
+
+
+twoConsecutivePasses : Regex.Regex
+twoConsecutivePasses =
+    {- Unforgivable dark magic -}
+    Maybe.withDefault Regex.never <|
+        Regex.fromString "([RK]o[1-5][1-5]-[1-5][1-5]\\.\\n){2}"
 
 
 getWhoseTurn : CurrentStatus -> Maybe WhoseTurn

@@ -4357,6 +4357,107 @@ function _Browser_load(url)
 }
 
 
+// CREATE
+
+var _Regex_never = /.^/;
+
+var _Regex_fromStringWith = F2(function(options, string)
+{
+	var flags = 'g';
+	if (options.multiline) { flags += 'm'; }
+	if (options.caseInsensitive) { flags += 'i'; }
+
+	try
+	{
+		return $elm$core$Maybe$Just(new RegExp(string, flags));
+	}
+	catch(error)
+	{
+		return $elm$core$Maybe$Nothing;
+	}
+});
+
+
+// USE
+
+var _Regex_contains = F2(function(re, string)
+{
+	return string.match(re) !== null;
+});
+
+
+var _Regex_findAtMost = F3(function(n, re, str)
+{
+	var out = [];
+	var number = 0;
+	var string = str;
+	var lastIndex = re.lastIndex;
+	var prevLastIndex = -1;
+	var result;
+	while (number++ < n && (result = re.exec(string)))
+	{
+		if (prevLastIndex == re.lastIndex) break;
+		var i = result.length - 1;
+		var subs = new Array(i);
+		while (i > 0)
+		{
+			var submatch = result[i];
+			subs[--i] = submatch
+				? $elm$core$Maybe$Just(submatch)
+				: $elm$core$Maybe$Nothing;
+		}
+		out.push(A4($elm$regex$Regex$Match, result[0], result.index, number, _List_fromArray(subs)));
+		prevLastIndex = re.lastIndex;
+	}
+	re.lastIndex = lastIndex;
+	return _List_fromArray(out);
+});
+
+
+var _Regex_replaceAtMost = F4(function(n, re, replacer, string)
+{
+	var count = 0;
+	function jsReplacer(match)
+	{
+		if (count++ >= n)
+		{
+			return match;
+		}
+		var i = arguments.length - 3;
+		var submatches = new Array(i);
+		while (i > 0)
+		{
+			var submatch = arguments[i];
+			submatches[--i] = submatch
+				? $elm$core$Maybe$Just(submatch)
+				: $elm$core$Maybe$Nothing;
+		}
+		return replacer(A4($elm$regex$Regex$Match, match, arguments[arguments.length - 2], count, _List_fromArray(submatches)));
+	}
+	return string.replace(re, jsReplacer);
+});
+
+var _Regex_splitAtMost = F3(function(n, re, str)
+{
+	var string = str;
+	var out = [];
+	var start = re.lastIndex;
+	var restoreLastIndex = re.lastIndex;
+	while (n--)
+	{
+		var result = re.exec(string);
+		if (!result) break;
+		out.push(string.slice(start, result.index));
+		start = re.lastIndex;
+	}
+	out.push(string.slice(start));
+	re.lastIndex = restoreLastIndex;
+	return _List_fromArray(out);
+});
+
+var _Regex_infinity = Infinity;
+
+
 function _Url_percentEncode(string)
 {
 	return encodeURIComponent(string);
@@ -5304,6 +5405,21 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
+var $author$project$Main$GameTerminated = function (a) {
+	return {$: 'GameTerminated', a: a};
+};
+var $elm$regex$Regex$Match = F4(
+	function (match, index, number, submatches) {
+		return {index: index, match: match, number: number, submatches: submatches};
+	});
+var $elm$regex$Regex$contains = _Regex_contains;
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $elm$core$String$dropRight = F2(
+	function (n, string) {
+		return (n < 1) ? string : A3($elm$core$String$slice, 0, -n, string);
+	});
 var $author$project$Main$coordToHistoryStr = function (coord) {
 	return _Utils_ap(
 		$elm$core$String$fromInt(coord.x + 1),
@@ -5673,6 +5789,18 @@ var $author$project$Main$newHistory = F2(
 		}
 		return '';
 	});
+var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
+var $elm$regex$Regex$fromString = function (string) {
+	return A2(
+		$elm$regex$Regex$fromStringWith,
+		{caseInsensitive: false, multiline: false},
+		string);
+};
+var $elm$regex$Regex$never = _Regex_never;
+var $author$project$Main$twoConsecutivePasses = A2(
+	$elm$core$Maybe$withDefault,
+	$elm$regex$Regex$never,
+	$elm$regex$Regex$fromString('([RK]o[1-5][1-5]-[1-5][1-5]\\.\\n){2}'));
 var $author$project$Main$AfterCircleSacrifice = function (a) {
 	return {$: 'AfterCircleSacrifice', a: a};
 };
@@ -5681,9 +5809,6 @@ var $author$project$Main$AfterSacrifice = F2(
 		return {$: 'AfterSacrifice', a: a, b: b};
 	});
 var $author$project$Main$Diag = {$: 'Diag'};
-var $author$project$Main$GameTerminated = function (a) {
-	return {$: 'GameTerminated', a: a};
-};
 var $author$project$Main$HorizVert = {$: 'HorizVert'};
 var $author$project$Main$MoverIsSelected = F2(
 	function (a, b) {
@@ -6171,14 +6296,30 @@ var $author$project$Main$update = F2(
 	function (msg, _v0) {
 		var history = _v0.a;
 		var modl = _v0.b;
-		return _Utils_Tuple2(
-			A2(
-				$author$project$Main$Model,
-				_Utils_ap(
-					history,
-					A2($author$project$Main$newHistory, msg, modl)),
-				A2($author$project$Main$updateStatus, msg, modl)),
-			$elm$core$Platform$Cmd$none);
+		var newStat = A2($author$project$Main$updateStatus, msg, modl);
+		var newHist = _Utils_ap(
+			history,
+			A2($author$project$Main$newHistory, msg, modl));
+		if (A2($elm$regex$Regex$contains, $author$project$Main$twoConsecutivePasses, newHist)) {
+			if (newStat.$ === 'NothingSelected') {
+				var cardState = newStat.a;
+				return _Utils_Tuple2(
+					A2(
+						$author$project$Main$Model,
+						A2($elm$core$String$dropRight, 1, newHist) + '--------------------------------\n!',
+						$author$project$Main$GameTerminated(
+							{board: cardState.board, capturedByKese: cardState.capturedByKese, capturedByRima: cardState.capturedByRima, keseDeck: cardState.keseDeck, keseHand: cardState.keseHand, rimaDeck: cardState.rimaDeck, rimaHand: cardState.rimaHand, whoseVictory: $author$project$Main$Ship})),
+					$elm$core$Platform$Cmd$none);
+			} else {
+				return _Utils_Tuple2(
+					A2($author$project$Main$Model, newHist, newStat),
+					$elm$core$Platform$Cmd$none);
+			}
+		} else {
+			return _Utils_Tuple2(
+				A2($author$project$Main$Model, newHist, newStat),
+				$elm$core$Platform$Cmd$none);
+		}
 	});
 var $author$project$Main$Cancel = {$: 'Cancel'};
 var $author$project$Main$GiveFocusTo = function (a) {
@@ -6333,9 +6474,6 @@ var $author$project$Main$backgroundColor = function (pieceColor) {
 		default:
 			return 'rgb(96, 133, 157)';
 	}
-};
-var $elm$core$Basics$negate = function (n) {
-	return -n;
 };
 var $author$project$Main$borderColor = function (c) {
 	switch (c.$) {
