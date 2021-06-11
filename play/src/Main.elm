@@ -45,6 +45,16 @@ type alias PieceWithFloatPosition =
 
 type CurrentStatus
     = NothingSelected StateOfCards
+    | GameTerminated
+        { board : List PieceOnBoard
+        , capturedByKese : List Profession
+        , capturedByRima : List Profession
+        , keseDeck : List Profession
+        , rimaDeck : List Profession
+        , keseHand : List Profession
+        , rimaHand : List Profession
+        , whoseVictory : PieceColor
+        }
     | MoverIsSelected Focus StateOfCards
     | {- Sacrifice is necessary if currently stepping; otherwise not necessary -} NowWaitingForAdditionalSacrifice FloatingMover
     | WaitForTrashBinClick { mover : PieceOnBoard, remaining : StateOfCards, whoseHand : WhoseTurn, index : Int }
@@ -172,26 +182,29 @@ update msg (Model history modl) =
     ( Model (history ++ newHistory msg modl) (updateStatus msg modl), Cmd.none )
 
 
-getWhoseTurn : CurrentStatus -> WhoseTurn
+getWhoseTurn : CurrentStatus -> Maybe WhoseTurn
 getWhoseTurn modl =
     case modl of
         NothingSelected { whoseTurn } ->
-            whoseTurn
+            Just whoseTurn
 
         MoverIsSelected _ { whoseTurn } ->
-            whoseTurn
+            Just whoseTurn
 
         NowWaitingForAdditionalSacrifice { remaining } ->
-            remaining.whoseTurn
+            Just remaining.whoseTurn
 
         AfterSacrifice _ { remaining } ->
-            remaining.whoseTurn
+            Just remaining.whoseTurn
 
         AfterCircleSacrifice { remaining } ->
-            remaining.whoseTurn
+            Just remaining.whoseTurn
 
         WaitForTrashBinClick { remaining } ->
-            remaining.whoseTurn
+            Just remaining.whoseTurn
+
+        GameTerminated _ ->
+            Nothing
 
 
 newHistory : Msg -> CurrentStatus -> String
@@ -202,7 +215,7 @@ newHistory msg modl =
     in
     case ( modl, msg ) of
         ( _, Cancel ) ->
-            "~~~ " ++ whoseTurnToHistoryStr (getWhoseTurn modl)
+            "~~~ " ++ unwrap (Maybe.map whoseTurnToHistoryStr (getWhoseTurn modl))
 
         ( NothingSelected cardState, GiveFocusTo (PieceInKeseHand index) ) ->
             List.Extra.getAt index cardState.keseHand |> Maybe.map profToHistoryStr |> unwrap
@@ -260,15 +273,34 @@ newHistory msg modl =
                     List.Extra.getAt index remaining.rimaHand |> Maybe.map profToHistoryStr |> unwrap
 
         ( NowWaitingForAdditionalSacrifice { mover, remaining }, TurnEnd ) ->
-            (case List.filter (\p -> p.coord == mover.coord) remaining.board of
+            case List.filter (\p -> p.coord == mover.coord) remaining.board of
                 [] ->
-                    ".\n"
+                    ".\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
 
                 captured :: _ ->
                     {- capture -}
-                    "[" ++ profToHistoryStr captured.prof ++ "].\n"
-            )
-                ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
+                    case remaining.whoseTurn of
+                        KeseTurn ->
+                            let
+                                newCapturedByKese =
+                                    captured.prof :: remaining.capturedByKese
+                            in
+                            if isVictorious newCapturedByKese then
+                                "[" ++ profToHistoryStr captured.prof ++ "].\n--------------------------------\nK!"
+
+                            else
+                                "[" ++ profToHistoryStr captured.prof ++ "].\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
+
+                        RimaTurn ->
+                            let
+                                newCapturedByRima =
+                                    captured.prof :: remaining.capturedByRima
+                            in
+                            if isVictorious newCapturedByRima then
+                                "[" ++ profToHistoryStr captured.prof ++ "].\n--------------------------------\nR!"
+
+                            else
+                                "[" ++ profToHistoryStr captured.prof ++ "].\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
 
         ( WaitForTrashBinClick _, SendToTrashBinPart2 ) ->
             ""
@@ -284,6 +316,11 @@ newHistory msg modl =
         _ ->
             {- Do nothing -}
             ""
+
+
+isVictorious : List Profession -> Bool
+isVictorious list =
+    List.member All list || List.all (\p -> List.member p list) [ Diagonal, HorizontalVertical, Circle ]
 
 
 updateStatus : Msg -> CurrentStatus -> CurrentStatus
@@ -384,20 +421,54 @@ updateStatus msg modl =
                     in
                     case remaining.whoseTurn of
                         KeseTurn ->
-                            NothingSelected
-                                { remaining
-                                    | whoseTurn = RimaTurn
+                            let
+                                newCapturedByKese =
+                                    captured.prof :: remaining.capturedByKese
+                            in
+                            if isVictorious newCapturedByKese then
+                                GameTerminated
+                                    { whoseVictory = Kese
                                     , board = newBoard
-                                    , capturedByKese = captured.prof :: remaining.capturedByKese
-                                }
+                                    , capturedByKese = newCapturedByKese
+                                    , capturedByRima = remaining.capturedByRima
+                                    , keseDeck = remaining.keseDeck
+                                    , rimaDeck = remaining.rimaDeck
+                                    , keseHand = remaining.keseHand
+                                    , rimaHand = remaining.rimaHand
+                                    }
+
+                            else
+                                NothingSelected
+                                    { remaining
+                                        | whoseTurn = RimaTurn
+                                        , board = newBoard
+                                        , capturedByKese = newCapturedByKese
+                                    }
 
                         RimaTurn ->
-                            NothingSelected
-                                { remaining
-                                    | whoseTurn = KeseTurn
+                            let
+                                newCapturedByRima =
+                                    captured.prof :: remaining.capturedByRima
+                            in
+                            if isVictorious newCapturedByRima then
+                                GameTerminated
+                                    { whoseVictory = Rima
                                     , board = newBoard
-                                    , capturedByRima = captured.prof :: remaining.capturedByRima
-                                }
+                                    , capturedByRima = newCapturedByRima
+                                    , capturedByKese = remaining.capturedByKese
+                                    , keseDeck = remaining.keseDeck
+                                    , rimaDeck = remaining.rimaDeck
+                                    , keseHand = remaining.keseHand
+                                    , rimaHand = remaining.rimaHand
+                                    }
+
+                            else
+                                NothingSelected
+                                    { remaining
+                                        | whoseTurn = KeseTurn
+                                        , board = newBoard
+                                        , capturedByRima = newCapturedByRima
+                                    }
 
         ( WaitForTrashBinClick { mover, remaining, whoseHand, index }, SendToTrashBinPart2 ) ->
             case whoseHand of
@@ -700,7 +771,7 @@ drawUpToThree xs =
             ( xs, [] )
 
 
-displayCapturedCardsAndTwoDecks : StateOfCards -> List (Svg Msg)
+displayCapturedCardsAndTwoDecks : { a | keseDeck : List b, rimaDeck : List c, capturedByKese : List Profession, capturedByRima : List Profession } -> List (Svg Msg)
 displayCapturedCardsAndTwoDecks model =
     [ g [ id "keseDeck" ]
         (List.indexedMap
@@ -790,6 +861,11 @@ trashBinSvg_ clickable =
 
 playerSvg : String -> Bool -> WhoseTurn -> Svg msg
 playerSvg id_ isOwnTurn turn =
+    playerSvg_ False id_ isOwnTurn turn
+
+
+playerSvg_ : Bool -> String -> Bool -> WhoseTurn -> Svg msg
+playerSvg_ victoryCrown id_ isBigAndBlurred turn =
     let
         translateY =
             case turn of
@@ -803,7 +879,7 @@ playerSvg id_ isOwnTurn turn =
             toColor turn
 
         scale =
-            if isOwnTurn then
+            if isBigAndBlurred then
                 5.5
 
             else
@@ -818,11 +894,24 @@ playerSvg id_ isOwnTurn turn =
             , Svg.path [ fill (foregroundColor color), d "m 0,0.5 c -3,0 -5.8,1 -8,3 v 3 h 16 v -3 c -2.2,-2 -5,-3 -8,-3 z" ] []
             ]
 
+        crownStyle =
+            [ x "-12", y "-12", width "24", height "24", fill "#ffff00" ]
+
+        crown =
+            [ rect crownStyle []
+            , rect (transform "rotate(30) " :: crownStyle) []
+            , rect (transform "rotate(-30)" :: crownStyle) []
+            ]
+
         blur =
             circle [ cx "0", cy "0", r "12", fill (backgroundColor color), Svg.Attributes.style "fill:#483e37;fill-opacity:1;filter:url(#blur)" ] []
     in
-    if isOwnTurn then
-        g [ id id_, transform transf ] (blur :: person)
+    if isBigAndBlurred then
+        if victoryCrown then
+            g [ id id_, transform transf ] (crown ++ blur :: person)
+
+        else
+            g [ id id_, transform transf ] (blur :: person)
 
     else
         g [ id id_, transform transf ] person
@@ -996,6 +1085,29 @@ view (Model history modl) =
                                 )
                                 (rimaHandPos i prof)
                         )
+                        cardState.rimaHand
+                )
+                []
+
+        GameTerminated cardState ->
+            view_ history
+                (defs []
+                    [ Svg.filter [ Svg.Attributes.style "color-interpolation-filters:sRGB", id "blur" ]
+                        [ feGaussianBlur [ stdDeviation "1.5 1.5", result "blur" ] []
+                        ]
+                    ]
+                    :: boardSvg
+                    ++ displayCapturedCardsAndTwoDecks cardState
+                    ++ [ playerSvg_ (Kese == cardState.whoseVictory) "kesePlayer" (Kese == cardState.whoseVictory) KeseTurn
+                       , playerSvg_ (Rima == cardState.whoseVictory) "rimaPlayer" (Rima == cardState.whoseVictory) RimaTurn
+                       ]
+                    ++ twoTrashBinsSvg Nothing
+                    ++ List.map (pieceSvgOnGrid False None) cardState.board
+                    ++ List.indexedMap
+                        (\i prof -> pieceSvg False None (keseHandPos i prof))
+                        cardState.keseHand
+                    ++ List.indexedMap
+                        (\i prof -> pieceSvg False None (rimaHandPos i prof))
                         cardState.rimaHand
                 )
                 []
@@ -1325,7 +1437,7 @@ init flags =
                 else
                     "x"
                )
-            ++ "@15\n"
+            ++ "@15\n--------------------------------\n"
             ++ (if flags.keseGoesFirst then
                     "K"
 
