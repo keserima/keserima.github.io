@@ -2,7 +2,7 @@ module Main exposing (CurrentStatus, Msg, init, main, view)
 
 import Browser
 import Html exposing (Html)
-import Html.Attributes exposing (style)
+import Html.Attributes
 import List.Extra exposing (filterNot)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -937,7 +937,11 @@ view_ history svgContent buttons =
     Html.div [ Html.Attributes.style "padding" "0 0 0 20px" ] <|
         [ svg [ viewBox "0 -200 900 900", width "600" ] svgContent
         , Html.textarea
-            [ Html.Attributes.rows 20, Html.Attributes.cols 80, Html.Attributes.readonly True ]
+            [ Html.Attributes.rows 20
+            , Html.Attributes.cols 80
+            , Html.Attributes.readonly True
+            , Html.Attributes.style "font-family" "monospace"
+            ]
             [ Html.text history ]
         , Html.br [] []
         ]

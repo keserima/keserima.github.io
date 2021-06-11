@@ -7093,7 +7093,8 @@ var $author$project$Main$view_ = F3(
 							[
 								$elm$html$Html$Attributes$rows(20),
 								$elm$html$Html$Attributes$cols(80),
-								$elm$html$Html$Attributes$readonly(true)
+								$elm$html$Html$Attributes$readonly(true),
+								A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
 							]),
 						_List_fromArray(
 							[
