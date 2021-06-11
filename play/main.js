@@ -7346,6 +7346,12 @@ var $elm$url$Url$Builder$crossOrigin = F3(
 		return prePath + ('/' + (A2($elm$core$String$join, '/', pathSegments) + $elm$url$Url$Builder$toQuery(parameters)));
 	});
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$html$Html$Attributes$height = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'height',
+		$elm$core$String$fromInt(n));
+};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -7360,6 +7366,7 @@ var $elm$html$Html$Attributes$href = function (url) {
 		'href',
 		_VirtualDom_noJavaScriptUri(url));
 };
+var $elm$html$Html$img = _VirtualDom_node('img');
 var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -7374,6 +7381,12 @@ var $elm$html$Html$Attributes$rows = function (n) {
 		_VirtualDom_attribute,
 		'rows',
 		$elm$core$String$fromInt(n));
+};
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
 var $elm$url$Url$Builder$QueryParameter = F2(
 	function (a, b) {
@@ -7470,7 +7483,16 @@ var $author$project$Main$view_ = F3(
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('ここまでの棋譜をツイートする')
+									$elm$html$Html$text('ここまでの棋譜をツイートする'),
+									A2($elm$html$Html$br, _List_Nil, _List_Nil),
+									A2(
+									$elm$html$Html$img,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$src('../imgs/keserima.png'),
+											$elm$html$Html$Attributes$height(100)
+										]),
+									_List_Nil)
 								]))
 						]))
 				]));
