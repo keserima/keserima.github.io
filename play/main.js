@@ -5463,17 +5463,56 @@ var $author$project$Main$newHistory = F2(
 						case 'MoverIsSelected':
 							var _v3 = _v0.a;
 							var from = _v3.a;
+							var cardState = _v3.b;
 							var to = _v0.b.a;
 							switch (from.$) {
 								case 'PieceOnTheBoard':
 									return '-' + $author$project$Main$coordToHistoryStr(to);
 								case 'PieceInKeseHand':
-									return $author$project$Main$coordToHistoryStr(to) + '.\nR';
+									var _v5 = _Utils_Tuple2(cardState.keseHand, cardState.keseDeck);
+									if ((((_v5.a.b && (!_v5.a.b.b)) && _v5.b.b) && _v5.b.b.b) && _v5.b.b.b.b) {
+										var _v6 = _v5.a;
+										var _v7 = _v5.b;
+										var x = _v7.a;
+										var _v8 = _v7.b;
+										var y = _v8.a;
+										var _v9 = _v8.b;
+										var z = _v9.a;
+										return $author$project$Main$coordToHistoryStr(to) + ('{' + (A2(
+											$elm$core$String$join,
+											'',
+											A2(
+												$elm$core$List$map,
+												$author$project$Main$profToHistoryStr,
+												_List_fromArray(
+													[x, y, z]))) + '}.\nR'));
+									} else {
+										return $author$project$Main$coordToHistoryStr(to) + '.\nR';
+									}
 								default:
-									return $author$project$Main$coordToHistoryStr(to) + '.\nK';
+									var _v10 = _Utils_Tuple2(cardState.rimaHand, cardState.rimaDeck);
+									if ((((_v10.a.b && (!_v10.a.b.b)) && _v10.b.b) && _v10.b.b.b) && _v10.b.b.b.b) {
+										var _v11 = _v10.a;
+										var _v12 = _v10.b;
+										var x = _v12.a;
+										var _v13 = _v12.b;
+										var y = _v13.a;
+										var _v14 = _v13.b;
+										var z = _v14.a;
+										return $author$project$Main$coordToHistoryStr(to) + ('{' + (A2(
+											$elm$core$String$join,
+											'',
+											A2(
+												$elm$core$List$map,
+												$author$project$Main$profToHistoryStr,
+												_List_fromArray(
+													[x, y, z]))) + '}.\nK'));
+									} else {
+										return $author$project$Main$coordToHistoryStr(to) + '.\nK';
+									}
 							}
 						case 'AfterSacrifice':
-							var _v5 = _v0.a;
+							var _v15 = _v0.a;
 							var to = _v0.b.a;
 							return $author$project$Main$coordToHistoryStr(to);
 						default:
@@ -5483,19 +5522,19 @@ var $author$project$Main$newHistory = F2(
 					if (_v0.a.$ === 'NowWaitingForAdditionalSacrifice') {
 						var mover = _v0.a.a.mover;
 						var remaining = _v0.a.a.remaining;
-						var _v7 = _v0.b;
+						var _v17 = _v0.b;
 						return _Utils_ap(
 							function () {
-								var _v8 = A2(
+								var _v18 = A2(
 									$elm$core$List$filter,
 									function (p) {
 										return _Utils_eq(p.coord, mover.coord);
 									},
 									remaining.board);
-								if (!_v8.b) {
+								if (!_v18.b) {
 									return '.\n';
 								} else {
-									var captured = _v8.a;
+									var captured = _v18.a;
 									return '[' + ($author$project$Main$profToHistoryStr(captured.prof) + '].\n');
 								}
 							}(),
@@ -5506,7 +5545,7 @@ var $author$project$Main$newHistory = F2(
 					}
 				case 'SendToTrashBinPart2':
 					if (_v0.a.$ === 'WaitForTrashBinClick') {
-						var _v9 = _v0.b;
+						var _v19 = _v0.b;
 						return '';
 					} else {
 						break _v0$10;
@@ -5814,15 +5853,36 @@ var $author$project$Main$updateStatus = F2(
 											},
 											profs),
 										cardState.board);
-									return $author$project$Main$NothingSelected(
-										_Utils_update(
-											cardState,
-											{board: newBoard, keseHand: newKeseHand, whoseTurn: $author$project$Main$RimaTurn}));
+									var _v8 = _Utils_Tuple2(newKeseHand, cardState.keseDeck);
+									if ((((!_v8.a.b) && _v8.b.b) && _v8.b.b.b) && _v8.b.b.b.b) {
+										var _v9 = _v8.b;
+										var x = _v9.a;
+										var _v10 = _v9.b;
+										var y = _v10.a;
+										var _v11 = _v10.b;
+										var z = _v11.a;
+										var zs = _v11.b;
+										return $author$project$Main$NothingSelected(
+											_Utils_update(
+												cardState,
+												{
+													board: newBoard,
+													keseDeck: zs,
+													keseHand: _List_fromArray(
+														[x, y, z]),
+													whoseTurn: $author$project$Main$RimaTurn
+												}));
+									} else {
+										return $author$project$Main$NothingSelected(
+											_Utils_update(
+												cardState,
+												{board: newBoard, keseHand: newKeseHand, whoseTurn: $author$project$Main$RimaTurn}));
+									}
 								default:
 									var ind = from.a;
-									var _v8 = A2($author$project$Main$robIth, ind, cardState.rimaHand);
-									var profs = _v8.a;
-									var newRimaHand = _v8.b;
+									var _v12 = A2($author$project$Main$robIth, ind, cardState.rimaHand);
+									var profs = _v12.a;
+									var newRimaHand = _v12.b;
 									var newBoard = _Utils_ap(
 										A2(
 											$elm$core$List$map,
@@ -5831,19 +5891,40 @@ var $author$project$Main$updateStatus = F2(
 											},
 											profs),
 										cardState.board);
-									return $author$project$Main$NothingSelected(
-										_Utils_update(
-											cardState,
-											{board: newBoard, rimaHand: newRimaHand, whoseTurn: $author$project$Main$KeseTurn}));
+									var _v13 = _Utils_Tuple2(newRimaHand, cardState.rimaDeck);
+									if ((((!_v13.a.b) && _v13.b.b) && _v13.b.b.b) && _v13.b.b.b.b) {
+										var _v14 = _v13.b;
+										var x = _v14.a;
+										var _v15 = _v14.b;
+										var y = _v15.a;
+										var _v16 = _v15.b;
+										var z = _v16.a;
+										var zs = _v16.b;
+										return $author$project$Main$NothingSelected(
+											_Utils_update(
+												cardState,
+												{
+													board: newBoard,
+													rimaDeck: zs,
+													rimaHand: _List_fromArray(
+														[x, y, z]),
+													whoseTurn: $author$project$Main$KeseTurn
+												}));
+									} else {
+										return $author$project$Main$NothingSelected(
+											_Utils_update(
+												cardState,
+												{board: newBoard, rimaHand: newRimaHand, whoseTurn: $author$project$Main$KeseTurn}));
+									}
 							}
 						default:
 							break _v0$8;
 					}
 				case 'AfterSacrifice':
 					if (_v0.b.$ === 'MovementToward') {
-						var _v9 = _v0.a;
-						var mover = _v9.b.mover;
-						var remaining = _v9.b.remaining;
+						var _v17 = _v0.a;
+						var mover = _v17.b.mover;
+						var remaining = _v17.b.remaining;
 						var to = _v0.b.a;
 						return $author$project$Main$NowWaitingForAdditionalSacrifice(
 							{
@@ -5867,22 +5948,22 @@ var $author$project$Main$updateStatus = F2(
 						case 'TurnEnd':
 							var mover = _v0.a.a.mover;
 							var remaining = _v0.a.a.remaining;
-							var _v10 = _v0.b;
-							var _v11 = A2(
+							var _v18 = _v0.b;
+							var _v19 = A2(
 								$elm$core$List$filter,
 								function (p) {
 									return _Utils_eq(p.coord, mover.coord);
 								},
 								remaining.board);
-							if (!_v11.b) {
+							if (!_v19.b) {
 								return $author$project$Main$NothingSelected(
 									_Utils_update(
 										remaining,
 										{
 											board: A2($elm$core$List$cons, mover, remaining.board),
 											whoseTurn: function () {
-												var _v12 = remaining.whoseTurn;
-												if (_v12.$ === 'KeseTurn') {
+												var _v20 = remaining.whoseTurn;
+												if (_v20.$ === 'KeseTurn') {
 													return $author$project$Main$RimaTurn;
 												} else {
 													return $author$project$Main$KeseTurn;
@@ -5890,13 +5971,13 @@ var $author$project$Main$updateStatus = F2(
 											}()
 										}));
 							} else {
-								var captured = _v11.a;
+								var captured = _v19.a;
 								var newBoard = A2(
 									$elm$core$List$cons,
 									mover,
 									A2($elm_community$list_extra$List$Extra$remove, captured, remaining.board));
-								var _v13 = remaining.whoseTurn;
-								if (_v13.$ === 'KeseTurn') {
+								var _v21 = remaining.whoseTurn;
+								if (_v21.$ === 'KeseTurn') {
 									return $author$project$Main$NothingSelected(
 										_Utils_update(
 											remaining,
@@ -5925,66 +6006,66 @@ var $author$project$Main$updateStatus = F2(
 						var remaining = _v0.a.a.remaining;
 						var whoseHand = _v0.a.a.whoseHand;
 						var index = _v0.a.a.index;
-						var _v14 = _v0.b;
+						var _v22 = _v0.b;
 						if (whoseHand.$ === 'KeseTurn') {
-							var _v16 = A2($author$project$Main$robIth, index, remaining.keseHand);
-							var sacrifices = _v16.a;
-							var newKeseHand = _v16.b;
+							var _v24 = A2($author$project$Main$robIth, index, remaining.keseHand);
+							var sacrifices = _v24.a;
+							var newKeseHand = _v24.b;
 							var _new = {
 								mover: mover,
 								remaining: _Utils_update(
 									remaining,
 									{keseHand: newKeseHand})
 							};
-							_v17$3:
+							_v25$3:
 							while (true) {
 								if (sacrifices.b && (!sacrifices.b.b)) {
 									switch (sacrifices.a.$) {
 										case 'Circle':
-											var _v18 = sacrifices.a;
+											var _v26 = sacrifices.a;
 											return $author$project$Main$AfterCircleSacrifice(_new);
 										case 'HorizontalVertical':
-											var _v19 = sacrifices.a;
+											var _v27 = sacrifices.a;
 											return A2($author$project$Main$AfterSacrifice, $author$project$Main$HorizVert, _new);
 										case 'Diagonal':
-											var _v20 = sacrifices.a;
+											var _v28 = sacrifices.a;
 											return A2($author$project$Main$AfterSacrifice, $author$project$Main$Diag, _new);
 										default:
-											break _v17$3;
+											break _v25$3;
 									}
 								} else {
-									break _v17$3;
+									break _v25$3;
 								}
 							}
 							return modl;
 						} else {
-							var _v21 = A2($author$project$Main$robIth, index, remaining.rimaHand);
-							var sacrifices = _v21.a;
-							var newRimaHand = _v21.b;
+							var _v29 = A2($author$project$Main$robIth, index, remaining.rimaHand);
+							var sacrifices = _v29.a;
+							var newRimaHand = _v29.b;
 							var _new = {
 								mover: mover,
 								remaining: _Utils_update(
 									remaining,
 									{rimaHand: newRimaHand})
 							};
-							_v22$3:
+							_v30$3:
 							while (true) {
 								if (sacrifices.b && (!sacrifices.b.b)) {
 									switch (sacrifices.a.$) {
 										case 'Circle':
-											var _v23 = sacrifices.a;
+											var _v31 = sacrifices.a;
 											return $author$project$Main$AfterCircleSacrifice(_new);
 										case 'HorizontalVertical':
-											var _v24 = sacrifices.a;
+											var _v32 = sacrifices.a;
 											return A2($author$project$Main$AfterSacrifice, $author$project$Main$HorizVert, _new);
 										case 'Diagonal':
-											var _v25 = sacrifices.a;
+											var _v33 = sacrifices.a;
 											return A2($author$project$Main$AfterSacrifice, $author$project$Main$Diag, _new);
 										default:
-											break _v22$3;
+											break _v30$3;
 									}
 								} else {
-									break _v22$3;
+									break _v30$3;
 								}
 							}
 							return modl;

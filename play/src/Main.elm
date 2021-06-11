@@ -225,18 +225,28 @@ newHistory msg modl =
                 _ ->
                     "ERROR!!!!!!!!"
 
-        ( MoverIsSelected from _, MovementToward to ) ->
+        ( MoverIsSelected from cardState, MovementToward to ) ->
             case from of
                 PieceOnTheBoard _ ->
                     "-" ++ coordToHistoryStr to
 
                 {- Parachuting from KeseHand -}
                 PieceInKeseHand _ ->
-                    coordToHistoryStr to ++ ".\nR"
+                    case ( cardState.keseHand, cardState.keseDeck ) of
+                        ( [ _ ], x :: y :: z :: _ ) ->
+                            coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr [ x, y, z ]) ++ "}.\nR"
+
+                        _ ->
+                            coordToHistoryStr to ++ ".\nR"
 
                 {- Parachuting from RimaHand -}
                 PieceInRimaHand _ ->
-                    coordToHistoryStr to ++ ".\nK"
+                    case ( cardState.rimaHand, cardState.rimaDeck ) of
+                        ( [ _ ], x :: y :: z :: _ ) ->
+                            coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr [ x, y, z ]) ++ "}.\nK"
+
+                        _ ->
+                            coordToHistoryStr to ++ ".\nK"
 
         ( AfterSacrifice _ _, MovementToward to ) ->
             coordToHistoryStr to
@@ -309,7 +319,18 @@ updateStatus msg modl =
                             List.map (\prof -> { pieceColor = Kese, coord = to, prof = prof }) profs
                                 ++ cardState.board
                     in
-                    NothingSelected { cardState | board = newBoard, keseHand = newKeseHand, whoseTurn = RimaTurn }
+                    case ( newKeseHand, cardState.keseDeck ) of
+                        ( [], x :: y :: z :: zs ) ->
+                            NothingSelected
+                                { cardState
+                                    | board = newBoard
+                                    , keseHand = [ x, y, z ]
+                                    , whoseTurn = RimaTurn
+                                    , keseDeck = zs
+                                }
+
+                        _ ->
+                            NothingSelected { cardState | board = newBoard, keseHand = newKeseHand, whoseTurn = RimaTurn }
 
                 {- Parachuting from RimaHand -}
                 PieceInRimaHand ind ->
@@ -321,7 +342,18 @@ updateStatus msg modl =
                             List.map (\prof -> { pieceColor = Rima, coord = to, prof = prof }) profs
                                 ++ cardState.board
                     in
-                    NothingSelected { cardState | board = newBoard, rimaHand = newRimaHand, whoseTurn = KeseTurn }
+                    case ( newRimaHand, cardState.rimaDeck ) of
+                        ( [], x :: y :: z :: zs ) ->
+                            NothingSelected
+                                { cardState
+                                    | board = newBoard
+                                    , rimaHand = [ x, y, z ]
+                                    , whoseTurn = KeseTurn
+                                    , rimaDeck = zs
+                                }
+
+                        _ ->
+                            NothingSelected { cardState | board = newBoard, rimaHand = newRimaHand, whoseTurn = KeseTurn }
 
         ( AfterSacrifice _ { mover, remaining }, MovementToward to ) ->
             NowWaitingForAdditionalSacrifice { mover = { mover | coord = to }, remaining = remaining }
