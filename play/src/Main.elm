@@ -827,8 +827,8 @@ stationaryPart cardState =
         ]
         :: boardSvg
         ++ displayCapturedCardsAndTwoDecks cardState
-        ++ [ playerSvg "kesePlayer" (KeseTurn == cardState.whoseTurn) KeseTurn
-           , playerSvg "rimaPlayer" (RimaTurn == cardState.whoseTurn) RimaTurn
+        ++ [ playerSvg KeseTurn { victoryCrown = False, bigAndBlurred = KeseTurn == cardState.whoseTurn }
+           , playerSvg RimaTurn { victoryCrown = False, bigAndBlurred = RimaTurn == cardState.whoseTurn }
            ]
 
 
@@ -859,16 +859,19 @@ trashBinSvg_ clickable =
         g [] (trashBinSvg "#eee")
 
 
-playerSvg : String -> Bool -> WhoseTurn -> Svg msg
-playerSvg id_ isOwnTurn turn =
-    playerSvg_ False id_ isOwnTurn turn
-
-
-playerSvg_ : Bool -> String -> Bool -> WhoseTurn -> Svg msg
-playerSvg_ victoryCrown id_ isBigAndBlurred turn =
+playerSvg : WhoseTurn -> { a | victoryCrown : Bool, bigAndBlurred : Bool } -> Svg msg
+playerSvg playerColor o =
     let
+        id_ =
+            case playerColor of
+                KeseTurn ->
+                    "kesePlayer"
+
+                RimaTurn ->
+                    "rimaPlayer"
+
         translateY =
-            case turn of
+            case playerColor of
                 KeseTurn ->
                     442.0
 
@@ -876,10 +879,10 @@ playerSvg_ victoryCrown id_ isBigAndBlurred turn =
                     56.75
 
         color =
-            toColor turn
+            toColor playerColor
 
         scale =
-            if isBigAndBlurred then
+            if o.bigAndBlurred then
                 5.5
 
             else
@@ -906,8 +909,8 @@ playerSvg_ victoryCrown id_ isBigAndBlurred turn =
         blur =
             circle [ cx "0", cy "0", r "12", fill (backgroundColor color), Svg.Attributes.style "fill:#483e37;fill-opacity:1;filter:url(#blur)" ] []
     in
-    if isBigAndBlurred then
-        if victoryCrown then
+    if o.bigAndBlurred then
+        if o.victoryCrown then
             g [ id id_, transform transf ] (crown ++ blur :: person)
 
         else
@@ -1098,8 +1101,15 @@ view (Model history modl) =
                     ]
                     :: boardSvg
                     ++ displayCapturedCardsAndTwoDecks cardState
-                    ++ [ playerSvg_ (Kese == cardState.whoseVictory) "kesePlayer" (Kese == cardState.whoseVictory) KeseTurn
-                       , playerSvg_ (Rima == cardState.whoseVictory) "rimaPlayer" (Rima == cardState.whoseVictory) RimaTurn
+                    ++ [ {- /= is used so that, in case of a draw, both sides receive the crown -}
+                         playerSvg KeseTurn
+                            { victoryCrown = Rima /= cardState.whoseVictory
+                            , bigAndBlurred = Rima /= cardState.whoseVictory
+                            }
+                       , playerSvg RimaTurn
+                            { victoryCrown = Kese /= cardState.whoseVictory
+                            , bigAndBlurred = Kese /= cardState.whoseVictory
+                            }
                        ]
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map (pieceSvgOnGrid False None) cardState.board

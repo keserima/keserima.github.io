@@ -6855,17 +6855,24 @@ var $author$project$Main$toColor = function (w) {
 		return $author$project$Main$Rima;
 	}
 };
-var $author$project$Main$playerSvg_ = F4(
-	function (victoryCrown, id_, isBigAndBlurred, turn) {
+var $author$project$Main$playerSvg = F2(
+	function (playerColor, o) {
 		var translateY = function () {
-			if (turn.$ === 'KeseTurn') {
+			if (playerColor.$ === 'KeseTurn') {
 				return 442.0;
 			} else {
 				return 56.75;
 			}
 		}();
-		var scale = isBigAndBlurred ? 5.5 : 4.0;
+		var scale = o.bigAndBlurred ? 5.5 : 4.0;
 		var transf = 'translate(727,' + ($elm$core$String$fromFloat(translateY) + (') scale(' + ($elm$core$String$fromFloat(scale) + ')')));
+		var id_ = function () {
+			if (playerColor.$ === 'KeseTurn') {
+				return 'kesePlayer';
+			} else {
+				return 'rimaPlayer';
+			}
+		}();
 		var crownStyle = _List_fromArray(
 			[
 				$elm$svg$Svg$Attributes$x('-12'),
@@ -6892,7 +6899,7 @@ var $author$project$Main$playerSvg_ = F4(
 					crownStyle),
 				_List_Nil)
 			]);
-		var color = $author$project$Main$toColor(turn);
+		var color = $author$project$Main$toColor(playerColor);
 		var person = _List_fromArray(
 			[
 				A2(
@@ -6939,7 +6946,7 @@ var $author$project$Main$playerSvg_ = F4(
 					$elm$svg$Svg$Attributes$style('fill:#483e37;fill-opacity:1;filter:url(#blur)')
 				]),
 			_List_Nil);
-		return isBigAndBlurred ? (victoryCrown ? A2(
+		return o.bigAndBlurred ? (o.victoryCrown ? A2(
 			$elm$svg$Svg$g,
 			_List_fromArray(
 				[
@@ -6972,10 +6979,6 @@ var $author$project$Main$rimaHandPos = F2(
 			pieceColor: $author$project$Main$Rima,
 			prof: prof
 		};
-	});
-var $author$project$Main$playerSvg = F3(
-	function (id_, isOwnTurn, turn) {
-		return A4($author$project$Main$playerSvg_, false, id_, isOwnTurn, turn);
 	});
 var $elm$svg$Svg$Attributes$stdDeviation = _VirtualDom_attribute('stdDeviation');
 var $author$project$Main$stationaryPart = function (cardState) {
@@ -7011,16 +7014,20 @@ var $author$project$Main$stationaryPart = function (cardState) {
 				$author$project$Main$displayCapturedCardsAndTwoDecks(cardState),
 				_List_fromArray(
 					[
-						A3(
+						A2(
 						$author$project$Main$playerSvg,
-						'kesePlayer',
-						_Utils_eq($author$project$Main$KeseTurn, cardState.whoseTurn),
-						$author$project$Main$KeseTurn),
-						A3(
+						$author$project$Main$KeseTurn,
+						{
+							bigAndBlurred: _Utils_eq($author$project$Main$KeseTurn, cardState.whoseTurn),
+							victoryCrown: false
+						}),
+						A2(
 						$author$project$Main$playerSvg,
-						'rimaPlayer',
-						_Utils_eq($author$project$Main$RimaTurn, cardState.whoseTurn),
-						$author$project$Main$RimaTurn)
+						$author$project$Main$RimaTurn,
+						{
+							bigAndBlurred: _Utils_eq($author$project$Main$RimaTurn, cardState.whoseTurn),
+							victoryCrown: false
+						})
 					]))));
 };
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
@@ -7261,18 +7268,20 @@ var $author$project$Main$view = function (_v0) {
 							_Utils_ap(
 								_List_fromArray(
 									[
-										A4(
-										$author$project$Main$playerSvg_,
-										_Utils_eq($author$project$Main$Kese, cardState.whoseVictory),
-										'kesePlayer',
-										_Utils_eq($author$project$Main$Kese, cardState.whoseVictory),
-										$author$project$Main$KeseTurn),
-										A4(
-										$author$project$Main$playerSvg_,
-										_Utils_eq($author$project$Main$Rima, cardState.whoseVictory),
-										'rimaPlayer',
-										_Utils_eq($author$project$Main$Rima, cardState.whoseVictory),
-										$author$project$Main$RimaTurn)
+										A2(
+										$author$project$Main$playerSvg,
+										$author$project$Main$KeseTurn,
+										{
+											bigAndBlurred: !_Utils_eq($author$project$Main$Rima, cardState.whoseVictory),
+											victoryCrown: !_Utils_eq($author$project$Main$Rima, cardState.whoseVictory)
+										}),
+										A2(
+										$author$project$Main$playerSvg,
+										$author$project$Main$RimaTurn,
+										{
+											bigAndBlurred: !_Utils_eq($author$project$Main$Kese, cardState.whoseVictory),
+											victoryCrown: !_Utils_eq($author$project$Main$Kese, cardState.whoseVictory)
+										})
 									]),
 								_Utils_ap(
 									$author$project$Main$twoTrashBinsSvg($elm$core$Maybe$Nothing),
