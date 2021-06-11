@@ -1136,6 +1136,8 @@ view_ history svgContent buttons =
                             )
                         ]
                     )
+                , Html.Attributes.style "font-size" "150%"
+                , Html.Attributes.style "font-weight" "bold"
                 ]
                 [ Html.text "ここまでの棋譜をツイートする" ]
             ]

@@ -5502,6 +5502,13 @@ var $author$project$Main$invertWhoseTurn = function (w) {
 		return $author$project$Main$KeseTurn;
 	}
 };
+var $elm$core$List$isEmpty = function (xs) {
+	if (!xs.b) {
+		return true;
+	} else {
+		return false;
+	}
+};
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
 		any:
@@ -5712,6 +5719,27 @@ var $author$project$Main$newHistory = F2(
 						var mover = _v0.a.a.mover;
 						var remaining = _v0.a.a.remaining;
 						var _v17 = _v0.b;
+						var cardDrawn = function () {
+							if ($elm$core$List$isEmpty(remaining.keseHand)) {
+								var _v20 = $author$project$Main$drawUpToThree(remaining.keseDeck);
+								var keseHand = _v20.a;
+								return '{' + (A2(
+									$elm$core$String$join,
+									'',
+									A2($elm$core$List$map, $author$project$Main$profToHistoryStr, keseHand)) + '}');
+							} else {
+								if ($elm$core$List$isEmpty(remaining.rimaHand)) {
+									var _v21 = $author$project$Main$drawUpToThree(remaining.rimaDeck);
+									var rimaHand = _v21.a;
+									return '{' + (A2(
+										$elm$core$String$join,
+										'',
+										A2($elm$core$List$map, $author$project$Main$profToHistoryStr, rimaHand)) + '}');
+								} else {
+									return '';
+								}
+							}
+						}();
 						var _v18 = A2(
 							$elm$core$List$filter,
 							function (p) {
@@ -5719,19 +5747,19 @@ var $author$project$Main$newHistory = F2(
 							},
 							remaining.board);
 						if (!_v18.b) {
-							return '.\n' + $author$project$Main$whoseTurnToHistoryStr(
-								$author$project$Main$invertWhoseTurn(remaining.whoseTurn));
+							return cardDrawn + ('.\n' + $author$project$Main$whoseTurnToHistoryStr(
+								$author$project$Main$invertWhoseTurn(remaining.whoseTurn)));
 						} else {
 							var captured = _v18.a;
 							var _v19 = remaining.whoseTurn;
 							if (_v19.$ === 'KeseTurn') {
 								var newCapturedByKese = A2($elm$core$List$cons, captured.prof, remaining.capturedByKese);
-								return $author$project$Main$isVictorious(newCapturedByKese) ? ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + '].\n--------------------------------\nKese')) : ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + ('].\n' + $author$project$Main$whoseTurnToHistoryStr(
-									$author$project$Main$invertWhoseTurn(remaining.whoseTurn)))));
+								return $author$project$Main$isVictorious(newCapturedByKese) ? ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + (']' + (cardDrawn + '.\n--------------------------------\nKese')))) : ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + (']' + (cardDrawn + ('.\n' + $author$project$Main$whoseTurnToHistoryStr(
+									$author$project$Main$invertWhoseTurn(remaining.whoseTurn)))))));
 							} else {
 								var newCapturedByRima = A2($elm$core$List$cons, captured.prof, remaining.capturedByRima);
-								return $author$project$Main$isVictorious(newCapturedByRima) ? ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + '].\n--------------------------------\nRima')) : ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + ('].\n' + $author$project$Main$whoseTurnToHistoryStr(
-									$author$project$Main$invertWhoseTurn(remaining.whoseTurn)))));
+								return $author$project$Main$isVictorious(newCapturedByRima) ? ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + (']' + (cardDrawn + '.\n--------------------------------\nRima')))) : ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + (']' + (cardDrawn + ('.\n' + $author$project$Main$whoseTurnToHistoryStr(
+									$author$project$Main$invertWhoseTurn(remaining.whoseTurn)))))));
 							}
 						}
 					} else {
@@ -5739,7 +5767,7 @@ var $author$project$Main$newHistory = F2(
 					}
 				case 'SendToTrashBinPart2':
 					if (_v0.a.$ === 'WaitForTrashBinClick') {
-						var _v20 = _v0.b;
+						var _v22 = _v0.b;
 						return '';
 					} else {
 						break _v0$10;
@@ -5819,13 +5847,6 @@ var $author$project$Main$NowWaitingForAdditionalSacrifice = function (a) {
 };
 var $author$project$Main$WaitForTrashBinClick = function (a) {
 	return {$: 'WaitForTrashBinClick', a: a};
-};
-var $elm$core$List$isEmpty = function (xs) {
-	if (!xs.b) {
-		return true;
-	} else {
-		return false;
-	}
 };
 var $elm_community$list_extra$List$Extra$remove = F2(
 	function (x, xs) {
@@ -6162,6 +6183,27 @@ var $author$project$Main$updateStatus = F2(
 							var mover = _v0.a.a.mover;
 							var remaining = _v0.a.a.remaining;
 							var _v18 = _v0.b;
+							var cardDrawn = function () {
+								if ($elm$core$List$isEmpty(remaining.keseHand)) {
+									var _v22 = $author$project$Main$drawUpToThree(remaining.keseDeck);
+									var keseHand = _v22.a;
+									var keseDeck = _v22.b;
+									return _Utils_update(
+										remaining,
+										{keseDeck: keseDeck, keseHand: keseHand});
+								} else {
+									if ($elm$core$List$isEmpty(remaining.rimaHand)) {
+										var _v23 = $author$project$Main$drawUpToThree(remaining.rimaDeck);
+										var rimaHand = _v23.a;
+										var rimaDeck = _v23.b;
+										return _Utils_update(
+											remaining,
+											{rimaDeck: rimaDeck, rimaHand: rimaHand});
+									} else {
+										return remaining;
+									}
+								}
+							}();
 							var _v19 = A2(
 								$elm$core$List$filter,
 								function (p) {
@@ -6169,27 +6211,6 @@ var $author$project$Main$updateStatus = F2(
 								},
 								remaining.board);
 							if (!_v19.b) {
-								var cardDrawn = function () {
-									if ($elm$core$List$isEmpty(remaining.keseHand)) {
-										var _v21 = $author$project$Main$drawUpToThree(remaining.keseHand);
-										var keseHand = _v21.a;
-										var keseDeck = _v21.b;
-										return _Utils_update(
-											remaining,
-											{keseDeck: keseDeck, keseHand: keseHand});
-									} else {
-										if ($elm$core$List$isEmpty(remaining.rimaHand)) {
-											var _v22 = $author$project$Main$drawUpToThree(remaining.rimaHand);
-											var rimaHand = _v22.a;
-											var rimaDeck = _v22.b;
-											return _Utils_update(
-												remaining,
-												{rimaDeck: rimaDeck, rimaHand: rimaHand});
-										} else {
-											return remaining;
-										}
-									}
-								}();
 								return $author$project$Main$NothingSelected(
 									_Utils_update(
 										cardDrawn,
@@ -6210,20 +6231,20 @@ var $author$project$Main$updateStatus = F2(
 									$elm$core$List$cons,
 									mover,
 									A2($elm_community$list_extra$List$Extra$remove, captured, remaining.board));
-								var _v23 = remaining.whoseTurn;
-								if (_v23.$ === 'KeseTurn') {
+								var _v21 = remaining.whoseTurn;
+								if (_v21.$ === 'KeseTurn') {
 									var newCapturedByKese = A2($elm$core$List$cons, captured.prof, remaining.capturedByKese);
 									return $author$project$Main$isVictorious(newCapturedByKese) ? $author$project$Main$GameTerminated(
 										{board: newBoard, capturedByKese: newCapturedByKese, capturedByRima: remaining.capturedByRima, keseDeck: remaining.keseDeck, keseHand: remaining.keseHand, rimaDeck: remaining.rimaDeck, rimaHand: remaining.rimaHand, whoseVictory: $author$project$Main$Kese}) : $author$project$Main$NothingSelected(
 										_Utils_update(
-											remaining,
+											cardDrawn,
 											{board: newBoard, capturedByKese: newCapturedByKese, whoseTurn: $author$project$Main$RimaTurn}));
 								} else {
 									var newCapturedByRima = A2($elm$core$List$cons, captured.prof, remaining.capturedByRima);
 									return $author$project$Main$isVictorious(newCapturedByRima) ? $author$project$Main$GameTerminated(
 										{board: newBoard, capturedByKese: remaining.capturedByKese, capturedByRima: newCapturedByRima, keseDeck: remaining.keseDeck, keseHand: remaining.keseHand, rimaDeck: remaining.rimaDeck, rimaHand: remaining.rimaHand, whoseVictory: $author$project$Main$Rima}) : $author$project$Main$NothingSelected(
 										_Utils_update(
-											remaining,
+											cardDrawn,
 											{board: newBoard, capturedByRima: newCapturedByRima, whoseTurn: $author$project$Main$KeseTurn}));
 								}
 							}
@@ -7443,7 +7464,9 @@ var $author$project$Main$view_ = F3(
 														[
 															A2($elm$url$Url$Builder$string, 'playback', history)
 														])))
-											])))
+											]))),
+									A2($elm$html$Html$Attributes$style, 'font-size', '150%'),
+									A2($elm$html$Html$Attributes$style, 'font-weight', 'bold')
 								]),
 							_List_fromArray(
 								[
