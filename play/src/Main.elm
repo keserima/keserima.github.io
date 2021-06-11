@@ -1422,7 +1422,13 @@ init flags =
                 else
                     "x"
                )
-            ++ "@15\n--------------------------------\n"
+            ++ "@15\n"
+            ++ "K{"
+            ++ String.join "" (List.map profToHistoryStr keseHand)
+            ++ "} "
+            ++ "R{"
+            ++ String.join "" (List.map profToHistoryStr rimaHand)
+            ++ "}\n--------------------------------\n"
             ++ (if flags.keseGoesFirst then
                     "K"
 

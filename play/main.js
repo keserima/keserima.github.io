@@ -5310,6 +5310,18 @@ var $author$project$Main$numToProf = function (n) {
 			return $author$project$KeseRimaTypes$Diagonal;
 	}
 };
+var $author$project$Main$profToHistoryStr = function (prof) {
+	switch (prof.$) {
+		case 'Circle':
+			return 'o';
+		case 'HorizontalVertical':
+			return '+';
+		case 'Diagonal':
+			return 'x';
+		default:
+			return '*';
+	}
+};
 var $author$project$Main$init = function (flags) {
 	var _v0 = $author$project$Main$drawUpToThree(
 		A2($elm$core$List$map, $author$project$Main$numToProf, flags.rimaDeck));
@@ -5322,7 +5334,13 @@ var $author$project$Main$init = function (flags) {
 	return _Utils_Tuple2(
 		A2(
 			$author$project$Main$Model,
-			'R' + ((flags.rimaDice ? '+' : 'x') + ('@11 ' + ('S' + ((flags.shipDice ? '+' : 'x') + ('@23 K' + ((flags.keseDice ? '+' : 'x') + ('@15\n--------------------------------\n' + (flags.keseGoesFirst ? 'K' : 'R')))))))),
+			'R' + ((flags.rimaDice ? '+' : 'x') + ('@11 ' + ('S' + ((flags.shipDice ? '+' : 'x') + ('@23 K' + ((flags.keseDice ? '+' : 'x') + ('@15\n' + ('K{' + (A2(
+				$elm$core$String$join,
+				'',
+				A2($elm$core$List$map, $author$project$Main$profToHistoryStr, keseHand)) + ('} ' + ('R{' + (A2(
+				$elm$core$String$join,
+				'',
+				A2($elm$core$List$map, $author$project$Main$profToHistoryStr, rimaHand)) + ('}\n--------------------------------\n' + (flags.keseGoesFirst ? 'K' : 'R')))))))))))))),
 			$author$project$Main$NothingSelected(
 				{
 					board: _List_fromArray(
@@ -5570,18 +5588,6 @@ var $elm$core$Maybe$map = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $author$project$Main$profToHistoryStr = function (prof) {
-	switch (prof.$) {
-		case 'Circle':
-			return 'o';
-		case 'HorizontalVertical':
-			return '+';
-		case 'Diagonal':
-			return 'x';
-		default:
-			return '*';
-	}
-};
 var $author$project$Main$whoseTurnToHistoryStr = function (w) {
 	if (w.$ === 'KeseTurn') {
 		return 'K';
