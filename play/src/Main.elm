@@ -311,9 +311,28 @@ newHistory msg modl =
                     List.Extra.getAt index remaining.rimaHand |> Maybe.map profToHistoryStr |> unwrap
 
         ( NowWaitingForAdditionalSacrifice { mover, remaining }, TurnEnd ) ->
+            let
+                cardDrawn =
+                    if List.isEmpty remaining.keseHand then
+                        let
+                            ( keseHand, _ ) =
+                                drawUpToThree remaining.keseDeck
+                        in
+                        "{" ++ String.join "" (List.map profToHistoryStr keseHand) ++ "}"
+
+                    else if List.isEmpty remaining.rimaHand then
+                        let
+                            ( rimaHand, _ ) =
+                                drawUpToThree remaining.rimaDeck
+                        in
+                        "{" ++ String.join "" (List.map profToHistoryStr rimaHand) ++ "}"
+
+                    else
+                        ""
+            in
             case List.filter (\p -> p.coord == mover.coord) remaining.board of
                 [] ->
-                    ".\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
+                    cardDrawn ++ ".\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
 
                 captured :: _ ->
                     {- capture -}
@@ -324,10 +343,10 @@ newHistory msg modl =
                                     captured.prof :: remaining.capturedByKese
                             in
                             if isVictorious newCapturedByKese then
-                                "[" ++ profToHistoryStr captured.prof ++ "].\n--------------------------------\nKese"
+                                "[" ++ profToHistoryStr captured.prof ++ "]" ++ cardDrawn ++ ".\n--------------------------------\nKese"
 
                             else
-                                "[" ++ profToHistoryStr captured.prof ++ "].\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
+                                "[" ++ profToHistoryStr captured.prof ++ "]" ++ cardDrawn ++ ".\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
 
                         RimaTurn ->
                             let
@@ -335,10 +354,10 @@ newHistory msg modl =
                                     captured.prof :: remaining.capturedByRima
                             in
                             if isVictorious newCapturedByRima then
-                                "[" ++ profToHistoryStr captured.prof ++ "].\n--------------------------------\nRima"
+                                "[" ++ profToHistoryStr captured.prof ++ "]" ++ cardDrawn ++ ".\n--------------------------------\nRima"
 
                             else
-                                "[" ++ profToHistoryStr captured.prof ++ "].\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
+                                "[" ++ profToHistoryStr captured.prof ++ "]" ++ cardDrawn ++ ".\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
 
         ( WaitForTrashBinClick _, SendToTrashBinPart2 ) ->
             ""
@@ -437,18 +456,43 @@ updateStatus msg modl =
             WaitForTrashBinClick { mover = mover, remaining = remaining, whoseHand = whoseHand, index = index }
 
         ( NowWaitingForAdditionalSacrifice { mover, remaining }, TurnEnd ) ->
+            let
+                cardDrawn =
+                    if List.isEmpty remaining.keseHand then
+                        let
+                            ( keseHand, keseDeck ) =
+                                drawUpToThree remaining.keseDeck
+                        in
+                        { remaining
+                            | keseHand = keseHand
+                            , keseDeck = keseDeck
+                        }
+
+                    else if List.isEmpty remaining.rimaHand then
+                        let
+                            ( rimaHand, rimaDeck ) =
+                                drawUpToThree remaining.rimaDeck
+                        in
+                        { remaining
+                            | rimaHand = rimaHand
+                            , rimaDeck = rimaDeck
+                        }
+
+                    else
+                        remaining
+            in
             case List.filter (\p -> p.coord == mover.coord) remaining.board of
                 [] ->
                     NothingSelected
-                        { remaining
+                        { cardDrawn
                             | whoseTurn =
-                                case remaining.whoseTurn of
+                                case cardDrawn.whoseTurn of
                                     KeseTurn ->
                                         RimaTurn
 
                                     RimaTurn ->
                                         KeseTurn
-                            , board = mover :: remaining.board
+                            , board = mover :: cardDrawn.board
                         }
 
                 captured :: _ ->
@@ -464,6 +508,7 @@ updateStatus msg modl =
                                     captured.prof :: remaining.capturedByKese
                             in
                             if isVictorious newCapturedByKese then
+                                {- end the game without drawing cards -}
                                 GameTerminated
                                     { whoseVictory = Kese
                                     , board = newBoard
@@ -477,7 +522,7 @@ updateStatus msg modl =
 
                             else
                                 NothingSelected
-                                    { remaining
+                                    { cardDrawn
                                         | whoseTurn = RimaTurn
                                         , board = newBoard
                                         , capturedByKese = newCapturedByKese
@@ -489,6 +534,7 @@ updateStatus msg modl =
                                     captured.prof :: remaining.capturedByRima
                             in
                             if isVictorious newCapturedByRima then
+                                {- end the game without drawing cards -}
                                 GameTerminated
                                     { whoseVictory = Rima
                                     , board = newBoard
@@ -502,7 +548,7 @@ updateStatus msg modl =
 
                             else
                                 NothingSelected
-                                    { remaining
+                                    { cardDrawn
                                         | whoseTurn = KeseTurn
                                         , board = newBoard
                                         , capturedByRima = newCapturedByRima

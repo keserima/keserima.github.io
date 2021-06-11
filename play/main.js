@@ -5820,6 +5820,13 @@ var $author$project$Main$NowWaitingForAdditionalSacrifice = function (a) {
 var $author$project$Main$WaitForTrashBinClick = function (a) {
 	return {$: 'WaitForTrashBinClick', a: a};
 };
+var $elm$core$List$isEmpty = function (xs) {
+	if (!xs.b) {
+		return true;
+	} else {
+		return false;
+	}
+};
 var $elm_community$list_extra$List$Extra$remove = F2(
 	function (x, xs) {
 		if (!xs.b) {
@@ -6162,13 +6169,34 @@ var $author$project$Main$updateStatus = F2(
 								},
 								remaining.board);
 							if (!_v19.b) {
+								var cardDrawn = function () {
+									if ($elm$core$List$isEmpty(remaining.keseHand)) {
+										var _v21 = $author$project$Main$drawUpToThree(remaining.keseHand);
+										var keseHand = _v21.a;
+										var keseDeck = _v21.b;
+										return _Utils_update(
+											remaining,
+											{keseDeck: keseDeck, keseHand: keseHand});
+									} else {
+										if ($elm$core$List$isEmpty(remaining.rimaHand)) {
+											var _v22 = $author$project$Main$drawUpToThree(remaining.rimaHand);
+											var rimaHand = _v22.a;
+											var rimaDeck = _v22.b;
+											return _Utils_update(
+												remaining,
+												{rimaDeck: rimaDeck, rimaHand: rimaHand});
+										} else {
+											return remaining;
+										}
+									}
+								}();
 								return $author$project$Main$NothingSelected(
 									_Utils_update(
-										remaining,
+										cardDrawn,
 										{
-											board: A2($elm$core$List$cons, mover, remaining.board),
+											board: A2($elm$core$List$cons, mover, cardDrawn.board),
 											whoseTurn: function () {
-												var _v20 = remaining.whoseTurn;
+												var _v20 = cardDrawn.whoseTurn;
 												if (_v20.$ === 'KeseTurn') {
 													return $author$project$Main$RimaTurn;
 												} else {
@@ -6182,8 +6210,8 @@ var $author$project$Main$updateStatus = F2(
 									$elm$core$List$cons,
 									mover,
 									A2($elm_community$list_extra$List$Extra$remove, captured, remaining.board));
-								var _v21 = remaining.whoseTurn;
-								if (_v21.$ === 'KeseTurn') {
+								var _v23 = remaining.whoseTurn;
+								if (_v23.$ === 'KeseTurn') {
 									var newCapturedByKese = A2($elm$core$List$cons, captured.prof, remaining.capturedByKese);
 									return $author$project$Main$isVictorious(newCapturedByKese) ? $author$project$Main$GameTerminated(
 										{board: newBoard, capturedByKese: newCapturedByKese, capturedByRima: remaining.capturedByRima, keseDeck: remaining.keseDeck, keseHand: remaining.keseHand, rimaDeck: remaining.rimaDeck, rimaHand: remaining.rimaHand, whoseVictory: $author$project$Main$Kese}) : $author$project$Main$NothingSelected(
@@ -6208,66 +6236,66 @@ var $author$project$Main$updateStatus = F2(
 						var remaining = _v0.a.a.remaining;
 						var whoseHand = _v0.a.a.whoseHand;
 						var index = _v0.a.a.index;
-						var _v22 = _v0.b;
+						var _v24 = _v0.b;
 						if (whoseHand.$ === 'KeseTurn') {
-							var _v24 = A2($author$project$Main$robIth, index, remaining.keseHand);
-							var sacrifices = _v24.a;
-							var newKeseHand = _v24.b;
+							var _v26 = A2($author$project$Main$robIth, index, remaining.keseHand);
+							var sacrifices = _v26.a;
+							var newKeseHand = _v26.b;
 							var _new = {
 								mover: mover,
 								remaining: _Utils_update(
 									remaining,
 									{keseHand: newKeseHand})
 							};
-							_v25$3:
+							_v27$3:
 							while (true) {
 								if (sacrifices.b && (!sacrifices.b.b)) {
 									switch (sacrifices.a.$) {
 										case 'Circle':
-											var _v26 = sacrifices.a;
+											var _v28 = sacrifices.a;
 											return $author$project$Main$AfterCircleSacrifice(_new);
 										case 'HorizontalVertical':
-											var _v27 = sacrifices.a;
+											var _v29 = sacrifices.a;
 											return A2($author$project$Main$AfterSacrifice, $author$project$Main$HorizVert, _new);
 										case 'Diagonal':
-											var _v28 = sacrifices.a;
+											var _v30 = sacrifices.a;
 											return A2($author$project$Main$AfterSacrifice, $author$project$Main$Diag, _new);
 										default:
-											break _v25$3;
+											break _v27$3;
 									}
 								} else {
-									break _v25$3;
+									break _v27$3;
 								}
 							}
 							return modl;
 						} else {
-							var _v29 = A2($author$project$Main$robIth, index, remaining.rimaHand);
-							var sacrifices = _v29.a;
-							var newRimaHand = _v29.b;
+							var _v31 = A2($author$project$Main$robIth, index, remaining.rimaHand);
+							var sacrifices = _v31.a;
+							var newRimaHand = _v31.b;
 							var _new = {
 								mover: mover,
 								remaining: _Utils_update(
 									remaining,
 									{rimaHand: newRimaHand})
 							};
-							_v30$3:
+							_v32$3:
 							while (true) {
 								if (sacrifices.b && (!sacrifices.b.b)) {
 									switch (sacrifices.a.$) {
 										case 'Circle':
-											var _v31 = sacrifices.a;
+											var _v33 = sacrifices.a;
 											return $author$project$Main$AfterCircleSacrifice(_new);
 										case 'HorizontalVertical':
-											var _v32 = sacrifices.a;
+											var _v34 = sacrifices.a;
 											return A2($author$project$Main$AfterSacrifice, $author$project$Main$HorizVert, _new);
 										case 'Diagonal':
-											var _v33 = sacrifices.a;
+											var _v35 = sacrifices.a;
 											return A2($author$project$Main$AfterSacrifice, $author$project$Main$Diag, _new);
 										default:
-											break _v30$3;
+											break _v32$3;
 									}
 								} else {
-									break _v30$3;
+									break _v32$3;
 								}
 							}
 							return modl;
