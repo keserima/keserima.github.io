@@ -7,7 +7,7 @@ import List.Extra exposing (filterNot)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (..)
-import Url.Builder
+import Url.Builder exposing (..)
 
 
 type alias Coordinate =
@@ -1041,12 +1041,12 @@ view_ history svgContent buttons =
             , Html.a
                 [ Html.Attributes.target "_blank"
                 , Html.Attributes.href
-                    (Url.Builder.crossOrigin
+                    (crossOrigin
                         "https://twitter.com"
                         [ "intent", "tweet" ]
                         [ Url.Builder.string "text"
                             ("架空伝統ゲーム「ケセリマ」(@keserima)を遊びました！ #keserima #ケセリマ\u{000D}\n"
-                                ++ Url.Builder.crossOrigin "https://keserima.github.io"
+                                ++ crossOrigin "https://keserima.github.io"
                                     [ "playback", "index.html" ]
                                     [ Url.Builder.string "playback" history
                                     ]
