@@ -5726,11 +5726,11 @@ var $author$project$Main$newHistory = F2(
 							var _v19 = remaining.whoseTurn;
 							if (_v19.$ === 'KeseTurn') {
 								var newCapturedByKese = A2($elm$core$List$cons, captured.prof, remaining.capturedByKese);
-								return $author$project$Main$isVictorious(newCapturedByKese) ? ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + '].\n--------------------------------\nK!')) : ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + ('].\n' + $author$project$Main$whoseTurnToHistoryStr(
+								return $author$project$Main$isVictorious(newCapturedByKese) ? ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + '].\n--------------------------------\nKese')) : ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + ('].\n' + $author$project$Main$whoseTurnToHistoryStr(
 									$author$project$Main$invertWhoseTurn(remaining.whoseTurn)))));
 							} else {
 								var newCapturedByRima = A2($elm$core$List$cons, captured.prof, remaining.capturedByRima);
-								return $author$project$Main$isVictorious(newCapturedByRima) ? ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + '].\n--------------------------------\nR!')) : ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + ('].\n' + $author$project$Main$whoseTurnToHistoryStr(
+								return $author$project$Main$isVictorious(newCapturedByRima) ? ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + '].\n--------------------------------\nRima')) : ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + ('].\n' + $author$project$Main$whoseTurnToHistoryStr(
 									$author$project$Main$invertWhoseTurn(remaining.whoseTurn)))));
 							}
 						}
@@ -6306,7 +6306,7 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					A2(
 						$author$project$Main$Model,
-						A2($elm$core$String$dropRight, 1, newHist) + '--------------------------------\n!',
+						A2($elm$core$String$dropRight, 1, newHist) + '--------------------------------\nKeseRima',
 						$author$project$Main$GameTerminated(
 							{board: cardState.board, capturedByKese: cardState.capturedByKese, capturedByRima: cardState.capturedByRima, keseDeck: cardState.keseDeck, keseHand: cardState.keseHand, rimaDeck: cardState.rimaDeck, rimaHand: cardState.rimaHand, whoseVictory: $author$project$Main$Ship})),
 					$elm$core$Platform$Cmd$none);

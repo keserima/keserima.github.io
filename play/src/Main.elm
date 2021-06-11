@@ -191,7 +191,7 @@ update msg (Model history modl) =
     if Regex.contains twoConsecutivePasses newHist then
         case newStat of
             NothingSelected cardState ->
-                ( Model (String.dropRight 1 newHist ++ "--------------------------------\n!")
+                ( Model (String.dropRight 1 newHist ++ "--------------------------------\nKeseRima")
                     (GameTerminated
                         { whoseVictory = Ship
                         , board = cardState.board
@@ -324,7 +324,7 @@ newHistory msg modl =
                                     captured.prof :: remaining.capturedByKese
                             in
                             if isVictorious newCapturedByKese then
-                                "[" ++ profToHistoryStr captured.prof ++ "].\n--------------------------------\nK!"
+                                "[" ++ profToHistoryStr captured.prof ++ "].\n--------------------------------\nKese"
 
                             else
                                 "[" ++ profToHistoryStr captured.prof ++ "].\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
@@ -335,7 +335,7 @@ newHistory msg modl =
                                     captured.prof :: remaining.capturedByRima
                             in
                             if isVictorious newCapturedByRima then
-                                "[" ++ profToHistoryStr captured.prof ++ "].\n--------------------------------\nR!"
+                                "[" ++ profToHistoryStr captured.prof ++ "].\n--------------------------------\nRima"
 
                             else
                                 "[" ++ profToHistoryStr captured.prof ++ "].\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
