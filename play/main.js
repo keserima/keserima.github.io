@@ -7455,7 +7455,7 @@ var $author$project$Main$view_ = F3(
 							_List_fromArray(
 								[
 									$elm$svg$Svg$Attributes$viewBox('0 -200 900 900'),
-									$elm$svg$Svg$Attributes$width('600')
+									$elm$svg$Svg$Attributes$width('540')
 								]),
 							svgContent),
 						A2(

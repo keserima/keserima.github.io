@@ -979,7 +979,7 @@ getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
 view_ : History -> List (Svg msg) -> List (Html msg) -> Html msg
 view_ history svgContent buttons =
     Html.div [ Html.Attributes.style "padding" "0 0 0 20px", Html.Attributes.style "display" "flex" ] <|
-        [ Html.div [] (svg [ viewBox "0 -200 900 900", width "600" ] svgContent :: Html.br [] [] :: buttons)
+        [ Html.div [] (svg [ viewBox "0 -200 900 900", width "540" ] svgContent :: Html.br [] [] :: buttons)
         , Html.div []
             [ Html.textarea
                 [ Html.Attributes.rows 20
