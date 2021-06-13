@@ -1340,21 +1340,25 @@ view (Model { historyString, currentStatus }) =
                         case p.pieceColor of
                             Ship ->
                                 {- cannot end the turn if stepping on a Ship -}
-                                []
+                                [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
 
                             Kese ->
                                 if mover.pieceColor == Rima then
-                                    [ Html.button [ onClick TurnEnd ] [ text "駒を取ってターンエンド" ] ]
+                                    [ Html.button [ onClick TurnEnd ] [ text "駒を取ってターンエンド" ]
+                                    , Html.button [ onClick Cancel ] [ text "全てをキャンセル" ]
+                                    ]
 
                                 else
-                                    []
+                                    [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
 
                             Rima ->
                                 if mover.pieceColor == Kese then
-                                    [ Html.button [ onClick TurnEnd ] [ text "駒を取ってターンエンド" ] ]
+                                    [ Html.button [ onClick TurnEnd ] [ text "駒を取ってターンエンド" ]
+                                    , Html.button [ onClick Cancel ] [ text "全てをキャンセル" ]
+                                    ]
 
                                 else
-                                    []
+                                    [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
 
                     _ ->
                         {- The resulting square is empty, so it is always possible to declare TurnEnd -}
