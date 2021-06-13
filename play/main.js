@@ -6531,16 +6531,6 @@ var $author$project$SvgColor$backgroundColor = function (pieceColor) {
 			return '#60859d';
 	}
 };
-var $author$project$SvgColor$borderColor = function (c) {
-	switch (c.$) {
-		case 'Rima':
-			return '#005242';
-		case 'Kese':
-			return '#00b592';
-		default:
-			return '#005242';
-	}
-};
 var $author$project$SvgColor$foregroundColor = function (pieceColor) {
 	switch (pieceColor.$) {
 		case 'Kese':
@@ -6648,8 +6638,8 @@ var $elm$svg$Svg$Events$onClick = function (msg) {
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
-var $author$project$Main$pieceSvg = F3(
-	function (focused, msgToBeSent, p) {
+var $author$project$Main$pieceSvg_ = F3(
+	function (strok, msgToBeSent, p) {
 		return A2(
 			$elm$svg$Svg$g,
 			_List_fromArray(
@@ -6680,10 +6670,8 @@ var $author$project$Main$pieceSvg = F3(
 							$elm$svg$Svg$Attributes$height('80'),
 							$elm$svg$Svg$Attributes$fill(
 							$author$project$SvgColor$backgroundColor(p.pieceColor)),
-							$elm$svg$Svg$Attributes$stroke(
-							focused ? $author$project$SvgColor$borderColor(p.pieceColor) : 'none'),
-							$elm$svg$Svg$Attributes$strokeWidth(
-							focused ? '10' : 'none')
+							$elm$svg$Svg$Attributes$stroke(strok.color),
+							$elm$svg$Svg$Attributes$strokeWidth(strok.width)
 						]),
 					_List_Nil),
 				A2(
@@ -6691,6 +6679,9 @@ var $author$project$Main$pieceSvg = F3(
 					p.prof,
 					$author$project$SvgColor$foregroundColor(p.pieceColor))));
 	});
+var $author$project$Main$spacing = function (n) {
+	return (n <= 6) ? 0.846 : ((0.846 * 5.0) / (n - 1));
+};
 var $author$project$SvgColor$strokeColor = function (c) {
 	switch (c.$) {
 		case 'Rima':
@@ -6771,11 +6762,18 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 				F2(
 					function (i, prof) {
 						return A3(
-							$author$project$Main$pieceSvg,
-							false,
+							$author$project$Main$pieceSvg_,
+							{
+								color: $author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Rima),
+								width: '1'
+							},
 							$author$project$Main$None,
 							{
-								coord: {x: i * 0.85, y: 6.0},
+								coord: {
+									x: (-0.115) + (i * $author$project$Main$spacing(
+										$elm$core$List$length(model.capturedByKese))),
+									y: 6.0
+								},
 								pieceColor: $author$project$KeseRimaTypes$Rima,
 								prof: prof
 							});
@@ -6792,11 +6790,18 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 				F2(
 					function (i, prof) {
 						return A3(
-							$author$project$Main$pieceSvg,
-							false,
+							$author$project$Main$pieceSvg_,
+							{
+								color: $author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Kese),
+								width: '1'
+							},
 							$author$project$Main$None,
 							{
-								coord: {x: 4.0 - (i * 0.85), y: -2.0},
+								coord: {
+									x: ((-0.115) + (5.0 * 0.846)) - (i * $author$project$Main$spacing(
+										$elm$core$List$length(model.capturedByRima))),
+									y: -2.0
+								},
 								pieceColor: $author$project$KeseRimaTypes$Kese,
 								prof: prof
 							});
@@ -7026,6 +7031,24 @@ var $author$project$Main$keseHandPos = F2(
 			pieceColor: $author$project$KeseRimaTypes$Kese,
 			prof: prof
 		};
+	});
+var $author$project$SvgColor$borderColor = function (c) {
+	switch (c.$) {
+		case 'Rima':
+			return '#005242';
+		case 'Kese':
+			return '#00b592';
+		default:
+			return '#005242';
+	}
+};
+var $author$project$Main$pieceSvg = F3(
+	function (focused, msgToBeSent, p) {
+		var strok = focused ? {
+			color: $author$project$SvgColor$borderColor(p.pieceColor),
+			width: '10'
+		} : {color: 'none', width: 'none'};
+		return A3($author$project$Main$pieceSvg_, strok, msgToBeSent, p);
 	});
 var $author$project$Main$pieceSvgOnGrid = F3(
 	function (focused, msg, _v0) {

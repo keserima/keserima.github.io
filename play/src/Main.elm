@@ -654,6 +654,26 @@ pieceSvgOnGrid focused msg { coord, prof, pieceColor } =
 
 pieceSvg : Bool -> Msg -> PieceWithFloatPosition -> Svg Msg
 pieceSvg focused msgToBeSent p =
+    let
+        strok =
+            if focused then
+                { color = borderColor p.pieceColor
+                , width = "10"
+                }
+
+            else
+                { color = "none"
+                , width = "none"
+                }
+    in
+    pieceSvg_
+        strok
+        msgToBeSent
+        p
+
+
+pieceSvg_ : { a | color : String, width : String } -> Msg -> PieceWithFloatPosition -> Svg Msg
+pieceSvg_ strok msgToBeSent p =
     g
         [ transform ("translate(" ++ String.fromFloat (p.coord.x * 100.0) ++ " " ++ String.fromFloat (p.coord.y * 100.0) ++ ")")
         , Html.Attributes.style "cursor"
@@ -673,19 +693,9 @@ pieceSvg focused msgToBeSent p =
             , height "80"
             , fill (backgroundColor p.pieceColor)
             , stroke
-                (if focused then
-                    borderColor p.pieceColor
-
-                 else
-                    "none"
-                )
+                strok.color
             , strokeWidth
-                (if focused then
-                    "10"
-
-                 else
-                    "none"
-                )
+                strok.width
             ]
             []
             :: glyph p.prof (foregroundColor p.pieceColor)
@@ -758,15 +768,50 @@ displayCapturedCardsAndTwoDecks model =
         )
     , g [ id "capturedByKese" ]
         (List.indexedMap
-            (\i prof -> pieceSvg False None { coord = { x = toFloat i * 0.85, y = 6.0 }, prof = prof, pieceColor = Rima })
+            (\i prof ->
+                pieceSvg_
+                    { color = strokeColor Rima {- what is captured by Kese turns out to be Rima -}, width = "1" }
+                    None
+                    { coord = { x = -0.115 {- to handle the automatic offset and the 3px difference in the border -} 
+                        + toFloat i * (spacing <| List.length <| model.capturedByKese), y = 6.0 }
+                    , prof = prof
+                    , pieceColor = Rima
+                    }
+            )
             model.capturedByKese
         )
     , g [ id "capturedByRima" ]
         (List.indexedMap
-            (\i prof -> pieceSvg False None { coord = { x = 4.0 - toFloat i * 0.85, y = -2.0 }, prof = prof, pieceColor = Kese })
+            (\i prof ->
+                pieceSvg_
+                    { color = strokeColor Kese, width = "1" }
+                    None
+                    { coord = { x =  -0.115 {- to handle the automatic offset and the 3px difference in the border -} 
+                     + 5.0 * 0.846
+                     - toFloat i * (spacing <| List.length <| model.capturedByRima), y = -2.0 }
+                    , prof = prof
+                    , pieceColor = Kese
+                    }
+            )
             model.capturedByRima
         )
     ]
+
+
+spacing : Int -> Float
+spacing n =
+    {- 0.846 * 5 + 0.80 == 5.03 -}
+    {- Adding to this two halves of width 1 borders gives 504px. -}
+    {- This exactly matches (100 pixel * 5) + two halves of width 4 borders  -}
+    if n <= 6 then
+        0.846
+
+    else
+        {-
+           0.846 * (6-1) + 0.8 == x * (n-1) + 0.8
+           x = 0.846 * 5 / (n-1)
+        -}
+        0.846 * 5.0 / toFloat (n - 1)
 
 
 stationaryPart : StateOfCards -> List (Svg Msg)
