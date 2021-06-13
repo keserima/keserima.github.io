@@ -5271,10 +5271,9 @@ var $author$project$KeseRimaTypes$Diagonal = {$: 'Diagonal'};
 var $author$project$KeseRimaTypes$HorizontalVertical = {$: 'HorizontalVertical'};
 var $author$project$KeseRimaTypes$Kese = {$: 'Kese'};
 var $author$project$KeseRimaTypes$KeseTurn = {$: 'KeseTurn'};
-var $author$project$Main$Model = F2(
-	function (a, b) {
-		return {$: 'Model', a: a, b: b};
-	});
+var $author$project$Main$Model = function (a) {
+	return {$: 'Model', a: a};
+};
 var $author$project$Main$NothingSelected = function (a) {
 	return {$: 'NothingSelected', a: a};
 };
@@ -5332,88 +5331,89 @@ var $author$project$Main$init = function (flags) {
 	var keseHand = _v1.a;
 	var keseDeck = _v1.b;
 	return _Utils_Tuple2(
-		A2(
-			$author$project$Main$Model,
-			'R' + ((flags.rimaDice ? '+' : 'x') + ('@11 ' + ('S' + ((flags.shipDice ? '+' : 'x') + ('@23 K' + ((flags.keseDice ? '+' : 'x') + ('@15\n' + ('K{' + (A2(
-				$elm$core$String$join,
-				'',
-				A2($elm$core$List$map, $author$project$Main$profToHistoryStr, keseHand)) + ('} ' + ('R{' + (A2(
-				$elm$core$String$join,
-				'',
-				A2($elm$core$List$map, $author$project$Main$profToHistoryStr, rimaHand)) + ('}\n--------------------------------\n' + (flags.keseGoesFirst ? 'K' : 'R')))))))))))))),
-			$author$project$Main$NothingSelected(
-				{
-					board: _List_fromArray(
-						[
-							{
-							coord: {x: 0, y: 0},
-							pieceColor: $author$project$KeseRimaTypes$Rima,
-							prof: flags.rimaDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
-						},
-							{
-							coord: {x: 1, y: 0},
-							pieceColor: $author$project$KeseRimaTypes$Rima,
-							prof: $author$project$KeseRimaTypes$Circle
-						},
-							{
-							coord: {x: 2, y: 0},
-							pieceColor: $author$project$KeseRimaTypes$Rima,
-							prof: $author$project$KeseRimaTypes$All
-						},
-							{
-							coord: {x: 3, y: 0},
-							pieceColor: $author$project$KeseRimaTypes$Rima,
-							prof: $author$project$KeseRimaTypes$Circle
-						},
-							{
-							coord: {x: 4, y: 0},
-							pieceColor: $author$project$KeseRimaTypes$Rima,
-							prof: (!flags.rimaDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
-						},
-							{
-							coord: {x: 0, y: 4},
-							pieceColor: $author$project$KeseRimaTypes$Kese,
-							prof: flags.keseDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
-						},
-							{
-							coord: {x: 1, y: 4},
-							pieceColor: $author$project$KeseRimaTypes$Kese,
-							prof: $author$project$KeseRimaTypes$Circle
-						},
-							{
-							coord: {x: 2, y: 4},
-							pieceColor: $author$project$KeseRimaTypes$Kese,
-							prof: $author$project$KeseRimaTypes$All
-						},
-							{
-							coord: {x: 3, y: 4},
-							pieceColor: $author$project$KeseRimaTypes$Kese,
-							prof: $author$project$KeseRimaTypes$Circle
-						},
-							{
-							coord: {x: 4, y: 4},
-							pieceColor: $author$project$KeseRimaTypes$Kese,
-							prof: (!flags.keseDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
-						},
-							{
-							coord: {x: 1, y: 2},
-							pieceColor: $author$project$KeseRimaTypes$Ship,
-							prof: flags.shipDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
-						},
-							{
-							coord: {x: 3, y: 2},
-							pieceColor: $author$project$KeseRimaTypes$Ship,
-							prof: (!flags.shipDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
-						}
-						]),
-					capturedByKese: _List_Nil,
-					capturedByRima: _List_Nil,
-					keseDeck: keseDeck,
-					keseHand: keseHand,
-					rimaDeck: rimaDeck,
-					rimaHand: rimaHand,
-					whoseTurn: flags.keseGoesFirst ? $author$project$KeseRimaTypes$KeseTurn : $author$project$KeseRimaTypes$RimaTurn
-				})),
+		$author$project$Main$Model(
+			{
+				currentStatus: $author$project$Main$NothingSelected(
+					{
+						board: _List_fromArray(
+							[
+								{
+								coord: {x: 0, y: 0},
+								pieceColor: $author$project$KeseRimaTypes$Rima,
+								prof: flags.rimaDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
+							},
+								{
+								coord: {x: 1, y: 0},
+								pieceColor: $author$project$KeseRimaTypes$Rima,
+								prof: $author$project$KeseRimaTypes$Circle
+							},
+								{
+								coord: {x: 2, y: 0},
+								pieceColor: $author$project$KeseRimaTypes$Rima,
+								prof: $author$project$KeseRimaTypes$All
+							},
+								{
+								coord: {x: 3, y: 0},
+								pieceColor: $author$project$KeseRimaTypes$Rima,
+								prof: $author$project$KeseRimaTypes$Circle
+							},
+								{
+								coord: {x: 4, y: 0},
+								pieceColor: $author$project$KeseRimaTypes$Rima,
+								prof: (!flags.rimaDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
+							},
+								{
+								coord: {x: 0, y: 4},
+								pieceColor: $author$project$KeseRimaTypes$Kese,
+								prof: flags.keseDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
+							},
+								{
+								coord: {x: 1, y: 4},
+								pieceColor: $author$project$KeseRimaTypes$Kese,
+								prof: $author$project$KeseRimaTypes$Circle
+							},
+								{
+								coord: {x: 2, y: 4},
+								pieceColor: $author$project$KeseRimaTypes$Kese,
+								prof: $author$project$KeseRimaTypes$All
+							},
+								{
+								coord: {x: 3, y: 4},
+								pieceColor: $author$project$KeseRimaTypes$Kese,
+								prof: $author$project$KeseRimaTypes$Circle
+							},
+								{
+								coord: {x: 4, y: 4},
+								pieceColor: $author$project$KeseRimaTypes$Kese,
+								prof: (!flags.keseDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
+							},
+								{
+								coord: {x: 1, y: 2},
+								pieceColor: $author$project$KeseRimaTypes$Ship,
+								prof: flags.shipDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
+							},
+								{
+								coord: {x: 3, y: 2},
+								pieceColor: $author$project$KeseRimaTypes$Ship,
+								prof: (!flags.shipDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
+							}
+							]),
+						capturedByKese: _List_Nil,
+						capturedByRima: _List_Nil,
+						keseDeck: keseDeck,
+						keseHand: keseHand,
+						rimaDeck: rimaDeck,
+						rimaHand: rimaHand,
+						whoseTurn: flags.keseGoesFirst ? $author$project$KeseRimaTypes$KeseTurn : $author$project$KeseRimaTypes$RimaTurn
+					}),
+				historyString: 'R' + ((flags.rimaDice ? '+' : 'x') + ('@11 ' + ('S' + ((flags.shipDice ? '+' : 'x') + ('@23 K' + ((flags.keseDice ? '+' : 'x') + ('@15\n' + ('K{' + (A2(
+					$elm$core$String$join,
+					'',
+					A2($elm$core$List$map, $author$project$Main$profToHistoryStr, keseHand)) + ('} ' + ('R{' + (A2(
+					$elm$core$String$join,
+					'',
+					A2($elm$core$List$map, $author$project$Main$profToHistoryStr, rimaHand)) + ('}\n--------------------------------\n' + (flags.keseGoesFirst ? 'K' : 'R'))))))))))))))
+			}),
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$json$Json$Decode$int = _Json_decodeInt;
@@ -6349,30 +6349,33 @@ var $author$project$Main$updateStatus = F2(
 	});
 var $author$project$Main$update = F2(
 	function (msg, _v0) {
-		var history = _v0.a;
-		var modl = _v0.b;
-		var newStat = A2($author$project$Main$updateStatus, msg, modl);
+		var historyString = _v0.a.historyString;
+		var currentStatus = _v0.a.currentStatus;
+		var newStat = A2($author$project$Main$updateStatus, msg, currentStatus);
 		var newHist = _Utils_ap(
-			history,
-			A2($author$project$Main$newHistory, msg, modl));
+			historyString,
+			A2($author$project$Main$newHistory, msg, currentStatus));
 		if (A2($elm$regex$Regex$contains, $author$project$Main$twoConsecutivePasses, newHist)) {
 			if (newStat.$ === 'NothingSelected') {
 				var cardState = newStat.a;
 				return _Utils_Tuple2(
-					A2(
-						$author$project$Main$Model,
-						A2($elm$core$String$dropRight, 1, newHist) + '--------------------------------\nKeseRima',
-						$author$project$Main$GameTerminated(
-							{board: cardState.board, capturedByKese: cardState.capturedByKese, capturedByRima: cardState.capturedByRima, keseDeck: cardState.keseDeck, keseHand: cardState.keseHand, rimaDeck: cardState.rimaDeck, rimaHand: cardState.rimaHand, whoseVictory: $author$project$KeseRimaTypes$Ship})),
+					$author$project$Main$Model(
+						{
+							currentStatus: $author$project$Main$GameTerminated(
+								{board: cardState.board, capturedByKese: cardState.capturedByKese, capturedByRima: cardState.capturedByRima, keseDeck: cardState.keseDeck, keseHand: cardState.keseHand, rimaDeck: cardState.rimaDeck, rimaHand: cardState.rimaHand, whoseVictory: $author$project$KeseRimaTypes$Ship}),
+							historyString: A2($elm$core$String$dropRight, 1, newHist) + '--------------------------------\nKeseRima'
+						}),
 					$elm$core$Platform$Cmd$none);
 			} else {
 				return _Utils_Tuple2(
-					A2($author$project$Main$Model, newHist, newStat),
+					$author$project$Main$Model(
+						{currentStatus: newStat, historyString: newHist}),
 					$elm$core$Platform$Cmd$none);
 			}
 		} else {
 			return _Utils_Tuple2(
-				A2($author$project$Main$Model, newHist, newStat),
+				$author$project$Main$Model(
+					{currentStatus: newStat, historyString: newHist}),
 				$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -7550,14 +7553,14 @@ var $author$project$Main$view_ = F3(
 				]));
 	});
 var $author$project$Main$view = function (_v0) {
-	var history = _v0.a;
-	var modl = _v0.b;
-	switch (modl.$) {
+	var historyString = _v0.a.historyString;
+	var currentStatus = _v0.a.currentStatus;
+	switch (currentStatus.$) {
 		case 'NothingSelected':
-			var cardState = modl.a;
+			var cardState = currentStatus.a;
 			return A3(
 				$author$project$Main$view_,
-				history,
+				historyString,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(cardState),
 					_Utils_ap(
@@ -7603,10 +7606,10 @@ var $author$project$Main$view = function (_v0) {
 									cardState.rimaHand))))),
 				_List_Nil);
 		case 'GameTerminated':
-			var cardState = modl.a;
+			var cardState = currentStatus.a;
 			return A3(
 				$author$project$Main$view_,
-				history,
+				historyString,
 				A2(
 					$elm$core$List$cons,
 					A2(
@@ -7687,8 +7690,8 @@ var $author$project$Main$view = function (_v0) {
 												cardState.rimaHand)))))))),
 				_List_Nil);
 		case 'MoverIsSelected':
-			var focus = modl.a;
-			var cardState = modl.b;
+			var focus = currentStatus.a;
+			var cardState = currentStatus.b;
 			var dynamicPart = function () {
 				if (focus.$ === 'PieceOnTheBoard') {
 					var focus_coord = focus.a;
@@ -7844,7 +7847,7 @@ var $author$project$Main$view = function (_v0) {
 			}();
 			return A3(
 				$author$project$Main$view_,
-				history,
+				historyString,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(cardState),
 					_Utils_ap(
@@ -7864,8 +7867,8 @@ var $author$project$Main$view = function (_v0) {
 							]))
 					]));
 		case 'NowWaitingForAdditionalSacrifice':
-			var mover = modl.a.mover;
-			var remaining = modl.a.remaining;
+			var mover = currentStatus.a.mover;
+			var remaining = currentStatus.a.remaining;
 			var isSacrificingCircleRequired = function () {
 				var _v11 = A2(
 					$elm$core$List$filter,
@@ -7894,7 +7897,7 @@ var $author$project$Main$view = function (_v0) {
 			}();
 			return A3(
 				$author$project$Main$view_,
-				history,
+				historyString,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(remaining),
 					_Utils_ap(
@@ -7997,13 +8000,13 @@ var $author$project$Main$view = function (_v0) {
 					}
 				}());
 		case 'WaitForTrashBinClick':
-			var mover = modl.a.mover;
-			var remaining = modl.a.remaining;
-			var whoseHand = modl.a.whoseHand;
-			var index = modl.a.index;
+			var mover = currentStatus.a.mover;
+			var remaining = currentStatus.a.remaining;
+			var whoseHand = currentStatus.a.whoseHand;
+			var index = currentStatus.a.index;
 			return A3(
 				$author$project$Main$view_,
-				history,
+				historyString,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(remaining),
 					_Utils_ap(
@@ -8044,9 +8047,9 @@ var $author$project$Main$view = function (_v0) {
 										])))))),
 				_List_Nil);
 		case 'AfterSacrifice':
-			var command = modl.a;
-			var mover = modl.b.mover;
-			var remaining = modl.b.remaining;
+			var command = currentStatus.a;
+			var mover = currentStatus.b.mover;
+			var remaining = currentStatus.b.remaining;
 			var hasCircleInHand = A2(
 				$elm$core$List$any,
 				$elm$core$Basics$eq($author$project$KeseRimaTypes$Circle),
@@ -8131,7 +8134,7 @@ var $author$project$Main$view = function (_v0) {
 									]))))));
 			return A3(
 				$author$project$Main$view_,
-				history,
+				historyString,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(remaining),
 					_Utils_ap(
@@ -8139,11 +8142,11 @@ var $author$project$Main$view = function (_v0) {
 						dynamicPart)),
 				_List_Nil);
 		default:
-			var mover = modl.a.mover;
-			var remaining = modl.a.remaining;
+			var mover = currentStatus.a.mover;
+			var remaining = currentStatus.a.remaining;
 			return A3(
 				$author$project$Main$view_,
-				history,
+				historyString,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(remaining),
 					_Utils_ap(

@@ -35,7 +35,7 @@ type alias PieceWithFloatPosition =
     { prof : Profession, pieceColor : PieceColor, coord : CoordinateFloat }
 
 
-type alias History =
+type alias HistoryString =
     String
 
 

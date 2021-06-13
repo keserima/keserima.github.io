@@ -47,7 +47,7 @@ type Msg
 
 
 type Model
-    = Model History CurrentStatus
+    = Model { historyString : HistoryString, currentStatus : CurrentStatus }
 
 
 toColor : WhoseTurn -> PieceColor
@@ -117,37 +117,39 @@ coordToHistoryStr coord =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg (Model history modl) =
+update msg (Model { historyString, currentStatus }) =
     let
         newHist =
-            history ++ newHistory msg modl
+            historyString ++ newHistory msg currentStatus
 
         newStat =
-            updateStatus msg modl
+            updateStatus msg currentStatus
     in
     if Regex.contains twoConsecutivePasses newHist then
         case newStat of
             NothingSelected cardState ->
-                ( Model (String.dropRight 1 newHist ++ "--------------------------------\nKeseRima")
-                    (GameTerminated
-                        { whoseVictory = Ship
-                        , board = cardState.board
-                        , capturedByKese = cardState.capturedByKese
-                        , capturedByRima = cardState.capturedByRima
-                        , keseDeck = cardState.keseDeck
-                        , rimaDeck = cardState.rimaDeck
-                        , keseHand = cardState.keseHand
-                        , rimaHand = cardState.rimaHand
-                        }
-                    )
+                ( Model
+                    { historyString = String.dropRight 1 newHist ++ "--------------------------------\nKeseRima"
+                    , currentStatus =
+                        GameTerminated
+                            { whoseVictory = Ship
+                            , board = cardState.board
+                            , capturedByKese = cardState.capturedByKese
+                            , capturedByRima = cardState.capturedByRima
+                            , keseDeck = cardState.keseDeck
+                            , rimaDeck = cardState.rimaDeck
+                            , keseHand = cardState.keseHand
+                            , rimaHand = cardState.rimaHand
+                            }
+                    }
                 , Cmd.none
                 )
 
             _ ->
-                ( Model newHist newStat, Cmd.none )
+                ( Model { historyString = newHist, currentStatus = newStat }, Cmd.none )
 
     else
-        ( Model newHist newStat, Cmd.none )
+        ( Model { historyString = newHist, currentStatus = newStat }, Cmd.none )
 
 
 twoConsecutivePasses : Regex.Regex
@@ -770,10 +772,19 @@ displayCapturedCardsAndTwoDecks model =
         (List.indexedMap
             (\i prof ->
                 pieceSvg_
-                    { color = strokeColor Rima {- what is captured by Kese turns out to be Rima -}, width = "1" }
+                    { color = strokeColor Rima
+
+                    {- what is captured by Kese turns out to be Rima -}
+                    , width = "1"
+                    }
                     None
-                    { coord = { x = -0.115 {- to handle the automatic offset and the 3px difference in the border -} 
-                        + toFloat i * (spacing <| List.length <| model.capturedByKese), y = 6.0 }
+                    { coord =
+                        { x =
+                            -0.115
+                                {- to handle the automatic offset and the 3px difference in the border -} + toFloat i
+                                * (spacing <| List.length <| model.capturedByKese)
+                        , y = 6.0
+                        }
                     , prof = prof
                     , pieceColor = Rima
                     }
@@ -786,9 +797,15 @@ displayCapturedCardsAndTwoDecks model =
                 pieceSvg_
                     { color = strokeColor Kese, width = "1" }
                     None
-                    { coord = { x =  -0.115 {- to handle the automatic offset and the 3px difference in the border -} 
-                     + 5.0 * 0.846
-                     - toFloat i * (spacing <| List.length <| model.capturedByRima), y = -2.0 }
+                    { coord =
+                        { x =
+                            -0.115
+                                {- to handle the automatic offset and the 3px difference in the border -} + 5.0
+                                * 0.846
+                                - toFloat i
+                                * (spacing <| List.length <| model.capturedByRima)
+                        , y = -2.0
+                        }
                     , prof = prof
                     , pieceColor = Kese
                     }
@@ -802,7 +819,7 @@ spacing : Int -> Float
 spacing n =
     {- 0.846 * 5 + 0.80 == 5.03 -}
     {- Adding to this two halves of width 1 borders gives 504px. -}
-    {- This exactly matches (100 pixel * 5) + two halves of width 4 borders  -}
+    {- This exactly matches (100 pixel * 5) + two halves of width 4 borders -}
     if n <= 6 then
         0.846
 
@@ -1021,7 +1038,7 @@ getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
         )
 
 
-view_ : History -> List (Svg msg) -> List (Html msg) -> Html msg
+view_ : HistoryString -> List (Svg msg) -> List (Html msg) -> Html msg
 view_ history svgContent buttons =
     Html.div [ Html.Attributes.style "padding" "0 0 0 20px", Html.Attributes.style "display" "flex" ] <|
         [ Html.div [] (svg [ viewBox "0 -200 900 900", width "540" ] svgContent :: Html.br [] [] :: buttons)
@@ -1066,10 +1083,10 @@ allCoordsOccupiedBy color board =
 
 
 view : Model -> Html Msg
-view (Model history modl) =
-    case modl of
+view (Model { historyString, currentStatus }) =
+    case currentStatus of
         NothingSelected cardState ->
-            view_ history
+            view_ historyString
                 (stationaryPart cardState
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
@@ -1113,7 +1130,7 @@ view (Model history modl) =
                 []
 
         GameTerminated cardState ->
-            view_ history
+            view_ historyString
                 (defs []
                     [ Svg.filter [ Svg.Attributes.style "color-interpolation-filters:sRGB", id "blur" ]
                         [ feGaussianBlur [ stdDeviation "1.5 1.5", result "blur" ] []
@@ -1226,7 +1243,7 @@ view (Model history modl) =
                                     )
                                     cardState.rimaHand
             in
-            view_ history
+            view_ historyString
                 (stationaryPart cardState ++ twoTrashBinsSvg Nothing ++ dynamicPart)
                 [ Html.button [ onClick Cancel ] [ text "キャンセル" ] ]
 
@@ -1249,7 +1266,7 @@ view (Model history modl) =
                                 ( _, _ ) ->
                                     True
             in
-            view_ history
+            view_ historyString
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
@@ -1308,7 +1325,7 @@ view (Model history modl) =
                 )
 
         WaitForTrashBinClick { mover, remaining, whoseHand, index } ->
-            view_ history
+            view_ historyString
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg (Just whoseHand)
                     ++ List.map
@@ -1374,10 +1391,10 @@ view (Model history modl) =
                         ++ List.indexedMap (\i prof -> pieceSvg False None (rimaHandPos i prof)) remaining.rimaHand
                         ++ [ pieceWaitingForAdditionalCommandSvg mover ]
             in
-            view_ history (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) []
+            view_ historyString (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) []
 
         AfterCircleSacrifice { mover, remaining } ->
-            view_ history
+            view_ historyString
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
@@ -1445,118 +1462,119 @@ init flags =
             drawUpToThree (List.map numToProf flags.rimaDeck)
     in
     ( Model
-        ("R"
-            ++ (if flags.rimaDice then
-                    "+"
+        { historyString =
+            "R"
+                ++ (if flags.rimaDice then
+                        "+"
 
-                else
-                    "x"
-               )
-            ++ "@11 "
-            ++ "S"
-            ++ (if flags.shipDice then
-                    "+"
+                    else
+                        "x"
+                   )
+                ++ "@11 "
+                ++ "S"
+                ++ (if flags.shipDice then
+                        "+"
 
-                else
-                    "x"
-               )
-            ++ "@23 K"
-            ++ (if flags.keseDice then
-                    "+"
+                    else
+                        "x"
+                   )
+                ++ "@23 K"
+                ++ (if flags.keseDice then
+                        "+"
 
-                else
-                    "x"
-               )
-            ++ "@15\n"
-            ++ "K{"
-            ++ String.join "" (List.map profToHistoryStr keseHand)
-            ++ "} "
-            ++ "R{"
-            ++ String.join "" (List.map profToHistoryStr rimaHand)
-            ++ "}\n--------------------------------\n"
-            ++ (if flags.keseGoesFirst then
-                    "K"
+                    else
+                        "x"
+                   )
+                ++ "@15\n"
+                ++ "K{"
+                ++ String.join "" (List.map profToHistoryStr keseHand)
+                ++ "} "
+                ++ "R{"
+                ++ String.join "" (List.map profToHistoryStr rimaHand)
+                ++ "}\n--------------------------------\n"
+                ++ (if flags.keseGoesFirst then
+                        "K"
 
-                else
-                    "R"
-               )
-        )
-      <|
-        NothingSelected
-            { whoseTurn =
-                if flags.keseGoesFirst then
-                    KeseTurn
+                    else
+                        "R"
+                   )
+        , currentStatus =
+            NothingSelected
+                { whoseTurn =
+                    if flags.keseGoesFirst then
+                        KeseTurn
 
-                else
-                    RimaTurn
-            , keseDeck = keseDeck
-            , rimaDeck = rimaDeck
-            , keseHand = keseHand
-            , rimaHand = rimaHand
-            , board =
-                [ { coord = { x = 0, y = 0 }
-                  , pieceColor = Rima
-                  , prof =
-                        if flags.rimaDice then
-                            HorizontalVertical
+                    else
+                        RimaTurn
+                , keseDeck = keseDeck
+                , rimaDeck = rimaDeck
+                , keseHand = keseHand
+                , rimaHand = rimaHand
+                , board =
+                    [ { coord = { x = 0, y = 0 }
+                      , pieceColor = Rima
+                      , prof =
+                            if flags.rimaDice then
+                                HorizontalVertical
 
-                        else
-                            Diagonal
-                  }
-                , { coord = { x = 1, y = 0 }, pieceColor = Rima, prof = Circle }
-                , { coord = { x = 2, y = 0 }, pieceColor = Rima, prof = All }
-                , { coord = { x = 3, y = 0 }, pieceColor = Rima, prof = Circle }
-                , { coord = { x = 4, y = 0 }
-                  , pieceColor = Rima
-                  , prof =
-                        if not flags.rimaDice then
-                            HorizontalVertical
+                            else
+                                Diagonal
+                      }
+                    , { coord = { x = 1, y = 0 }, pieceColor = Rima, prof = Circle }
+                    , { coord = { x = 2, y = 0 }, pieceColor = Rima, prof = All }
+                    , { coord = { x = 3, y = 0 }, pieceColor = Rima, prof = Circle }
+                    , { coord = { x = 4, y = 0 }
+                      , pieceColor = Rima
+                      , prof =
+                            if not flags.rimaDice then
+                                HorizontalVertical
 
-                        else
-                            Diagonal
-                  }
-                , { coord = { x = 0, y = 4 }
-                  , pieceColor = Kese
-                  , prof =
-                        if flags.keseDice then
-                            HorizontalVertical
+                            else
+                                Diagonal
+                      }
+                    , { coord = { x = 0, y = 4 }
+                      , pieceColor = Kese
+                      , prof =
+                            if flags.keseDice then
+                                HorizontalVertical
 
-                        else
-                            Diagonal
-                  }
-                , { coord = { x = 1, y = 4 }, pieceColor = Kese, prof = Circle }
-                , { coord = { x = 2, y = 4 }, pieceColor = Kese, prof = All }
-                , { coord = { x = 3, y = 4 }, pieceColor = Kese, prof = Circle }
-                , { coord = { x = 4, y = 4 }
-                  , pieceColor = Kese
-                  , prof =
-                        if not flags.keseDice then
-                            HorizontalVertical
+                            else
+                                Diagonal
+                      }
+                    , { coord = { x = 1, y = 4 }, pieceColor = Kese, prof = Circle }
+                    , { coord = { x = 2, y = 4 }, pieceColor = Kese, prof = All }
+                    , { coord = { x = 3, y = 4 }, pieceColor = Kese, prof = Circle }
+                    , { coord = { x = 4, y = 4 }
+                      , pieceColor = Kese
+                      , prof =
+                            if not flags.keseDice then
+                                HorizontalVertical
 
-                        else
-                            Diagonal
-                  }
-                , { coord = { x = 1, y = 2 }
-                  , pieceColor = Ship
-                  , prof =
-                        if flags.shipDice then
-                            HorizontalVertical
+                            else
+                                Diagonal
+                      }
+                    , { coord = { x = 1, y = 2 }
+                      , pieceColor = Ship
+                      , prof =
+                            if flags.shipDice then
+                                HorizontalVertical
 
-                        else
-                            Diagonal
-                  }
-                , { coord = { x = 3, y = 2 }
-                  , pieceColor = Ship
-                  , prof =
-                        if not flags.shipDice then
-                            HorizontalVertical
+                            else
+                                Diagonal
+                      }
+                    , { coord = { x = 3, y = 2 }
+                      , pieceColor = Ship
+                      , prof =
+                            if not flags.shipDice then
+                                HorizontalVertical
 
-                        else
-                            Diagonal
-                  }
-                ]
-            , capturedByKese = []
-            , capturedByRima = []
-            }
+                            else
+                                Diagonal
+                      }
+                    ]
+                , capturedByKese = []
+                , capturedByRima = []
+                }
+        }
     , Cmd.none
     )
