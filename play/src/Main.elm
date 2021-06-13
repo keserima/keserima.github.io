@@ -1059,8 +1059,8 @@ getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
         )
 
 
-view_ : HistoryString -> List (Svg msg) -> List (Html msg) -> Html msg
-view_ history svgContent buttons =
+view_ : Bool -> HistoryString -> List (Svg msg) -> List (Html msg) -> Html msg
+view_ gameEndTweet history svgContent buttons =
     Html.div [ Html.Attributes.style "padding" "0 0 0 20px", Html.Attributes.style "display" "flex" ] <|
         [ Html.div [] (svg [ viewBox "0 -200 900 900", width "540" ] svgContent :: Html.br [] [] :: buttons)
         , Html.div []
@@ -1087,12 +1087,24 @@ view_ history svgContent buttons =
                             )
                         ]
                     )
-                , Html.Attributes.style "font-size" "150%"
+                , Html.Attributes.style "font-size"
+                    (if gameEndTweet then
+                        "250%"
+
+                     else
+                        "120%"
+                    )
                 , Html.Attributes.style "font-weight" "bold"
                 ]
-                [ Html.text "ここまでの棋譜をツイートする"
+                [ Html.text
+                    (if gameEndTweet then
+                        "棋譜をツイートしましょう！！"
+
+                     else
+                        "ここまでの棋譜をツイートする"
+                    )
                 , Html.br [] []
-                , Html.img [ Html.Attributes.src "../imgs/keserima.png", Html.Attributes.height 100 ] []
+                , Html.img [ Html.Attributes.src "../imgs/keserima.png", Html.Attributes.height 200 ] []
                 ]
             ]
         ]
@@ -1107,7 +1119,8 @@ view : Model -> Html Msg
 view (Model { historyString, currentStatus }) =
     case currentStatus of
         NothingSelected cardState ->
-            view_ historyString
+            view_ False
+                historyString
                 (stationaryPart cardState
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
@@ -1151,7 +1164,8 @@ view (Model { historyString, currentStatus }) =
                 [{- default state. no need to cancel everything: the state has been saved -}]
 
         GameTerminated cardState ->
-            view_ historyString
+            view_ True
+                historyString
                 (defs []
                     [ Svg.filter [ Svg.Attributes.style "color-interpolation-filters:sRGB", id "blur" ]
                         [ feGaussianBlur [ stdDeviation "1.5 1.5", result "blur" ] []
@@ -1264,7 +1278,8 @@ view (Model { historyString, currentStatus }) =
                                     )
                                     cardState.rimaHand
             in
-            view_ historyString
+            view_ False
+                historyString
                 (stationaryPart cardState ++ twoTrashBinsSvg Nothing ++ dynamicPart)
                 [ Html.button [ onClick Cancel ] [ text "キャンセル" ] ]
 
@@ -1287,7 +1302,8 @@ view (Model { historyString, currentStatus }) =
                                 ( _, _ ) ->
                                     True
             in
-            view_ historyString
+            view_ False
+                historyString
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
@@ -1346,7 +1362,8 @@ view (Model { historyString, currentStatus }) =
                 )
 
         WaitForTrashBinClick { mover, remaining, whoseHand, index } ->
-            view_ historyString
+            view_ False
+                historyString
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg (Just whoseHand)
                     ++ List.map
@@ -1412,10 +1429,11 @@ view (Model { historyString, currentStatus }) =
                         ++ List.indexedMap (\i prof -> pieceSvg False None (rimaHandPos i prof)) remaining.rimaHand
                         ++ [ pieceWaitingForAdditionalCommandSvg mover ]
             in
-            view_ historyString (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
+            view_ False historyString (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
 
         AfterCircleSacrifice { mover, remaining } ->
-            view_ historyString
+            view_ False
+                historyString
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map

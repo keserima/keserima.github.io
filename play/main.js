@@ -7471,8 +7471,8 @@ var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty(
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$textarea = _VirtualDom_node('textarea');
 var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
-var $author$project$Main$view_ = F3(
-	function (history, svgContent, buttons) {
+var $author$project$Main$view_ = F4(
+	function (gameEndTweet, history, svgContent, buttons) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -7544,19 +7544,23 @@ var $author$project$Main$view_ = F3(
 															A2($elm$url$Url$Builder$string, 'playback', history)
 														])))
 											]))),
-									A2($elm$html$Html$Attributes$style, 'font-size', '150%'),
+									A2(
+									$elm$html$Html$Attributes$style,
+									'font-size',
+									gameEndTweet ? '250%' : '120%'),
 									A2($elm$html$Html$Attributes$style, 'font-weight', 'bold')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('ここまでの棋譜をツイートする'),
+									$elm$html$Html$text(
+									gameEndTweet ? '棋譜をツイートしましょう！！' : 'ここまでの棋譜をツイートする'),
 									A2($elm$html$Html$br, _List_Nil, _List_Nil),
 									A2(
 									$elm$html$Html$img,
 									_List_fromArray(
 										[
 											$elm$html$Html$Attributes$src('../imgs/keserima.png'),
-											$elm$html$Html$Attributes$height(100)
+											$elm$html$Html$Attributes$height(200)
 										]),
 									_List_Nil)
 								]))
@@ -7569,8 +7573,9 @@ var $author$project$Main$view = function (_v0) {
 	switch (currentStatus.$) {
 		case 'NothingSelected':
 			var cardState = currentStatus.a;
-			return A3(
+			return A4(
 				$author$project$Main$view_,
+				false,
 				historyString,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(cardState),
@@ -7618,8 +7623,9 @@ var $author$project$Main$view = function (_v0) {
 				_List_Nil);
 		case 'GameTerminated':
 			var cardState = currentStatus.a;
-			return A3(
+			return A4(
 				$author$project$Main$view_,
+				true,
 				historyString,
 				A2(
 					$elm$core$List$cons,
@@ -7856,8 +7862,9 @@ var $author$project$Main$view = function (_v0) {
 									cardState.rimaHand))));
 				}
 			}();
-			return A3(
+			return A4(
 				$author$project$Main$view_,
+				false,
 				historyString,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(cardState),
@@ -7906,8 +7913,9 @@ var $author$project$Main$view = function (_v0) {
 					}
 				}
 			}();
-			return A3(
+			return A4(
 				$author$project$Main$view_,
+				false,
 				historyString,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(remaining),
@@ -8025,8 +8033,9 @@ var $author$project$Main$view = function (_v0) {
 			var remaining = currentStatus.a.remaining;
 			var whoseHand = currentStatus.a.whoseHand;
 			var index = currentStatus.a.index;
-			return A3(
+			return A4(
 				$author$project$Main$view_,
+				false,
 				historyString,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(remaining),
@@ -8165,8 +8174,9 @@ var $author$project$Main$view = function (_v0) {
 									[
 										$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
 									]))))));
-			return A3(
+			return A4(
 				$author$project$Main$view_,
+				false,
 				historyString,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(remaining),
@@ -8189,8 +8199,9 @@ var $author$project$Main$view = function (_v0) {
 		default:
 			var mover = currentStatus.a.mover;
 			var remaining = currentStatus.a.remaining;
-			return A3(
+			return A4(
 				$author$project$Main$view_,
+				false,
 				historyString,
 				_Utils_ap(
 					$author$project$Main$stationaryPart(remaining),
