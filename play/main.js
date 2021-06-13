@@ -6390,7 +6390,6 @@ var $author$project$Main$update = F2(
 			}
 		}
 	});
-var $author$project$Main$Cancel = {$: 'Cancel'};
 var $author$project$Main$GiveFocusTo = function (a) {
 	return {$: 'GiveFocusTo', a: a};
 };
@@ -6410,7 +6409,6 @@ var $author$project$KeseRimaTypes$PieceOnTheBoard = function (a) {
 var $author$project$Main$SendToTrashBinPart1 = function (a) {
 	return {$: 'SendToTrashBinPart1', a: a};
 };
-var $author$project$Main$TurnEnd = {$: 'TurnEnd'};
 var $author$project$Main$allCoordsOccupiedBy = F2(
 	function (color, board) {
 		return A2(
@@ -6533,7 +6531,54 @@ var $author$project$Main$boardSvg = _List_fromArray(
 			},
 			$author$project$Main$allCoord))
 	]);
+var $author$project$Main$Cancel = {$: 'Cancel'};
 var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$svg$Svg$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$Main$cancelAllButton = A2(
+	$elm$html$Html$button,
+	_List_fromArray(
+		[
+			$elm$svg$Svg$Events$onClick($author$project$Main$Cancel),
+			A2($elm$html$Html$Attributes$style, 'background-color', '#ffaaaa'),
+			A2($elm$html$Html$Attributes$style, 'font-size', '150%')
+		]),
+	_List_fromArray(
+		[
+			$elm$svg$Svg$text('全てをキャンセル')
+		]));
+var $author$project$Main$TurnEnd = {$: 'TurnEnd'};
+var $author$project$Main$captureAndTurnEndButton = A2(
+	$elm$html$Html$button,
+	_List_fromArray(
+		[
+			$elm$svg$Svg$Events$onClick($author$project$Main$TurnEnd),
+			A2($elm$html$Html$Attributes$style, 'background-color', '#aaffaa'),
+			A2($elm$html$Html$Attributes$style, 'font-size', '150%')
+		]),
+	_List_fromArray(
+		[
+			$elm$svg$Svg$text('駒を取ってターンエンド')
+		]));
 var $elm$svg$Svg$defs = $elm$svg$Svg$trustedNode('defs');
 var $author$project$SvgColor$backgroundColor = function (pieceColor) {
 	switch (pieceColor.$) {
@@ -6632,25 +6677,6 @@ var $author$project$Main$glyph = F2(
 						A2($author$project$Main$glyph, $author$project$KeseRimaTypes$Circle, color)));
 		}
 	});
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$svg$Svg$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
 var $author$project$Main$pieceSvg_ = F3(
 	function (strok, msgToBeSent, p) {
@@ -7245,6 +7271,18 @@ var $author$project$Main$rimaHandPos = F2(
 			prof: prof
 		};
 	});
+var $author$project$Main$simpleCancelButton = A2(
+	$elm$html$Html$button,
+	_List_fromArray(
+		[
+			$elm$svg$Svg$Events$onClick($author$project$Main$Cancel),
+			A2($elm$html$Html$Attributes$style, 'background-color', '#ffaaaa'),
+			A2($elm$html$Html$Attributes$style, 'font-size', '150%')
+		]),
+	_List_fromArray(
+		[
+			$elm$svg$Svg$text('キャンセル')
+		]));
 var $elm$svg$Svg$Attributes$stdDeviation = _VirtualDom_attribute('stdDeviation');
 var $author$project$Main$stationaryPart = function (cardState) {
 	return A2(
@@ -7295,8 +7333,18 @@ var $author$project$Main$stationaryPart = function (cardState) {
 						})
 					]))));
 };
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$svg$Svg$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$Main$turnEndButton = A2(
+	$elm$html$Html$button,
+	_List_fromArray(
+		[
+			$elm$svg$Svg$Events$onClick($author$project$Main$TurnEnd),
+			A2($elm$html$Html$Attributes$style, 'background-color', '#aaffaa'),
+			A2($elm$html$Html$Attributes$style, 'font-size', '150%')
+		]),
+	_List_fromArray(
+		[
+			$elm$svg$Svg$text('ターンエンド')
+		]));
 var $author$project$Main$SendToTrashBinPart2 = {$: 'SendToTrashBinPart2'};
 var $author$project$SvgColor$trashBinColor = function (c) {
 	return c ? '#555' : '#eee';
@@ -7433,6 +7481,24 @@ var $elm$html$Html$Attributes$href = function (url) {
 		_VirtualDom_noJavaScriptUri(url));
 };
 var $elm$html$Html$img = _VirtualDom_node('img');
+var $elm$core$List$intersperse = F2(
+	function (sep, xs) {
+		if (!xs.b) {
+			return _List_Nil;
+		} else {
+			var hd = xs.a;
+			var tl = xs.b;
+			var step = F2(
+				function (x, rest) {
+					return A2(
+						$elm$core$List$cons,
+						sep,
+						A2($elm$core$List$cons, x, rest));
+				});
+			var spersed = A3($elm$core$List$foldr, step, _List_Nil, tl);
+			return A2($elm$core$List$cons, hd, spersed);
+		}
+	});
 var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -7498,7 +7564,10 @@ var $author$project$Main$view_ = F4(
 						A2(
 							$elm$core$List$cons,
 							A2($elm$html$Html$br, _List_Nil, _List_Nil),
-							buttons))),
+							A2(
+								$elm$core$List$intersperse,
+								$elm$html$Html$text(' '),
+								buttons)))),
 					A2(
 					$elm$html$Html$div,
 					_List_Nil,
@@ -7872,18 +7941,7 @@ var $author$project$Main$view = function (_v0) {
 						$author$project$Main$twoTrashBinsSvg($elm$core$Maybe$Nothing),
 						dynamicPart)),
 				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Events$onClick($author$project$Main$Cancel)
-							]),
-						_List_fromArray(
-							[
-								$elm$svg$Svg$text('キャンセル')
-							]))
-					]));
+					[$author$project$Main$simpleCancelButton]));
 		case 'NowWaitingForAdditionalSacrifice':
 			var mover = currentStatus.a.mover;
 			var remaining = currentStatus.a.remaining;
@@ -7972,60 +8030,20 @@ var $author$project$Main$view = function (_v0) {
 						var _v10 = p.pieceColor;
 						switch (_v10.$) {
 							case 'Ship':
-								return _List_Nil;
+								return _List_fromArray(
+									[$author$project$Main$cancelAllButton]);
 							case 'Kese':
 								return _Utils_eq(mover.pieceColor, $author$project$KeseRimaTypes$Rima) ? _List_fromArray(
-									[
-										A2(
-										$elm$html$Html$button,
-										_List_fromArray(
-											[
-												$elm$svg$Svg$Events$onClick($author$project$Main$TurnEnd)
-											]),
-										_List_fromArray(
-											[
-												$elm$svg$Svg$text('駒を取ってターンエンド')
-											]))
-									]) : _List_Nil;
+									[$author$project$Main$captureAndTurnEndButton, $author$project$Main$cancelAllButton]) : _List_fromArray(
+									[$author$project$Main$cancelAllButton]);
 							default:
 								return _Utils_eq(mover.pieceColor, $author$project$KeseRimaTypes$Kese) ? _List_fromArray(
-									[
-										A2(
-										$elm$html$Html$button,
-										_List_fromArray(
-											[
-												$elm$svg$Svg$Events$onClick($author$project$Main$TurnEnd)
-											]),
-										_List_fromArray(
-											[
-												$elm$svg$Svg$text('駒を取ってターンエンド')
-											]))
-									]) : _List_Nil;
+									[$author$project$Main$captureAndTurnEndButton, $author$project$Main$cancelAllButton]) : _List_fromArray(
+									[$author$project$Main$cancelAllButton]);
 						}
 					} else {
 						return _List_fromArray(
-							[
-								A2(
-								$elm$html$Html$button,
-								_List_fromArray(
-									[
-										$elm$svg$Svg$Events$onClick($author$project$Main$TurnEnd)
-									]),
-								_List_fromArray(
-									[
-										$elm$svg$Svg$text('ターンエンド')
-									])),
-								A2(
-								$elm$html$Html$button,
-								_List_fromArray(
-									[
-										$elm$svg$Svg$Events$onClick($author$project$Main$Cancel)
-									]),
-								_List_fromArray(
-									[
-										$elm$svg$Svg$text('全てをキャンセル')
-									]))
-							]);
+							[$author$project$Main$turnEndButton, $author$project$Main$cancelAllButton]);
 					}
 				}());
 		case 'WaitForTrashBinClick':
@@ -8076,18 +8094,7 @@ var $author$project$Main$view = function (_v0) {
 											$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
 										])))))),
 				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Events$onClick($author$project$Main$Cancel)
-							]),
-						_List_fromArray(
-							[
-								$elm$svg$Svg$text('全てをキャンセル')
-							]))
-					]));
+					[$author$project$Main$cancelAllButton]));
 		case 'AfterSacrifice':
 			var command = currentStatus.a;
 			var mover = currentStatus.b.mover;
@@ -8184,18 +8191,7 @@ var $author$project$Main$view = function (_v0) {
 						$author$project$Main$twoTrashBinsSvg($elm$core$Maybe$Nothing),
 						dynamicPart)),
 				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Events$onClick($author$project$Main$Cancel)
-							]),
-						_List_fromArray(
-							[
-								$elm$svg$Svg$text('全てをキャンセル')
-							]))
-					]));
+					[$author$project$Main$cancelAllButton]));
 		default:
 			var mover = currentStatus.a.mover;
 			var remaining = currentStatus.a.remaining;
@@ -8243,18 +8239,7 @@ var $author$project$Main$view = function (_v0) {
 											$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
 										])))))),
 				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Events$onClick($author$project$Main$Cancel)
-							]),
-						_List_fromArray(
-							[
-								$elm$svg$Svg$text('全てをキャンセル')
-							]))
-					]));
+					[$author$project$Main$cancelAllButton]));
 	}
 };
 var $author$project$Main$main = $elm$browser$Browser$element(

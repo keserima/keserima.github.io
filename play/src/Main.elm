@@ -1062,7 +1062,11 @@ getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
 view_ : Bool -> HistoryString -> List (Svg msg) -> List (Html msg) -> Html msg
 view_ gameEndTweet history svgContent buttons =
     Html.div [ Html.Attributes.style "padding" "0 0 0 20px", Html.Attributes.style "display" "flex" ] <|
-        [ Html.div [] (svg [ viewBox "0 -200 900 900", width "540" ] svgContent :: Html.br [] [] :: buttons)
+        [ Html.div []
+            (svg [ viewBox "0 -200 900 900", width "540" ] svgContent
+                :: Html.br [] []
+                :: List.intersperse (Html.text " ") buttons
+            )
         , Html.div []
             [ Html.textarea
                 [ Html.Attributes.rows 20
@@ -1281,7 +1285,7 @@ view (Model { historyString, currentStatus }) =
             view_ False
                 historyString
                 (stationaryPart cardState ++ twoTrashBinsSvg Nothing ++ dynamicPart)
-                [ Html.button [ onClick Cancel ] [ text "キャンセル" ] ]
+                [ simpleCancelButton ]
 
         NowWaitingForAdditionalSacrifice { mover, remaining } ->
             let
@@ -1340,29 +1344,29 @@ view (Model { historyString, currentStatus }) =
                         case p.pieceColor of
                             Ship ->
                                 {- cannot end the turn if stepping on a Ship -}
-                                [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
+                                [ cancelAllButton ]
 
                             Kese ->
                                 if mover.pieceColor == Rima then
-                                    [ Html.button [ onClick TurnEnd ] [ text "駒を取ってターンエンド" ]
-                                    , Html.button [ onClick Cancel ] [ text "全てをキャンセル" ]
+                                    [ captureAndTurnEndButton
+                                    , cancelAllButton
                                     ]
 
                                 else
-                                    [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
+                                    [ cancelAllButton ]
 
                             Rima ->
                                 if mover.pieceColor == Kese then
-                                    [ Html.button [ onClick TurnEnd ] [ text "駒を取ってターンエンド" ]
-                                    , Html.button [ onClick Cancel ] [ text "全てをキャンセル" ]
+                                    [ captureAndTurnEndButton
+                                    , cancelAllButton
                                     ]
 
                                 else
-                                    [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
+                                    [ cancelAllButton ]
 
                     _ ->
                         {- The resulting square is empty, so it is always possible to declare TurnEnd -}
-                        [ Html.button [ onClick TurnEnd ] [ text "ターンエンド" ], Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
+                        [ turnEndButton, cancelAllButton ]
                 )
 
         WaitForTrashBinClick { mover, remaining, whoseHand, index } ->
@@ -1389,7 +1393,7 @@ view (Model { historyString, currentStatus }) =
                         remaining.rimaHand
                     ++ [ pieceWaitingForAdditionalCommandSvg mover ]
                 )
-                [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
+                [ cancelAllButton ]
 
         AfterSacrifice command { mover, remaining } ->
             let
@@ -1433,7 +1437,7 @@ view (Model { historyString, currentStatus }) =
                         ++ List.indexedMap (\i prof -> pieceSvg False None (rimaHandPos i prof)) remaining.rimaHand
                         ++ [ pieceWaitingForAdditionalCommandSvg mover ]
             in
-            view_ False historyString (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
+            view_ False historyString (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) [ cancelAllButton ]
 
         AfterCircleSacrifice { mover, remaining } ->
             view_ False
@@ -1469,7 +1473,27 @@ view (Model { historyString, currentStatus }) =
                         remaining.rimaHand
                     ++ [ pieceWaitingForAdditionalCommandSvg mover ]
                 )
-                [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
+                [ cancelAllButton ]
+
+
+cancelAllButton : Html Msg
+cancelAllButton =
+    Html.button [ onClick Cancel, Html.Attributes.style "background-color" "#ffaaaa", Html.Attributes.style "font-size" "150%" ] [ text "全てをキャンセル" ]
+
+
+simpleCancelButton : Html Msg
+simpleCancelButton =
+    Html.button [ onClick Cancel, Html.Attributes.style "background-color" "#ffaaaa", Html.Attributes.style "font-size" "150%" ] [ text "キャンセル" ]
+
+
+captureAndTurnEndButton : Html Msg
+captureAndTurnEndButton =
+    Html.button [ onClick TurnEnd, Html.Attributes.style "background-color" "#aaffaa", Html.Attributes.style "font-size" "150%" ] [ text "駒を取ってターンエンド" ]
+
+
+turnEndButton : Html Msg
+turnEndButton =
+    Html.button [ onClick TurnEnd, Html.Attributes.style "background-color" "#aaffaa", Html.Attributes.style "font-size" "150%" ] [ text "ターンエンド" ]
 
 
 keseHandPos : Int -> Profession -> PieceWithFloatPosition
