@@ -47,7 +47,11 @@ type Msg
 
 
 type Model
-    = Model { historyString : HistoryString, currentStatus : CurrentStatus }
+    = Model
+        { saved : CurrentStatus -- Reverts to here when canceled
+        , historyString : HistoryString
+        , currentStatus : CurrentStatus
+        }
 
 
 toColor : WhoseTurn -> PieceColor
@@ -117,20 +121,19 @@ coordToHistoryStr coord =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg (Model { historyString, currentStatus }) =
+update msg (Model { historyString, currentStatus, saved }) =
     let
         newHist =
             historyString ++ newHistory msg currentStatus
 
         newStat =
-            updateStatus msg currentStatus
+            updateStatus msg currentStatus saved
     in
     if Regex.contains twoConsecutivePasses newHist then
         case newStat of
             NothingSelected cardState ->
-                ( Model
-                    { historyString = String.dropRight 1 newHist ++ "--------------------------------\nKeseRima"
-                    , currentStatus =
+                let
+                    gameEnd =
                         GameTerminated
                             { whoseVictory = Ship
                             , board = cardState.board
@@ -141,15 +144,32 @@ update msg (Model { historyString, currentStatus }) =
                             , keseHand = cardState.keseHand
                             , rimaHand = cardState.rimaHand
                             }
+                in
+                ( Model
+                    { historyString = String.dropRight 1 newHist ++ "--------------------------------\nKeseRima"
+                    , currentStatus =
+                        gameEnd
+                    , saved = gameEnd
                     }
                 , Cmd.none
                 )
 
             _ ->
-                ( Model { historyString = newHist, currentStatus = newStat }, Cmd.none )
+                ( Model { historyString = newHist, currentStatus = newStat, saved = saved }, Cmd.none )
 
     else
-        ( Model { historyString = newHist, currentStatus = newStat }, Cmd.none )
+        case newStat of
+            NothingSelected cardState ->
+                ( Model
+                    { historyString = newHist
+                    , currentStatus = newStat
+                    , saved = NothingSelected cardState -- update `saved`
+                    }
+                , Cmd.none
+                )
+
+            _ ->
+                ( Model { historyString = newHist, currentStatus = newStat, saved = saved }, Cmd.none )
 
 
 twoConsecutivePasses : Regex.Regex
@@ -319,14 +339,15 @@ isVictorious list =
     List.member All list || List.all (\p -> List.member p list) [ Diagonal, HorizontalVertical, Circle ]
 
 
-updateStatus : Msg -> CurrentStatus -> CurrentStatus
-updateStatus msg modl =
+updateStatus : Msg -> CurrentStatus -> CurrentStatus -> CurrentStatus
+updateStatus msg modl saved =
     case ( modl, msg ) of
+        ( _, Cancel ) ->
+            -- no matter what the state is, abort it and revert to what was saved last
+            saved
+
         ( NothingSelected cardState, GiveFocusTo focus ) ->
             MoverIsSelected focus cardState
-
-        ( MoverIsSelected _ cardState, Cancel ) ->
-            NothingSelected cardState
 
         ( MoverIsSelected from cardState, MovementToward to ) ->
             case from of
@@ -1127,7 +1148,7 @@ view (Model { historyString, currentStatus }) =
                         )
                         cardState.rimaHand
                 )
-                []
+                [{- default state. no need to cancel everything: the state has been saved -}]
 
         GameTerminated cardState ->
             view_ historyString
@@ -1157,7 +1178,7 @@ view (Model { historyString, currentStatus }) =
                         (\i prof -> pieceSvg False None (rimaHandPos i prof))
                         cardState.rimaHand
                 )
-                []
+                [{- The game has ended. No cancelling allowed. -}]
 
         MoverIsSelected focus cardState ->
             let
@@ -1321,7 +1342,7 @@ view (Model { historyString, currentStatus }) =
 
                     _ ->
                         {- The resulting square is empty, so it is always possible to declare TurnEnd -}
-                        [ Html.button [ onClick TurnEnd ] [ text "ターンエンド" ] ]
+                        [ Html.button [ onClick TurnEnd ] [ text "ターンエンド" ], Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
                 )
 
         WaitForTrashBinClick { mover, remaining, whoseHand, index } ->
@@ -1347,7 +1368,7 @@ view (Model { historyString, currentStatus }) =
                         remaining.rimaHand
                     ++ [ pieceWaitingForAdditionalCommandSvg mover ]
                 )
-                []
+                [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
 
         AfterSacrifice command { mover, remaining } ->
             let
@@ -1391,7 +1412,7 @@ view (Model { historyString, currentStatus }) =
                         ++ List.indexedMap (\i prof -> pieceSvg False None (rimaHandPos i prof)) remaining.rimaHand
                         ++ [ pieceWaitingForAdditionalCommandSvg mover ]
             in
-            view_ historyString (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) []
+            view_ historyString (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
 
         AfterCircleSacrifice { mover, remaining } ->
             view_ historyString
@@ -1426,7 +1447,7 @@ view (Model { historyString, currentStatus }) =
                         remaining.rimaHand
                     ++ [ pieceWaitingForAdditionalCommandSvg mover ]
                 )
-                []
+                [ Html.button [ onClick Cancel ] [ text "全てをキャンセル" ] ]
 
 
 keseHandPos : Int -> Profession -> PieceWithFloatPosition
@@ -1460,45 +1481,8 @@ init flags =
 
         ( rimaHand, rimaDeck ) =
             drawUpToThree (List.map numToProf flags.rimaDeck)
-    in
-    ( Model
-        { historyString =
-            "R"
-                ++ (if flags.rimaDice then
-                        "+"
 
-                    else
-                        "x"
-                   )
-                ++ "@11 "
-                ++ "S"
-                ++ (if flags.shipDice then
-                        "+"
-
-                    else
-                        "x"
-                   )
-                ++ "@23 K"
-                ++ (if flags.keseDice then
-                        "+"
-
-                    else
-                        "x"
-                   )
-                ++ "@15\n"
-                ++ "K{"
-                ++ String.join "" (List.map profToHistoryStr keseHand)
-                ++ "} "
-                ++ "R{"
-                ++ String.join "" (List.map profToHistoryStr rimaHand)
-                ++ "}\n--------------------------------\n"
-                ++ (if flags.keseGoesFirst then
-                        "K"
-
-                    else
-                        "R"
-                   )
-        , currentStatus =
+        initialStatus =
             NothingSelected
                 { whoseTurn =
                     if flags.keseGoesFirst then
@@ -1575,6 +1559,46 @@ init flags =
                 , capturedByKese = []
                 , capturedByRima = []
                 }
+    in
+    ( Model
+        { historyString =
+            "R"
+                ++ (if flags.rimaDice then
+                        "+"
+
+                    else
+                        "x"
+                   )
+                ++ "@11 "
+                ++ "S"
+                ++ (if flags.shipDice then
+                        "+"
+
+                    else
+                        "x"
+                   )
+                ++ "@23 K"
+                ++ (if flags.keseDice then
+                        "+"
+
+                    else
+                        "x"
+                   )
+                ++ "@15\n"
+                ++ "K{"
+                ++ String.join "" (List.map profToHistoryStr keseHand)
+                ++ "} "
+                ++ "R{"
+                ++ String.join "" (List.map profToHistoryStr rimaHand)
+                ++ "}\n--------------------------------\n"
+                ++ (if flags.keseGoesFirst then
+                        "K"
+
+                    else
+                        "R"
+                   )
+        , currentStatus = initialStatus
+        , saved = initialStatus
         }
     , Cmd.none
     )
