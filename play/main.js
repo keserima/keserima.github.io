@@ -7432,7 +7432,6 @@ var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 				]))
 		]);
 };
-var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$html$Html$br = _VirtualDom_node('br');
 var $elm$html$Html$Attributes$cols = function (n) {
 	return A2(
@@ -7536,7 +7535,15 @@ var $elm$url$Url$Builder$string = F2(
 			$elm$url$Url$percentEncode(value));
 	});
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
+var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
+var $author$project$Main$targetBlankLink = function (attributes) {
+	return $elm$html$Html$a(
+		A2(
+			$elm$core$List$cons,
+			$elm$html$Html$Attributes$target('_blank'),
+			attributes));
+};
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$textarea = _VirtualDom_node('textarea');
 var $elm$html$Html$ul = _VirtualDom_node('ul');
@@ -7581,10 +7588,9 @@ var $author$project$Main$view_ = F4(
 								_List_fromArray(
 									[
 										A2(
-										$elm$html$Html$a,
+										$author$project$Main$targetBlankLink,
 										_List_fromArray(
 											[
-												$elm$html$Html$Attributes$target('_blank'),
 												$elm$html$Html$Attributes$href('../documents/本文/index.html')
 											]),
 										_List_fromArray(
@@ -7592,10 +7598,9 @@ var $author$project$Main$view_ = F4(
 												$elm$html$Html$text('公式ルールブック')
 											])),
 										A2(
-										$elm$html$Html$a,
+										$author$project$Main$targetBlankLink,
 										_List_fromArray(
 											[
-												$elm$html$Html$Attributes$target('_blank'),
 												$elm$html$Html$Attributes$href('../documents/対訳 ― 架空伝統ゲーム「ケセリマ」/index.html')
 											]),
 										_List_fromArray(
@@ -7603,10 +7608,9 @@ var $author$project$Main$view_ = F4(
 												$elm$html$Html$text('公式ルールブックの対訳')
 											])),
 										A2(
-										$elm$html$Html$a,
+										$author$project$Main$targetBlankLink,
 										_List_fromArray(
 											[
-												$elm$html$Html$Attributes$target('_blank'),
 												$elm$html$Html$Attributes$href('../documents/ルール ― 架空伝統ゲーム「ケセリマ」/index.html')
 											]),
 										_List_fromArray(
@@ -7614,10 +7618,9 @@ var $author$project$Main$view_ = F4(
 												$elm$html$Html$text('自然な日本語でのルール解説')
 											])),
 										A2(
-										$elm$html$Html$a,
+										$author$project$Main$targetBlankLink,
 										_List_fromArray(
 											[
-												$elm$html$Html$Attributes$target('_blank'),
 												$elm$html$Html$Attributes$href('https://novelup.plus/story/433986940')
 											]),
 										_List_fromArray(
@@ -7714,11 +7717,10 @@ var $author$project$Main$view_ = F4(
 							_List_fromArray(
 								[
 									A2(
-									$elm$html$Html$a,
+									$author$project$Main$targetBlankLink,
 									_List_fromArray(
 										[
-											$elm$html$Html$Attributes$href('https://github.com/keserima/keserima.github.io/issues/new'),
-											$elm$html$Html$Attributes$target('_blank')
+											$elm$html$Html$Attributes$href('https://github.com/keserima/keserima.github.io/issues/new')
 										]),
 									_List_fromArray(
 										[
@@ -7766,10 +7768,9 @@ var $author$project$Main$view_ = F4(
 								])),
 							A2($elm$html$Html$br, _List_Nil, _List_Nil),
 							A2(
-							$elm$html$Html$a,
+							$author$project$Main$targetBlankLink,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$target('_blank'),
 									$elm$html$Html$Attributes$href(
 									A3(
 										$elm$url$Url$Builder$crossOrigin,

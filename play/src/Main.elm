@@ -1059,6 +1059,11 @@ getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
         )
 
 
+targetBlankLink : List (Attribute msg) -> List (Html msg) -> Html msg
+targetBlankLink attributes =
+    Html.a (Html.Attributes.target "_blank" :: attributes)
+
+
 view_ : Bool -> HistoryString -> List (Svg msg) -> List (Html msg) -> Html msg
 view_ gameEndTweet history svgContent buttons =
     Html.div [ Html.Attributes.style "display" "flex" ]
@@ -1066,10 +1071,10 @@ view_ gameEndTweet history svgContent buttons =
             [ Html.h2 [] [ Html.text "架空伝統ゲーム「ケセリマ」" ]
             , Html.ul []
                 (List.map (\p -> Html.li [] [ p ])
-                    [ Html.a [ Html.Attributes.target "_blank", Html.Attributes.href "../documents/本文/index.html" ] [ Html.text "公式ルールブック" ]
-                    , Html.a [ Html.Attributes.target "_blank", Html.Attributes.href "../documents/対訳 ― 架空伝統ゲーム「ケセリマ」/index.html" ] [ Html.text "公式ルールブックの対訳" ]
-                    , Html.a [ Html.Attributes.target "_blank", Html.Attributes.href "../documents/ルール ― 架空伝統ゲーム「ケセリマ」/index.html" ] [ Html.text "自然な日本語でのルール解説" ]
-                    , Html.a [ Html.Attributes.target "_blank", Html.Attributes.href "https://novelup.plus/story/433986940" ] [ Html.text "ノベルアップ＋で連載中！" ]
+                    [ targetBlankLink [ Html.Attributes.href "../documents/本文/index.html" ] [ Html.text "公式ルールブック" ]
+                    , targetBlankLink [ Html.Attributes.href "../documents/対訳 ― 架空伝統ゲーム「ケセリマ」/index.html" ] [ Html.text "公式ルールブックの対訳" ]
+                    , targetBlankLink [ Html.Attributes.href "../documents/ルール ― 架空伝統ゲーム「ケセリマ」/index.html" ] [ Html.text "自然な日本語でのルール解説" ]
+                    , targetBlankLink [ Html.Attributes.href "https://novelup.plus/story/433986940" ] [ Html.text "ノベルアップ＋で連載中！" ]
                     ]
                 )
             , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/11 14:31(UTC+09:00) カードが尽きたときに補充されないことがあるのを修正" ]
@@ -1081,8 +1086,8 @@ view_ gameEndTweet history svgContent buttons =
             , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/13 23:38(UTC+09:00) ボタンに色を付けてスペースも入れた" ]
             , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/15 12:36(UTC+09:00) ページのレイアウトを調整" ]
             , Html.p [ Html.Attributes.style "font-size" "80%" ]
-                [ Html.a
-                    [ Html.Attributes.href "https://github.com/keserima/keserima.github.io/issues/new", Html.Attributes.target "_blank" ]
+                [ targetBlankLink
+                    [ Html.Attributes.href "https://github.com/keserima/keserima.github.io/issues/new" ]
                     [ Html.text "バグなどありましたらここをクリックしてご報告ください" ]
                 ]
             ]
@@ -1100,9 +1105,8 @@ view_ gameEndTweet history svgContent buttons =
                 ]
                 [ Html.text history ]
             , Html.br [] []
-            , Html.a
-                [ Html.Attributes.target "_blank"
-                , Html.Attributes.href
+            , targetBlankLink
+                [ Html.Attributes.href
                     (crossOrigin
                         "https://twitter.com"
                         [ "intent", "tweet" ]
