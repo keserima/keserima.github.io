@@ -7460,6 +7460,7 @@ var $elm$url$Url$Builder$crossOrigin = F3(
 		return prePath + ('/' + (A2($elm$core$String$join, '/', pathSegments) + $elm$url$Url$Builder$toQuery(parameters)));
 	});
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$html$Html$h2 = _VirtualDom_node('h2');
 var $elm$html$Html$Attributes$height = function (n) {
 	return A2(
 		_VirtualDom_attribute,
@@ -7499,6 +7500,8 @@ var $elm$core$List$intersperse = F2(
 			return A2($elm$core$List$cons, hd, spersed);
 		}
 	});
+var $elm$html$Html$li = _VirtualDom_node('li');
+var $elm$html$Html$p = _VirtualDom_node('p');
 var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -7536,6 +7539,7 @@ var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
 var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$textarea = _VirtualDom_node('textarea');
+var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
 var $author$project$Main$view_ = F4(
 	function (gameEndTweet, history, svgContent, buttons) {
@@ -7543,11 +7547,185 @@ var $author$project$Main$view_ = F4(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					A2($elm$html$Html$Attributes$style, 'padding', '0 0 0 20px'),
 					A2($elm$html$Html$Attributes$style, 'display', 'flex')
 				]),
 			_List_fromArray(
 				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'padding', '0px 20px 0 20px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$h2,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text('架空伝統ゲーム「ケセリマ」')
+								])),
+							A2(
+							$elm$html$Html$ul,
+							_List_Nil,
+							A2(
+								$elm$core$List$map,
+								function (p) {
+									return A2(
+										$elm$html$Html$li,
+										_List_Nil,
+										_List_fromArray(
+											[p]));
+								},
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$a,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$target('_blank'),
+												$elm$html$Html$Attributes$href('../documents/本文/index.html')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('公式ルールブック')
+											])),
+										A2(
+										$elm$html$Html$a,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$target('_blank'),
+												$elm$html$Html$Attributes$href('../documents/対訳 ― 架空伝統ゲーム「ケセリマ」/index.html')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('公式ルールブックの対訳')
+											])),
+										A2(
+										$elm$html$Html$a,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$target('_blank'),
+												$elm$html$Html$Attributes$href('../documents/ルール ― 架空伝統ゲーム「ケセリマ」/index.html')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('自然な日本語でのルール解説')
+											])),
+										A2(
+										$elm$html$Html$a,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$target('_blank'),
+												$elm$html$Html$Attributes$href('https://novelup.plus/story/433986940')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('ノベルアップ＋で連載中！')
+											]))
+									]))),
+							A2(
+							$elm$html$Html$p,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('2021/06/11 14:31(UTC+09:00) カードが尽きたときに補充されないことがあるのを修正')
+								])),
+							A2(
+							$elm$html$Html$p,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('2021/06/11 20:12(UTC+09:00) 最初のカード3枚がなんと棋譜に書かれていなかったのを修正')
+								])),
+							A2(
+							$elm$html$Html$p,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('2021/06/13 10:45(UTC+09:00) 手札が7枚以上のときにも正しく表示できるよう表示を改善')
+								])),
+							A2(
+							$elm$html$Html$p,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('2021/06/13 15:13(UTC+09:00) キャンセルを全部に足したので手詰まりしないようになった')
+								])),
+							A2(
+							$elm$html$Html$p,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('2021/06/13 15:34(UTC+09:00) 棋譜をツイートする旨の催促をうるさくした')
+								])),
+							A2(
+							$elm$html$Html$p,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('2021/06/13 16:13(UTC+09:00) キャンセルの足し忘れを修正')
+								])),
+							A2(
+							$elm$html$Html$p,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('2021/06/13 23:38(UTC+09:00) ボタンに色を付けてスペースも入れた')
+								])),
+							A2(
+							$elm$html$Html$p,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('2021/06/15 12:36(UTC+09:00) ページのレイアウトを調整')
+								])),
+							A2(
+							$elm$html$Html$p,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'font-size', '80%')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://github.com/keserima/keserima.github.io/issues/new'),
+											$elm$html$Html$Attributes$target('_blank')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('バグなどありましたらここをクリックしてご報告ください')
+										]))
+								]))
+						])),
 					A2(
 					$elm$html$Html$div,
 					_List_Nil,
@@ -7578,7 +7756,7 @@ var $author$project$Main$view_ = F4(
 							_List_fromArray(
 								[
 									$elm$html$Html$Attributes$rows(20),
-									$elm$html$Html$Attributes$cols(80),
+									$elm$html$Html$Attributes$cols(40),
 									$elm$html$Html$Attributes$readonly(true),
 									A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
 								]),

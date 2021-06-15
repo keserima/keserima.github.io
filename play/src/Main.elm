@@ -1061,8 +1061,32 @@ getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
 
 view_ : Bool -> HistoryString -> List (Svg msg) -> List (Html msg) -> Html msg
 view_ gameEndTweet history svgContent buttons =
-    Html.div [ Html.Attributes.style "padding" "0 0 0 20px", Html.Attributes.style "display" "flex" ] <|
-        [ Html.div []
+    Html.div [ Html.Attributes.style "display" "flex" ]
+        [ Html.div [ Html.Attributes.style "padding" "0px 20px 0 20px" ]
+            [ Html.h2 [] [ Html.text "架空伝統ゲーム「ケセリマ」" ]
+            , Html.ul []
+                (List.map (\p -> Html.li [] [ p ])
+                    [ Html.a [ Html.Attributes.target "_blank", Html.Attributes.href "../documents/本文/index.html" ] [ Html.text "公式ルールブック" ]
+                    , Html.a [ Html.Attributes.target "_blank", Html.Attributes.href "../documents/対訳 ― 架空伝統ゲーム「ケセリマ」/index.html" ] [ Html.text "公式ルールブックの対訳" ]
+                    , Html.a [ Html.Attributes.target "_blank", Html.Attributes.href "../documents/ルール ― 架空伝統ゲーム「ケセリマ」/index.html" ] [ Html.text "自然な日本語でのルール解説" ]
+                    , Html.a [ Html.Attributes.target "_blank", Html.Attributes.href "https://novelup.plus/story/433986940" ] [ Html.text "ノベルアップ＋で連載中！" ]
+                    ]
+                )
+            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/11 14:31(UTC+09:00) カードが尽きたときに補充されないことがあるのを修正" ]
+            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/11 20:12(UTC+09:00) 最初のカード3枚がなんと棋譜に書かれていなかったのを修正" ]
+            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/13 10:45(UTC+09:00) 手札が7枚以上のときにも正しく表示できるよう表示を改善" ]
+            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/13 15:13(UTC+09:00) キャンセルを全部に足したので手詰まりしないようになった" ]
+            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/13 15:34(UTC+09:00) 棋譜をツイートする旨の催促をうるさくした" ]
+            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/13 16:13(UTC+09:00) キャンセルの足し忘れを修正" ]
+            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/13 23:38(UTC+09:00) ボタンに色を付けてスペースも入れた" ]
+            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/15 12:36(UTC+09:00) ページのレイアウトを調整" ]
+            , Html.p [ Html.Attributes.style "font-size" "80%" ]
+                [ Html.a
+                    [ Html.Attributes.href "https://github.com/keserima/keserima.github.io/issues/new", Html.Attributes.target "_blank" ]
+                    [ Html.text "バグなどありましたらここをクリックしてご報告ください" ]
+                ]
+            ]
+        , Html.div []
             (svg [ viewBox "0 -200 900 900", width "540" ] svgContent
                 :: Html.br [] []
                 :: List.intersperse (Html.text " ") buttons
@@ -1070,7 +1094,7 @@ view_ gameEndTweet history svgContent buttons =
         , Html.div []
             [ Html.textarea
                 [ Html.Attributes.rows 20
-                , Html.Attributes.cols 80
+                , Html.Attributes.cols 40
                 , Html.Attributes.readonly True
                 , Html.Attributes.style "font-family" "monospace"
                 ]
