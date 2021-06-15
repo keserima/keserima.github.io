@@ -7562,7 +7562,8 @@ var $author$project$Main$view_ = F4(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							A2($elm$html$Html$Attributes$style, 'padding', '0px 20px 0 20px')
+							A2($elm$html$Html$Attributes$style, 'padding', '0px 20px 0 20px'),
+							A2($elm$html$Html$Attributes$style, 'min-width', '360px')
 						]),
 					_List_fromArray(
 						[

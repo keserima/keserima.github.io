@@ -1067,7 +1067,7 @@ targetBlankLink attributes =
 view_ : Bool -> HistoryString -> List (Svg msg) -> List (Html msg) -> Html msg
 view_ gameEndTweet history svgContent buttons =
     Html.div [ Html.Attributes.style "display" "flex" ]
-        [ Html.div [ Html.Attributes.style "padding" "0px 20px 0 20px" ]
+        [ Html.div [ Html.Attributes.style "padding" "0px 20px 0 20px", Html.Attributes.style "min-width" "360px"]
             [ Html.h2 [] [ Html.text "架空伝統ゲーム「ケセリマ」" ]
             , Html.ul []
                 (List.map (\p -> Html.li [] [ p ])
