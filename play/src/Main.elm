@@ -1077,14 +1077,18 @@ view_ gameEndTweet history svgContent buttons =
                     , targetBlankLink [ Html.Attributes.href "https://novelup.plus/story/433986940" ] [ Html.text "ノベルアップ＋で連載中！" ]
                     ]
                 )
-            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/11 14:31(UTC+09:00) カードが尽きたときに補充されないことがあるのを修正" ]
-            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/11 20:12(UTC+09:00) 最初のカード3枚がなんと棋譜に書かれていなかったのを修正" ]
-            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/13 10:45(UTC+09:00) 手札が7枚以上のときにも正しく表示できるよう表示を改善" ]
-            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/13 15:13(UTC+09:00) キャンセルを全部に足したので手詰まりしないようになった" ]
-            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/13 15:34(UTC+09:00) 棋譜をツイートする旨の催促をうるさくした" ]
-            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/13 16:13(UTC+09:00) キャンセルの足し忘れを修正" ]
-            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/13 23:38(UTC+09:00) ボタンに色を付けてスペースも入れた" ]
-            , Html.p [ Html.Attributes.style "font-size" "50%" ] [ Html.text "2021/06/15 12:36(UTC+09:00) ページのレイアウトを調整" ]
+            , Html.div [ Html.Attributes.style "font-size" "50%" ]
+                (List.map (\t -> Html.p [] [ Html.text t ])
+                    [ "2021/06/11 14:31(UTC+09:00) カードが尽きたときに補充されないことがあるのを修正"
+                    , "2021/06/11 20:12(UTC+09:00) 最初のカード3枚がなんと棋譜に書かれていなかったのを修正"
+                    , "2021/06/13 10:45(UTC+09:00) 手札が7枚以上のときにも正しく表示できるよう表示を改善"
+                    , "2021/06/13 15:13(UTC+09:00) キャンセルを全部に足したので手詰まりしないようになった"
+                    , "2021/06/13 15:34(UTC+09:00) 棋譜をツイートする旨の催促をうるさくした"
+                    , "2021/06/13 16:13(UTC+09:00) キャンセルの足し忘れを修正"
+                    , "2021/06/13 23:38(UTC+09:00) ボタンに色を付けてスペースも入れた"
+                    , "2021/06/15 12:36(UTC+09:00) ページのレイアウトを調整"
+                    ]
+                )
             , Html.p [ Html.Attributes.style "font-size" "80%" ]
                 [ targetBlankLink
                     [ Html.Attributes.href "https://github.com/keserima/keserima.github.io/issues/new" ]

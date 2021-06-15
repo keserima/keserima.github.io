@@ -7629,85 +7629,24 @@ var $author$project$Main$view_ = F4(
 											]))
 									]))),
 							A2(
-							$elm$html$Html$p,
+							$elm$html$Html$div,
 							_List_fromArray(
 								[
 									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
 								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('2021/06/11 14:31(UTC+09:00) カードが尽きたときに補充されないことがあるのを修正')
-								])),
 							A2(
-							$elm$html$Html$p,
-							_List_fromArray(
-								[
-									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('2021/06/11 20:12(UTC+09:00) 最初のカード3枚がなんと棋譜に書かれていなかったのを修正')
-								])),
-							A2(
-							$elm$html$Html$p,
-							_List_fromArray(
-								[
-									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('2021/06/13 10:45(UTC+09:00) 手札が7枚以上のときにも正しく表示できるよう表示を改善')
-								])),
-							A2(
-							$elm$html$Html$p,
-							_List_fromArray(
-								[
-									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('2021/06/13 15:13(UTC+09:00) キャンセルを全部に足したので手詰まりしないようになった')
-								])),
-							A2(
-							$elm$html$Html$p,
-							_List_fromArray(
-								[
-									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('2021/06/13 15:34(UTC+09:00) 棋譜をツイートする旨の催促をうるさくした')
-								])),
-							A2(
-							$elm$html$Html$p,
-							_List_fromArray(
-								[
-									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('2021/06/13 16:13(UTC+09:00) キャンセルの足し忘れを修正')
-								])),
-							A2(
-							$elm$html$Html$p,
-							_List_fromArray(
-								[
-									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('2021/06/13 23:38(UTC+09:00) ボタンに色を付けてスペースも入れた')
-								])),
-							A2(
-							$elm$html$Html$p,
-							_List_fromArray(
-								[
-									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('2021/06/15 12:36(UTC+09:00) ページのレイアウトを調整')
-								])),
+								$elm$core$List$map,
+								function (t) {
+									return A2(
+										$elm$html$Html$p,
+										_List_Nil,
+										_List_fromArray(
+											[
+												$elm$html$Html$text(t)
+											]));
+								},
+								_List_fromArray(
+									['2021/06/11 14:31(UTC+09:00) カードが尽きたときに補充されないことがあるのを修正', '2021/06/11 20:12(UTC+09:00) 最初のカード3枚がなんと棋譜に書かれていなかったのを修正', '2021/06/13 10:45(UTC+09:00) 手札が7枚以上のときにも正しく表示できるよう表示を改善', '2021/06/13 15:13(UTC+09:00) キャンセルを全部に足したので手詰まりしないようになった', '2021/06/13 15:34(UTC+09:00) 棋譜をツイートする旨の催促をうるさくした', '2021/06/13 16:13(UTC+09:00) キャンセルの足し忘れを修正', '2021/06/13 23:38(UTC+09:00) ボタンに色を付けてスペースも入れた', '2021/06/15 12:36(UTC+09:00) ページのレイアウトを調整']))),
 							A2(
 							$elm$html$Html$p,
 							_List_fromArray(
