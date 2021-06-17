@@ -2,7 +2,7 @@ module Main exposing (init, main, view)
 
 import Browser
 import Html exposing (Html)
-import Html.Attributes
+import Html.Attributes exposing (href)
 import KeseRimaTypes exposing (..)
 import List.Extra exposing (filterNot)
 import Regex
@@ -1071,10 +1071,10 @@ view_ gameEndTweet history svgContent buttons =
             [ Html.h2 [] [ Html.text "架空伝統ゲーム「ケセリマ」" ]
             , Html.ul []
                 (List.map (\p -> Html.li [] [ p ])
-                    [ targetBlankLink [ Html.Attributes.href "../documents/本文/index.html" ] [ Html.text "公式ルールブック" ]
-                    , targetBlankLink [ Html.Attributes.href "../documents/対訳 ― 架空伝統ゲーム「ケセリマ」/index.html" ] [ Html.text "公式ルールブックの対訳" ]
-                    , targetBlankLink [ Html.Attributes.href "../documents/ルール ― 架空伝統ゲーム「ケセリマ」/index.html" ] [ Html.text "自然な日本語でのルール解説" ]
-                    , targetBlankLink [ Html.Attributes.href "https://novelup.plus/story/433986940" ] [ Html.text "ノベルアップ＋で連載中！" ]
+                    [ targetBlankLink [ href "../documents/本文/index.html" ] [ Html.text "公式ルールブック" ]
+                    , targetBlankLink [ href "../documents/対訳 ― 架空伝統ゲーム「ケセリマ」/index.html" ] [ Html.text "公式ルールブックの対訳" ]
+                    , targetBlankLink [ href "../documents/ルール ― 架空伝統ゲーム「ケセリマ」/index.html" ] [ Html.text "自然な日本語でのルール解説" ]
+                    , targetBlankLink [ href "https://novelup.plus/story/433986940" ] [ Html.text "ノベルアップ＋で連載中！" ]
                     ]
                 )
             , Html.div [ Html.Attributes.style "font-size" "50%" ]
@@ -1091,7 +1091,7 @@ view_ gameEndTweet history svgContent buttons =
                 )
             , Html.p [ Html.Attributes.style "font-size" "80%" ]
                 [ targetBlankLink
-                    [ Html.Attributes.href "https://github.com/keserima/keserima.github.io/issues/new" ]
+                    [ href "https://github.com/keserima/keserima.github.io/issues/new" ]
                     [ Html.text "バグなどありましたらここをクリックしてご報告ください" ]
                 ]
             ]
@@ -1110,7 +1110,7 @@ view_ gameEndTweet history svgContent buttons =
                 [ Html.text history ]
             , Html.br [] []
             , targetBlankLink
-                [ Html.Attributes.href
+                [ href
                     (crossOrigin
                         "https://twitter.com"
                         [ "intent", "tweet" ]
