@@ -14,7 +14,15 @@ import Url.Builder exposing (..)
 
 
 type alias Flags =
-    { keseGoesFirst : Bool, keseDice : Bool, rimaDice : Bool, shipDice : Bool, keseDeck : List Int, rimaDeck : List Int }
+    { keseGoesFirst : Bool
+    , keseDice : Bool
+    , rimaDice : Bool
+    , shipDice : Bool
+    , keseDeck : List Int
+    , rimaDeck : List Int
+    , historyFirst : String
+    , historySecond : String
+    }
 
 
 type CurrentStatus
@@ -23,8 +31,8 @@ type CurrentStatus
         { board : List PieceOnBoard
         , capturedByKese : List Profession
         , capturedByRima : List Profession
-        , keseDeck : List Profession
-        , rimaDeck : List Profession
+        , keseDeck : List ()
+        , rimaDeck : List ()
         , keseHand : List Profession
         , rimaHand : List Profession
         , whoseVictory : PieceColor
@@ -244,8 +252,9 @@ newHistory msg modl =
                 PieceInKeseHand _ ->
                     case ( cardState.keseHand, cardState.keseDeck ) of
                         ( [ _ ], x :: y :: z :: _ ) ->
-                            coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr [ x, y, z ]) ++ "}.\nR"
+                            coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}.\nR"
 
+                        {- FIXME -}
                         _ ->
                             coordToHistoryStr to ++ ".\nR"
 
@@ -253,8 +262,9 @@ newHistory msg modl =
                 PieceInRimaHand _ ->
                     case ( cardState.rimaHand, cardState.rimaDeck ) of
                         ( [ _ ], x :: y :: z :: _ ) ->
-                            coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr [ x, y, z ]) ++ "}.\nK"
+                            coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}.\nK"
 
+                        {- FIXME -}
                         _ ->
                             coordToHistoryStr to ++ ".\nK"
 
@@ -274,17 +284,19 @@ newHistory msg modl =
                 cardDrawn =
                     if List.isEmpty remaining.keseHand then
                         let
-                            ( keseHand, _ ) =
+                            ( _, _ ) =
                                 drawUpToThree remaining.keseDeck
                         in
-                        "{" ++ String.join "" (List.map profToHistoryStr keseHand) ++ "}"
+                        "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}"
+                        {- FIXME -}
 
                     else if List.isEmpty remaining.rimaHand then
                         let
-                            ( rimaHand, _ ) =
+                            ( _, _ ) =
                                 drawUpToThree remaining.rimaDeck
                         in
-                        "{" ++ String.join "" (List.map profToHistoryStr rimaHand) ++ "}"
+                        "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}"
+                        {- FIXME -}
 
                     else
                         ""
@@ -378,7 +390,9 @@ updateStatus msg modl saved =
                             NothingSelected
                                 { cardState
                                     | board = newBoard
-                                    , keseHand = [ x, y, z ]
+                                    , keseHand = [ Circle, Circle, Circle ]
+
+                                    {- FIXME -}
                                     , whoseTurn = RimaTurn
                                     , keseDeck = zs
                                 }
@@ -401,7 +415,9 @@ updateStatus msg modl saved =
                             NothingSelected
                                 { cardState
                                     | board = newBoard
-                                    , rimaHand = [ x, y, z ]
+                                    , rimaHand = [ Circle, Circle, Circle ]
+
+                                    {- FIXME -}
                                     , whoseTurn = KeseTurn
                                     , rimaDeck = zs
                                 }
@@ -420,8 +436,13 @@ updateStatus msg modl saved =
                 cardDrawn =
                     if List.isEmpty remaining.keseHand then
                         let
-                            ( keseHand, keseDeck ) =
+                            ( _, keseDeck ) =
                                 drawUpToThree remaining.keseDeck
+
+                            keseHand =
+                                [ Circle, Circle, Circle ]
+
+                            {- FIXME -}
                         in
                         { remaining
                             | keseHand = keseHand
@@ -430,8 +451,13 @@ updateStatus msg modl saved =
 
                     else if List.isEmpty remaining.rimaHand then
                         let
-                            ( rimaHand, rimaDeck ) =
+                            ( _, rimaDeck ) =
                                 drawUpToThree remaining.rimaDeck
+
+                            rimaHand =
+                                [ Circle, Circle, Circle ]
+
+                            {- FIXME -}
                         in
                         { remaining
                             | rimaHand = rimaHand
@@ -1067,28 +1093,8 @@ targetBlankLink attributes =
 view_ : Bool -> HistoryString -> List (Svg msg) -> List (Html msg) -> Html msg
 view_ gameEndTweet history svgContent buttons =
     Html.div [ Html.Attributes.style "display" "flex" ]
-        [ Html.div [ Html.Attributes.style "padding" "0px 20px 0 20px", Html.Attributes.style "min-width" "360px"]
-            [ Html.h2 [] [ Html.text "架空伝統ゲーム「ケセリマ」" ]
-            , Html.ul []
-                (List.map (\p -> Html.li [] [ p ])
-                    [ targetBlankLink [ href "../documents/本文/index.html" ] [ Html.text "公式ルールブック" ]
-                    , targetBlankLink [ href "../documents/対訳 ― 架空伝統ゲーム「ケセリマ」/index.html" ] [ Html.text "公式ルールブックの対訳" ]
-                    , targetBlankLink [ href "../documents/ルール ― 架空伝統ゲーム「ケセリマ」/index.html" ] [ Html.text "自然な日本語でのルール解説" ]
-                    , targetBlankLink [ href "https://novelup.plus/story/433986940" ] [ Html.text "ノベルアップ＋で連載中！" ]
-                    ]
-                )
-            , Html.div [ Html.Attributes.style "font-size" "50%" ]
-                (List.map (\t -> Html.p [] [ Html.text t ])
-                    [ "2021/06/11 14:31(UTC+09:00) カードが尽きたときに補充されないことがあるのを修正"
-                    , "2021/06/11 20:12(UTC+09:00) 最初のカード3枚がなんと棋譜に書かれていなかったのを修正"
-                    , "2021/06/13 10:45(UTC+09:00) 手札が7枚以上のときにも正しく表示できるよう表示を改善"
-                    , "2021/06/13 15:13(UTC+09:00) キャンセルを全部に足したので手詰まりしないようになった"
-                    , "2021/06/13 15:34(UTC+09:00) 棋譜をツイートする旨の催促をうるさくした"
-                    , "2021/06/13 16:13(UTC+09:00) キャンセルの足し忘れを修正"
-                    , "2021/06/13 23:38(UTC+09:00) ボタンに色を付けてスペースも入れた"
-                    , "2021/06/15 12:36(UTC+09:00) ページのレイアウトを調整"
-                    ]
-                )
+        [ Html.div [ Html.Attributes.style "padding" "0px 20px 0 20px", Html.Attributes.style "min-width" "360px" ]
+            [ Html.h2 [] [ Html.text "架空伝統ゲーム「ケセリマ」棋譜再生" ]
             , Html.p [ Html.Attributes.style "font-size" "80%" ]
                 [ targetBlankLink
                     [ href "https://github.com/keserima/keserima.github.io/issues/new" ]
@@ -1101,16 +1107,14 @@ view_ gameEndTweet history svgContent buttons =
                 :: List.intersperse (Html.text " ") buttons
             )
         , Html.div []
-            [ Html.textarea
-                [ Html.Attributes.rows 20
-                , Html.Attributes.cols 40
-                , Html.Attributes.readonly True
+            [ Html.div
+                [ Html.Attributes.style "white-space" "pre-wrap"
                 , Html.Attributes.style "font-family" "monospace"
                 ]
-                [ Html.text """R+@11 S+@23 K+@15
+                [ Html.strong [] [ Html.text """R+@11 S+@23 K+@15
 K{oxo} R{oo+}
 --------------------------------
-Ko25-25x14.
+K""" ], Html.text """o25-25x14.
 Rx51-42.
 Ko44.
 R+11-21o+22.
@@ -1532,11 +1536,17 @@ numToProf n =
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
-        ( keseHand, keseDeck ) =
+        ( keseHand, _ ) =
             drawUpToThree (List.map numToProf flags.keseDeck)
 
-        ( rimaHand, rimaDeck ) =
+        keseDeck =
+            List.repeat 15 ()
+
+        ( rimaHand, _ ) =
             drawUpToThree (List.map numToProf flags.rimaDeck)
+
+        rimaDeck =
+            List.repeat 15 ()
 
         initialStatus =
             NothingSelected

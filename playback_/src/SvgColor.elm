@@ -88,11 +88,17 @@ blurShadowColor : String
 blurShadowColor =
     "#404040"
 
+
 redCandidateColor : String
-redCandidateColor = "#ff0000"
+redCandidateColor =
+    "#ff0000"
+
 
 yellowCandidateColor : String
-yellowCandidateColor = "#ffff00"
+yellowCandidateColor =
+    "#ffff00"
+
 
 floatingPieceBorderColor : String
-floatingPieceBorderColor = "#ffff00"
+floatingPieceBorderColor =
+    "#ffff00"

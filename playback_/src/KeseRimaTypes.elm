@@ -52,8 +52,8 @@ type alias StateOfCards =
     { board : List PieceOnBoard
     , capturedByKese : List Profession
     , capturedByRima : List Profession
-    , keseDeck : List Profession
-    , rimaDeck : List Profession
+    , keseDeck : List ()
+    , rimaDeck : List ()
     , keseHand : List Profession
     , rimaHand : List Profession
     , whoseTurn : WhoseTurn

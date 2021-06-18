@@ -38,6 +38,21 @@
         shuffle(rimaDeck);
         rimaDeck.unshift(0);
 
+        var historyFirst = `R+@11 S+@23 K+@15
+K{oxo} R{oo+}
+--------------------------------
+K`;
+        var historySecond = `o25-25x14.
+Rx51-42.
+Ko44.
+R+11-21o+22.
+KSx43~~~ Ko14~~~ Ko24{o+o}.
+Ro53{+xo}.
+Ko24~~~ Ko14-14+13.
+R+22-23+24ox35[*]{o+o}.
+--------------------------------
+Rima`;
+
         var app = Elm.Main.init({
             node: document.getElementById('myapp'),
             flags: {
@@ -45,9 +60,11 @@
                 keseDice: Math.random() < 0.5,
                 rimaDice: Math.random() < 0.5,
                 shipDice: Math.random() < 0.5,
-                keseDeck, rimaDeck
+                keseDeck, rimaDeck,
+                historyFirst, historySecond
             }
         });
+
     </script>
 </body>
 

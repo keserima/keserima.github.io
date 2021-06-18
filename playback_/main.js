@@ -5304,15 +5304,36 @@ var $author$project$Main$profToHistoryStr = function (prof) {
 			return '*';
 	}
 };
+var $elm$core$List$repeatHelp = F3(
+	function (result, n, value) {
+		repeatHelp:
+		while (true) {
+			if (n <= 0) {
+				return result;
+			} else {
+				var $temp$result = A2($elm$core$List$cons, value, result),
+					$temp$n = n - 1,
+					$temp$value = value;
+				result = $temp$result;
+				n = $temp$n;
+				value = $temp$value;
+				continue repeatHelp;
+			}
+		}
+	});
+var $elm$core$List$repeat = F2(
+	function (n, value) {
+		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
+	});
 var $author$project$Main$init = function (flags) {
+	var rimaDeck = A2($elm$core$List$repeat, 15, _Utils_Tuple0);
+	var keseDeck = A2($elm$core$List$repeat, 15, _Utils_Tuple0);
 	var _v0 = $author$project$Main$drawUpToThree(
 		A2($elm$core$List$map, $author$project$Main$numToProf, flags.rimaDeck));
 	var rimaHand = _v0.a;
-	var rimaDeck = _v0.b;
 	var _v1 = $author$project$Main$drawUpToThree(
 		A2($elm$core$List$map, $author$project$Main$numToProf, flags.keseDeck));
 	var keseHand = _v1.a;
-	var keseDeck = _v1.b;
 	var initialStatus = $author$project$Main$NothingSelected(
 		{
 			board: _List_fromArray(
@@ -5403,6 +5424,7 @@ var $author$project$Main$init = function (flags) {
 };
 var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $elm$json$Json$Decode$list = _Json_decodeList;
+var $elm$json$Json$Decode$string = _Json_decodeString;
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
@@ -5672,7 +5694,7 @@ var $author$project$Main$newHistory = F2(
 												$elm$core$List$map,
 												$author$project$Main$profToHistoryStr,
 												_List_fromArray(
-													[x, y, z]))) + '}.\nR'));
+													[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]))) + '}.\nR'));
 									} else {
 										return $author$project$Main$coordToHistoryStr(to) + '.\nR';
 									}
@@ -5693,7 +5715,7 @@ var $author$project$Main$newHistory = F2(
 												$elm$core$List$map,
 												$author$project$Main$profToHistoryStr,
 												_List_fromArray(
-													[x, y, z]))) + '}.\nK'));
+													[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]))) + '}.\nK'));
 									} else {
 										return $author$project$Main$coordToHistoryStr(to) + '.\nK';
 									}
@@ -5713,19 +5735,25 @@ var $author$project$Main$newHistory = F2(
 						var cardDrawn = function () {
 							if ($elm$core$List$isEmpty(remaining.keseHand)) {
 								var _v20 = $author$project$Main$drawUpToThree(remaining.keseDeck);
-								var keseHand = _v20.a;
 								return '{' + (A2(
 									$elm$core$String$join,
 									'',
-									A2($elm$core$List$map, $author$project$Main$profToHistoryStr, keseHand)) + '}');
+									A2(
+										$elm$core$List$map,
+										$author$project$Main$profToHistoryStr,
+										_List_fromArray(
+											[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]))) + '}');
 							} else {
 								if ($elm$core$List$isEmpty(remaining.rimaHand)) {
 									var _v21 = $author$project$Main$drawUpToThree(remaining.rimaDeck);
-									var rimaHand = _v21.a;
 									return '{' + (A2(
 										$elm$core$String$join,
 										'',
-										A2($elm$core$List$map, $author$project$Main$profToHistoryStr, rimaHand)) + '}');
+										A2(
+											$elm$core$List$map,
+											$author$project$Main$profToHistoryStr,
+											_List_fromArray(
+												[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]))) + '}');
 								} else {
 									return '';
 								}
@@ -6092,7 +6120,7 @@ var $author$project$Main$updateStatus = F3(
 													board: newBoard,
 													keseDeck: zs,
 													keseHand: _List_fromArray(
-														[x, y, z]),
+														[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]),
 													whoseTurn: $author$project$KeseRimaTypes$RimaTurn
 												}));
 									} else {
@@ -6130,7 +6158,7 @@ var $author$project$Main$updateStatus = F3(
 													board: newBoard,
 													rimaDeck: zs,
 													rimaHand: _List_fromArray(
-														[x, y, z]),
+														[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]),
 													whoseTurn: $author$project$KeseRimaTypes$KeseTurn
 												}));
 									} else {
@@ -6162,16 +6190,18 @@ var $author$project$Main$updateStatus = F3(
 						var _v17 = _v0.b;
 						var cardDrawn = function () {
 							if ($elm$core$List$isEmpty(remaining.keseHand)) {
+								var keseHand = _List_fromArray(
+									[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]);
 								var _v21 = $author$project$Main$drawUpToThree(remaining.keseDeck);
-								var keseHand = _v21.a;
 								var keseDeck = _v21.b;
 								return _Utils_update(
 									remaining,
 									{keseDeck: keseDeck, keseHand: keseHand});
 							} else {
 								if ($elm$core$List$isEmpty(remaining.rimaHand)) {
+									var rimaHand = _List_fromArray(
+										[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]);
 									var _v22 = $author$project$Main$drawUpToThree(remaining.rimaDeck);
-									var rimaHand = _v22.a;
 									var rimaDeck = _v22.b;
 									return _Utils_update(
 										remaining,
@@ -7416,12 +7446,6 @@ var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 		]);
 };
 var $elm$html$Html$br = _VirtualDom_node('br');
-var $elm$html$Html$Attributes$cols = function (n) {
-	return A2(
-		_VirtualDom_attribute,
-		'cols',
-		$elm$core$String$fromInt(n));
-};
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$h2 = _VirtualDom_node('h2');
 var $elm$json$Json$Encode$string = _Json_wrap;
@@ -7456,23 +7480,8 @@ var $elm$core$List$intersperse = F2(
 			return A2($elm$core$List$cons, hd, spersed);
 		}
 	});
-var $elm$html$Html$li = _VirtualDom_node('li');
 var $elm$html$Html$p = _VirtualDom_node('p');
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
-	});
-var $elm$html$Html$Attributes$readonly = $elm$html$Html$Attributes$boolProperty('readOnly');
-var $elm$html$Html$Attributes$rows = function (n) {
-	return A2(
-		_VirtualDom_attribute,
-		'rows',
-		$elm$core$String$fromInt(n));
-};
+var $elm$html$Html$strong = _VirtualDom_node('strong');
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
 var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
@@ -7484,8 +7493,6 @@ var $author$project$Main$targetBlankLink = function (attributes) {
 			attributes));
 };
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$html$Html$textarea = _VirtualDom_node('textarea');
-var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
 var $author$project$Main$view_ = F4(
 	function (gameEndTweet, history, svgContent, buttons) {
@@ -7511,82 +7518,8 @@ var $author$project$Main$view_ = F4(
 							_List_Nil,
 							_List_fromArray(
 								[
-									$elm$html$Html$text('架空伝統ゲーム「ケセリマ」')
+									$elm$html$Html$text('架空伝統ゲーム「ケセリマ」棋譜再生')
 								])),
-							A2(
-							$elm$html$Html$ul,
-							_List_Nil,
-							A2(
-								$elm$core$List$map,
-								function (p) {
-									return A2(
-										$elm$html$Html$li,
-										_List_Nil,
-										_List_fromArray(
-											[p]));
-								},
-								_List_fromArray(
-									[
-										A2(
-										$author$project$Main$targetBlankLink,
-										_List_fromArray(
-											[
-												$elm$html$Html$Attributes$href('../documents/本文/index.html')
-											]),
-										_List_fromArray(
-											[
-												$elm$html$Html$text('公式ルールブック')
-											])),
-										A2(
-										$author$project$Main$targetBlankLink,
-										_List_fromArray(
-											[
-												$elm$html$Html$Attributes$href('../documents/対訳 ― 架空伝統ゲーム「ケセリマ」/index.html')
-											]),
-										_List_fromArray(
-											[
-												$elm$html$Html$text('公式ルールブックの対訳')
-											])),
-										A2(
-										$author$project$Main$targetBlankLink,
-										_List_fromArray(
-											[
-												$elm$html$Html$Attributes$href('../documents/ルール ― 架空伝統ゲーム「ケセリマ」/index.html')
-											]),
-										_List_fromArray(
-											[
-												$elm$html$Html$text('自然な日本語でのルール解説')
-											])),
-										A2(
-										$author$project$Main$targetBlankLink,
-										_List_fromArray(
-											[
-												$elm$html$Html$Attributes$href('https://novelup.plus/story/433986940')
-											]),
-										_List_fromArray(
-											[
-												$elm$html$Html$text('ノベルアップ＋で連載中！')
-											]))
-									]))),
-							A2(
-							$elm$html$Html$div,
-							_List_fromArray(
-								[
-									A2($elm$html$Html$Attributes$style, 'font-size', '50%')
-								]),
-							A2(
-								$elm$core$List$map,
-								function (t) {
-									return A2(
-										$elm$html$Html$p,
-										_List_Nil,
-										_List_fromArray(
-											[
-												$elm$html$Html$text(t)
-											]));
-								},
-								_List_fromArray(
-									['2021/06/11 14:31(UTC+09:00) カードが尽きたときに補充されないことがあるのを修正', '2021/06/11 20:12(UTC+09:00) 最初のカード3枚がなんと棋譜に書かれていなかったのを修正', '2021/06/13 10:45(UTC+09:00) 手札が7枚以上のときにも正しく表示できるよう表示を改善', '2021/06/13 15:13(UTC+09:00) キャンセルを全部に足したので手詰まりしないようになった', '2021/06/13 15:34(UTC+09:00) 棋譜をツイートする旨の催促をうるさくした', '2021/06/13 16:13(UTC+09:00) キャンセルの足し忘れを修正', '2021/06/13 23:38(UTC+09:00) ボタンに色を付けてスペースも入れた', '2021/06/15 12:36(UTC+09:00) ページのレイアウトを調整']))),
 							A2(
 							$elm$html$Html$p,
 							_List_fromArray(
@@ -7633,17 +7566,22 @@ var $author$project$Main$view_ = F4(
 					_List_fromArray(
 						[
 							A2(
-							$elm$html$Html$textarea,
+							$elm$html$Html$div,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$rows(20),
-									$elm$html$Html$Attributes$cols(40),
-									$elm$html$Html$Attributes$readonly(true),
+									A2($elm$html$Html$Attributes$style, 'white-space', 'pre-wrap'),
 									A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('R+@11 S+@23 K+@15\nK{oxo} R{oo+}\n--------------------------------\nKo25-25x14.\nRx51-42.\nKo44.\nR+11-21o+22.\nKSx43~~~ Ko14~~~ Ko24{o+o}.\nRo53{+xo}.\nKo24~~~ Ko14-14+13.\nR+22-23+24ox35[*]{o+o}.\n--------------------------------\nRima')
+									A2(
+									$elm$html$Html$strong,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('R+@11 S+@23 K+@15\nK{oxo} R{oo+}\n--------------------------------\nK')
+										])),
+									$elm$html$Html$text('o25-25x14.\nRx51-42.\nKo44.\nR+11-21o+22.\nKSx43~~~ Ko14~~~ Ko24{o+o}.\nRo53{+xo}.\nKo24~~~ Ko14-14+13.\nR+22-23+24ox35[*]{o+o}.\n--------------------------------\nRima')
 								]))
 						]))
 				]));
@@ -8275,8 +8213,18 @@ _Platform_export({'Main':{'init':$author$project$Main$main(
 											return A2(
 												$elm$json$Json$Decode$andThen,
 												function (keseDeck) {
-													return $elm$json$Json$Decode$succeed(
-														{keseDeck: keseDeck, keseDice: keseDice, keseGoesFirst: keseGoesFirst, rimaDeck: rimaDeck, rimaDice: rimaDice, shipDice: shipDice});
+													return A2(
+														$elm$json$Json$Decode$andThen,
+														function (historySecond) {
+															return A2(
+																$elm$json$Json$Decode$andThen,
+																function (historyFirst) {
+																	return $elm$json$Json$Decode$succeed(
+																		{historyFirst: historyFirst, historySecond: historySecond, keseDeck: keseDeck, keseDice: keseDice, keseGoesFirst: keseGoesFirst, rimaDeck: rimaDeck, rimaDice: rimaDice, shipDice: shipDice});
+																},
+																A2($elm$json$Json$Decode$field, 'historyFirst', $elm$json$Json$Decode$string));
+														},
+														A2($elm$json$Json$Decode$field, 'historySecond', $elm$json$Json$Decode$string));
 												},
 												A2(
 													$elm$json$Json$Decode$field,
