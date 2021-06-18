@@ -1,6 +1,7 @@
 module Main exposing (init, main, view)
 
 import Browser
+import Debug
 import Html exposing (Html)
 import Html.Attributes exposing (href)
 import KeseRimaTypes exposing (..)
@@ -14,13 +15,7 @@ import Url.Builder exposing (..)
 
 
 type alias Flags =
-    { keseGoesFirst : Bool
-    , keseDice : Bool
-    , rimaDice : Bool
-    , shipDice : Bool
-    , keseDeck : List Int
-    , rimaDeck : List Int
-    , historyFirst : String
+    { historyFirst : String
     , historySecond : String
     }
 
@@ -57,7 +52,8 @@ type Msg
 type Model
     = Model
         { saved : CurrentStatus -- Reverts to here when canceled
-        , historyString : HistoryString
+        , historyFirst : HistoryString
+        , historySecond : HistoryString
         , currentStatus : CurrentStatus
         }
 
@@ -129,10 +125,10 @@ coordToHistoryStr coord =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg (Model { historyString, currentStatus, saved }) =
+update msg (Model { historyFirst, currentStatus, saved }) =
     let
         newHist =
-            historyString ++ newHistory msg currentStatus
+            historyFirst ++ newHistory msg currentStatus
 
         newStat =
             updateStatus msg currentStatus saved
@@ -154,7 +150,8 @@ update msg (Model { historyString, currentStatus, saved }) =
                             }
                 in
                 ( Model
-                    { historyString = String.dropRight 1 newHist ++ "--------------------------------\nKeseRima"
+                    { historyFirst = String.dropRight 1 newHist ++ "--------------------------------\nKeseRima"
+                    , historySecond = "FIXME"
                     , currentStatus =
                         gameEnd
                     , saved = gameEnd
@@ -163,13 +160,14 @@ update msg (Model { historyString, currentStatus, saved }) =
                 )
 
             _ ->
-                ( Model { historyString = newHist, currentStatus = newStat, saved = saved }, Cmd.none )
+                ( Model { historyFirst = newHist, historySecond = "FIXME", currentStatus = newStat, saved = saved }, Cmd.none )
 
     else
         case newStat of
             NothingSelected cardState ->
                 ( Model
-                    { historyString = newHist
+                    { historyFirst = newHist
+                    , historySecond = "FIXME"
                     , currentStatus = newStat
                     , saved = NothingSelected cardState -- update `saved`
                     }
@@ -177,7 +175,7 @@ update msg (Model { historyString, currentStatus, saved }) =
                 )
 
             _ ->
-                ( Model { historyString = newHist, currentStatus = newStat, saved = saved }, Cmd.none )
+                ( Model { historyFirst = newHist, historySecond = "FIXME", currentStatus = newStat, saved = saved }, Cmd.none )
 
 
 twoConsecutivePasses : Regex.Regex
@@ -1090,8 +1088,8 @@ targetBlankLink attributes =
     Html.a (Html.Attributes.target "_blank" :: attributes)
 
 
-view_ : Bool -> HistoryString -> List (Svg msg) -> List (Html msg) -> Html msg
-view_ gameEndTweet history svgContent buttons =
+view_ : Bool -> HistoryString -> HistoryString -> List (Svg msg) -> List (Html msg) -> Html msg
+view_ gameEndTweet historyFirst historySecond svgContent buttons =
     Html.div [ Html.Attributes.style "display" "flex" ]
         [ Html.div [ Html.Attributes.style "padding" "0px 20px 0 20px", Html.Attributes.style "min-width" "360px" ]
             [ Html.h2 [] [ Html.text "架空伝統ゲーム「ケセリマ」棋譜再生" ]
@@ -1111,19 +1109,11 @@ view_ gameEndTweet history svgContent buttons =
                 [ Html.Attributes.style "white-space" "pre-wrap"
                 , Html.Attributes.style "font-family" "monospace"
                 ]
-                [ Html.strong [] [ Html.text """R+@11 S+@23 K+@15
-K{oxo} R{oo+}
---------------------------------
-K""" ], Html.text """o25-25x14.
-Rx51-42.
-Ko44.
-R+11-21o+22.
-KSx43~~~ Ko14~~~ Ko24{o+o}.
-Ro53{+xo}.
-Ko24~~~ Ko14-14+13.
-R+22-23+24ox35[*]{o+o}.
---------------------------------
-Rima""" ]
+                [ Html.strong
+                    [ Html.Attributes.style "background-color" "#aaeeaa" ]
+                    [ Html.text historyFirst ]
+                , Html.text historySecond
+                ]
             ]
         ]
 
@@ -1134,11 +1124,12 @@ allCoordsOccupiedBy color board =
 
 
 view : Model -> Html Msg
-view (Model { historyString, currentStatus }) =
+view (Model { historyFirst, historySecond, currentStatus }) =
     case currentStatus of
         NothingSelected cardState ->
             view_ False
-                historyString
+                historyFirst
+                historySecond
                 (stationaryPart cardState
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
@@ -1183,7 +1174,8 @@ view (Model { historyString, currentStatus }) =
 
         GameTerminated cardState ->
             view_ True
-                historyString
+                historyFirst
+                historySecond
                 (defs []
                     [ Svg.filter [ Svg.Attributes.style "color-interpolation-filters:sRGB", id "blur" ]
                         [ feGaussianBlur [ stdDeviation "1.5 1.5", result "blur" ] []
@@ -1297,7 +1289,8 @@ view (Model { historyString, currentStatus }) =
                                     cardState.rimaHand
             in
             view_ False
-                historyString
+                historyFirst
+                historySecond
                 (stationaryPart cardState ++ twoTrashBinsSvg Nothing ++ dynamicPart)
                 [ simpleCancelButton ]
 
@@ -1321,7 +1314,8 @@ view (Model { historyString, currentStatus }) =
                                     True
             in
             view_ False
-                historyString
+                historyFirst
+                historySecond
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
@@ -1385,7 +1379,8 @@ view (Model { historyString, currentStatus }) =
 
         WaitForTrashBinClick { mover, remaining, whoseHand, index } ->
             view_ False
-                historyString
+                historyFirst
+                historySecond
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg (Just whoseHand)
                     ++ List.map
@@ -1451,11 +1446,12 @@ view (Model { historyString, currentStatus }) =
                         ++ List.indexedMap (\i prof -> pieceSvg False None (rimaHandPos i prof)) remaining.rimaHand
                         ++ [ pieceWaitingForAdditionalCommandSvg mover ]
             in
-            view_ False historyString (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) [ cancelAllButton ]
+            view_ False historyFirst historySecond (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) [ cancelAllButton ]
 
         AfterCircleSacrifice { mover, remaining } ->
             view_ False
-                historyString
+                historyFirst
+                historySecond
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
@@ -1533,17 +1529,49 @@ numToProf n =
             Diagonal
 
 
+profFromHistoryStr c =
+    case c of
+        '+' ->
+            HorizontalVertical
+
+        'o' ->
+            Circle
+
+        _ ->
+            Diagonal
+
+
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
-        ( keseHand, _ ) =
-            drawUpToThree (List.map numToProf flags.keseDeck)
+        -- format:
+        -- "R+@11 S+@23 K+@15\nK{oxo} R{oo+}\n--------------------------------\nK"
+        rimaDice =
+            String.slice 0 2 flags.historyFirst == "R+"
+
+        shipDice =
+            String.slice 6 8 flags.historyFirst == "S+"
+
+        keseDice =
+            String.slice 12 14 flags.historyFirst == "K+"
+
+        keseGoesFirst =
+            String.right 1 flags.historyFirst == "K"
+
+        keseHandString =
+            String.slice 20 23 flags.historyFirst
+
+        rimaHandString =
+            String.slice 27 30 flags.historyFirst
+
+        keseHand =
+            List.map profFromHistoryStr (String.toList keseHandString)
 
         keseDeck =
             List.repeat 15 ()
 
-        ( rimaHand, _ ) =
-            drawUpToThree (List.map numToProf flags.rimaDeck)
+        rimaHand =
+            List.map profFromHistoryStr (String.toList rimaHandString)
 
         rimaDeck =
             List.repeat 15 ()
@@ -1551,7 +1579,7 @@ init flags =
         initialStatus =
             NothingSelected
                 { whoseTurn =
-                    if flags.keseGoesFirst then
+                    if keseGoesFirst then
                         KeseTurn
 
                     else
@@ -1564,7 +1592,7 @@ init flags =
                     [ { coord = { x = 0, y = 0 }
                       , pieceColor = Rima
                       , prof =
-                            if flags.rimaDice then
+                            if rimaDice then
                                 HorizontalVertical
 
                             else
@@ -1576,7 +1604,7 @@ init flags =
                     , { coord = { x = 4, y = 0 }
                       , pieceColor = Rima
                       , prof =
-                            if not flags.rimaDice then
+                            if not rimaDice then
                                 HorizontalVertical
 
                             else
@@ -1585,7 +1613,7 @@ init flags =
                     , { coord = { x = 0, y = 4 }
                       , pieceColor = Kese
                       , prof =
-                            if flags.keseDice then
+                            if keseDice then
                                 HorizontalVertical
 
                             else
@@ -1597,7 +1625,7 @@ init flags =
                     , { coord = { x = 4, y = 4 }
                       , pieceColor = Kese
                       , prof =
-                            if not flags.keseDice then
+                            if not keseDice then
                                 HorizontalVertical
 
                             else
@@ -1606,7 +1634,7 @@ init flags =
                     , { coord = { x = 1, y = 2 }
                       , pieceColor = Ship
                       , prof =
-                            if flags.shipDice then
+                            if shipDice then
                                 HorizontalVertical
 
                             else
@@ -1615,7 +1643,7 @@ init flags =
                     , { coord = { x = 3, y = 2 }
                       , pieceColor = Ship
                       , prof =
-                            if not flags.shipDice then
+                            if not shipDice then
                                 HorizontalVertical
 
                             else
@@ -1627,44 +1655,19 @@ init flags =
                 }
     in
     ( Model
-        { historyString =
-            "R"
-                ++ (if flags.rimaDice then
-                        "+"
-
-                    else
-                        "x"
-                   )
-                ++ "@11 "
-                ++ "S"
-                ++ (if flags.shipDice then
-                        "+"
-
-                    else
-                        "x"
-                   )
-                ++ "@23 K"
-                ++ (if flags.keseDice then
-                        "+"
-
-                    else
-                        "x"
-                   )
-                ++ "@15\n"
-                ++ "K{"
-                ++ String.join "" (List.map profToHistoryStr keseHand)
-                ++ "} "
-                ++ "R{"
-                ++ String.join "" (List.map profToHistoryStr rimaHand)
-                ++ "}\n--------------------------------\n"
-                ++ (if flags.keseGoesFirst then
-                        "K"
-
-                    else
-                        "R"
-                   )
+        { historyFirst = flags.historyFirst
+        , historySecond = flags.historySecond
         , currentStatus = initialStatus
         , saved = initialStatus
         }
     , Cmd.none
     )
+
+
+assertEq a b =
+    \c ->
+        if a == b then
+            c
+
+        else
+            Debug.todo ("assertion failed: `" ++ Debug.toString a ++ "` and `" ++ Debug.toString b ++ "` are not equal")
