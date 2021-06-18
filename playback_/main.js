@@ -5415,6 +5415,9 @@ var $author$project$Main$subscriptions = function (_v0) {
 var $author$project$Main$GameTerminated = function (a) {
 	return {$: 'GameTerminated', a: a};
 };
+var $author$project$Main$Orig = function (a) {
+	return {$: 'Orig', a: a};
+};
 var $elm$regex$Regex$Match = F4(
 	function (match, index, number, submatches) {
 		return {index: index, match: match, number: number, submatches: submatches};
@@ -5618,7 +5621,7 @@ var $elm$core$Maybe$withDefault = F2(
 			return _default;
 		}
 	});
-var $author$project$Main$newHistory = F2(
+var $author$project$Main$newHistory_ = F2(
 	function (msg, modl) {
 		var unwrap = $elm$core$Maybe$withDefault('ERROR!!!!!!!!!!!!!!!!!!!!');
 		var _v0 = _Utils_Tuple2(modl, msg);
@@ -5842,6 +5845,20 @@ var $author$project$Main$newHistory = F2(
 			}
 		}
 		return '';
+	});
+var $author$project$Main$newHistory = F2(
+	function (msg, modl) {
+		switch (msg.$) {
+			case 'Orig':
+				var m = msg.a;
+				return A2($author$project$Main$newHistory_, m, modl);
+			case 'GoForward':
+				return 'FIXME';
+			case 'GoBack':
+				return 'FIXME';
+			default:
+				return 'FIXME';
+		}
 	});
 var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
 var $elm$regex$Regex$fromString = function (string) {
@@ -6364,52 +6381,72 @@ var $author$project$Main$updateStatus = F3(
 		return modl;
 	});
 var $author$project$Main$update = F2(
-	function (msg, _v0) {
+	function (mesg, _v0) {
 		var historyFirst = _v0.a.historyFirst;
+		var historySecond = _v0.a.historySecond;
 		var currentStatus = _v0.a.currentStatus;
 		var saved = _v0.a.saved;
-		var newStat = A3($author$project$Main$updateStatus, msg, currentStatus, saved);
-		var newHist = _Utils_ap(
-			historyFirst,
-			A2($author$project$Main$newHistory, msg, currentStatus));
-		if (A2($elm$regex$Regex$contains, $author$project$Main$twoConsecutivePasses, newHist)) {
-			if (newStat.$ === 'NothingSelected') {
-				var cardState = newStat.a;
-				var gameEnd = $author$project$Main$GameTerminated(
-					{board: cardState.board, capturedByKese: cardState.capturedByKese, capturedByRima: cardState.capturedByRima, keseDeck: cardState.keseDeck, keseHand: cardState.keseHand, rimaDeck: cardState.rimaDeck, rimaHand: cardState.rimaHand, whoseVictory: $author$project$KeseRimaTypes$Ship});
-				return _Utils_Tuple2(
-					$author$project$Main$Model(
-						{
-							currentStatus: gameEnd,
-							historyFirst: A2($elm$core$String$dropRight, 1, newHist) + '--------------------------------\nKeseRima',
-							historySecond: 'FIXME',
-							saved: gameEnd
-						}),
-					$elm$core$Platform$Cmd$none);
+		if (mesg.$ === 'Orig') {
+			var msg = mesg.a;
+			var newStat = A3($author$project$Main$updateStatus, msg, currentStatus, saved);
+			var newHistorySecond = A2(
+				$elm$core$String$right,
+				$elm$core$String$length(historySecond) - $elm$core$String$length(
+					A2(
+						$author$project$Main$newHistory,
+						$author$project$Main$Orig(msg),
+						currentStatus)),
+				historySecond);
+			var newHist = _Utils_ap(
+				historyFirst,
+				A2(
+					$author$project$Main$newHistory,
+					$author$project$Main$Orig(msg),
+					currentStatus));
+			if (A2($elm$regex$Regex$contains, $author$project$Main$twoConsecutivePasses, newHist)) {
+				if (newStat.$ === 'NothingSelected') {
+					var cardState = newStat.a;
+					var gameEnd = $author$project$Main$GameTerminated(
+						{board: cardState.board, capturedByKese: cardState.capturedByKese, capturedByRima: cardState.capturedByRima, keseDeck: cardState.keseDeck, keseHand: cardState.keseHand, rimaDeck: cardState.rimaDeck, rimaHand: cardState.rimaHand, whoseVictory: $author$project$KeseRimaTypes$Ship});
+					return _Utils_Tuple2(
+						$author$project$Main$Model(
+							{
+								currentStatus: gameEnd,
+								historyFirst: A2($elm$core$String$dropRight, 1, newHist) + '--------------------------------\nKeseRima',
+								historySecond: '',
+								saved: gameEnd
+							}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(
+						$author$project$Main$Model(
+							{currentStatus: newStat, historyFirst: newHist, historySecond: newHistorySecond, saved: saved}),
+						$elm$core$Platform$Cmd$none);
+				}
 			} else {
-				return _Utils_Tuple2(
-					$author$project$Main$Model(
-						{currentStatus: newStat, historyFirst: newHist, historySecond: 'FIXME', saved: saved}),
-					$elm$core$Platform$Cmd$none);
+				if (newStat.$ === 'NothingSelected') {
+					var cardState = newStat.a;
+					return _Utils_Tuple2(
+						$author$project$Main$Model(
+							{
+								currentStatus: newStat,
+								historyFirst: newHist,
+								historySecond: newHistorySecond,
+								saved: $author$project$Main$NothingSelected(cardState)
+							}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(
+						$author$project$Main$Model(
+							{currentStatus: newStat, historyFirst: newHist, historySecond: newHistorySecond, saved: saved}),
+						$elm$core$Platform$Cmd$none);
+				}
 			}
 		} else {
-			if (newStat.$ === 'NothingSelected') {
-				var cardState = newStat.a;
-				return _Utils_Tuple2(
-					$author$project$Main$Model(
-						{
-							currentStatus: newStat,
-							historyFirst: newHist,
-							historySecond: 'FIXME',
-							saved: $author$project$Main$NothingSelected(cardState)
-						}),
-					$elm$core$Platform$Cmd$none);
-			} else {
-				return _Utils_Tuple2(
-					$author$project$Main$Model(
-						{currentStatus: newStat, historyFirst: newHist, historySecond: 'FIXME', saved: saved}),
-					$elm$core$Platform$Cmd$none);
-			}
+			return _Utils_Tuple2(
+				$author$project$Main$Model(
+					{currentStatus: currentStatus, historyFirst: historyFirst, historySecond: historySecond, saved: saved}),
+				$elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Main$GiveFocusTo = function (a) {
@@ -6580,7 +6617,8 @@ var $author$project$Main$cancelAllButton = A2(
 	$elm$html$Html$button,
 	_List_fromArray(
 		[
-			$elm$svg$Svg$Events$onClick($author$project$Main$Cancel),
+			$elm$svg$Svg$Events$onClick(
+			$author$project$Main$Orig($author$project$Main$Cancel)),
 			A2($elm$html$Html$Attributes$style, 'background-color', '#ffaaaa'),
 			A2($elm$html$Html$Attributes$style, 'font-size', '150%')
 		]),
@@ -6593,7 +6631,8 @@ var $author$project$Main$captureAndTurnEndButton = A2(
 	$elm$html$Html$button,
 	_List_fromArray(
 		[
-			$elm$svg$Svg$Events$onClick($author$project$Main$TurnEnd),
+			$elm$svg$Svg$Events$onClick(
+			$author$project$Main$Orig($author$project$Main$TurnEnd)),
 			A2($elm$html$Html$Attributes$style, 'background-color', '#aaffaa'),
 			A2($elm$html$Html$Attributes$style, 'font-size', '150%')
 		]),
@@ -6712,7 +6751,8 @@ var $author$project$Main$pieceSvg_ = F3(
 					$elm$html$Html$Attributes$style,
 					'cursor',
 					function () {
-						if (msgToBeSent.$ === 'None') {
+						if ((msgToBeSent.$ === 'Orig') && (msgToBeSent.a.$ === 'None')) {
+							var _v1 = msgToBeSent.a;
 							return 'not-allowed';
 						} else {
 							return 'pointer';
@@ -6829,7 +6869,7 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 								color: $author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Rima),
 								width: '1'
 							},
-							$author$project$Main$None,
+							$author$project$Main$Orig($author$project$Main$None),
 							{
 								coord: {
 									x: (-0.115) + (i * $author$project$Main$spacing(
@@ -6857,7 +6897,7 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 								color: $author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Kese),
 								width: '1'
 							},
-							$author$project$Main$None,
+							$author$project$Main$Orig($author$project$Main$None),
 							{
 								coord: {
 									x: ((-0.115) + (5.0 * 0.846)) - (i * $author$project$Main$spacing(
@@ -7297,7 +7337,8 @@ var $author$project$Main$simpleCancelButton = A2(
 	$elm$html$Html$button,
 	_List_fromArray(
 		[
-			$elm$svg$Svg$Events$onClick($author$project$Main$Cancel),
+			$elm$svg$Svg$Events$onClick(
+			$author$project$Main$Orig($author$project$Main$Cancel)),
 			A2($elm$html$Html$Attributes$style, 'background-color', '#ffaaaa'),
 			A2($elm$html$Html$Attributes$style, 'font-size', '150%')
 		]),
@@ -7359,7 +7400,8 @@ var $author$project$Main$turnEndButton = A2(
 	$elm$html$Html$button,
 	_List_fromArray(
 		[
-			$elm$svg$Svg$Events$onClick($author$project$Main$TurnEnd),
+			$elm$svg$Svg$Events$onClick(
+			$author$project$Main$Orig($author$project$Main$TurnEnd)),
 			A2($elm$html$Html$Attributes$style, 'background-color', '#aaffaa'),
 			A2($elm$html$Html$Attributes$style, 'font-size', '150%')
 		]),
@@ -7393,7 +7435,8 @@ var $author$project$Main$trashBinSvg_ = function (clickable) {
 		$elm$svg$Svg$g,
 		_List_fromArray(
 			[
-				$elm$svg$Svg$Events$onClick($author$project$Main$SendToTrashBinPart2),
+				$elm$svg$Svg$Events$onClick(
+				$author$project$Main$Orig($author$project$Main$SendToTrashBinPart2)),
 				A2($elm$html$Html$Attributes$style, 'cursor', 'pointer'),
 				$elm$svg$Svg$Attributes$fill(
 				$author$project$SvgColor$trashBinColor(clickable))
@@ -7621,10 +7664,11 @@ var $author$project$Main$view = function (_v0) {
 									return A3(
 										$author$project$Main$pieceSvgOnGrid,
 										false,
-										(_Utils_eq(piece.pieceColor, $author$project$KeseRimaTypes$Ship) || _Utils_eq(
-											piece.pieceColor,
-											$author$project$Main$toColor(cardState.whoseTurn))) ? $author$project$Main$GiveFocusTo(
-											$author$project$KeseRimaTypes$PieceOnTheBoard(piece.coord)) : $author$project$Main$None,
+										$author$project$Main$Orig(
+											(_Utils_eq(piece.pieceColor, $author$project$KeseRimaTypes$Ship) || _Utils_eq(
+												piece.pieceColor,
+												$author$project$Main$toColor(cardState.whoseTurn))) ? $author$project$Main$GiveFocusTo(
+												$author$project$KeseRimaTypes$PieceOnTheBoard(piece.coord)) : $author$project$Main$None),
 										piece);
 								},
 								cardState.board),
@@ -7636,8 +7680,9 @@ var $author$project$Main$view = function (_v0) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												false,
-												_Utils_eq(cardState.whoseTurn, $author$project$KeseRimaTypes$KeseTurn) ? $author$project$Main$GiveFocusTo(
-													$author$project$KeseRimaTypes$PieceInKeseHand(i)) : $author$project$Main$None,
+												$author$project$Main$Orig(
+													_Utils_eq(cardState.whoseTurn, $author$project$KeseRimaTypes$KeseTurn) ? $author$project$Main$GiveFocusTo(
+														$author$project$KeseRimaTypes$PieceInKeseHand(i)) : $author$project$Main$None),
 												A2($author$project$Main$keseHandPos, i, prof));
 										}),
 									cardState.keseHand),
@@ -7648,8 +7693,9 @@ var $author$project$Main$view = function (_v0) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												false,
-												_Utils_eq(cardState.whoseTurn, $author$project$KeseRimaTypes$RimaTurn) ? $author$project$Main$GiveFocusTo(
-													$author$project$KeseRimaTypes$PieceInRimaHand(i)) : $author$project$Main$None,
+												$author$project$Main$Orig(
+													_Utils_eq(cardState.whoseTurn, $author$project$KeseRimaTypes$RimaTurn) ? $author$project$Main$GiveFocusTo(
+														$author$project$KeseRimaTypes$PieceInRimaHand(i)) : $author$project$Main$None),
 												A2($author$project$Main$rimaHandPos, i, prof));
 										}),
 									cardState.rimaHand))))),
@@ -7714,7 +7760,10 @@ var $author$project$Main$view = function (_v0) {
 									_Utils_ap(
 										A2(
 											$elm$core$List$map,
-											A2($author$project$Main$pieceSvgOnGrid, false, $author$project$Main$None),
+											A2(
+												$author$project$Main$pieceSvgOnGrid,
+												false,
+												$author$project$Main$Orig($author$project$Main$None)),
 											cardState.board),
 										_Utils_ap(
 											A2(
@@ -7724,7 +7773,7 @@ var $author$project$Main$view = function (_v0) {
 														return A3(
 															$author$project$Main$pieceSvg,
 															false,
-															$author$project$Main$None,
+															$author$project$Main$Orig($author$project$Main$None),
 															A2($author$project$Main$keseHandPos, i, prof));
 													}),
 												cardState.keseHand),
@@ -7735,7 +7784,7 @@ var $author$project$Main$view = function (_v0) {
 														return A3(
 															$author$project$Main$pieceSvg,
 															false,
-															$author$project$Main$None,
+															$author$project$Main$Orig($author$project$Main$None),
 															A2($author$project$Main$rimaHandPos, i, prof));
 													}),
 												cardState.rimaHand)))))))),
@@ -7789,7 +7838,7 @@ var $author$project$Main$view = function (_v0) {
 									return A3(
 										$author$project$Main$pieceSvgOnGrid,
 										_Utils_eq(piece.coord, focus_coord),
-										$author$project$Main$None,
+										$author$project$Main$Orig($author$project$Main$None),
 										piece);
 								},
 								cardState.board),
@@ -7799,7 +7848,8 @@ var $author$project$Main$view = function (_v0) {
 									function (coord) {
 										return A2(
 											$author$project$Main$goalCandidateRedSvg,
-											$author$project$Main$MovementToward(coord),
+											$author$project$Main$Orig(
+												$author$project$Main$MovementToward(coord)),
 											coord);
 									},
 									candidatesRed),
@@ -7809,7 +7859,8 @@ var $author$project$Main$view = function (_v0) {
 										function (coord) {
 											return A2(
 												$author$project$Main$goalCandidateYellowSvg,
-												$author$project$Main$MovementToward(coord),
+												$author$project$Main$Orig(
+													$author$project$Main$MovementToward(coord)),
 												coord);
 										},
 										candidatesYellow),
@@ -7821,7 +7872,7 @@ var $author$project$Main$view = function (_v0) {
 													return A3(
 														$author$project$Main$pieceSvg,
 														false,
-														$author$project$Main$None,
+														$author$project$Main$Orig($author$project$Main$None),
 														A2($author$project$Main$keseHandPos, i, prof));
 												}),
 											cardState.keseHand),
@@ -7832,7 +7883,7 @@ var $author$project$Main$view = function (_v0) {
 													return A3(
 														$author$project$Main$pieceSvg,
 														false,
-														$author$project$Main$None,
+														$author$project$Main$Orig($author$project$Main$None),
 														A2($author$project$Main$rimaHandPos, i, prof));
 												}),
 											cardState.rimaHand)))));
@@ -7841,7 +7892,10 @@ var $author$project$Main$view = function (_v0) {
 					return _Utils_ap(
 						A2(
 							$elm$core$List$map,
-							A2($author$project$Main$pieceSvgOnGrid, false, $author$project$Main$None),
+							A2(
+								$author$project$Main$pieceSvgOnGrid,
+								false,
+								$author$project$Main$Orig($author$project$Main$None)),
 							cardState.board),
 						_Utils_ap(
 							A2(
@@ -7849,7 +7903,8 @@ var $author$project$Main$view = function (_v0) {
 								function (coord) {
 									return A2(
 										$author$project$Main$goalCandidateYellowSvg,
-										$author$project$Main$MovementToward(coord),
+										$author$project$Main$Orig(
+											$author$project$Main$MovementToward(coord)),
 										coord);
 								},
 								$author$project$Main$neitherOccupiedNorWater(cardState.board)),
@@ -7863,13 +7918,13 @@ var $author$project$Main$view = function (_v0) {
 												return A3(
 													$author$project$Main$pieceSvg,
 													_Utils_eq(ind, i),
-													$author$project$Main$None,
+													$author$project$Main$Orig($author$project$Main$None),
 													A2($author$project$Main$keseHandPos, i, prof));
 											} else {
 												return A3(
 													$author$project$Main$pieceSvg,
 													false,
-													$author$project$Main$None,
+													$author$project$Main$Orig($author$project$Main$None),
 													A2($author$project$Main$keseHandPos, i, prof));
 											}
 										}),
@@ -7883,13 +7938,13 @@ var $author$project$Main$view = function (_v0) {
 												return A3(
 													$author$project$Main$pieceSvg,
 													_Utils_eq(ind, i),
-													$author$project$Main$None,
+													$author$project$Main$Orig($author$project$Main$None),
 													A2($author$project$Main$rimaHandPos, i, prof));
 											} else {
 												return A3(
 													$author$project$Main$pieceSvg,
 													false,
-													$author$project$Main$None,
+													$author$project$Main$Orig($author$project$Main$None),
 													A2($author$project$Main$rimaHandPos, i, prof));
 											}
 										}),
@@ -7949,7 +8004,10 @@ var $author$project$Main$view = function (_v0) {
 						_Utils_ap(
 							A2(
 								$elm$core$List$map,
-								A2($author$project$Main$pieceSvgOnGrid, false, $author$project$Main$None),
+								A2(
+									$author$project$Main$pieceSvgOnGrid,
+									false,
+									$author$project$Main$Orig($author$project$Main$None)),
 								remaining.board),
 							_Utils_ap(
 								A2(
@@ -7959,10 +8017,11 @@ var $author$project$Main$view = function (_v0) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												false,
-												(_Utils_eq(remaining.whoseTurn, $author$project$KeseRimaTypes$KeseTurn) && _Utils_eq(
-													isSacrificingCircleRequired,
-													_Utils_eq(prof, $author$project$KeseRimaTypes$Circle))) ? $author$project$Main$SendToTrashBinPart1(
-													{index: i, whoseHand: $author$project$KeseRimaTypes$KeseTurn}) : $author$project$Main$None,
+												$author$project$Main$Orig(
+													(_Utils_eq(remaining.whoseTurn, $author$project$KeseRimaTypes$KeseTurn) && _Utils_eq(
+														isSacrificingCircleRequired,
+														_Utils_eq(prof, $author$project$KeseRimaTypes$Circle))) ? $author$project$Main$SendToTrashBinPart1(
+														{index: i, whoseHand: $author$project$KeseRimaTypes$KeseTurn}) : $author$project$Main$None),
 												A2($author$project$Main$keseHandPos, i, prof));
 										}),
 									remaining.keseHand),
@@ -7974,10 +8033,11 @@ var $author$project$Main$view = function (_v0) {
 												return A3(
 													$author$project$Main$pieceSvg,
 													false,
-													(_Utils_eq(remaining.whoseTurn, $author$project$KeseRimaTypes$RimaTurn) && _Utils_eq(
-														isSacrificingCircleRequired,
-														_Utils_eq(prof, $author$project$KeseRimaTypes$Circle))) ? $author$project$Main$SendToTrashBinPart1(
-														{index: i, whoseHand: $author$project$KeseRimaTypes$RimaTurn}) : $author$project$Main$None,
+													$author$project$Main$Orig(
+														(_Utils_eq(remaining.whoseTurn, $author$project$KeseRimaTypes$RimaTurn) && _Utils_eq(
+															isSacrificingCircleRequired,
+															_Utils_eq(prof, $author$project$KeseRimaTypes$Circle))) ? $author$project$Main$SendToTrashBinPart1(
+															{index: i, whoseHand: $author$project$KeseRimaTypes$RimaTurn}) : $author$project$Main$None),
 													A2($author$project$Main$rimaHandPos, i, prof));
 											}),
 										remaining.rimaHand),
@@ -8031,7 +8091,10 @@ var $author$project$Main$view = function (_v0) {
 						_Utils_ap(
 							A2(
 								$elm$core$List$map,
-								A2($author$project$Main$pieceSvgOnGrid, false, $author$project$Main$None),
+								A2(
+									$author$project$Main$pieceSvgOnGrid,
+									false,
+									$author$project$Main$Orig($author$project$Main$None)),
 								remaining.board),
 							_Utils_ap(
 								A2(
@@ -8041,7 +8104,7 @@ var $author$project$Main$view = function (_v0) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												_Utils_eq(whoseHand, $author$project$KeseRimaTypes$KeseTurn) && _Utils_eq(i, index),
-												$author$project$Main$None,
+												$author$project$Main$Orig($author$project$Main$None),
 												A2($author$project$Main$keseHandPos, i, prof));
 										}),
 									remaining.keseHand),
@@ -8053,7 +8116,7 @@ var $author$project$Main$view = function (_v0) {
 												return A3(
 													$author$project$Main$pieceSvg,
 													_Utils_eq(whoseHand, $author$project$KeseRimaTypes$RimaTurn) && _Utils_eq(i, index),
-													$author$project$Main$None,
+													$author$project$Main$Orig($author$project$Main$None),
 													A2($author$project$Main$rimaHandPos, i, prof));
 											}),
 										remaining.rimaHand),
@@ -8099,7 +8162,10 @@ var $author$project$Main$view = function (_v0) {
 			var dynamicPart = _Utils_ap(
 				A2(
 					$elm$core$List$map,
-					A2($author$project$Main$pieceSvgOnGrid, false, $author$project$Main$None),
+					A2(
+						$author$project$Main$pieceSvgOnGrid,
+						false,
+						$author$project$Main$Orig($author$project$Main$None)),
 					remaining.board),
 				_Utils_ap(
 					A2(
@@ -8107,7 +8173,8 @@ var $author$project$Main$view = function (_v0) {
 						function (coord) {
 							return A2(
 								$author$project$Main$goalCandidateRedSvg,
-								$author$project$Main$MovementToward(coord),
+								$author$project$Main$Orig(
+									$author$project$Main$MovementToward(coord)),
 								coord);
 						},
 						candidatesRed),
@@ -8117,7 +8184,8 @@ var $author$project$Main$view = function (_v0) {
 							function (coord) {
 								return A2(
 									$author$project$Main$goalCandidateYellowSvg,
-									$author$project$Main$MovementToward(coord),
+									$author$project$Main$Orig(
+										$author$project$Main$MovementToward(coord)),
 									coord);
 							},
 							candidatesYellow),
@@ -8129,7 +8197,7 @@ var $author$project$Main$view = function (_v0) {
 										return A3(
 											$author$project$Main$pieceSvg,
 											false,
-											$author$project$Main$None,
+											$author$project$Main$Orig($author$project$Main$None),
 											A2($author$project$Main$keseHandPos, i, prof));
 									}),
 								remaining.keseHand),
@@ -8141,7 +8209,7 @@ var $author$project$Main$view = function (_v0) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												false,
-												$author$project$Main$None,
+												$author$project$Main$Orig($author$project$Main$None),
 												A2($author$project$Main$rimaHandPos, i, prof));
 										}),
 									remaining.rimaHand),
@@ -8176,7 +8244,10 @@ var $author$project$Main$view = function (_v0) {
 						_Utils_ap(
 							A2(
 								$elm$core$List$map,
-								A2($author$project$Main$pieceSvgOnGrid, false, $author$project$Main$None),
+								A2(
+									$author$project$Main$pieceSvgOnGrid,
+									false,
+									$author$project$Main$Orig($author$project$Main$None)),
 								remaining.board),
 							_Utils_ap(
 								A2(
@@ -8186,8 +8257,9 @@ var $author$project$Main$view = function (_v0) {
 											return A3(
 												$author$project$Main$pieceSvg,
 												false,
-												(_Utils_eq(remaining.whoseTurn, $author$project$KeseRimaTypes$KeseTurn) && (!_Utils_eq(prof, $author$project$KeseRimaTypes$Circle))) ? $author$project$Main$SendToTrashBinPart1(
-													{index: i, whoseHand: $author$project$KeseRimaTypes$KeseTurn}) : $author$project$Main$None,
+												$author$project$Main$Orig(
+													(_Utils_eq(remaining.whoseTurn, $author$project$KeseRimaTypes$KeseTurn) && (!_Utils_eq(prof, $author$project$KeseRimaTypes$Circle))) ? $author$project$Main$SendToTrashBinPart1(
+														{index: i, whoseHand: $author$project$KeseRimaTypes$KeseTurn}) : $author$project$Main$None),
 												A2($author$project$Main$keseHandPos, i, prof));
 										}),
 									remaining.keseHand),
@@ -8199,8 +8271,9 @@ var $author$project$Main$view = function (_v0) {
 												return A3(
 													$author$project$Main$pieceSvg,
 													false,
-													(_Utils_eq(remaining.whoseTurn, $author$project$KeseRimaTypes$RimaTurn) && (!_Utils_eq(prof, $author$project$KeseRimaTypes$Circle))) ? $author$project$Main$SendToTrashBinPart1(
-														{index: i, whoseHand: $author$project$KeseRimaTypes$RimaTurn}) : $author$project$Main$None,
+													$author$project$Main$Orig(
+														(_Utils_eq(remaining.whoseTurn, $author$project$KeseRimaTypes$RimaTurn) && (!_Utils_eq(prof, $author$project$KeseRimaTypes$Circle))) ? $author$project$Main$SendToTrashBinPart1(
+															{index: i, whoseHand: $author$project$KeseRimaTypes$RimaTurn}) : $author$project$Main$None),
 													A2($author$project$Main$rimaHandPos, i, prof));
 											}),
 										remaining.rimaHand),
