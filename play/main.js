@@ -5870,7 +5870,7 @@ var $elm_community$list_extra$List$Extra$remove = F2(
 		}
 	});
 var $elm$core$Basics$neq = _Utils_notEqual;
-var $author$project$Main$robFocusedPieceFromBoard = F2(
+var $author$project$KeseRimaTypes$robFocusedPieceFromBoard = F2(
 	function (coord, board) {
 		var _v0 = A2(
 			$elm$core$List$filter,
@@ -6063,7 +6063,7 @@ var $author$project$Main$updateStatus = F3(
 							switch (from.$) {
 								case 'PieceOnTheBoard':
 									var coord = from.a;
-									var _v4 = A2($author$project$Main$robFocusedPieceFromBoard, coord, cardState.board);
+									var _v4 = A2($author$project$KeseRimaTypes$robFocusedPieceFromBoard, coord, cardState.board);
 									if (_v4.$ === 'Nothing') {
 										return modl;
 									} else {
@@ -7900,7 +7900,7 @@ var $author$project$Main$view = function (_v0) {
 			var dynamicPart = function () {
 				if (focus.$ === 'PieceOnTheBoard') {
 					var focus_coord = focus.a;
-					var _v3 = A2($author$project$Main$robFocusedPieceFromBoard, focus_coord, cardState.board);
+					var _v3 = A2($author$project$KeseRimaTypes$robFocusedPieceFromBoard, focus_coord, cardState.board);
 					if (_v3.$ === 'Nothing') {
 						return _List_Nil;
 					} else {

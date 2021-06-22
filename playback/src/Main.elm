@@ -1048,17 +1048,6 @@ trashBinSvg_ clickable =
         g [ fill (trashBinColor clickable) ] trashBinSvg
 
 
-robFocusedPieceFromBoard : Coordinate -> List PieceOnBoard -> Maybe ( PieceOnBoard, List PieceOnBoard )
-robFocusedPieceFromBoard coord board =
-    case List.filter (\p -> p.coord == coord) board of
-        [ piece ] ->
-            Just ( piece, List.filter (\p -> p.coord /= coord) board )
-
-        {- This branch is not taken -}
-        _ ->
-            Nothing
-
-
 getCandidatesYellow : Bool -> PieceOnBoard -> List PieceOnBoard -> List Coordinate
 getCandidatesYellow hasCircleInHand piece robbedBoard =
     getCandidatesYellow_ piece

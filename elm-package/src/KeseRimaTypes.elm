@@ -261,3 +261,15 @@ addDelta coord ( deltaX, deltaY ) =
 
     else
         []
+
+
+robFocusedPieceFromBoard : Coordinate -> List PieceOnBoard -> Maybe ( PieceOnBoard, List PieceOnBoard )
+robFocusedPieceFromBoard coord board =
+    case List.filter (\p -> p.coord == coord) board of
+        [ piece ] ->
+            Just ( piece, List.filter (\p -> p.coord /= coord) board )
+
+        {- This branch is not taken -}
+        _ ->
+            Nothing
+
