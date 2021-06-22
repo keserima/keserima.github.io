@@ -5491,7 +5491,7 @@ var $elm_community$list_extra$List$Extra$getAt = F2(
 		return (idx < 0) ? $elm$core$Maybe$Nothing : $elm$core$List$head(
 			A2($elm$core$List$drop, idx, xs));
 	});
-var $author$project$Main$getWhoseTurn = function (modl) {
+var $author$project$KeseRimaTypes$getWhoseTurn = function (modl) {
 	switch (modl.$) {
 		case 'NothingSelected':
 			var whoseTurn = modl.a.whoseTurn;
@@ -5619,7 +5619,7 @@ var $author$project$Main$newHistory = F2(
 						A2(
 							$elm$core$Maybe$map,
 							$author$project$KeseRimaTypes$whoseTurnToHistoryStr,
-							$author$project$Main$getWhoseTurn(modl)));
+							$author$project$KeseRimaTypes$getWhoseTurn(modl)));
 				case 'GiveFocusTo':
 					if (_v0.a.$ === 'NothingSelected') {
 						switch (_v0.b.a.$) {
@@ -5833,7 +5833,7 @@ var $elm$regex$Regex$fromString = function (string) {
 		string);
 };
 var $elm$regex$Regex$never = _Regex_never;
-var $author$project$Main$twoConsecutivePasses = A2(
+var $author$project$KeseRimaTypes$twoConsecutivePasses = A2(
 	$elm$core$Maybe$withDefault,
 	$elm$regex$Regex$never,
 	$elm$regex$Regex$fromString('([RK]o[1-5][1-5]-[1-5][1-5]\\.\\n){2}'));
@@ -6352,7 +6352,7 @@ var $author$project$Main$update = F2(
 		var newHist = _Utils_ap(
 			historyString,
 			A2($author$project$Main$newHistory, msg, currentStatus));
-		if (A2($elm$regex$Regex$contains, $author$project$Main$twoConsecutivePasses, newHist)) {
+		if (A2($elm$regex$Regex$contains, $author$project$KeseRimaTypes$twoConsecutivePasses, newHist)) {
 			if (newStat.$ === 'NothingSelected') {
 				var cardState = newStat.a;
 				var gameEnd = $author$project$KeseRimaTypes$GameTerminated(

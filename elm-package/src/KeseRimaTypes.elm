@@ -1,5 +1,5 @@
 module KeseRimaTypes exposing (..)
-
+import Regex
 
 type alias Coordinate =
     { x : Int, y : Int }
@@ -165,4 +165,36 @@ invertWhoseTurn w =
 coordToHistoryStr : Coordinate -> String
 coordToHistoryStr coord =
     String.fromInt (coord.x + 1) ++ String.fromInt (coord.y + 1)
+
+twoConsecutivePasses : Regex.Regex
+twoConsecutivePasses =
+    {- Unforgivable dark magic -}
+    Maybe.withDefault Regex.never <|
+        Regex.fromString "([RK]o[1-5][1-5]-[1-5][1-5]\\.\\n){2}"
+
+
+getWhoseTurn : CurrentStatus_ a -> Maybe WhoseTurn
+getWhoseTurn modl =
+    case modl of
+        NothingSelected { whoseTurn } ->
+            Just whoseTurn
+
+        MoverIsSelected _ { whoseTurn } ->
+            Just whoseTurn
+
+        NowWaitingForAdditionalSacrifice { remaining } ->
+            Just remaining.whoseTurn
+
+        AfterSacrifice _ { remaining } ->
+            Just remaining.whoseTurn
+
+        AfterCircleSacrifice { remaining } ->
+            Just remaining.whoseTurn
+
+        WaitForTrashBinClick { remaining } ->
+            Just remaining.whoseTurn
+
+        GameTerminated _ ->
+            Nothing
+
 

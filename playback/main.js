@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1859, column: 13},
-					end: {line: 1859, column: 23}
+					start: {line: 1828, column: 13},
+					end: {line: 1828, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -5636,7 +5636,7 @@ var $elm_community$list_extra$List$Extra$getAt = F2(
 		return (idx < 0) ? $elm$core$Maybe$Nothing : $elm$core$List$head(
 			A2($elm$core$List$drop, idx, xs));
 	});
-var $author$project$Main$getWhoseTurn = function (modl) {
+var $author$project$KeseRimaTypes$getWhoseTurn = function (modl) {
 	switch (modl.$) {
 		case 'NothingSelected':
 			var whoseTurn = modl.a.whoseTurn;
@@ -5753,8 +5753,8 @@ var $author$project$Main$unsafeDeckSummoning = function (a) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 636, column: 13},
-					end: {line: 636, column: 23}
+					start: {line: 605, column: 13},
+					end: {line: 605, column: 23}
 				})('FAILURE: expected to receive cards to be drawn, but got nothing');
 		case 'ThreeCards':
 			var _v1 = a.a;
@@ -5796,7 +5796,7 @@ var $author$project$Main$newHistory_ = F3(
 						A2(
 							$elm$core$Maybe$map,
 							$author$project$KeseRimaTypes$whoseTurnToHistoryStr,
-							$author$project$Main$getWhoseTurn(modl)));
+							$author$project$KeseRimaTypes$getWhoseTurn(modl)));
 				case 'GiveFocusTo':
 					if (_v0.a.$ === 'NothingSelected') {
 						switch (_v0.b.a.$) {
@@ -6026,8 +6026,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1875, column: 13},
-					end: {line: 1875, column: 23}
+					start: {line: 1844, column: 13},
+					end: {line: 1844, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -6039,7 +6039,7 @@ var $elm$regex$Regex$fromString = function (string) {
 		string);
 };
 var $elm$regex$Regex$never = _Regex_never;
-var $author$project$Main$twoConsecutivePasses = A2(
+var $author$project$KeseRimaTypes$twoConsecutivePasses = A2(
 	$elm$core$Maybe$withDefault,
 	$elm$regex$Regex$never,
 	$elm$regex$Regex$fromString('([RK]o[1-5][1-5]-[1-5][1-5]\\.\\n){2}'));
@@ -6902,7 +6902,7 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 							cardsDrawn,
 							$author$project$Main$Orig(msg),
 							currentStatus));
-					if (A2($elm$regex$Regex$contains, $author$project$Main$twoConsecutivePasses, newHist)) {
+					if (A2($elm$regex$Regex$contains, $author$project$KeseRimaTypes$twoConsecutivePasses, newHist)) {
 						if (newStat.$ === 'NothingSelected') {
 							var cardState = newStat.a;
 							var gameEnd = $author$project$KeseRimaTypes$GameTerminated(

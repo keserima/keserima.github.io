@@ -439,37 +439,6 @@ getIndexFromProf remaining profession =
                     Debug.todo "cannot find an adequate piece in Rima's Hand 1"
 
 
-twoConsecutivePasses : Regex.Regex
-twoConsecutivePasses =
-    {- Unforgivable dark magic -}
-    Maybe.withDefault Regex.never <|
-        Regex.fromString "([RK]o[1-5][1-5]-[1-5][1-5]\\.\\n){2}"
-
-
-getWhoseTurn : CurrentStatus -> Maybe WhoseTurn
-getWhoseTurn modl =
-    case modl of
-        NothingSelected { whoseTurn } ->
-            Just whoseTurn
-
-        MoverIsSelected _ { whoseTurn } ->
-            Just whoseTurn
-
-        NowWaitingForAdditionalSacrifice { remaining } ->
-            Just remaining.whoseTurn
-
-        AfterSacrifice _ { remaining } ->
-            Just remaining.whoseTurn
-
-        AfterCircleSacrifice { remaining } ->
-            Just remaining.whoseTurn
-
-        WaitForTrashBinClick { remaining } ->
-            Just remaining.whoseTurn
-
-        GameTerminated _ ->
-            Nothing
-
 
 newHistory : CardDrawInfo -> PlaybackMsg -> CurrentStatus -> String
 newHistory cardsDrawn msg modl =

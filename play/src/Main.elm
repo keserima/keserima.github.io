@@ -104,38 +104,6 @@ update msg (Model { historyString, currentStatus, saved }) =
                 ( Model { historyString = newHist, currentStatus = newStat, saved = saved }, Cmd.none )
 
 
-twoConsecutivePasses : Regex.Regex
-twoConsecutivePasses =
-    {- Unforgivable dark magic -}
-    Maybe.withDefault Regex.never <|
-        Regex.fromString "([RK]o[1-5][1-5]-[1-5][1-5]\\.\\n){2}"
-
-
-getWhoseTurn : CurrentStatus -> Maybe WhoseTurn
-getWhoseTurn modl =
-    case modl of
-        NothingSelected { whoseTurn } ->
-            Just whoseTurn
-
-        MoverIsSelected _ { whoseTurn } ->
-            Just whoseTurn
-
-        NowWaitingForAdditionalSacrifice { remaining } ->
-            Just remaining.whoseTurn
-
-        AfterSacrifice _ { remaining } ->
-            Just remaining.whoseTurn
-
-        AfterCircleSacrifice { remaining } ->
-            Just remaining.whoseTurn
-
-        WaitForTrashBinClick { remaining } ->
-            Just remaining.whoseTurn
-
-        GameTerminated _ ->
-            Nothing
-
-
 newHistory : OriginalMsg -> CurrentStatus -> String
 newHistory msg modl =
     let
