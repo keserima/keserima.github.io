@@ -38,7 +38,7 @@ type alias CurrentStatus =
     CurrentStatus_ ()
 
 
-type Msg
+type PlaybackMsg
     = Orig OriginalMsg
     | TemporarilyDisabled OriginalMsg
     | NoMsg
@@ -75,7 +75,7 @@ toColor w =
             Rima
 
 
-main : Program Flags2 Model Msg
+main : Program Flags2 Model PlaybackMsg
 main =
     Browser.element
         { init = init_
@@ -157,7 +157,7 @@ coordFromHistoryStr q =
     { x = foo (String.left 1 q), y = foo (String.right 1 q) }
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : PlaybackMsg -> Model -> ( Model, Cmd PlaybackMsg )
 update =
     updateWithPotentialInfoOnDrawnCards NoInfo
 
@@ -168,7 +168,7 @@ type CardDrawInfo
     | NoCards
 
 
-updateWithPotentialInfoOnDrawnCards : CardDrawInfo -> Msg -> Model -> ( Model, Cmd Msg )
+updateWithPotentialInfoOnDrawnCards : CardDrawInfo -> PlaybackMsg -> Model -> ( Model, Cmd PlaybackMsg )
 updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, historySecond, currentStatus, saved }) as mdl) =
     case mesg of
         GoForward ->
@@ -532,7 +532,7 @@ getWhoseTurn modl =
             Nothing
 
 
-newHistory : CardDrawInfo -> Msg -> CurrentStatus -> String
+newHistory : CardDrawInfo -> PlaybackMsg -> CurrentStatus -> String
 newHistory cardsDrawn msg modl =
     case msg of
         Orig m ->
@@ -963,7 +963,7 @@ robIth ind list =
     ( xs, newList )
 
 
-boardSvg : List (Svg Msg)
+boardSvg : List (Svg PlaybackMsg)
 boardSvg =
     [ g [ id "board" ]
         (List.map
@@ -1022,7 +1022,7 @@ glyph profession color =
             glyph HorizontalVertical color ++ glyph Diagonal color ++ glyph Circle color
 
 
-goalCandidateYellowSvg : Msg -> Coordinate -> Svg Msg
+goalCandidateYellowSvg : PlaybackMsg -> Coordinate -> Svg PlaybackMsg
 goalCandidateYellowSvg msgToBeSent coord =
     g
         [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")")
@@ -1032,7 +1032,7 @@ goalCandidateYellowSvg msgToBeSent coord =
         [ circle [ cx "52", cy "52", r "16", fill yellowCandidateColor ] [] ]
 
 
-goalCandidateRedSvg : Msg -> Coordinate -> Svg Msg
+goalCandidateRedSvg : PlaybackMsg -> Coordinate -> Svg PlaybackMsg
 goalCandidateRedSvg msgToBeSent coord =
     g
         [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")")
@@ -1042,12 +1042,12 @@ goalCandidateRedSvg msgToBeSent coord =
         [ rect [ x "36", y "36", width "32", height "32", fill redCandidateColor ] [] ]
 
 
-pieceSvgOnGrid : Bool -> Msg -> PieceOnBoard -> Svg Msg
+pieceSvgOnGrid : Bool -> PlaybackMsg -> PieceOnBoard -> Svg PlaybackMsg
 pieceSvgOnGrid focused msg { coord, prof, pieceColor } =
     pieceSvg focused msg { coord = { x = toFloat coord.x, y = toFloat coord.y }, prof = prof, pieceColor = pieceColor }
 
 
-pieceSvg : Bool -> Msg -> PieceWithFloatPosition -> Svg Msg
+pieceSvg : Bool -> PlaybackMsg -> PieceWithFloatPosition -> Svg PlaybackMsg
 pieceSvg focused msgToBeSent p =
     let
         strok =
@@ -1067,7 +1067,7 @@ pieceSvg focused msgToBeSent p =
         p
 
 
-pieceSvg_ : { a | color : String, width : String } -> Msg -> PieceWithFloatPosition -> Svg Msg
+pieceSvg_ : { a | color : String, width : String } -> PlaybackMsg -> PieceWithFloatPosition -> Svg PlaybackMsg
 pieceSvg_ strok msgToBeSent p =
     g
         [ transform ("translate(" ++ String.fromFloat (p.coord.x * 100.0) ++ " " ++ String.fromFloat (p.coord.y * 100.0) ++ ")")
@@ -1100,7 +1100,7 @@ pieceSvg_ strok msgToBeSent p =
         )
 
 
-pieceWaitingForAdditionalCommandSvg : PieceOnBoard -> Svg Msg
+pieceWaitingForAdditionalCommandSvg : PieceOnBoard -> Svg PlaybackMsg
 pieceWaitingForAdditionalCommandSvg p =
     g
         [ transform ("translate(" ++ String.fromFloat (toFloat p.coord.x * 100.0 - 5.0) ++ " " ++ String.fromFloat (toFloat p.coord.y * 100.0 + 5.0) ++ ")")
@@ -1130,7 +1130,7 @@ drawUpToThree xs =
             ( xs, [] )
 
 
-displayCapturedCardsAndTwoDecks : { a | keseDeck : List b, rimaDeck : List c, capturedByKese : List Profession, capturedByRima : List Profession } -> List (Svg Msg)
+displayCapturedCardsAndTwoDecks : { a | keseDeck : List b, rimaDeck : List c, capturedByKese : List Profession, capturedByRima : List Profession } -> List (Svg PlaybackMsg)
 displayCapturedCardsAndTwoDecks model =
     [ g [ id "keseDeck" ]
         (List.indexedMap
@@ -1227,7 +1227,7 @@ spacing n =
         0.846 * 5.0 / toFloat (n - 1)
 
 
-stationaryPart : StateOfCards -> List (Svg Msg)
+stationaryPart : StateOfCards -> List (Svg PlaybackMsg)
 stationaryPart cardState =
     defs []
         [ Svg.filter [ Svg.Attributes.style "color-interpolation-filters:sRGB", id "blur" ]
@@ -1241,14 +1241,14 @@ stationaryPart cardState =
            ]
 
 
-twoTrashBinsSvg : Maybe WhoseTurn -> List (Svg Msg)
+twoTrashBinsSvg : Maybe WhoseTurn -> List (Svg PlaybackMsg)
 twoTrashBinsSvg trashBinFocus =
     [ g [ id "keseTrashBin", transform "translate(530 560)" ] [ trashBinSvg_ (trashBinFocus == Just KeseTurn) ]
     , g [ id "rimaTrashBin", transform "translate(530 -150)" ] [ trashBinSvg_ (trashBinFocus == Just RimaTurn) ]
     ]
 
 
-trashBinSvg_ : Bool -> Svg Msg
+trashBinSvg_ : Bool -> Svg PlaybackMsg
 trashBinSvg_ clickable =
     let
         trashBinSvg =
@@ -1439,7 +1439,7 @@ targetBlankLink attributes =
     Html.a (Html.Attributes.target "_blank" :: attributes)
 
 
-view_ : Bool -> HistoryString -> HistoryString -> List (Svg Msg) -> List (Html Msg) -> Html Msg
+view_ : Bool -> HistoryString -> HistoryString -> List (Svg PlaybackMsg) -> List (Html PlaybackMsg) -> Html PlaybackMsg
 view_ gameEndTweet historyFirst historySecond svgContent buttons =
     Html.div [ Html.Attributes.style "display" "flex" ]
         [ Html.div [ Html.Attributes.style "padding" "0px 20px 0 20px", Html.Attributes.style "min-width" "360px" ]
@@ -1492,12 +1492,12 @@ allCoordsOccupiedBy color board =
     board |> List.filter (\p -> p.pieceColor == color) |> List.map .coord
 
 
-view : Model -> Html Msg
+view : Model -> Html PlaybackMsg
 view =
     view2 TemporarilyDisabled
 
 
-view2 : (OriginalMsg -> Msg) -> Model -> Html Msg
+view2 : (OriginalMsg -> PlaybackMsg) -> Model -> Html PlaybackMsg
 view2 cnst (Model { historyFirst, historySecond, currentStatus }) =
     case currentStatus of
         NothingSelected cardState ->
@@ -1874,22 +1874,22 @@ view2 cnst (Model { historyFirst, historySecond, currentStatus }) =
                 [ cancelAllButton ]
 
 
-cancelAllButton : Html Msg
+cancelAllButton : Html PlaybackMsg
 cancelAllButton =
     Html.button [ onClick (TemporarilyDisabled Cancel), Html.Attributes.disabled True, Html.Attributes.style "background-color" "#ffaaaa", Html.Attributes.style "font-size" "150%" ] [ text "全てをキャンセル" ]
 
 
-simpleCancelButton : Html Msg
+simpleCancelButton : Html PlaybackMsg
 simpleCancelButton =
     Html.button [ onClick (TemporarilyDisabled Cancel), Html.Attributes.disabled True, Html.Attributes.style "background-color" "#ffaaaa", Html.Attributes.style "font-size" "150%" ] [ text "キャンセル" ]
 
 
-captureAndTurnEndButton : Html Msg
+captureAndTurnEndButton : Html PlaybackMsg
 captureAndTurnEndButton =
     Html.button [ onClick (TemporarilyDisabled TurnEnd), Html.Attributes.disabled True, Html.Attributes.style "background-color" "#aaffaa", Html.Attributes.style "font-size" "150%" ] [ text "駒を取ってターンエンド" ]
 
 
-turnEndButton : Html Msg
+turnEndButton : Html PlaybackMsg
 turnEndButton =
     Html.button [ onClick (TemporarilyDisabled TurnEnd), Html.Attributes.disabled True, Html.Attributes.style "background-color" "#aaffaa", Html.Attributes.style "font-size" "150%" ] [ text "ターンエンド" ]
 
@@ -1936,7 +1936,7 @@ profFromHistoryStr c =
             Debug.todo ("unexpected `" ++ c ++ "` encountered while expecting a profession")
 
 
-init_ : Flags2 -> ( Model, Cmd Msg )
+init_ : Flags2 -> ( Model, Cmd PlaybackMsg )
 init_ { historyStr } =
     init
         { historyFirst = String.left 66 historyStr
@@ -1944,7 +1944,7 @@ init_ { historyStr } =
         }
 
 
-init : Flags -> ( Model, Cmd Msg )
+init : Flags -> ( Model, Cmd PlaybackMsg )
 init flags =
     let
         -- format:

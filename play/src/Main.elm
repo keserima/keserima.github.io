@@ -29,7 +29,7 @@ type alias CurrentStatus =
     CurrentStatus_ Profession
 
 
-type Msg
+type OriginalMsg
     = None
     | Cancel
     | TurnEnd {- whether it is a capture or not is determined by whether there is an overlap -}
@@ -57,7 +57,7 @@ toColor w =
             Rima
 
 
-main : Program Flags Model Msg
+main : Program Flags Model OriginalMsg
 main =
     Browser.element
         { init = init
@@ -113,7 +113,7 @@ coordToHistoryStr coord =
     String.fromInt (coord.x + 1) ++ String.fromInt (coord.y + 1)
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : OriginalMsg -> Model -> ( Model, Cmd OriginalMsg )
 update msg (Model { historyString, currentStatus, saved }) =
     let
         newHist =
@@ -197,7 +197,7 @@ getWhoseTurn modl =
             Nothing
 
 
-newHistory : Msg -> CurrentStatus -> String
+newHistory : OriginalMsg -> CurrentStatus -> String
 newHistory msg modl =
     let
         unwrap =
@@ -332,7 +332,7 @@ isVictorious list =
     List.member All list || List.all (\p -> List.member p list) [ Diagonal, HorizontalVertical, Circle ]
 
 
-updateStatus : Msg -> CurrentStatus -> CurrentStatus -> CurrentStatus
+updateStatus : OriginalMsg -> CurrentStatus -> CurrentStatus -> CurrentStatus
 updateStatus msg modl saved =
     case ( modl, msg ) of
         ( _, Cancel ) ->
@@ -584,7 +584,7 @@ robIth ind list =
     ( xs, newList )
 
 
-boardSvg : List (Svg Msg)
+boardSvg : List (Svg OriginalMsg)
 boardSvg =
     [ g [ id "board" ]
         (List.map
@@ -643,7 +643,7 @@ glyph profession color =
             glyph HorizontalVertical color ++ glyph Diagonal color ++ glyph Circle color
 
 
-goalCandidateYellowSvg : Msg -> Coordinate -> Svg Msg
+goalCandidateYellowSvg : OriginalMsg -> Coordinate -> Svg OriginalMsg
 goalCandidateYellowSvg msgToBeSent coord =
     g
         [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")")
@@ -653,7 +653,7 @@ goalCandidateYellowSvg msgToBeSent coord =
         [ circle [ cx "52", cy "52", r "16", fill yellowCandidateColor ] [] ]
 
 
-goalCandidateRedSvg : Msg -> Coordinate -> Svg Msg
+goalCandidateRedSvg : OriginalMsg -> Coordinate -> Svg OriginalMsg
 goalCandidateRedSvg msgToBeSent coord =
     g
         [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")")
@@ -663,12 +663,12 @@ goalCandidateRedSvg msgToBeSent coord =
         [ rect [ x "36", y "36", width "32", height "32", fill redCandidateColor ] [] ]
 
 
-pieceSvgOnGrid : Bool -> Msg -> PieceOnBoard -> Svg Msg
+pieceSvgOnGrid : Bool -> OriginalMsg -> PieceOnBoard -> Svg OriginalMsg
 pieceSvgOnGrid focused msg { coord, prof, pieceColor } =
     pieceSvg focused msg { coord = { x = toFloat coord.x, y = toFloat coord.y }, prof = prof, pieceColor = pieceColor }
 
 
-pieceSvg : Bool -> Msg -> PieceWithFloatPosition -> Svg Msg
+pieceSvg : Bool -> OriginalMsg -> PieceWithFloatPosition -> Svg OriginalMsg
 pieceSvg focused msgToBeSent p =
     let
         strok =
@@ -688,7 +688,7 @@ pieceSvg focused msgToBeSent p =
         p
 
 
-pieceSvg_ : { a | color : String, width : String } -> Msg -> PieceWithFloatPosition -> Svg Msg
+pieceSvg_ : { a | color : String, width : String } -> OriginalMsg -> PieceWithFloatPosition -> Svg OriginalMsg
 pieceSvg_ strok msgToBeSent p =
     g
         [ transform ("translate(" ++ String.fromFloat (p.coord.x * 100.0) ++ " " ++ String.fromFloat (p.coord.y * 100.0) ++ ")")
@@ -718,7 +718,7 @@ pieceSvg_ strok msgToBeSent p =
         )
 
 
-pieceWaitingForAdditionalCommandSvg : PieceOnBoard -> Svg Msg
+pieceWaitingForAdditionalCommandSvg : PieceOnBoard -> Svg OriginalMsg
 pieceWaitingForAdditionalCommandSvg p =
     g
         [ transform ("translate(" ++ String.fromFloat (toFloat p.coord.x * 100.0 - 5.0) ++ " " ++ String.fromFloat (toFloat p.coord.y * 100.0 + 5.0) ++ ")")
@@ -748,7 +748,7 @@ drawUpToThree xs =
             ( xs, [] )
 
 
-displayCapturedCardsAndTwoDecks : { a | keseDeck : List b, rimaDeck : List c, capturedByKese : List Profession, capturedByRima : List Profession } -> List (Svg Msg)
+displayCapturedCardsAndTwoDecks : { a | keseDeck : List b, rimaDeck : List c, capturedByKese : List Profession, capturedByRima : List Profession } -> List (Svg OriginalMsg)
 displayCapturedCardsAndTwoDecks model =
     [ g [ id "keseDeck" ]
         (List.indexedMap
@@ -845,7 +845,7 @@ spacing n =
         0.846 * 5.0 / toFloat (n - 1)
 
 
-stationaryPart : StateOfCards -> List (Svg Msg)
+stationaryPart : StateOfCards -> List (Svg OriginalMsg)
 stationaryPart cardState =
     defs []
         [ Svg.filter [ Svg.Attributes.style "color-interpolation-filters:sRGB", id "blur" ]
@@ -859,14 +859,14 @@ stationaryPart cardState =
            ]
 
 
-twoTrashBinsSvg : Maybe WhoseTurn -> List (Svg Msg)
+twoTrashBinsSvg : Maybe WhoseTurn -> List (Svg OriginalMsg)
 twoTrashBinsSvg trashBinFocus =
     [ g [ id "keseTrashBin", transform "translate(530 560)" ] [ trashBinSvg_ (trashBinFocus == Just KeseTurn) ]
     , g [ id "rimaTrashBin", transform "translate(530 -150)" ] [ trashBinSvg_ (trashBinFocus == Just RimaTurn) ]
     ]
 
 
-trashBinSvg_ : Bool -> Svg Msg
+trashBinSvg_ : Bool -> Svg OriginalMsg
 trashBinSvg_ clickable =
     let
         trashBinSvg =
@@ -1144,7 +1144,7 @@ allCoordsOccupiedBy color board =
     board |> List.filter (\p -> p.pieceColor == color) |> List.map .coord
 
 
-view : Model -> Html Msg
+view : Model -> Html OriginalMsg
 view (Model { historyString, currentStatus }) =
     case currentStatus of
         NothingSelected cardState ->
@@ -1501,22 +1501,22 @@ view (Model { historyString, currentStatus }) =
                 [ cancelAllButton ]
 
 
-cancelAllButton : Html Msg
+cancelAllButton : Html OriginalMsg
 cancelAllButton =
     Html.button [ onClick Cancel, Html.Attributes.style "background-color" "#ffaaaa", Html.Attributes.style "font-size" "150%" ] [ text "全てをキャンセル" ]
 
 
-simpleCancelButton : Html Msg
+simpleCancelButton : Html OriginalMsg
 simpleCancelButton =
     Html.button [ onClick Cancel, Html.Attributes.style "background-color" "#ffaaaa", Html.Attributes.style "font-size" "150%" ] [ text "キャンセル" ]
 
 
-captureAndTurnEndButton : Html Msg
+captureAndTurnEndButton : Html OriginalMsg
 captureAndTurnEndButton =
     Html.button [ onClick TurnEnd, Html.Attributes.style "background-color" "#aaffaa", Html.Attributes.style "font-size" "150%" ] [ text "駒を取ってターンエンド" ]
 
 
-turnEndButton : Html Msg
+turnEndButton : Html OriginalMsg
 turnEndButton =
     Html.button [ onClick TurnEnd, Html.Attributes.style "background-color" "#aaffaa", Html.Attributes.style "font-size" "150%" ] [ text "ターンエンド" ]
 
@@ -1544,7 +1544,7 @@ numToProf n =
             Diagonal
 
 
-init : Flags -> ( Model, Cmd Msg )
+init : Flags -> ( Model, Cmd OriginalMsg )
 init flags =
     let
         ( keseHand, keseDeck ) =
