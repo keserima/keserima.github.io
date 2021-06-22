@@ -6439,7 +6439,7 @@ var $elm$core$List$concatMap = F2(
 		return $elm$core$List$concat(
 			A2($elm$core$List$map, f, list));
 	});
-var $author$project$Main$allCoord = A2(
+var $author$project$KeseRimaTypes$allCoord = A2(
 	$elm$core$List$concatMap,
 	function (y_ind) {
 		return A2(
@@ -6529,7 +6529,7 @@ var $author$project$Main$boardSvg = _List_fromArray(
 						]),
 					_List_Nil);
 			},
-			$author$project$Main$allCoord))
+			$author$project$KeseRimaTypes$allCoord))
 	]);
 var $author$project$KeseRimaTypes$Cancel = {$: 'Cancel'};
 var $elm$html$Html$button = _VirtualDom_node('button');
@@ -6881,7 +6881,7 @@ var $author$project$Main$neitherOccupiedNorWater = function (board) {
 						},
 						board));
 			},
-			$author$project$Main$allCoord));
+			$author$project$KeseRimaTypes$allCoord));
 };
 var $author$project$Main$getCandidatesYellow_ = F4(
 	function (piece, hasCircleInHand, robbedBoard, raw_candidates) {

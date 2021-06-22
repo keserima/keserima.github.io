@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1799, column: 13},
-					end: {line: 1799, column: 23}
+					start: {line: 1786, column: 13},
+					end: {line: 1786, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -6026,8 +6026,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1815, column: 13},
-					end: {line: 1815, column: 23}
+					start: {line: 1802, column: 13},
+					end: {line: 1802, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -6984,7 +6984,7 @@ var $elm$core$List$concatMap = F2(
 		return $elm$core$List$concat(
 			A2($elm$core$List$map, f, list));
 	});
-var $author$project$Main$allCoord = A2(
+var $author$project$KeseRimaTypes$allCoord = A2(
 	$elm$core$List$concatMap,
 	function (y_ind) {
 		return A2(
@@ -7074,7 +7074,7 @@ var $author$project$Main$boardSvg = _List_fromArray(
 						]),
 					_List_Nil);
 			},
-			$author$project$Main$allCoord))
+			$author$project$KeseRimaTypes$allCoord))
 	]);
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$json$Json$Encode$bool = _Json_wrap;
@@ -7449,7 +7449,7 @@ var $author$project$Main$neitherOccupiedNorWater = function (board) {
 						},
 						board));
 			},
-			$author$project$Main$allCoord));
+			$author$project$KeseRimaTypes$allCoord));
 };
 var $author$project$Main$getCandidatesYellow_ = F4(
 	function (piece, hasCircleInHand, robbedBoard, raw_candidates) {

@@ -225,3 +225,16 @@ robIth ind list =
                     []
     in
     ( xs, newList )
+
+
+allCoord : List Coordinate
+allCoord =
+    List.concatMap
+        (\y_ind ->
+            List.map
+                (\x_ind ->
+                    { y = y_ind, x = x_ind }
+                )
+                [ 0, 1, 2, 3, 4 ]
+        )
+        [ 0, 1, 2, 3, 4 ]
