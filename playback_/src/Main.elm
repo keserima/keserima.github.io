@@ -47,6 +47,7 @@ type CurrentStatus
 
 type Msg
     = Orig OriginalMsg
+    | TemporarilyDisabled OriginalMsg
     | NoMsg
     | GoBack
     | GoForward
@@ -543,6 +544,9 @@ newHistory cardsDrawn msg modl =
     case msg of
         Orig m ->
             newHistory_ cardsDrawn m modl
+
+        TemporarilyDisabled _ ->
+            ""
 
         GoForward ->
             "FIXME"
@@ -1079,6 +1083,9 @@ pieceSvg_ strok msgToBeSent p =
                 Orig None ->
                     "not-allowed"
 
+                TemporarilyDisabled _ ->
+                    "default"
+
                 _ ->
                     "pointer"
             )
@@ -1259,7 +1266,7 @@ trashBinSvg_ clickable =
     in
     if clickable then
         g
-            [ Svg.Events.onClick (Orig SendToTrashBinPart2)
+            [ Svg.Events.onClick (TemporarilyDisabled SendToTrashBinPart2)
             , Html.Attributes.style "cursor" "pointer"
             , fill (trashBinColor clickable)
             ]
@@ -1485,7 +1492,12 @@ allCoordsOccupiedBy color board =
 
 
 view : Model -> Html Msg
-view (Model { historyFirst, historySecond, currentStatus }) =
+view =
+    view2 TemporarilyDisabled
+
+
+view2 : (OriginalMsg -> Msg) -> Model -> Html Msg
+view2 cnst (Model { historyFirst, historySecond, currentStatus }) =
     case currentStatus of
         NothingSelected cardState ->
             view_ False
@@ -1497,7 +1509,7 @@ view (Model { historyFirst, historySecond, currentStatus }) =
                         (\piece ->
                             pieceSvgOnGrid False
                                 {- You can move the piece if it is a ship or if it belongs to you. -}
-                                (Orig
+                                (cnst
                                     (if piece.pieceColor == Ship || piece.pieceColor == toColor cardState.whoseTurn then
                                         GiveFocusTo (PieceOnTheBoard piece.coord)
 
@@ -1511,7 +1523,7 @@ view (Model { historyFirst, historySecond, currentStatus }) =
                     ++ List.indexedMap
                         (\i prof ->
                             pieceSvg False
-                                (Orig
+                                (cnst
                                     (if cardState.whoseTurn == KeseTurn then
                                         GiveFocusTo (PieceInKeseHand i)
 
@@ -1525,7 +1537,7 @@ view (Model { historyFirst, historySecond, currentStatus }) =
                     ++ List.indexedMap
                         (\i prof ->
                             pieceSvg False
-                                (Orig
+                                (cnst
                                     (if cardState.whoseTurn == RimaTurn then
                                         GiveFocusTo (PieceInRimaHand i)
 
@@ -1561,12 +1573,12 @@ view (Model { historyFirst, historySecond, currentStatus }) =
                             }
                        ]
                     ++ twoTrashBinsSvg Nothing
-                    ++ List.map (pieceSvgOnGrid False (Orig None)) cardState.board
+                    ++ List.map (pieceSvgOnGrid False (cnst None)) cardState.board
                     ++ List.indexedMap
-                        (\i prof -> pieceSvg False (Orig None) (keseHandPos i prof))
+                        (\i prof -> pieceSvg False (cnst None) (keseHandPos i prof))
                         cardState.keseHand
                     ++ List.indexedMap
-                        (\i prof -> pieceSvg False (Orig None) (rimaHandPos i prof))
+                        (\i prof -> pieceSvg False (cnst None) (rimaHandPos i prof))
                         cardState.rimaHand
                 )
                 [{- The game has ended. No cancelling allowed. -}]
@@ -1610,48 +1622,48 @@ view (Model { historyFirst, historySecond, currentStatus }) =
                                                         |> filterWhetherMemberOf (allCoordsOccupiedBy Kese robbedBoard)
                                     in
                                     List.map
-                                        (\piece -> pieceSvgOnGrid (piece.coord == focus_coord) (Orig None) piece)
+                                        (\piece -> pieceSvgOnGrid (piece.coord == focus_coord) (cnst None) piece)
                                         cardState.board
-                                        ++ (candidatesRed |> List.map (\coord -> goalCandidateRedSvg (Orig (MovementToward coord)) coord))
+                                        ++ (candidatesRed |> List.map (\coord -> goalCandidateRedSvg (cnst (MovementToward coord)) coord))
                                         ++ (candidatesYellow
-                                                |> List.map (\coord -> goalCandidateYellowSvg (Orig (MovementToward coord)) coord)
+                                                |> List.map (\coord -> goalCandidateYellowSvg (cnst (MovementToward coord)) coord)
                                            )
                                         ++ List.indexedMap
                                             (\i prof ->
-                                                pieceSvg False (Orig None) (keseHandPos i prof)
+                                                pieceSvg False (cnst None) (keseHandPos i prof)
                                             )
                                             cardState.keseHand
                                         ++ List.indexedMap
                                             (\i prof ->
-                                                pieceSvg False (Orig None) (rimaHandPos i prof)
+                                                pieceSvg False (cnst None) (rimaHandPos i prof)
                                             )
                                             cardState.rimaHand
 
                         _ ->
                             {- Parachuting -}
-                            List.map (pieceSvgOnGrid False (Orig None)) cardState.board
+                            List.map (pieceSvgOnGrid False (cnst None)) cardState.board
                                 {- You cannot capture a piece by parachuting; hence no red -}
                                 ++ (neitherOccupiedNorWater cardState.board
-                                        |> List.map (\coord -> goalCandidateYellowSvg (Orig (MovementToward coord)) coord)
+                                        |> List.map (\coord -> goalCandidateYellowSvg (cnst (MovementToward coord)) coord)
                                    )
                                 ++ List.indexedMap
                                     (\i prof ->
                                         case focus of
                                             PieceInKeseHand ind ->
-                                                pieceSvg (ind == i) (Orig None) (keseHandPos i prof)
+                                                pieceSvg (ind == i) (cnst None) (keseHandPos i prof)
 
                                             _ ->
-                                                pieceSvg False (Orig None) (keseHandPos i prof)
+                                                pieceSvg False (cnst None) (keseHandPos i prof)
                                     )
                                     cardState.keseHand
                                 ++ List.indexedMap
                                     (\i prof ->
                                         case focus of
                                             PieceInRimaHand ind ->
-                                                pieceSvg (ind == i) (Orig None) (rimaHandPos i prof)
+                                                pieceSvg (ind == i) (cnst None) (rimaHandPos i prof)
 
                                             _ ->
-                                                pieceSvg False (Orig None) (rimaHandPos i prof)
+                                                pieceSvg False (cnst None) (rimaHandPos i prof)
                                     )
                                     cardState.rimaHand
             in
@@ -1686,12 +1698,12 @@ view (Model { historyFirst, historySecond, currentStatus }) =
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
-                        (pieceSvgOnGrid False (Orig None) {- You cannot click any piece on the board while waiting for additional sacrifices. -})
+                        (pieceSvgOnGrid False (cnst None) {- You cannot click any piece on the board while waiting for additional sacrifices. -})
                         remaining.board
                     ++ List.indexedMap
                         (\i prof ->
                             pieceSvg False
-                                (Orig
+                                (cnst
                                     (if remaining.whoseTurn == KeseTurn && (isSacrificingCircleRequired == (prof == Circle)) then
                                         SendToTrashBinPart1 { whoseHand = KeseTurn, index = i }
 
@@ -1705,7 +1717,7 @@ view (Model { historyFirst, historySecond, currentStatus }) =
                     ++ List.indexedMap
                         (\i prof ->
                             pieceSvg False
-                                (Orig
+                                (cnst
                                     (if remaining.whoseTurn == RimaTurn && (isSacrificingCircleRequired == (prof == Circle)) then
                                         SendToTrashBinPart1 { whoseHand = RimaTurn, index = i }
 
@@ -1755,19 +1767,19 @@ view (Model { historyFirst, historySecond, currentStatus }) =
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg (Just whoseHand)
                     ++ List.map
-                        (pieceSvgOnGrid False (Orig None) {- You cannot click any piece on the board while waiting for additional sacrifices. -})
+                        (pieceSvgOnGrid False (cnst None) {- You cannot click any piece on the board while waiting for additional sacrifices. -})
                         remaining.board
                     ++ List.indexedMap
                         (\i prof ->
                             pieceSvg (whoseHand == KeseTurn && i == index)
-                                (Orig None)
+                                (cnst None)
                                 (keseHandPos i prof)
                         )
                         remaining.keseHand
                     ++ List.indexedMap
                         (\i prof ->
                             pieceSvg (whoseHand == RimaTurn && i == index)
-                                (Orig None)
+                                (cnst None)
                                 (rimaHandPos i prof)
                         )
                         remaining.rimaHand
@@ -1805,16 +1817,16 @@ view (Model { historyFirst, historySecond, currentStatus }) =
 
                 dynamicPart =
                     List.map
-                        (pieceSvgOnGrid False (Orig None))
+                        (pieceSvgOnGrid False (cnst None))
                         remaining.board
                         ++ (candidatesRed
-                                |> List.map (\coord -> goalCandidateRedSvg (Orig <| MovementToward coord) coord)
+                                |> List.map (\coord -> goalCandidateRedSvg (cnst <| MovementToward coord) coord)
                            )
                         ++ (candidatesYellow
-                                |> List.map (\coord -> goalCandidateYellowSvg (Orig <| MovementToward coord) coord)
+                                |> List.map (\coord -> goalCandidateYellowSvg (cnst <| MovementToward coord) coord)
                            )
-                        ++ List.indexedMap (\i prof -> pieceSvg False (Orig None) (keseHandPos i prof)) remaining.keseHand
-                        ++ List.indexedMap (\i prof -> pieceSvg False (Orig None) (rimaHandPos i prof)) remaining.rimaHand
+                        ++ List.indexedMap (\i prof -> pieceSvg False (cnst None) (keseHandPos i prof)) remaining.keseHand
+                        ++ List.indexedMap (\i prof -> pieceSvg False (cnst None) (rimaHandPos i prof)) remaining.rimaHand
                         ++ [ pieceWaitingForAdditionalCommandSvg mover ]
             in
             view_ False historyFirst historySecond (stationaryPart remaining ++ twoTrashBinsSvg Nothing ++ dynamicPart) [ cancelAllButton ]
@@ -1826,12 +1838,12 @@ view (Model { historyFirst, historySecond, currentStatus }) =
                 (stationaryPart remaining
                     ++ twoTrashBinsSvg Nothing
                     ++ List.map
-                        (pieceSvgOnGrid False (Orig None) {- You cannot click any piece on the board while waiting for additional sacrifices. -})
+                        (pieceSvgOnGrid False (cnst None) {- You cannot click any piece on the board while waiting for additional sacrifices. -})
                         remaining.board
                     ++ List.indexedMap
                         (\i prof ->
                             pieceSvg False
-                                (Orig
+                                (cnst
                                     (if remaining.whoseTurn == KeseTurn && prof /= Circle then
                                         SendToTrashBinPart1 { whoseHand = KeseTurn, index = i }
 
@@ -1845,7 +1857,7 @@ view (Model { historyFirst, historySecond, currentStatus }) =
                     ++ List.indexedMap
                         (\i prof ->
                             pieceSvg False
-                                (Orig
+                                (cnst
                                     (if remaining.whoseTurn == RimaTurn && prof /= Circle then
                                         SendToTrashBinPart1 { whoseHand = RimaTurn, index = i }
 
@@ -1863,22 +1875,22 @@ view (Model { historyFirst, historySecond, currentStatus }) =
 
 cancelAllButton : Html Msg
 cancelAllButton =
-    Html.button [ onClick (Orig Cancel), Html.Attributes.style "background-color" "#ffaaaa", Html.Attributes.style "font-size" "150%" ] [ text "全てをキャンセル" ]
+    Html.button [ onClick (TemporarilyDisabled Cancel), Html.Attributes.disabled True, Html.Attributes.style "background-color" "#ffaaaa", Html.Attributes.style "font-size" "150%" ] [ text "全てをキャンセル" ]
 
 
 simpleCancelButton : Html Msg
 simpleCancelButton =
-    Html.button [ onClick (Orig Cancel), Html.Attributes.style "background-color" "#ffaaaa", Html.Attributes.style "font-size" "150%" ] [ text "キャンセル" ]
+    Html.button [ onClick (TemporarilyDisabled Cancel), Html.Attributes.disabled True, Html.Attributes.style "background-color" "#ffaaaa", Html.Attributes.style "font-size" "150%" ] [ text "キャンセル" ]
 
 
 captureAndTurnEndButton : Html Msg
 captureAndTurnEndButton =
-    Html.button [ onClick (Orig TurnEnd), Html.Attributes.style "background-color" "#aaffaa", Html.Attributes.style "font-size" "150%" ] [ text "駒を取ってターンエンド" ]
+    Html.button [ onClick (TemporarilyDisabled TurnEnd), Html.Attributes.disabled True, Html.Attributes.style "background-color" "#aaffaa", Html.Attributes.style "font-size" "150%" ] [ text "駒を取ってターンエンド" ]
 
 
 turnEndButton : Html Msg
 turnEndButton =
-    Html.button [ onClick (Orig TurnEnd), Html.Attributes.style "background-color" "#aaffaa", Html.Attributes.style "font-size" "150%" ] [ text "ターンエンド" ]
+    Html.button [ onClick (TemporarilyDisabled TurnEnd), Html.Attributes.disabled True, Html.Attributes.style "background-color" "#aaffaa", Html.Attributes.style "font-size" "150%" ] [ text "ターンエンド" ]
 
 
 keseHandPos : Int -> Profession -> PieceWithFloatPosition
