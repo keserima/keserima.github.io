@@ -167,185 +167,229 @@ updateWithPotentialInfoOnDrawnCards : Maybe ( Profession, Profession, Profession
 updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, historySecond, currentStatus, saved }) as mdl) =
     case mesg of
         GoForward ->
-            {- munch off relevant stuffs from historySecond -}
-            case currentStatus of
-                NothingSelected cardState ->
-                    if String.left 1 historySecond == "S" then
-                        -- this is clearly a movement of the ship
-                        -- whose beginning is shaped like "S+22"
-                        let
-                            decodedMsg =
-                                -- hence this is the coordinate
-                                String.slice 2 4 historySecond
-                                    |> coordFromHistoryStr
-                                    |> PieceOnTheBoard
-                                    |> GiveFocusTo
-                        in
-                        updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+            if String.left 1 historySecond == "~" then
+                updateWithPotentialInfoOnDrawnCards Nothing (Orig Cancel) mdl
 
-                    else
-                    -- otherwise, there are three possibilities for the decoded message:
-                    -- PieceOnTheBoard, PieceInKeseHand or PieceInRimaHand.
-                    -- If what's played is a piece in either player's hand, then
-                    -- there are two possibilities:
-                    -- * the end of the history string follows immediately after "o", "+" or "x"
-                    -- * or, the profession is followed by a coordinate and a period
-                    if
-                        String.length historySecond == 1 || String.slice 3 4 historySecond == "."
-                    then
+            else
+                case currentStatus of
+                    NothingSelected cardState ->
+                        if String.left 1 historySecond == "S" then
+                            -- this is clearly a movement of the ship
+                            -- whose beginning is shaped like "S+22"
+                            let
+                                decodedMsg =
+                                    -- hence this is the coordinate
+                                    String.slice 2 4 historySecond
+                                        |> coordFromHistoryStr
+                                        |> PieceOnTheBoard
+                                        |> GiveFocusTo
+                            in
+                            updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+
+                        else
+                        -- otherwise, there are three possibilities for the decoded message:
+                        -- PieceOnTheBoard, PieceInKeseHand or PieceInRimaHand.
+                        -- If what's played is a piece in either player's hand, then
+                        -- there are two possibilities:
+                        -- * the end of the history string follows immediately after "o", "+" or "x"
+                        -- * or, the profession is followed by a coordinate and a period
+                        -- * or, the profession is followed by a coordinte, "{", three cards drawn, "}" and then finally
+                        if
+                            String.length historySecond
+                                == 1
+                                || String.slice 3 4 historySecond
+                                == "."
+                        then
+                            let
+                                profession =
+                                    String.left 1 historySecond |> profFromHistoryStr
+
+                                decodedMsg =
+                                    if String.right 1 historyFirst == "K" {- FIXME -} then
+                                        case List.Extra.findIndex ((==) profession) cardState.keseHand of
+                                            Just i ->
+                                                i
+                                                    |> PieceInKeseHand
+                                                    |> GiveFocusTo
+
+                                            Nothing ->
+                                                Debug.todo "cannot find an adequate piece in Kese's Hand 2"
+
+                                    else
+                                        case List.Extra.findIndex ((==) profession) cardState.rimaHand of
+                                            Just i ->
+                                                i
+                                                    |> PieceInRimaHand
+                                                    |> GiveFocusTo
+
+                                            Nothing ->
+                                                Debug.todo "cannot find an adequate piece in Rima's Hand 2"
+                            in
+                            updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+
+                        else if String.slice 3 4 historySecond == "{" then
+                            let
+                                x =
+                                    String.slice 4 5 historySecond |> profFromHistoryStr
+
+                                y =
+                                    String.slice 5 6 historySecond |> profFromHistoryStr
+
+                                z =
+                                    String.slice 6 7 historySecond |> profFromHistoryStr
+
+                                profession =
+                                    String.left 1 historySecond |> profFromHistoryStr
+
+                                decodedMsg =
+                                    if String.right 1 historyFirst == "K" {- FIXME -} then
+                                        case List.Extra.findIndex ((==) profession) cardState.keseHand of
+                                            Just i ->
+                                                i
+                                                    |> PieceInKeseHand
+                                                    |> GiveFocusTo
+
+                                            Nothing ->
+                                                Debug.todo "cannot find an adequate piece in Kese's Hand 2"
+
+                                    else
+                                        case List.Extra.findIndex ((==) profession) cardState.rimaHand of
+                                            Just i ->
+                                                i
+                                                    |> PieceInRimaHand
+                                                    |> GiveFocusTo
+
+                                            Nothing ->
+                                                Debug.todo "cannot find an adequate piece in Rima's Hand 2"
+                            in
+                            updateWithPotentialInfoOnDrawnCards (Just ( x, y, z )) (Orig decodedMsg) mdl
+
+                        else
+                            -- In this branch, what's played is NOT a piece in either player's hand, but rather a PieceOnTheBoard.
+                            -- Also, we already covered the ship.
+                            let
+                                decodedMsg =
+                                    -- hence this is the coordinate
+                                    String.slice 1 3 historySecond
+                                        |> coordFromHistoryStr
+                                        |> PieceOnTheBoard
+                                        |> GiveFocusTo
+                            in
+                            updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+
+                    MoverIsSelected from _ ->
+                        case from of
+                            PieceOnTheBoard _ ->
+                                -- "-" ++ coordToHistoryStr to
+                                let
+                                    decodedMsg =
+                                        String.slice 1 3 historySecond
+                                            |> coordFromHistoryStr
+                                            |> MovementToward
+                                in
+                                updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+
+                            _ ->
+                                let
+                                    to =
+                                        String.slice 0 2 historySecond |> coordFromHistoryStr
+                                in
+                                if String.slice 2 3 historySecond == "." then
+                                    -- no cards were drawn
+                                    updateWithPotentialInfoOnDrawnCards Nothing (Orig (MovementToward to)) mdl
+
+                                else if String.slice 2 3 historySecond == "{" then
+                                    -- cards were drawn, so supply such info
+                                    let
+                                        x =
+                                            String.slice 3 4 historySecond |> profFromHistoryStr
+
+                                        y =
+                                            String.slice 4 5 historySecond |> profFromHistoryStr
+
+                                        z =
+                                            String.slice 5 6 historySecond |> profFromHistoryStr
+                                    in
+                                    updateWithPotentialInfoOnDrawnCards (Just ( x, y, z )) (Orig (MovementToward to)) mdl
+
+                                else
+                                    Debug.todo "Unexpected character. Expected `.` or `{`"
+
+                    AfterSacrifice _ _ ->
+                        let
+                            to =
+                                String.slice 0 2 historySecond |> coordFromHistoryStr
+                        in
+                        updateWithPotentialInfoOnDrawnCards Nothing (Orig (MovementToward to)) mdl
+
+                    WaitForTrashBinClick _ ->
+                        updateWithPotentialInfoOnDrawnCards Nothing (Orig SendToTrashBinPart2) mdl
+
+                    AfterCircleSacrifice { remaining } ->
                         let
                             profession =
                                 String.left 1 historySecond |> profFromHistoryStr
 
-                            decodedMsg =
-                                if String.right 1 historyFirst == "K" {- FIXME -} then
-                                    case List.Extra.findIndex ((==) profession) cardState.keseHand of
-                                        Just i ->
-                                            i
-                                                |> PieceInKeseHand
-                                                |> GiveFocusTo
-
-                                        Nothing ->
-                                            Debug.todo "cannot find an adequate piece in Kese's Hand 2"
-
-                                else
-                                    case List.Extra.findIndex ((==) profession) cardState.rimaHand of
-                                        Just i ->
-                                            i
-                                                |> PieceInRimaHand
-                                                |> GiveFocusTo
-
-                                        Nothing ->
-                                            Debug.todo "cannot find an adequate piece in Rima's Hand 2"
+                            index =
+                                getIndexFromProf remaining profession
                         in
-                        updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+                        updateWithPotentialInfoOnDrawnCards Nothing (Orig (SendToTrashBinPart1 { whoseHand = remaining.whoseTurn, index = index })) mdl
 
-                    else
-                        -- In this branch, what's played is NOT a piece in either player's hand, but rather a PieceOnTheBoard.
-                        -- Also, we already covered the ship.
-                        let
-                            decodedMsg =
-                                -- hence this is the coordinate
-                                String.slice 1 3 historySecond
-                                    |> coordFromHistoryStr
-                                    |> PieceOnTheBoard
-                                    |> GiveFocusTo
-                        in
-                        updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+                    NowWaitingForAdditionalSacrifice { remaining } ->
+                        case String.left 1 historySecond of
+                            "o" ->
+                                updateWithPotentialInfoOnDrawnCards Nothing
+                                    (Orig
+                                        (SendToTrashBinPart1
+                                            { whoseHand = remaining.whoseTurn
+                                            , index = getIndexFromProf remaining Circle
+                                            }
+                                        )
+                                    )
+                                    mdl
 
-                MoverIsSelected from _ ->
-                    case from of
-                        PieceOnTheBoard _ ->
-                            -- "-" ++ coordToHistoryStr to
-                            let
-                                decodedMsg =
-                                    String.slice 1 3 historySecond
-                                        |> coordFromHistoryStr
-                                        |> MovementToward
-                            in
-                            updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+                            "+" ->
+                                updateWithPotentialInfoOnDrawnCards Nothing
+                                    (Orig
+                                        (SendToTrashBinPart1
+                                            { whoseHand = remaining.whoseTurn
+                                            , index = getIndexFromProf remaining HorizontalVertical
+                                            }
+                                        )
+                                    )
+                                    mdl
 
-                        _ ->
-                            let
-                                to =
-                                    String.slice 0 2 historySecond |> coordFromHistoryStr
-                            in
-                            if String.slice 2 3 historySecond == "." then
-                                -- no cards were drawn
-                                updateWithPotentialInfoOnDrawnCards Nothing (Orig (MovementToward to)) mdl
+                            "x" ->
+                                updateWithPotentialInfoOnDrawnCards Nothing
+                                    (Orig
+                                        (SendToTrashBinPart1
+                                            { whoseHand = remaining.whoseTurn
+                                            , index = getIndexFromProf remaining Diagonal
+                                            }
+                                        )
+                                    )
+                                    mdl
 
-                            else if String.slice 2 3 historySecond == "{" then
-                                -- cards were drawn, so supply such info
+                            "{" ->
+                                -- cards were drawn
                                 let
                                     x =
-                                        String.slice 3 4 historySecond |> profFromHistoryStr
+                                        String.slice 1 2 historySecond |> profFromHistoryStr
 
                                     y =
-                                        String.slice 4 5 historySecond |> profFromHistoryStr
+                                        String.slice 2 3 historySecond |> profFromHistoryStr
 
                                     z =
-                                        String.slice 5 6 historySecond |> profFromHistoryStr
+                                        String.slice 3 4 historySecond |> profFromHistoryStr
                                 in
-                                updateWithPotentialInfoOnDrawnCards (Just ( x, y, z )) (Orig (MovementToward to)) mdl
+                                updateWithPotentialInfoOnDrawnCards (Just ( x, y, z )) (Orig TurnEnd) mdl
 
-                            else
-                                Debug.todo "Unexpected character. Expected `.` or `{`"
+                            _ ->
+                                -- cards were not drawn
+                                updateWithPotentialInfoOnDrawnCards Nothing (Orig TurnEnd) mdl
 
-                AfterSacrifice _ _ ->
-                    let
-                        to =
-                            String.slice 0 2 historySecond |> coordFromHistoryStr
-                    in
-                    updateWithPotentialInfoOnDrawnCards Nothing (Orig (MovementToward to)) mdl
-
-                WaitForTrashBinClick _ ->
-                    updateWithPotentialInfoOnDrawnCards Nothing (Orig SendToTrashBinPart2) mdl
-
-                AfterCircleSacrifice { remaining } ->
-                    let
-                        profession =
-                            String.left 1 historySecond |> profFromHistoryStr
-
-                        index =
-                            getIndexFromProf remaining profession
-                    in
-                    updateWithPotentialInfoOnDrawnCards Nothing (Orig (SendToTrashBinPart1 { whoseHand = remaining.whoseTurn, index = index })) mdl
-
-                NowWaitingForAdditionalSacrifice { remaining } ->
-                    case String.left 1 historySecond of
-                        "o" ->
-                            updateWithPotentialInfoOnDrawnCards Nothing
-                                (Orig
-                                    (SendToTrashBinPart1
-                                        { whoseHand = remaining.whoseTurn
-                                        , index = getIndexFromProf remaining Circle
-                                        }
-                                    )
-                                )
-                                mdl
-
-                        "+" ->
-                            updateWithPotentialInfoOnDrawnCards Nothing
-                                (Orig
-                                    (SendToTrashBinPart1
-                                        { whoseHand = remaining.whoseTurn
-                                        , index = getIndexFromProf remaining HorizontalVertical
-                                        }
-                                    )
-                                )
-                                mdl
-
-                        "x" ->
-                            updateWithPotentialInfoOnDrawnCards Nothing
-                                (Orig
-                                    (SendToTrashBinPart1
-                                        { whoseHand = remaining.whoseTurn
-                                        , index = getIndexFromProf remaining Diagonal
-                                        }
-                                    )
-                                )
-                                mdl
-
-                        "{" ->
-                            -- cards were drawn
-                            let
-                                x =
-                                    String.slice 1 2 historySecond |> profFromHistoryStr
-
-                                y =
-                                    String.slice 2 3 historySecond |> profFromHistoryStr
-
-                                z =
-                                    String.slice 3 4 historySecond |> profFromHistoryStr
-                            in
-                            updateWithPotentialInfoOnDrawnCards (Just ( x, y, z )) (Orig TurnEnd) mdl
-
-                        _ ->
-                            -- cards were not drawn
-                            updateWithPotentialInfoOnDrawnCards Nothing (Orig TurnEnd) mdl
-
-                _ ->
-                    Debug.todo "oh no!"
+                    _ ->
+                        Debug.todo "oh no!"
 
         Orig msg ->
             let

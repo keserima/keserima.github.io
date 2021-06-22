@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1825, column: 13},
-					end: {line: 1825, column: 23}
+					start: {line: 1869, column: 13},
+					end: {line: 1869, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -5425,6 +5425,7 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
+var $author$project$Main$Cancel = {$: 'Cancel'};
 var $author$project$Main$GameTerminated = function (a) {
 	return {$: 'GameTerminated', a: a};
 };
@@ -5529,8 +5530,8 @@ var $author$project$Main$getIndexFromProf = F2(
 				return _Debug_todo(
 					'Main',
 					{
-						start: {line: 419, column: 21},
-						end: {line: 419, column: 31}
+						start: {line: 463, column: 21},
+						end: {line: 463, column: 31}
 					})('cannot find an adequate piece in Kese\'s Hand 1');
 			}
 		} else {
@@ -5545,8 +5546,8 @@ var $author$project$Main$getIndexFromProf = F2(
 				return _Debug_todo(
 					'Main',
 					{
-						start: {line: 427, column: 21},
-						end: {line: 427, column: 31}
+						start: {line: 471, column: 21},
+						end: {line: 471, column: 31}
 					})('cannot find an adequate piece in Rima\'s Hand 1');
 			}
 		}
@@ -5734,8 +5735,8 @@ var $author$project$Main$unsafeDeckSummoning = function (a) {
 		return _Debug_todo(
 			'Main',
 			{
-				start: {line: 621, column: 13},
-				end: {line: 621, column: 23}
+				start: {line: 665, column: 13},
+				end: {line: 665, column: 23}
 			})('FAILURE: expected to receive cards to be drawn, but got nothing');
 	} else {
 		var _v1 = a.a;
@@ -6003,8 +6004,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1841, column: 13},
-					end: {line: 1841, column: 23}
+					start: {line: 1885, column: 13},
+					end: {line: 1885, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -6528,74 +6529,23 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 			var saved = mdl.a.saved;
 			switch (mesg.$) {
 				case 'GoForward':
-					switch (currentStatus.$) {
-						case 'NothingSelected':
-							var cardState = currentStatus.a;
-							if (A2($elm$core$String$left, 1, historySecond) === 'S') {
-								var decodedMsg = $author$project$Main$GiveFocusTo(
-									$author$project$KeseRimaTypes$PieceOnTheBoard(
-										$author$project$Main$coordFromHistoryStr(
-											A3($elm$core$String$slice, 2, 4, historySecond))));
-								var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
-									$temp$mesg = $author$project$Main$Orig(decodedMsg),
-									$temp$mdl = mdl;
-								cardsDrawn = $temp$cardsDrawn;
-								mesg = $temp$mesg;
-								mdl = $temp$mdl;
-								continue updateWithPotentialInfoOnDrawnCards;
-							} else {
-								if (($elm$core$String$length(historySecond) === 1) || (A3($elm$core$String$slice, 3, 4, historySecond) === '.')) {
-									var profession = $author$project$Main$profFromHistoryStr(
-										A2($elm$core$String$left, 1, historySecond));
-									var decodedMsg = function () {
-										if (A2($elm$core$String$right, 1, historyFirst) === 'K') {
-											var _v2 = A2(
-												$elm_community$list_extra$List$Extra$findIndex,
-												$elm$core$Basics$eq(profession),
-												cardState.keseHand);
-											if (_v2.$ === 'Just') {
-												var i = _v2.a;
-												return $author$project$Main$GiveFocusTo(
-													$author$project$KeseRimaTypes$PieceInKeseHand(i));
-											} else {
-												return _Debug_todo(
-													'Main',
-													{
-														start: {line: 209, column: 45},
-														end: {line: 209, column: 55}
-													})('cannot find an adequate piece in Kese\'s Hand 2');
-											}
-										} else {
-											var _v3 = A2(
-												$elm_community$list_extra$List$Extra$findIndex,
-												$elm$core$Basics$eq(profession),
-												cardState.rimaHand);
-											if (_v3.$ === 'Just') {
-												var i = _v3.a;
-												return $author$project$Main$GiveFocusTo(
-													$author$project$KeseRimaTypes$PieceInRimaHand(i));
-											} else {
-												return _Debug_todo(
-													'Main',
-													{
-														start: {line: 219, column: 45},
-														end: {line: 219, column: 55}
-													})('cannot find an adequate piece in Rima\'s Hand 2');
-											}
-										}
-									}();
-									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
-										$temp$mesg = $author$project$Main$Orig(decodedMsg),
-										$temp$mdl = mdl;
-									cardsDrawn = $temp$cardsDrawn;
-									mesg = $temp$mesg;
-									mdl = $temp$mdl;
-									continue updateWithPotentialInfoOnDrawnCards;
-								} else {
+					if (A2($elm$core$String$left, 1, historySecond) === '~') {
+						var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+							$temp$mesg = $author$project$Main$Orig($author$project$Main$Cancel),
+							$temp$mdl = mdl;
+						cardsDrawn = $temp$cardsDrawn;
+						mesg = $temp$mesg;
+						mdl = $temp$mdl;
+						continue updateWithPotentialInfoOnDrawnCards;
+					} else {
+						switch (currentStatus.$) {
+							case 'NothingSelected':
+								var cardState = currentStatus.a;
+								if (A2($elm$core$String$left, 1, historySecond) === 'S') {
 									var decodedMsg = $author$project$Main$GiveFocusTo(
 										$author$project$KeseRimaTypes$PieceOnTheBoard(
 											$author$project$Main$coordFromHistoryStr(
-												A3($elm$core$String$slice, 1, 3, historySecond))));
+												A3($elm$core$String$slice, 2, 4, historySecond))));
 									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
 										$temp$mesg = $author$project$Main$Orig(decodedMsg),
 										$temp$mdl = mdl;
@@ -6603,43 +6553,142 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 									mesg = $temp$mesg;
 									mdl = $temp$mdl;
 									continue updateWithPotentialInfoOnDrawnCards;
+								} else {
+									if (($elm$core$String$length(historySecond) === 1) || (A3($elm$core$String$slice, 3, 4, historySecond) === '.')) {
+										var profession = $author$project$Main$profFromHistoryStr(
+											A2($elm$core$String$left, 1, historySecond));
+										var decodedMsg = function () {
+											if (A2($elm$core$String$right, 1, historyFirst) === 'K') {
+												var _v2 = A2(
+													$elm_community$list_extra$List$Extra$findIndex,
+													$elm$core$Basics$eq(profession),
+													cardState.keseHand);
+												if (_v2.$ === 'Just') {
+													var i = _v2.a;
+													return $author$project$Main$GiveFocusTo(
+														$author$project$KeseRimaTypes$PieceInKeseHand(i));
+												} else {
+													return _Debug_todo(
+														'Main',
+														{
+															start: {line: 216, column: 49},
+															end: {line: 216, column: 59}
+														})('cannot find an adequate piece in Kese\'s Hand 2');
+												}
+											} else {
+												var _v3 = A2(
+													$elm_community$list_extra$List$Extra$findIndex,
+													$elm$core$Basics$eq(profession),
+													cardState.rimaHand);
+												if (_v3.$ === 'Just') {
+													var i = _v3.a;
+													return $author$project$Main$GiveFocusTo(
+														$author$project$KeseRimaTypes$PieceInRimaHand(i));
+												} else {
+													return _Debug_todo(
+														'Main',
+														{
+															start: {line: 226, column: 49},
+															end: {line: 226, column: 59}
+														})('cannot find an adequate piece in Rima\'s Hand 2');
+												}
+											}
+										}();
+										var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+											$temp$mesg = $author$project$Main$Orig(decodedMsg),
+											$temp$mdl = mdl;
+										cardsDrawn = $temp$cardsDrawn;
+										mesg = $temp$mesg;
+										mdl = $temp$mdl;
+										continue updateWithPotentialInfoOnDrawnCards;
+									} else {
+										if (A3($elm$core$String$slice, 3, 4, historySecond) === '{') {
+											var z = $author$project$Main$profFromHistoryStr(
+												A3($elm$core$String$slice, 6, 7, historySecond));
+											var y = $author$project$Main$profFromHistoryStr(
+												A3($elm$core$String$slice, 5, 6, historySecond));
+											var x = $author$project$Main$profFromHistoryStr(
+												A3($elm$core$String$slice, 4, 5, historySecond));
+											var profession = $author$project$Main$profFromHistoryStr(
+												A2($elm$core$String$left, 1, historySecond));
+											var decodedMsg = function () {
+												if (A2($elm$core$String$right, 1, historyFirst) === 'K') {
+													var _v4 = A2(
+														$elm_community$list_extra$List$Extra$findIndex,
+														$elm$core$Basics$eq(profession),
+														cardState.keseHand);
+													if (_v4.$ === 'Just') {
+														var i = _v4.a;
+														return $author$project$Main$GiveFocusTo(
+															$author$project$KeseRimaTypes$PieceInKeseHand(i));
+													} else {
+														return _Debug_todo(
+															'Main',
+															{
+																start: {line: 253, column: 49},
+																end: {line: 253, column: 59}
+															})('cannot find an adequate piece in Kese\'s Hand 2');
+													}
+												} else {
+													var _v5 = A2(
+														$elm_community$list_extra$List$Extra$findIndex,
+														$elm$core$Basics$eq(profession),
+														cardState.rimaHand);
+													if (_v5.$ === 'Just') {
+														var i = _v5.a;
+														return $author$project$Main$GiveFocusTo(
+															$author$project$KeseRimaTypes$PieceInRimaHand(i));
+													} else {
+														return _Debug_todo(
+															'Main',
+															{
+																start: {line: 263, column: 49},
+																end: {line: 263, column: 59}
+															})('cannot find an adequate piece in Rima\'s Hand 2');
+													}
+												}
+											}();
+											var $temp$cardsDrawn = $elm$core$Maybe$Just(
+												_Utils_Tuple3(x, y, z)),
+												$temp$mesg = $author$project$Main$Orig(decodedMsg),
+												$temp$mdl = mdl;
+											cardsDrawn = $temp$cardsDrawn;
+											mesg = $temp$mesg;
+											mdl = $temp$mdl;
+											continue updateWithPotentialInfoOnDrawnCards;
+										} else {
+											var decodedMsg = $author$project$Main$GiveFocusTo(
+												$author$project$KeseRimaTypes$PieceOnTheBoard(
+													$author$project$Main$coordFromHistoryStr(
+														A3($elm$core$String$slice, 1, 3, historySecond))));
+											var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+												$temp$mesg = $author$project$Main$Orig(decodedMsg),
+												$temp$mdl = mdl;
+											cardsDrawn = $temp$cardsDrawn;
+											mesg = $temp$mesg;
+											mdl = $temp$mdl;
+											continue updateWithPotentialInfoOnDrawnCards;
+										}
+									}
 								}
-							}
-						case 'MoverIsSelected':
-							var from = currentStatus.a;
-							if (from.$ === 'PieceOnTheBoard') {
-								var decodedMsg = $author$project$Main$MovementToward(
-									$author$project$Main$coordFromHistoryStr(
-										A3($elm$core$String$slice, 1, 3, historySecond)));
-								var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
-									$temp$mesg = $author$project$Main$Orig(decodedMsg),
-									$temp$mdl = mdl;
-								cardsDrawn = $temp$cardsDrawn;
-								mesg = $temp$mesg;
-								mdl = $temp$mdl;
-								continue updateWithPotentialInfoOnDrawnCards;
-							} else {
-								var to = $author$project$Main$coordFromHistoryStr(
-									A3($elm$core$String$slice, 0, 2, historySecond));
-								if (A3($elm$core$String$slice, 2, 3, historySecond) === '.') {
+							case 'MoverIsSelected':
+								var from = currentStatus.a;
+								if (from.$ === 'PieceOnTheBoard') {
+									var decodedMsg = $author$project$Main$MovementToward(
+										$author$project$Main$coordFromHistoryStr(
+											A3($elm$core$String$slice, 1, 3, historySecond)));
 									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
-										$temp$mesg = $author$project$Main$Orig(
-										$author$project$Main$MovementToward(to)),
+										$temp$mesg = $author$project$Main$Orig(decodedMsg),
 										$temp$mdl = mdl;
 									cardsDrawn = $temp$cardsDrawn;
 									mesg = $temp$mesg;
 									mdl = $temp$mdl;
 									continue updateWithPotentialInfoOnDrawnCards;
 								} else {
-									if (A3($elm$core$String$slice, 2, 3, historySecond) === '{') {
-										var z = $author$project$Main$profFromHistoryStr(
-											A3($elm$core$String$slice, 5, 6, historySecond));
-										var y = $author$project$Main$profFromHistoryStr(
-											A3($elm$core$String$slice, 4, 5, historySecond));
-										var x = $author$project$Main$profFromHistoryStr(
-											A3($elm$core$String$slice, 3, 4, historySecond));
-										var $temp$cardsDrawn = $elm$core$Maybe$Just(
-											_Utils_Tuple3(x, y, z)),
+									var to = $author$project$Main$coordFromHistoryStr(
+										A3($elm$core$String$slice, 0, 2, historySecond));
+									if (A3($elm$core$String$slice, 2, 3, historySecond) === '.') {
+										var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
 											$temp$mesg = $author$project$Main$Orig(
 											$author$project$Main$MovementToward(to)),
 											$temp$mdl = mdl;
@@ -6648,122 +6697,140 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 										mdl = $temp$mdl;
 										continue updateWithPotentialInfoOnDrawnCards;
 									} else {
-										return _Debug_todo(
-											'Main',
-											{
-												start: {line: 272, column: 33},
-												end: {line: 272, column: 43}
-											})('Unexpected character. Expected `.` or `{`');
+										if (A3($elm$core$String$slice, 2, 3, historySecond) === '{') {
+											var z = $author$project$Main$profFromHistoryStr(
+												A3($elm$core$String$slice, 5, 6, historySecond));
+											var y = $author$project$Main$profFromHistoryStr(
+												A3($elm$core$String$slice, 4, 5, historySecond));
+											var x = $author$project$Main$profFromHistoryStr(
+												A3($elm$core$String$slice, 3, 4, historySecond));
+											var $temp$cardsDrawn = $elm$core$Maybe$Just(
+												_Utils_Tuple3(x, y, z)),
+												$temp$mesg = $author$project$Main$Orig(
+												$author$project$Main$MovementToward(to)),
+												$temp$mdl = mdl;
+											cardsDrawn = $temp$cardsDrawn;
+											mesg = $temp$mesg;
+											mdl = $temp$mdl;
+											continue updateWithPotentialInfoOnDrawnCards;
+										} else {
+											return _Debug_todo(
+												'Main',
+												{
+													start: {line: 316, column: 37},
+													end: {line: 316, column: 47}
+												})('Unexpected character. Expected `.` or `{`');
+										}
 									}
 								}
-							}
-						case 'AfterSacrifice':
-							var to = $author$project$Main$coordFromHistoryStr(
-								A3($elm$core$String$slice, 0, 2, historySecond));
-							var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
-								$temp$mesg = $author$project$Main$Orig(
-								$author$project$Main$MovementToward(to)),
-								$temp$mdl = mdl;
-							cardsDrawn = $temp$cardsDrawn;
-							mesg = $temp$mesg;
-							mdl = $temp$mdl;
-							continue updateWithPotentialInfoOnDrawnCards;
-						case 'WaitForTrashBinClick':
-							var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
-								$temp$mesg = $author$project$Main$Orig($author$project$Main$SendToTrashBinPart2),
-								$temp$mdl = mdl;
-							cardsDrawn = $temp$cardsDrawn;
-							mesg = $temp$mesg;
-							mdl = $temp$mdl;
-							continue updateWithPotentialInfoOnDrawnCards;
-						case 'AfterCircleSacrifice':
-							var remaining = currentStatus.a.remaining;
-							var profession = $author$project$Main$profFromHistoryStr(
-								A2($elm$core$String$left, 1, historySecond));
-							var index = A2($author$project$Main$getIndexFromProf, remaining, profession);
-							var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
-								$temp$mesg = $author$project$Main$Orig(
-								$author$project$Main$SendToTrashBinPart1(
-									{index: index, whoseHand: remaining.whoseTurn})),
-								$temp$mdl = mdl;
-							cardsDrawn = $temp$cardsDrawn;
-							mesg = $temp$mesg;
-							mdl = $temp$mdl;
-							continue updateWithPotentialInfoOnDrawnCards;
-						case 'NowWaitingForAdditionalSacrifice':
-							var remaining = currentStatus.a.remaining;
-							var _v5 = A2($elm$core$String$left, 1, historySecond);
-							switch (_v5) {
-								case 'o':
-									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
-										$temp$mesg = $author$project$Main$Orig(
-										$author$project$Main$SendToTrashBinPart1(
-											{
-												index: A2($author$project$Main$getIndexFromProf, remaining, $author$project$KeseRimaTypes$Circle),
-												whoseHand: remaining.whoseTurn
-											})),
-										$temp$mdl = mdl;
-									cardsDrawn = $temp$cardsDrawn;
-									mesg = $temp$mesg;
-									mdl = $temp$mdl;
-									continue updateWithPotentialInfoOnDrawnCards;
-								case '+':
-									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
-										$temp$mesg = $author$project$Main$Orig(
-										$author$project$Main$SendToTrashBinPart1(
-											{
-												index: A2($author$project$Main$getIndexFromProf, remaining, $author$project$KeseRimaTypes$HorizontalVertical),
-												whoseHand: remaining.whoseTurn
-											})),
-										$temp$mdl = mdl;
-									cardsDrawn = $temp$cardsDrawn;
-									mesg = $temp$mesg;
-									mdl = $temp$mdl;
-									continue updateWithPotentialInfoOnDrawnCards;
-								case 'x':
-									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
-										$temp$mesg = $author$project$Main$Orig(
-										$author$project$Main$SendToTrashBinPart1(
-											{
-												index: A2($author$project$Main$getIndexFromProf, remaining, $author$project$KeseRimaTypes$Diagonal),
-												whoseHand: remaining.whoseTurn
-											})),
-										$temp$mdl = mdl;
-									cardsDrawn = $temp$cardsDrawn;
-									mesg = $temp$mesg;
-									mdl = $temp$mdl;
-									continue updateWithPotentialInfoOnDrawnCards;
-								case '{':
-									var z = $author$project$Main$profFromHistoryStr(
-										A3($elm$core$String$slice, 3, 4, historySecond));
-									var y = $author$project$Main$profFromHistoryStr(
-										A3($elm$core$String$slice, 2, 3, historySecond));
-									var x = $author$project$Main$profFromHistoryStr(
-										A3($elm$core$String$slice, 1, 2, historySecond));
-									var $temp$cardsDrawn = $elm$core$Maybe$Just(
-										_Utils_Tuple3(x, y, z)),
-										$temp$mesg = $author$project$Main$Orig($author$project$Main$TurnEnd),
-										$temp$mdl = mdl;
-									cardsDrawn = $temp$cardsDrawn;
-									mesg = $temp$mesg;
-									mdl = $temp$mdl;
-									continue updateWithPotentialInfoOnDrawnCards;
-								default:
-									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
-										$temp$mesg = $author$project$Main$Orig($author$project$Main$TurnEnd),
-										$temp$mdl = mdl;
-									cardsDrawn = $temp$cardsDrawn;
-									mesg = $temp$mesg;
-									mdl = $temp$mdl;
-									continue updateWithPotentialInfoOnDrawnCards;
-							}
-						default:
-							return _Debug_todo(
-								'Main',
-								{
-									start: {line: 348, column: 21},
-									end: {line: 348, column: 31}
-								})('oh no!');
+							case 'AfterSacrifice':
+								var to = $author$project$Main$coordFromHistoryStr(
+									A3($elm$core$String$slice, 0, 2, historySecond));
+								var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+									$temp$mesg = $author$project$Main$Orig(
+									$author$project$Main$MovementToward(to)),
+									$temp$mdl = mdl;
+								cardsDrawn = $temp$cardsDrawn;
+								mesg = $temp$mesg;
+								mdl = $temp$mdl;
+								continue updateWithPotentialInfoOnDrawnCards;
+							case 'WaitForTrashBinClick':
+								var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+									$temp$mesg = $author$project$Main$Orig($author$project$Main$SendToTrashBinPart2),
+									$temp$mdl = mdl;
+								cardsDrawn = $temp$cardsDrawn;
+								mesg = $temp$mesg;
+								mdl = $temp$mdl;
+								continue updateWithPotentialInfoOnDrawnCards;
+							case 'AfterCircleSacrifice':
+								var remaining = currentStatus.a.remaining;
+								var profession = $author$project$Main$profFromHistoryStr(
+									A2($elm$core$String$left, 1, historySecond));
+								var index = A2($author$project$Main$getIndexFromProf, remaining, profession);
+								var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+									$temp$mesg = $author$project$Main$Orig(
+									$author$project$Main$SendToTrashBinPart1(
+										{index: index, whoseHand: remaining.whoseTurn})),
+									$temp$mdl = mdl;
+								cardsDrawn = $temp$cardsDrawn;
+								mesg = $temp$mesg;
+								mdl = $temp$mdl;
+								continue updateWithPotentialInfoOnDrawnCards;
+							case 'NowWaitingForAdditionalSacrifice':
+								var remaining = currentStatus.a.remaining;
+								var _v7 = A2($elm$core$String$left, 1, historySecond);
+								switch (_v7) {
+									case 'o':
+										var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+											$temp$mesg = $author$project$Main$Orig(
+											$author$project$Main$SendToTrashBinPart1(
+												{
+													index: A2($author$project$Main$getIndexFromProf, remaining, $author$project$KeseRimaTypes$Circle),
+													whoseHand: remaining.whoseTurn
+												})),
+											$temp$mdl = mdl;
+										cardsDrawn = $temp$cardsDrawn;
+										mesg = $temp$mesg;
+										mdl = $temp$mdl;
+										continue updateWithPotentialInfoOnDrawnCards;
+									case '+':
+										var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+											$temp$mesg = $author$project$Main$Orig(
+											$author$project$Main$SendToTrashBinPart1(
+												{
+													index: A2($author$project$Main$getIndexFromProf, remaining, $author$project$KeseRimaTypes$HorizontalVertical),
+													whoseHand: remaining.whoseTurn
+												})),
+											$temp$mdl = mdl;
+										cardsDrawn = $temp$cardsDrawn;
+										mesg = $temp$mesg;
+										mdl = $temp$mdl;
+										continue updateWithPotentialInfoOnDrawnCards;
+									case 'x':
+										var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+											$temp$mesg = $author$project$Main$Orig(
+											$author$project$Main$SendToTrashBinPart1(
+												{
+													index: A2($author$project$Main$getIndexFromProf, remaining, $author$project$KeseRimaTypes$Diagonal),
+													whoseHand: remaining.whoseTurn
+												})),
+											$temp$mdl = mdl;
+										cardsDrawn = $temp$cardsDrawn;
+										mesg = $temp$mesg;
+										mdl = $temp$mdl;
+										continue updateWithPotentialInfoOnDrawnCards;
+									case '{':
+										var z = $author$project$Main$profFromHistoryStr(
+											A3($elm$core$String$slice, 3, 4, historySecond));
+										var y = $author$project$Main$profFromHistoryStr(
+											A3($elm$core$String$slice, 2, 3, historySecond));
+										var x = $author$project$Main$profFromHistoryStr(
+											A3($elm$core$String$slice, 1, 2, historySecond));
+										var $temp$cardsDrawn = $elm$core$Maybe$Just(
+											_Utils_Tuple3(x, y, z)),
+											$temp$mesg = $author$project$Main$Orig($author$project$Main$TurnEnd),
+											$temp$mdl = mdl;
+										cardsDrawn = $temp$cardsDrawn;
+										mesg = $temp$mesg;
+										mdl = $temp$mdl;
+										continue updateWithPotentialInfoOnDrawnCards;
+									default:
+										var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+											$temp$mesg = $author$project$Main$Orig($author$project$Main$TurnEnd),
+											$temp$mdl = mdl;
+										cardsDrawn = $temp$cardsDrawn;
+										mesg = $temp$mesg;
+										mdl = $temp$mdl;
+										continue updateWithPotentialInfoOnDrawnCards;
+								}
+							default:
+								return _Debug_todo(
+									'Main',
+									{
+										start: {line: 392, column: 25},
+										end: {line: 392, column: 35}
+									})('oh no!');
+						}
 					}
 				case 'Orig':
 					var msg = mesg.a;
@@ -6955,7 +7022,6 @@ var $author$project$Main$boardSvg = _List_fromArray(
 			},
 			$author$project$Main$allCoord))
 	]);
-var $author$project$Main$Cancel = {$: 'Cancel'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
