@@ -199,16 +199,24 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
 
                             decodedMsg =
                                 if String.right 1 historyFirst == "K" {- FIXME -} then
-                                    List.Extra.findIndex ((==) profession) cardState.keseHand
-                                        |> Maybe.withDefault (Debug.todo "cannot find an adequate piece in Kese's Hand")
-                                        |> PieceInKeseHand
-                                        |> GiveFocusTo
+                                    case List.Extra.findIndex ((==) profession) cardState.keseHand of
+                                        Just i ->
+                                            i
+                                                |> PieceInKeseHand
+                                                |> GiveFocusTo
+
+                                        Nothing ->
+                                            Debug.todo "cannot find an adequate piece in Kese's Hand 2"
 
                                 else
-                                    List.Extra.findIndex ((==) profession) cardState.rimaHand
-                                        |> Maybe.withDefault (Debug.todo "cannot find an adequate piece in Rima's Hand")
-                                        |> PieceInRimaHand
-                                        |> GiveFocusTo
+                                    case List.Extra.findIndex ((==) profession) cardState.rimaHand of
+                                        Just i ->
+                                            i
+                                                |> PieceInRimaHand
+                                                |> GiveFocusTo
+
+                                        Nothing ->
+                                            Debug.todo "cannot find an adequate piece in Rima's Hand 2"
                         in
                         updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
 
@@ -225,7 +233,7 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                         in
                         updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
 
-                MoverIsSelected from cardState ->
+                MoverIsSelected from _ ->
                     case from of
                         PieceOnTheBoard _ ->
                             -- "-" ++ coordToHistoryStr to
@@ -403,12 +411,20 @@ getIndexFromProf : { a | whoseTurn : WhoseTurn, keseHand : List Profession, rima
 getIndexFromProf remaining profession =
     case remaining.whoseTurn of
         KeseTurn ->
-            List.Extra.findIndex ((==) profession) remaining.keseHand
-                |> Maybe.withDefault (Debug.todo "cannot find an adequate piece in Kese's Hand")
+            case List.Extra.findIndex ((==) profession) remaining.keseHand of
+                Just i ->
+                    i
+
+                Nothing ->
+                    Debug.todo "cannot find an adequate piece in Kese's Hand 1"
 
         RimaTurn ->
-            List.Extra.findIndex ((==) profession) remaining.rimaHand
-                |> Maybe.withDefault (Debug.todo "cannot find an adequate piece in Rima's Hand")
+            case List.Extra.findIndex ((==) profession) remaining.rimaHand of
+                Just i ->
+                    i
+
+                Nothing ->
+                    Debug.todo "cannot find an adequate piece in Rima's Hand 1"
 
 
 twoConsecutivePasses : Regex.Regex
@@ -1791,19 +1807,6 @@ keseHandPos i prof =
 rimaHandPos : Int -> Profession -> PieceWithFloatPosition
 rimaHandPos i prof =
     { coord = { x = 3.0 - toFloat i, y = -1.0 }, prof = prof, pieceColor = Rima }
-
-
-numToProf : Int -> Profession
-numToProf n =
-    case n of
-        0 ->
-            Circle
-
-        1 ->
-            HorizontalVertical
-
-        _ ->
-            Diagonal
 
 
 profFromHistoryChar : Char -> Profession

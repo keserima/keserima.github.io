@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1823, column: 13},
-					end: {line: 1823, column: 23}
+					start: {line: 1825, column: 13},
+					end: {line: 1825, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -5514,44 +5514,41 @@ var $elm_community$list_extra$List$Extra$findIndexHelp = F3(
 		}
 	});
 var $elm_community$list_extra$List$Extra$findIndex = $elm_community$list_extra$List$Extra$findIndexHelp(0);
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
 var $author$project$Main$getIndexFromProf = F2(
 	function (remaining, profession) {
 		var _v0 = remaining.whoseTurn;
 		if (_v0.$ === 'KeseTurn') {
-			return A2(
-				$elm$core$Maybe$withDefault,
-				_Debug_todo(
+			var _v1 = A2(
+				$elm_community$list_extra$List$Extra$findIndex,
+				$elm$core$Basics$eq(profession),
+				remaining.keseHand);
+			if (_v1.$ === 'Just') {
+				var i = _v1.a;
+				return i;
+			} else {
+				return _Debug_todo(
 					'Main',
 					{
-						start: {line: 408, column: 39},
-						end: {line: 408, column: 49}
-					})('cannot find an adequate piece in Kese\'s Hand'),
-				A2(
-					$elm_community$list_extra$List$Extra$findIndex,
-					$elm$core$Basics$eq(profession),
-					remaining.keseHand));
+						start: {line: 419, column: 21},
+						end: {line: 419, column: 31}
+					})('cannot find an adequate piece in Kese\'s Hand 1');
+			}
 		} else {
-			return A2(
-				$elm$core$Maybe$withDefault,
-				_Debug_todo(
+			var _v2 = A2(
+				$elm_community$list_extra$List$Extra$findIndex,
+				$elm$core$Basics$eq(profession),
+				remaining.rimaHand);
+			if (_v2.$ === 'Just') {
+				var i = _v2.a;
+				return i;
+			} else {
+				return _Debug_todo(
 					'Main',
 					{
-						start: {line: 412, column: 39},
-						end: {line: 412, column: 49}
-					})('cannot find an adequate piece in Rima\'s Hand'),
-				A2(
-					$elm_community$list_extra$List$Extra$findIndex,
-					$elm$core$Basics$eq(profession),
-					remaining.rimaHand));
+						start: {line: 427, column: 21},
+						end: {line: 427, column: 31}
+					})('cannot find an adequate piece in Rima\'s Hand 1');
+			}
 		}
 	});
 var $author$project$Main$coordToHistoryStr = function (coord) {
@@ -5737,8 +5734,8 @@ var $author$project$Main$unsafeDeckSummoning = function (a) {
 		return _Debug_todo(
 			'Main',
 			{
-				start: {line: 606, column: 13},
-				end: {line: 606, column: 23}
+				start: {line: 621, column: 13},
+				end: {line: 621, column: 23}
 			})('FAILURE: expected to receive cards to be drawn, but got nothing');
 	} else {
 		var _v1 = a.a;
@@ -5756,6 +5753,15 @@ var $author$project$Main$whoseTurnToHistoryStr = function (w) {
 		return 'R';
 	}
 };
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
 var $author$project$Main$newHistory_ = F3(
 	function (cardsDrawn, msg, modl) {
 		var unwrap = $elm$core$Maybe$withDefault('ERROR!!!!!!!!!!!!!!!!!!!!');
@@ -5997,8 +6003,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1839, column: 13},
-					end: {line: 1839, column: 23}
+					start: {line: 1841, column: 13},
+					end: {line: 1841, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -6541,33 +6547,43 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 								if (($elm$core$String$length(historySecond) === 1) || (A3($elm$core$String$slice, 3, 4, historySecond) === '.')) {
 									var profession = $author$project$Main$profFromHistoryStr(
 										A2($elm$core$String$left, 1, historySecond));
-									var decodedMsg = (A2($elm$core$String$right, 1, historyFirst) === 'K') ? $author$project$Main$GiveFocusTo(
-										$author$project$KeseRimaTypes$PieceInKeseHand(
-											A2(
-												$elm$core$Maybe$withDefault,
-												_Debug_todo(
+									var decodedMsg = function () {
+										if (A2($elm$core$String$right, 1, historyFirst) === 'K') {
+											var _v2 = A2(
+												$elm_community$list_extra$List$Extra$findIndex,
+												$elm$core$Basics$eq(profession),
+												cardState.keseHand);
+											if (_v2.$ === 'Just') {
+												var i = _v2.a;
+												return $author$project$Main$GiveFocusTo(
+													$author$project$KeseRimaTypes$PieceInKeseHand(i));
+											} else {
+												return _Debug_todo(
 													'Main',
 													{
-														start: {line: 203, column: 63},
-														end: {line: 203, column: 73}
-													})('cannot find an adequate piece in Kese\'s Hand'),
-												A2(
-													$elm_community$list_extra$List$Extra$findIndex,
-													$elm$core$Basics$eq(profession),
-													cardState.keseHand)))) : $author$project$Main$GiveFocusTo(
-										$author$project$KeseRimaTypes$PieceInRimaHand(
-											A2(
-												$elm$core$Maybe$withDefault,
-												_Debug_todo(
+														start: {line: 209, column: 45},
+														end: {line: 209, column: 55}
+													})('cannot find an adequate piece in Kese\'s Hand 2');
+											}
+										} else {
+											var _v3 = A2(
+												$elm_community$list_extra$List$Extra$findIndex,
+												$elm$core$Basics$eq(profession),
+												cardState.rimaHand);
+											if (_v3.$ === 'Just') {
+												var i = _v3.a;
+												return $author$project$Main$GiveFocusTo(
+													$author$project$KeseRimaTypes$PieceInRimaHand(i));
+											} else {
+												return _Debug_todo(
 													'Main',
 													{
-														start: {line: 209, column: 63},
-														end: {line: 209, column: 73}
-													})('cannot find an adequate piece in Rima\'s Hand'),
-												A2(
-													$elm_community$list_extra$List$Extra$findIndex,
-													$elm$core$Basics$eq(profession),
-													cardState.rimaHand))));
+														start: {line: 219, column: 45},
+														end: {line: 219, column: 55}
+													})('cannot find an adequate piece in Rima\'s Hand 2');
+											}
+										}
+									}();
 									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
 										$temp$mesg = $author$project$Main$Orig(decodedMsg),
 										$temp$mdl = mdl;
@@ -6591,7 +6607,6 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 							}
 						case 'MoverIsSelected':
 							var from = currentStatus.a;
-							var cardState = currentStatus.b;
 							if (from.$ === 'PieceOnTheBoard') {
 								var decodedMsg = $author$project$Main$MovementToward(
 									$author$project$Main$coordFromHistoryStr(
@@ -6636,8 +6651,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 										return _Debug_todo(
 											'Main',
 											{
-												start: {line: 264, column: 33},
-												end: {line: 264, column: 43}
+												start: {line: 272, column: 33},
+												end: {line: 272, column: 43}
 											})('Unexpected character. Expected `.` or `{`');
 									}
 								}
@@ -6677,8 +6692,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 							continue updateWithPotentialInfoOnDrawnCards;
 						case 'NowWaitingForAdditionalSacrifice':
 							var remaining = currentStatus.a.remaining;
-							var _v3 = A2($elm$core$String$left, 1, historySecond);
-							switch (_v3) {
+							var _v5 = A2($elm$core$String$left, 1, historySecond);
+							switch (_v5) {
 								case 'o':
 									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
 										$temp$mesg = $author$project$Main$Orig(
@@ -6746,8 +6761,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 							return _Debug_todo(
 								'Main',
 								{
-									start: {line: 340, column: 21},
-									end: {line: 340, column: 31}
+									start: {line: 348, column: 21},
+									end: {line: 348, column: 31}
 								})('oh no!');
 					}
 				case 'Orig':
