@@ -7369,7 +7369,7 @@ var $author$project$KeseRimaSvgElements$trashBinSvg = _List_fromArray(
 			]),
 		_List_Nil)
 	]);
-var $author$project$Main$trashBinSvg_ = function (clickable) {
+var $author$project$KeseRimaSvgElements$trashBinSvg_ = function (clickable) {
 	return clickable ? A2(
 		$elm$svg$Svg$g,
 		_List_fromArray(
@@ -7414,7 +7414,7 @@ var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 				]),
 			_List_fromArray(
 				[
-					$author$project$Main$trashBinSvg_(
+					$author$project$KeseRimaSvgElements$trashBinSvg_(
 					_Utils_eq(
 						trashBinFocus,
 						$elm$core$Maybe$Just($author$project$KeseRimaTypes$KeseTurn)))
@@ -7428,7 +7428,7 @@ var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 				]),
 			_List_fromArray(
 				[
-					$author$project$Main$trashBinSvg_(
+					$author$project$KeseRimaSvgElements$trashBinSvg_(
 					_Utils_eq(
 						trashBinFocus,
 						$elm$core$Maybe$Just($author$project$KeseRimaTypes$RimaTurn)))

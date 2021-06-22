@@ -5347,8 +5347,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1529, column: 13},
-					end: {line: 1529, column: 23}
+					start: {line: 1515, column: 13},
+					end: {line: 1515, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -6030,8 +6030,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1545, column: 13},
-					end: {line: 1545, column: 23}
+					start: {line: 1531, column: 13},
+					end: {line: 1531, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -7921,6 +7921,8 @@ var $author$project$Main$turnEndButton = A2(
 		[
 			$elm$svg$Svg$text('ターンエンド')
 		]));
+var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
+var $elm$svg$Svg$map = $elm$virtual_dom$VirtualDom$map;
 var $author$project$SvgColor$trashBinColor = function (c) {
 	return c ? '#555' : '#eee';
 };
@@ -7941,13 +7943,12 @@ var $author$project$KeseRimaSvgElements$trashBinSvg = _List_fromArray(
 			]),
 		_List_Nil)
 	]);
-var $author$project$Main$trashBinSvg_ = function (clickable) {
+var $author$project$KeseRimaSvgElements$trashBinSvg_ = function (clickable) {
 	return clickable ? A2(
 		$elm$svg$Svg$g,
 		_List_fromArray(
 			[
-				$elm$svg$Svg$Events$onClick(
-				$author$project$Main$TemporarilyDisabled($author$project$KeseRimaTypes$SendToTrashBinPart2)),
+				$elm$svg$Svg$Events$onClick($author$project$KeseRimaTypes$SendToTrashBinPart2),
 				A2($elm$html$Html$Attributes$style, 'cursor', 'pointer'),
 				$elm$svg$Svg$Attributes$fill(
 				$author$project$SvgColor$trashBinColor(clickable))
@@ -7987,10 +7988,13 @@ var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 				]),
 			_List_fromArray(
 				[
-					$author$project$Main$trashBinSvg_(
-					_Utils_eq(
-						trashBinFocus,
-						$elm$core$Maybe$Just($author$project$KeseRimaTypes$KeseTurn)))
+					A2(
+					$elm$svg$Svg$map,
+					$author$project$Main$TemporarilyDisabled,
+					$author$project$KeseRimaSvgElements$trashBinSvg_(
+						_Utils_eq(
+							trashBinFocus,
+							$elm$core$Maybe$Just($author$project$KeseRimaTypes$KeseTurn))))
 				])),
 			A2(
 			$elm$svg$Svg$g,
@@ -8001,10 +8005,13 @@ var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 				]),
 			_List_fromArray(
 				[
-					$author$project$Main$trashBinSvg_(
-					_Utils_eq(
-						trashBinFocus,
-						$elm$core$Maybe$Just($author$project$KeseRimaTypes$RimaTurn)))
+					A2(
+					$elm$svg$Svg$map,
+					$author$project$Main$TemporarilyDisabled,
+					$author$project$KeseRimaSvgElements$trashBinSvg_(
+						_Utils_eq(
+							trashBinFocus,
+							$elm$core$Maybe$Just($author$project$KeseRimaTypes$RimaTurn))))
 				]))
 		]);
 };

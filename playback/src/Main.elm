@@ -1029,23 +1029,9 @@ stationaryPart cardState =
 
 twoTrashBinsSvg : Maybe WhoseTurn -> List (Svg PlaybackMsg)
 twoTrashBinsSvg trashBinFocus =
-    [ g [ id "keseTrashBin", transform "translate(530 560)" ] [ trashBinSvg_ (trashBinFocus == Just KeseTurn) ]
-    , g [ id "rimaTrashBin", transform "translate(530 -150)" ] [ trashBinSvg_ (trashBinFocus == Just RimaTurn) ]
+    [ g [ id "keseTrashBin", transform "translate(530 560)" ] [ Svg.map TemporarilyDisabled <| trashBinSvg_ (trashBinFocus == Just KeseTurn) ]
+    , g [ id "rimaTrashBin", transform "translate(530 -150)" ] [ Svg.map TemporarilyDisabled <| trashBinSvg_ (trashBinFocus == Just RimaTurn) ]
     ]
-
-
-trashBinSvg_ : Bool -> Svg PlaybackMsg
-trashBinSvg_ clickable =
-    if clickable then
-        g
-            [ Svg.Events.onClick (TemporarilyDisabled SendToTrashBinPart2)
-            , Html.Attributes.style "cursor" "pointer"
-            , fill (trashBinColor clickable)
-            ]
-            (trashBinSvg ++ [ circle [ cx "45", cy "55", r "16", fill yellowCandidateColor ] [] ])
-
-    else
-        g [ fill (trashBinColor clickable) ] trashBinSvg
 
 
 targetBlankLink : List (Attribute msg) -> List (Html msg) -> Html msg
