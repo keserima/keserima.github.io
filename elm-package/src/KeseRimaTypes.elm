@@ -85,6 +85,16 @@ type CurrentStatus_ a
     | AfterSacrifice MoveCommand (FloatingMover_ a)
     | AfterCircleSacrifice (FloatingMover_ a)
 
+type OriginalMsg
+    = None
+    | Cancel
+    | TurnEnd {- whether it is a capture or not is determined by whether there is an overlap -}
+    | GiveFocusTo Focus
+    | SendToTrashBinPart1 { whoseHand : WhoseTurn, index : Int }
+    | SendToTrashBinPart2
+    | MovementToward Coordinate
+
+
 
 isWater : Coordinate -> Bool
 isWater coord =

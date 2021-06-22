@@ -29,16 +29,6 @@ type alias CurrentStatus =
     CurrentStatus_ Profession
 
 
-type OriginalMsg
-    = None
-    | Cancel
-    | TurnEnd {- whether it is a capture or not is determined by whether there is an overlap -}
-    | GiveFocusTo Focus
-    | SendToTrashBinPart1 { whoseHand : WhoseTurn, index : Int }
-    | SendToTrashBinPart2
-    | MovementToward Coordinate
-
-
 type Model
     = Model
         { saved : CurrentStatus -- Reverts to here when canceled
