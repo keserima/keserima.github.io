@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1813, column: 13},
-					end: {line: 1813, column: 23}
+					start: {line: 1819, column: 13},
+					end: {line: 1819, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -5692,8 +5692,8 @@ var $author$project$Main$unsafeDeckSummoning = function (a) {
 		return _Debug_todo(
 			'Main',
 			{
-				start: {line: 596, column: 13},
-				end: {line: 596, column: 23}
+				start: {line: 602, column: 13},
+				end: {line: 602, column: 23}
 			})('FAILURE: expected to receive cards to be drawn, but got nothing');
 	} else {
 		var _v1 = a.a;
@@ -5964,8 +5964,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1829, column: 13},
-					end: {line: 1829, column: 23}
+					start: {line: 1835, column: 13},
+					end: {line: 1835, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -6609,13 +6609,24 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 									}
 								}
 							}
+						case 'AfterSacrifice':
+							var to = $author$project$Main$coordFromHistoryStr(
+								A3($elm$core$String$slice, 0, 2, historySecond));
+							var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+								$temp$mesg = $author$project$Main$Orig(
+								$author$project$Main$MovementToward(to)),
+								$temp$mdl = mdl;
+							cardsDrawn = $temp$cardsDrawn;
+							mesg = $temp$mesg;
+							mdl = $temp$mdl;
+							continue updateWithPotentialInfoOnDrawnCards;
 						default:
 							return _Debug_todo(
 								'Main',
 								{
-									start: {line: 267, column: 21},
-									end: {line: 267, column: 31}
-								})('currently, only NothingSelected and MoverIsSelected are supported');
+									start: {line: 274, column: 21},
+									end: {line: 274, column: 31}
+								})('currently, only NothingSelected, MoverIsSelected and AfterSacrifice are supported');
 					}
 				case 'Orig':
 					var msg = mesg.a;

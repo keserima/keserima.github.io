@@ -263,12 +263,18 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                             else
                                 Debug.todo "Unexpected character. Expected `.` or `{`"
 
+                AfterSacrifice _ _ ->
+                    let
+                        to =
+                            String.slice 0 2 historySecond |> coordFromHistoryStr
+                    in
+                    updateWithPotentialInfoOnDrawnCards Nothing (Orig (MovementToward to)) mdl
+
                 _ ->
-                    Debug.todo "currently, only NothingSelected and MoverIsSelected are supported"
+                    Debug.todo "currently, only NothingSelected, MoverIsSelected and AfterSacrifice are supported"
 
         {-
-           ( AfterSacrifice _ _, MovementToward to ) ->
-               coordToHistoryStr to
+
 
            ( NowWaitingForAdditionalSacrifice { remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->
                case whoseHand of
