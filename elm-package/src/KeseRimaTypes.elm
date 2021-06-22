@@ -328,3 +328,17 @@ getCandidatesYellow_ piece hasCircleInHand robbedBoard raw_candidates =
                 {- Allowed location: (non-water AND unoccupied) OR ships -}
                 filterWhetherMemberOf (neitherOccupiedNorWater robbedBoard) raw_candidates
                     ++ filterWhetherMemberOf shipPositions raw_candidates
+
+
+getCandidatesYellowWithCommand : MoveCommand -> Bool -> PieceOnBoard -> List PieceOnBoard -> List Coordinate
+getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
+    getCandidatesYellow_ piece
+        hasCircleInHand
+        robbedBoard
+        (case moveCommand of
+            HorizVert ->
+                List.concatMap (addDelta piece.coord) [ ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ) ]
+
+            Diag ->
+                List.concatMap (addDelta piece.coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
+        )

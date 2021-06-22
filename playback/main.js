@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1548, column: 13},
-					end: {line: 1548, column: 23}
+					start: {line: 1534, column: 13},
+					end: {line: 1534, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -6026,8 +6026,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1564, column: 13},
-					end: {line: 1564, column: 23}
+					start: {line: 1550, column: 13},
+					end: {line: 1550, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -7546,7 +7546,7 @@ var $author$project$KeseRimaTypes$getCandidatesYellow = F3(
 			robbedBoard,
 			A2($author$project$KeseRimaTypes$rawCandidates, piece.prof, piece.coord));
 	});
-var $author$project$Main$getCandidatesYellowWithCommand = F4(
+var $author$project$KeseRimaTypes$getCandidatesYellowWithCommand = F4(
 	function (moveCommand, hasCircleInHand, piece, robbedBoard) {
 		return A4(
 			$author$project$KeseRimaTypes$getCandidatesYellow_,
@@ -8743,7 +8743,7 @@ var $author$project$Main$view2 = F2(
 							return remaining.rimaHand;
 						}
 					}());
-				var candidatesYellow = A4($author$project$Main$getCandidatesYellowWithCommand, command, hasCircleInHand, mover, remaining.board);
+				var candidatesYellow = A4($author$project$KeseRimaTypes$getCandidatesYellowWithCommand, command, hasCircleInHand, mover, remaining.board);
 				var candidatesRed = function () {
 					var _v16 = mover.pieceColor;
 					switch (_v16.$) {
@@ -8753,12 +8753,12 @@ var $author$project$Main$view2 = F2(
 							return A2(
 								$author$project$KeseRimaTypes$filterWhetherMemberOf,
 								A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, remaining.board),
-								A4($author$project$Main$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
+								A4($author$project$KeseRimaTypes$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 						default:
 							return A2(
 								$author$project$KeseRimaTypes$filterWhetherMemberOf,
 								A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, remaining.board),
-								A4($author$project$Main$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
+								A4($author$project$KeseRimaTypes$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 					}
 				}();
 				var dynamicPart = _Utils_ap(

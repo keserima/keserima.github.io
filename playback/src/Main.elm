@@ -1048,20 +1048,6 @@ trashBinSvg_ clickable =
         g [ fill (trashBinColor clickable) ] trashBinSvg
 
 
-getCandidatesYellowWithCommand : MoveCommand -> Bool -> PieceOnBoard -> List PieceOnBoard -> List Coordinate
-getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
-    getCandidatesYellow_ piece
-        hasCircleInHand
-        robbedBoard
-        (case moveCommand of
-            HorizVert ->
-                List.concatMap (addDelta piece.coord) [ ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ) ]
-
-            Diag ->
-                List.concatMap (addDelta piece.coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
-        )
-
-
 targetBlankLink : List (Attribute msg) -> List (Html msg) -> Html msg
 targetBlankLink attributes =
     Html.a (Html.Attributes.target "_blank" :: attributes)

@@ -6978,7 +6978,7 @@ var $author$project$KeseRimaTypes$getCandidatesYellow = F3(
 			robbedBoard,
 			A2($author$project$KeseRimaTypes$rawCandidates, piece.prof, piece.coord));
 	});
-var $author$project$Main$getCandidatesYellowWithCommand = F4(
+var $author$project$KeseRimaTypes$getCandidatesYellowWithCommand = F4(
 	function (moveCommand, hasCircleInHand, piece, robbedBoard) {
 		return A4(
 			$author$project$KeseRimaTypes$getCandidatesYellow_,
@@ -8229,7 +8229,7 @@ var $author$project$Main$view = function (_v0) {
 						return remaining.rimaHand;
 					}
 				}());
-			var candidatesYellow = A4($author$project$Main$getCandidatesYellowWithCommand, command, hasCircleInHand, mover, remaining.board);
+			var candidatesYellow = A4($author$project$KeseRimaTypes$getCandidatesYellowWithCommand, command, hasCircleInHand, mover, remaining.board);
 			var candidatesRed = function () {
 				var _v16 = mover.pieceColor;
 				switch (_v16.$) {
@@ -8239,12 +8239,12 @@ var $author$project$Main$view = function (_v0) {
 						return A2(
 							$author$project$KeseRimaTypes$filterWhetherMemberOf,
 							A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, remaining.board),
-							A4($author$project$Main$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
+							A4($author$project$KeseRimaTypes$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 					default:
 						return A2(
 							$author$project$KeseRimaTypes$filterWhetherMemberOf,
 							A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, remaining.board),
-							A4($author$project$Main$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
+							A4($author$project$KeseRimaTypes$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 				}
 			}();
 			var dynamicPart = _Utils_ap(
