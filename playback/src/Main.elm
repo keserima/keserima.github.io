@@ -922,26 +922,6 @@ pieceSvg_ strok msgToBeSent p =
         )
 
 
-pieceWaitingForAdditionalCommandSvg : PieceOnBoard -> Svg PlaybackMsg
-pieceWaitingForAdditionalCommandSvg p =
-    g
-        [ transform ("translate(" ++ String.fromFloat (toFloat p.coord.x * 100.0 - 5.0) ++ " " ++ String.fromFloat (toFloat p.coord.y * 100.0 + 5.0) ++ ")")
-        , Html.Attributes.style "cursor" "not-allowed"
-        ]
-        (rect
-            [ x "12"
-            , y "12"
-            , width "80"
-            , height "80"
-            , fill (backgroundColor p.pieceColor)
-            , stroke floatingPieceBorderColor
-            , strokeWidth "2"
-            ]
-            []
-            :: KeseRimaSvgElements.glyph p.prof (foregroundColor p.pieceColor)
-        )
-
-
 drawUpToThree : List a -> ( List a, List a )
 drawUpToThree xs =
     case xs of

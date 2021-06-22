@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1742, column: 13},
-					end: {line: 1742, column: 23}
+					start: {line: 1722, column: 13},
+					end: {line: 1722, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -6026,8 +6026,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1758, column: 13},
-					end: {line: 1758, column: 23}
+					start: {line: 1738, column: 13},
+					end: {line: 1738, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -7674,7 +7674,7 @@ var $author$project$Main$pieceSvgOnGrid = F3(
 			});
 	});
 var $author$project$SvgColor$floatingPieceBorderColor = '#ffff00';
-var $author$project$Main$pieceWaitingForAdditionalCommandSvg = function (p) {
+var $author$project$KeseRimaSvgElements$pieceWaitingForAdditionalCommandSvg = function (p) {
 	return A2(
 		$elm$svg$Svg$g,
 		_List_fromArray(
@@ -8645,7 +8645,7 @@ var $author$project$Main$view2 = F2(
 											remaining.rimaHand),
 										_List_fromArray(
 											[
-												$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
+												$author$project$KeseRimaSvgElements$pieceWaitingForAdditionalCommandSvg(mover)
 											])))))),
 					function () {
 						var _v9 = A2(
@@ -8724,7 +8724,7 @@ var $author$project$Main$view2 = F2(
 											remaining.rimaHand),
 										_List_fromArray(
 											[
-												$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
+												$author$project$KeseRimaSvgElements$pieceWaitingForAdditionalCommandSvg(mover)
 											])))))),
 					_List_fromArray(
 						[$author$project$Main$cancelAllButton]));
@@ -8817,7 +8817,7 @@ var $author$project$Main$view2 = F2(
 										remaining.rimaHand),
 									_List_fromArray(
 										[
-											$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
+											$author$project$KeseRimaSvgElements$pieceWaitingForAdditionalCommandSvg(mover)
 										]))))));
 				return A5(
 					$author$project$Main$view_,
@@ -8881,7 +8881,7 @@ var $author$project$Main$view2 = F2(
 											remaining.rimaHand),
 										_List_fromArray(
 											[
-												$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
+												$author$project$KeseRimaSvgElements$pieceWaitingForAdditionalCommandSvg(mover)
 											])))))),
 					_List_fromArray(
 						[$author$project$Main$cancelAllButton]));

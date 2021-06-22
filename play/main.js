@@ -7106,7 +7106,7 @@ var $author$project$Main$pieceSvgOnGrid = F3(
 			});
 	});
 var $author$project$SvgColor$floatingPieceBorderColor = '#ffff00';
-var $author$project$Main$pieceWaitingForAdditionalCommandSvg = function (p) {
+var $author$project$KeseRimaSvgElements$pieceWaitingForAdditionalCommandSvg = function (p) {
 	return A2(
 		$elm$svg$Svg$g,
 		_List_fromArray(
@@ -8135,7 +8135,7 @@ var $author$project$Main$view = function (_v0) {
 										remaining.rimaHand),
 									_List_fromArray(
 										[
-											$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
+											$author$project$KeseRimaSvgElements$pieceWaitingForAdditionalCommandSvg(mover)
 										])))))),
 				function () {
 					var _v9 = A2(
@@ -8210,7 +8210,7 @@ var $author$project$Main$view = function (_v0) {
 										remaining.rimaHand),
 									_List_fromArray(
 										[
-											$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
+											$author$project$KeseRimaSvgElements$pieceWaitingForAdditionalCommandSvg(mover)
 										])))))),
 				_List_fromArray(
 					[$author$project$Main$cancelAllButton]));
@@ -8298,7 +8298,7 @@ var $author$project$Main$view = function (_v0) {
 									remaining.rimaHand),
 								_List_fromArray(
 									[
-										$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
+										$author$project$KeseRimaSvgElements$pieceWaitingForAdditionalCommandSvg(mover)
 									]))))));
 			return A4(
 				$author$project$Main$view_,
@@ -8355,7 +8355,7 @@ var $author$project$Main$view = function (_v0) {
 										remaining.rimaHand),
 									_List_fromArray(
 										[
-											$author$project$Main$pieceWaitingForAdditionalCommandSvg(mover)
+											$author$project$KeseRimaSvgElements$pieceWaitingForAdditionalCommandSvg(mover)
 										])))))),
 				_List_fromArray(
 					[$author$project$Main$cancelAllButton]));

@@ -48,3 +48,23 @@ goalCandidateRedSvg msgToBeSent coord =
         , Html.Attributes.style "cursor" "pointer"
         ]
         [ rect [ x "36", y "36", width "32", height "32", fill redCandidateColor ] [] ]
+
+pieceWaitingForAdditionalCommandSvg : PieceOnBoard -> Svg msg
+pieceWaitingForAdditionalCommandSvg p =
+    g
+        [ transform ("translate(" ++ String.fromFloat (toFloat p.coord.x * 100.0 - 5.0) ++ " " ++ String.fromFloat (toFloat p.coord.y * 100.0 + 5.0) ++ ")")
+        , Html.Attributes.style "cursor" "not-allowed"
+        ]
+        (rect
+            [ x "12"
+            , y "12"
+            , width "80"
+            , height "80"
+            , fill (backgroundColor p.pieceColor)
+            , stroke floatingPieceBorderColor
+            , strokeWidth "2"
+            ]
+            []
+            :: glyph p.prof (foregroundColor p.pieceColor)
+        )
+
