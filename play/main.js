@@ -6883,7 +6883,7 @@ var $author$project$KeseRimaTypes$neitherOccupiedNorWater = function (board) {
 			},
 			$author$project$KeseRimaTypes$allCoord));
 };
-var $author$project$Main$getCandidatesYellow_ = F4(
+var $author$project$KeseRimaTypes$getCandidatesYellow_ = F4(
 	function (piece, hasCircleInHand, robbedBoard, raw_candidates) {
 		var shipPositions = A2(
 			$elm$core$List$map,
@@ -6923,7 +6923,7 @@ var $author$project$KeseRimaTypes$addDelta = F2(
 				{x: x, y: y}
 			]) : _List_Nil;
 	});
-var $author$project$Main$rawCandidates = F2(
+var $author$project$KeseRimaTypes$rawCandidates = F2(
 	function (prof, coord) {
 		switch (prof.$) {
 			case 'Circle':
@@ -6969,19 +6969,19 @@ var $author$project$Main$rawCandidates = F2(
 						]));
 		}
 	});
-var $author$project$Main$getCandidatesYellow = F3(
+var $author$project$KeseRimaTypes$getCandidatesYellow = F3(
 	function (hasCircleInHand, piece, robbedBoard) {
 		return A4(
-			$author$project$Main$getCandidatesYellow_,
+			$author$project$KeseRimaTypes$getCandidatesYellow_,
 			piece,
 			hasCircleInHand,
 			robbedBoard,
-			A2($author$project$Main$rawCandidates, piece.prof, piece.coord));
+			A2($author$project$KeseRimaTypes$rawCandidates, piece.prof, piece.coord));
 	});
 var $author$project$Main$getCandidatesYellowWithCommand = F4(
 	function (moveCommand, hasCircleInHand, piece, robbedBoard) {
 		return A4(
-			$author$project$Main$getCandidatesYellow_,
+			$author$project$KeseRimaTypes$getCandidatesYellow_,
 			piece,
 			hasCircleInHand,
 			robbedBoard,
@@ -7918,7 +7918,7 @@ var $author$project$Main$view = function (_v0) {
 									return cardState.rimaHand;
 								}
 							}());
-						var candidatesYellow = A3($author$project$Main$getCandidatesYellow, hasCircleInHand, focused_piece, robbedBoard);
+						var candidatesYellow = A3($author$project$KeseRimaTypes$getCandidatesYellow, hasCircleInHand, focused_piece, robbedBoard);
 						var candidatesRed = function () {
 							var _v5 = focused_piece.pieceColor;
 							switch (_v5.$) {
@@ -7928,12 +7928,12 @@ var $author$project$Main$view = function (_v0) {
 									return A2(
 										$author$project$KeseRimaTypes$filterWhetherMemberOf,
 										A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, robbedBoard),
-										A3($author$project$Main$getCandidatesYellow, true, focused_piece, robbedBoard));
+										A3($author$project$KeseRimaTypes$getCandidatesYellow, true, focused_piece, robbedBoard));
 								default:
 									return A2(
 										$author$project$KeseRimaTypes$filterWhetherMemberOf,
 										A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, robbedBoard),
-										A3($author$project$Main$getCandidatesYellow, true, focused_piece, robbedBoard));
+										A3($author$project$KeseRimaTypes$getCandidatesYellow, true, focused_piece, robbedBoard));
 							}
 						}();
 						return _Utils_ap(

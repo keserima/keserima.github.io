@@ -666,62 +666,6 @@ trashBinSvg_ clickable =
         g [ fill (trashBinColor clickable) ] trashBinSvg
 
 
-getCandidatesYellow : Bool -> PieceOnBoard -> List PieceOnBoard -> List Coordinate
-getCandidatesYellow hasCircleInHand piece robbedBoard =
-    getCandidatesYellow_ piece
-        hasCircleInHand
-        robbedBoard
-        (rawCandidates piece.prof piece.coord)
-
-
-rawCandidates : Profession -> Coordinate -> List Coordinate
-rawCandidates prof coord =
-    case prof of
-        Circle ->
-            [ coord ]
-
-        HorizontalVertical ->
-            List.concatMap (addDelta coord) [ ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ) ]
-
-        Diagonal ->
-            List.concatMap (addDelta coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
-
-        All ->
-            List.concatMap (addDelta coord)
-                [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ), ( 1, 0 ), ( -1, 0 ), ( 0, 1 ), ( 0, -1 ), ( 0, 0 ) ]
-
-
-getCandidatesYellow_ : PieceOnBoard -> Bool -> List PieceOnBoard -> List Coordinate -> List Coordinate
-getCandidatesYellow_ piece hasCircleInHand robbedBoard raw_candidates =
-    let
-        shipPositions =
-            robbedBoard |> List.filter (\p -> p.pieceColor == Ship) |> List.map .coord
-    in
-    case piece.pieceColor of
-        {- If ship, cannot leave water -}
-        Ship ->
-            if hasCircleInHand then
-                {- Allowed location: water OR ships -}
-                List.filter isWater raw_candidates
-                    ++ filterWhetherMemberOf shipPositions raw_candidates
-
-            else
-                {- Allowed location: water -}
-                List.filter isWater raw_candidates
-
-        {- If not ship, then restriction on water -}
-        _ ->
-            if hasCircleInHand then
-                {- Allowed location: non-water OR ships -}
-                filterNot isWater raw_candidates
-                    ++ filterWhetherMemberOf shipPositions raw_candidates
-
-            else
-                {- Allowed location: (non-water AND unoccupied) OR ships -}
-                filterWhetherMemberOf (neitherOccupiedNorWater robbedBoard) raw_candidates
-                    ++ filterWhetherMemberOf shipPositions raw_candidates
-
-
 getCandidatesYellowWithCommand : MoveCommand -> Bool -> PieceOnBoard -> List PieceOnBoard -> List Coordinate
 getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
     getCandidatesYellow_ piece
