@@ -279,82 +279,66 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                             String.left 1 historySecond |> profFromHistoryStr
 
                         index =
-                            case remaining.whoseTurn of
-                                KeseTurn ->
-                                    List.Extra.findIndex ((==) profession) remaining.keseHand
-                                        |> Maybe.withDefault (Debug.todo "cannot find an adequate piece in Kese's Hand")
-
-                                RimaTurn ->
-                                    List.Extra.findIndex ((==) profession) remaining.rimaHand
-                                        |> Maybe.withDefault (Debug.todo "cannot find an adequate piece in Rima's Hand")
+                            getIndexFromProf remaining profession
                     in
                     updateWithPotentialInfoOnDrawnCards Nothing (Orig (SendToTrashBinPart1 { whoseHand = remaining.whoseTurn, index = index })) mdl
 
+                NowWaitingForAdditionalSacrifice { remaining } ->
+                    case String.left 1 historySecond of
+                        "o" ->
+                            updateWithPotentialInfoOnDrawnCards Nothing
+                                (Orig
+                                    (SendToTrashBinPart1
+                                        { whoseHand = remaining.whoseTurn
+                                        , index = getIndexFromProf remaining Circle
+                                        }
+                                    )
+                                )
+                                mdl
+
+                        "+" ->
+                            updateWithPotentialInfoOnDrawnCards Nothing
+                                (Orig
+                                    (SendToTrashBinPart1
+                                        { whoseHand = remaining.whoseTurn
+                                        , index = getIndexFromProf remaining HorizontalVertical
+                                        }
+                                    )
+                                )
+                                mdl
+
+                        "x" ->
+                            updateWithPotentialInfoOnDrawnCards Nothing
+                                (Orig
+                                    (SendToTrashBinPart1
+                                        { whoseHand = remaining.whoseTurn
+                                        , index = getIndexFromProf remaining Diagonal
+                                        }
+                                    )
+                                )
+                                mdl
+
+                        "{" ->
+                            -- cards were drawn
+                            let
+                                x =
+                                    String.slice 1 2 historySecond |> profFromHistoryStr
+
+                                y =
+                                    String.slice 2 3 historySecond |> profFromHistoryStr
+
+                                z =
+                                    String.slice 3 4 historySecond |> profFromHistoryStr
+                            in
+                            updateWithPotentialInfoOnDrawnCards (Just ( x, y, z )) (Orig TurnEnd) mdl
+
+                        _ ->
+                            -- cards were not drawn
+                            updateWithPotentialInfoOnDrawnCards Nothing (Orig TurnEnd) mdl
+
                 _ ->
-                    Debug.todo "currently, NowWaitingForAdditionalSacrifice is not yet supported"
+                    Debug.todo "oh no!"
 
-        {-
-
-
-           ( NowWaitingForAdditionalSacrifice { remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->
-               case whoseHand of
-                   KeseTurn ->
-                       List.Extra.getAt index remaining.keseHand |> Maybe.map profToHistoryStr |> unwrap
-
-                   RimaTurn ->
-                       List.Extra.getAt index remaining.rimaHand |> Maybe.map profToHistoryStr |> unwrap
-
-           ( NowWaitingForAdditionalSacrifice { mover, remaining }, TurnEnd ) ->
-               let
-                   cardDrawn =
-                       if List.isEmpty remaining.keseHand then
-                           let
-                               ( _, _ ) =
-                                   drawUpToThree remaining.keseDeck
-                           in
-                           "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}"
-                           {- FIXME -}
-
-                       else if List.isEmpty remaining.rimaHand then
-                           let
-                               ( _, _ ) =
-                                   drawUpToThree remaining.rimaDeck
-                           in
-                           "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}"
-                           {- FIXME -}
-
-                       else
-                           ""
-               in
-               case List.filter (\p -> p.coord == mover.coord) remaining.board of
-                   [] ->
-                       cardDrawn ++ ".\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
-
-                   captured :: _ ->
-                       {- capture -}
-                       case remaining.whoseTurn of
-                           KeseTurn ->
-                               let
-                                   newCapturedByKese =
-                                       captured.prof :: remaining.capturedByKese
-                               in
-                               if isVictorious newCapturedByKese then
-                                   "[" ++ profToHistoryStr captured.prof ++ "]" ++ cardDrawn ++ ".\n--------------------------------\nKese"
-
-                               else
-                                   "[" ++ profToHistoryStr captured.prof ++ "]" ++ cardDrawn ++ ".\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
-
-                           RimaTurn ->
-                               let
-                                   newCapturedByRima =
-                                       captured.prof :: remaining.capturedByRima
-                               in
-                               if isVictorious newCapturedByRima then
-                                   "[" ++ profToHistoryStr captured.prof ++ "]" ++ cardDrawn ++ ".\n--------------------------------\nRima"
-
-                               else
-                                   "[" ++ profToHistoryStr captured.prof ++ "]" ++ cardDrawn ++ ".\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
-        -}
         Orig msg ->
             let
                 newHist =
@@ -413,6 +397,18 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
 
         _ ->
             ( Model { historyFirst = historyFirst, historySecond = historySecond, currentStatus = currentStatus, saved = saved }, Cmd.none )
+
+
+getIndexFromProf : { a | whoseTurn : WhoseTurn, keseHand : List Profession, rimaHand : List Profession } -> Profession -> Int
+getIndexFromProf remaining profession =
+    case remaining.whoseTurn of
+        KeseTurn ->
+            List.Extra.findIndex ((==) profession) remaining.keseHand
+                |> Maybe.withDefault (Debug.todo "cannot find an adequate piece in Kese's Hand")
+
+        RimaTurn ->
+            List.Extra.findIndex ((==) profession) remaining.rimaHand
+                |> Maybe.withDefault (Debug.todo "cannot find an adequate piece in Rima's Hand")
 
 
 twoConsecutivePasses : Regex.Regex
@@ -512,7 +508,7 @@ newHistory_ cardsDrawn msg modl =
                 {- Parachuting from RimaHand -}
                 PieceInRimaHand _ ->
                     case ( cardState.rimaHand, cardState.rimaDeck ) of
-                        ( [ _ ], x :: y :: z :: _ ) ->
+                        ( [ _ ], () :: () :: () :: _ ) ->
                             coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr (unsafeDeckSummoning cardsDrawn)) ++ "}.\nK"
 
                         {- FIXME -}

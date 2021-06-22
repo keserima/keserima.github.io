@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1826, column: 13},
-					end: {line: 1826, column: 23}
+					start: {line: 1823, column: 13},
+					end: {line: 1823, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -5450,6 +5450,7 @@ var $author$project$Main$SendToTrashBinPart1 = function (a) {
 	return {$: 'SendToTrashBinPart1', a: a};
 };
 var $author$project$Main$SendToTrashBinPart2 = {$: 'SendToTrashBinPart2'};
+var $author$project$Main$TurnEnd = {$: 'TurnEnd'};
 var $elm$regex$Regex$Match = F4(
 	function (match, index, number, submatches) {
 		return {index: index, match: match, number: number, submatches: submatches};
@@ -5513,6 +5514,46 @@ var $elm_community$list_extra$List$Extra$findIndexHelp = F3(
 		}
 	});
 var $elm_community$list_extra$List$Extra$findIndex = $elm_community$list_extra$List$Extra$findIndexHelp(0);
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$Main$getIndexFromProf = F2(
+	function (remaining, profession) {
+		var _v0 = remaining.whoseTurn;
+		if (_v0.$ === 'KeseTurn') {
+			return A2(
+				$elm$core$Maybe$withDefault,
+				_Debug_todo(
+					'Main',
+					{
+						start: {line: 408, column: 39},
+						end: {line: 408, column: 49}
+					})('cannot find an adequate piece in Kese\'s Hand'),
+				A2(
+					$elm_community$list_extra$List$Extra$findIndex,
+					$elm$core$Basics$eq(profession),
+					remaining.keseHand));
+		} else {
+			return A2(
+				$elm$core$Maybe$withDefault,
+				_Debug_todo(
+					'Main',
+					{
+						start: {line: 412, column: 39},
+						end: {line: 412, column: 49}
+					})('cannot find an adequate piece in Rima\'s Hand'),
+				A2(
+					$elm_community$list_extra$List$Extra$findIndex,
+					$elm$core$Basics$eq(profession),
+					remaining.rimaHand));
+		}
+	});
 var $author$project$Main$coordToHistoryStr = function (coord) {
 	return _Utils_ap(
 		$elm$core$String$fromInt(coord.x + 1),
@@ -5696,8 +5737,8 @@ var $author$project$Main$unsafeDeckSummoning = function (a) {
 		return _Debug_todo(
 			'Main',
 			{
-				start: {line: 609, column: 13},
-				end: {line: 609, column: 23}
+				start: {line: 606, column: 13},
+				end: {line: 606, column: 23}
 			})('FAILURE: expected to receive cards to be drawn, but got nothing');
 	} else {
 		var _v1 = a.a;
@@ -5715,15 +5756,6 @@ var $author$project$Main$whoseTurnToHistoryStr = function (w) {
 		return 'R';
 	}
 };
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
 var $author$project$Main$newHistory_ = F3(
 	function (cardsDrawn, msg, modl) {
 		var unwrap = $elm$core$Maybe$withDefault('ERROR!!!!!!!!!!!!!!!!!!!!');
@@ -5812,11 +5844,8 @@ var $author$project$Main$newHistory_ = F3(
 									if ((((_v10.a.b && (!_v10.a.b.b)) && _v10.b.b) && _v10.b.b.b) && _v10.b.b.b.b) {
 										var _v11 = _v10.a;
 										var _v12 = _v10.b;
-										var x = _v12.a;
 										var _v13 = _v12.b;
-										var y = _v13.a;
 										var _v14 = _v13.b;
-										var z = _v14.a;
 										return $author$project$Main$coordToHistoryStr(to) + ('{' + (A2(
 											$elm$core$String$join,
 											'',
@@ -5968,8 +5997,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1842, column: 13},
-					end: {line: 1842, column: 23}
+					start: {line: 1839, column: 13},
+					end: {line: 1839, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -6636,36 +6665,7 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 							var remaining = currentStatus.a.remaining;
 							var profession = $author$project$Main$profFromHistoryStr(
 								A2($elm$core$String$left, 1, historySecond));
-							var index = function () {
-								var _v3 = remaining.whoseTurn;
-								if (_v3.$ === 'KeseTurn') {
-									return A2(
-										$elm$core$Maybe$withDefault,
-										_Debug_todo(
-											'Main',
-											{
-												start: {line: 285, column: 63},
-												end: {line: 285, column: 73}
-											})('cannot find an adequate piece in Kese\'s Hand'),
-										A2(
-											$elm_community$list_extra$List$Extra$findIndex,
-											$elm$core$Basics$eq(profession),
-											remaining.keseHand));
-								} else {
-									return A2(
-										$elm$core$Maybe$withDefault,
-										_Debug_todo(
-											'Main',
-											{
-												start: {line: 289, column: 63},
-												end: {line: 289, column: 73}
-											})('cannot find an adequate piece in Rima\'s Hand'),
-										A2(
-											$elm_community$list_extra$List$Extra$findIndex,
-											$elm$core$Basics$eq(profession),
-											remaining.rimaHand));
-								}
-							}();
+							var index = A2($author$project$Main$getIndexFromProf, remaining, profession);
 							var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
 								$temp$mesg = $author$project$Main$Orig(
 								$author$project$Main$SendToTrashBinPart1(
@@ -6675,13 +6675,80 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 							mesg = $temp$mesg;
 							mdl = $temp$mdl;
 							continue updateWithPotentialInfoOnDrawnCards;
+						case 'NowWaitingForAdditionalSacrifice':
+							var remaining = currentStatus.a.remaining;
+							var _v3 = A2($elm$core$String$left, 1, historySecond);
+							switch (_v3) {
+								case 'o':
+									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+										$temp$mesg = $author$project$Main$Orig(
+										$author$project$Main$SendToTrashBinPart1(
+											{
+												index: A2($author$project$Main$getIndexFromProf, remaining, $author$project$KeseRimaTypes$Circle),
+												whoseHand: remaining.whoseTurn
+											})),
+										$temp$mdl = mdl;
+									cardsDrawn = $temp$cardsDrawn;
+									mesg = $temp$mesg;
+									mdl = $temp$mdl;
+									continue updateWithPotentialInfoOnDrawnCards;
+								case '+':
+									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+										$temp$mesg = $author$project$Main$Orig(
+										$author$project$Main$SendToTrashBinPart1(
+											{
+												index: A2($author$project$Main$getIndexFromProf, remaining, $author$project$KeseRimaTypes$HorizontalVertical),
+												whoseHand: remaining.whoseTurn
+											})),
+										$temp$mdl = mdl;
+									cardsDrawn = $temp$cardsDrawn;
+									mesg = $temp$mesg;
+									mdl = $temp$mdl;
+									continue updateWithPotentialInfoOnDrawnCards;
+								case 'x':
+									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+										$temp$mesg = $author$project$Main$Orig(
+										$author$project$Main$SendToTrashBinPart1(
+											{
+												index: A2($author$project$Main$getIndexFromProf, remaining, $author$project$KeseRimaTypes$Diagonal),
+												whoseHand: remaining.whoseTurn
+											})),
+										$temp$mdl = mdl;
+									cardsDrawn = $temp$cardsDrawn;
+									mesg = $temp$mesg;
+									mdl = $temp$mdl;
+									continue updateWithPotentialInfoOnDrawnCards;
+								case '{':
+									var z = $author$project$Main$profFromHistoryStr(
+										A3($elm$core$String$slice, 3, 4, historySecond));
+									var y = $author$project$Main$profFromHistoryStr(
+										A3($elm$core$String$slice, 2, 3, historySecond));
+									var x = $author$project$Main$profFromHistoryStr(
+										A3($elm$core$String$slice, 1, 2, historySecond));
+									var $temp$cardsDrawn = $elm$core$Maybe$Just(
+										_Utils_Tuple3(x, y, z)),
+										$temp$mesg = $author$project$Main$Orig($author$project$Main$TurnEnd),
+										$temp$mdl = mdl;
+									cardsDrawn = $temp$cardsDrawn;
+									mesg = $temp$mesg;
+									mdl = $temp$mdl;
+									continue updateWithPotentialInfoOnDrawnCards;
+								default:
+									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+										$temp$mesg = $author$project$Main$Orig($author$project$Main$TurnEnd),
+										$temp$mdl = mdl;
+									cardsDrawn = $temp$cardsDrawn;
+									mesg = $temp$mesg;
+									mdl = $temp$mdl;
+									continue updateWithPotentialInfoOnDrawnCards;
+							}
 						default:
 							return _Debug_todo(
 								'Main',
 								{
-									start: {line: 294, column: 21},
-									end: {line: 294, column: 31}
-								})('currently, NowWaitingForAdditionalSacrifice is not yet supported');
+									start: {line: 340, column: 21},
+									end: {line: 340, column: 31}
+								})('oh no!');
 					}
 				case 'Orig':
 					var msg = mesg.a;
@@ -6909,7 +6976,6 @@ var $author$project$Main$cancelAllButton = A2(
 		[
 			$elm$svg$Svg$text('全てをキャンセル')
 		]));
-var $author$project$Main$TurnEnd = {$: 'TurnEnd'};
 var $author$project$Main$captureAndTurnEndButton = A2(
 	$elm$html$Html$button,
 	_List_fromArray(
