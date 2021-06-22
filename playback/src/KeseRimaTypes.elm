@@ -39,8 +39,8 @@ type alias HistoryString =
     String
 
 
-type alias FloatingMover =
-    { mover : PieceOnBoard, remaining : StateOfCards }
+type alias FloatingMover_ a =
+    { mover : PieceOnBoard, remaining : StateOfCards_ a }
 
 
 type MoveCommand
@@ -48,12 +48,14 @@ type MoveCommand
     | Diag
 
 
-type alias StateOfCards =
+type alias StateOfCards_ a =
+    -- This `a` should be filled with `Profession` for the main game (because the info is hidden but known)
+    -- This `a` should be filled with `()` for the playback (because the info is lost and irrecoverable)
     { board : List PieceOnBoard
     , capturedByKese : List Profession
     , capturedByRima : List Profession
-    , keseDeck : List ()
-    , rimaDeck : List ()
+    , keseDeck : List a
+    , rimaDeck : List a
     , keseHand : List Profession
     , rimaHand : List Profession
     , whoseTurn : WhoseTurn

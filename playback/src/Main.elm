@@ -15,6 +15,14 @@ import SvgColor exposing (..)
 import Url.Builder exposing (..)
 
 
+type alias StateOfCards =
+    StateOfCards_ ()
+
+
+type alias FloatingMover =
+    FloatingMover_ ()
+
+
 type alias Flags =
     { historyFirst : String
     , historySecond : String
