@@ -347,3 +347,68 @@ getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
 allCoordsOccupiedBy : PieceColor -> List PieceOnBoard -> List Coordinate
 allCoordsOccupiedBy color board =
     board |> List.filter (\p -> p.pieceColor == color) |> List.map .coord
+
+
+initialBoard : { a | rimaDice : Bool, keseDice : Bool, shipDice : Bool } -> List PieceOnBoard
+initialBoard flags =
+    [ { coord = { x = 0, y = 0 }
+      , pieceColor = Rima
+      , prof =
+            if flags.rimaDice then
+                HorizontalVertical
+
+            else
+                Diagonal
+      }
+    , { coord = { x = 1, y = 0 }, pieceColor = Rima, prof = Circle }
+    , { coord = { x = 2, y = 0 }, pieceColor = Rima, prof = All }
+    , { coord = { x = 3, y = 0 }, pieceColor = Rima, prof = Circle }
+    , { coord = { x = 4, y = 0 }
+      , pieceColor = Rima
+      , prof =
+            if not flags.rimaDice then
+                HorizontalVertical
+
+            else
+                Diagonal
+      }
+    , { coord = { x = 0, y = 4 }
+      , pieceColor = Kese
+      , prof =
+            if flags.keseDice then
+                HorizontalVertical
+
+            else
+                Diagonal
+      }
+    , { coord = { x = 1, y = 4 }, pieceColor = Kese, prof = Circle }
+    , { coord = { x = 2, y = 4 }, pieceColor = Kese, prof = All }
+    , { coord = { x = 3, y = 4 }, pieceColor = Kese, prof = Circle }
+    , { coord = { x = 4, y = 4 }
+      , pieceColor = Kese
+      , prof =
+            if not flags.keseDice then
+                HorizontalVertical
+
+            else
+                Diagonal
+      }
+    , { coord = { x = 1, y = 2 }
+      , pieceColor = Ship
+      , prof =
+            if flags.shipDice then
+                HorizontalVertical
+
+            else
+                Diagonal
+      }
+    , { coord = { x = 3, y = 2 }
+      , pieceColor = Ship
+      , prof =
+            if not flags.shipDice then
+                HorizontalVertical
+
+            else
+                Diagonal
+      }
+    ]

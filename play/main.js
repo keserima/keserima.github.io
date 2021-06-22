@@ -5265,11 +5265,6 @@ var $elm$core$Task$perform = F2(
 	});
 var $elm$browser$Browser$element = _Browser_element;
 var $elm$json$Json$Decode$field = _Json_decodeField;
-var $author$project$KeseRimaTypes$All = {$: 'All'};
-var $author$project$KeseRimaTypes$Circle = {$: 'Circle'};
-var $author$project$KeseRimaTypes$Diagonal = {$: 'Diagonal'};
-var $author$project$KeseRimaTypes$HorizontalVertical = {$: 'HorizontalVertical'};
-var $author$project$KeseRimaTypes$Kese = {$: 'Kese'};
 var $author$project$KeseRimaTypes$KeseTurn = {$: 'KeseTurn'};
 var $author$project$Main$Model = function (a) {
 	return {$: 'Model', a: a};
@@ -5277,9 +5272,7 @@ var $author$project$Main$Model = function (a) {
 var $author$project$KeseRimaTypes$NothingSelected = function (a) {
 	return {$: 'NothingSelected', a: a};
 };
-var $author$project$KeseRimaTypes$Rima = {$: 'Rima'};
 var $author$project$KeseRimaTypes$RimaTurn = {$: 'RimaTurn'};
-var $author$project$KeseRimaTypes$Ship = {$: 'Ship'};
 var $author$project$Main$drawUpToThree = function (xs) {
 	if ((xs.b && xs.b.b) && xs.b.b.b) {
 		var a = xs.a;
@@ -5296,9 +5289,81 @@ var $author$project$Main$drawUpToThree = function (xs) {
 		return _Utils_Tuple2(xs, _List_Nil);
 	}
 };
+var $author$project$KeseRimaTypes$All = {$: 'All'};
+var $author$project$KeseRimaTypes$Circle = {$: 'Circle'};
+var $author$project$KeseRimaTypes$Diagonal = {$: 'Diagonal'};
+var $author$project$KeseRimaTypes$HorizontalVertical = {$: 'HorizontalVertical'};
+var $author$project$KeseRimaTypes$Kese = {$: 'Kese'};
+var $author$project$KeseRimaTypes$Rima = {$: 'Rima'};
+var $author$project$KeseRimaTypes$Ship = {$: 'Ship'};
+var $elm$core$Basics$not = _Basics_not;
+var $author$project$KeseRimaTypes$initialBoard = function (flags) {
+	return _List_fromArray(
+		[
+			{
+			coord: {x: 0, y: 0},
+			pieceColor: $author$project$KeseRimaTypes$Rima,
+			prof: flags.rimaDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
+		},
+			{
+			coord: {x: 1, y: 0},
+			pieceColor: $author$project$KeseRimaTypes$Rima,
+			prof: $author$project$KeseRimaTypes$Circle
+		},
+			{
+			coord: {x: 2, y: 0},
+			pieceColor: $author$project$KeseRimaTypes$Rima,
+			prof: $author$project$KeseRimaTypes$All
+		},
+			{
+			coord: {x: 3, y: 0},
+			pieceColor: $author$project$KeseRimaTypes$Rima,
+			prof: $author$project$KeseRimaTypes$Circle
+		},
+			{
+			coord: {x: 4, y: 0},
+			pieceColor: $author$project$KeseRimaTypes$Rima,
+			prof: (!flags.rimaDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
+		},
+			{
+			coord: {x: 0, y: 4},
+			pieceColor: $author$project$KeseRimaTypes$Kese,
+			prof: flags.keseDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
+		},
+			{
+			coord: {x: 1, y: 4},
+			pieceColor: $author$project$KeseRimaTypes$Kese,
+			prof: $author$project$KeseRimaTypes$Circle
+		},
+			{
+			coord: {x: 2, y: 4},
+			pieceColor: $author$project$KeseRimaTypes$Kese,
+			prof: $author$project$KeseRimaTypes$All
+		},
+			{
+			coord: {x: 3, y: 4},
+			pieceColor: $author$project$KeseRimaTypes$Kese,
+			prof: $author$project$KeseRimaTypes$Circle
+		},
+			{
+			coord: {x: 4, y: 4},
+			pieceColor: $author$project$KeseRimaTypes$Kese,
+			prof: (!flags.keseDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
+		},
+			{
+			coord: {x: 1, y: 2},
+			pieceColor: $author$project$KeseRimaTypes$Ship,
+			prof: flags.shipDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
+		},
+			{
+			coord: {x: 3, y: 2},
+			pieceColor: $author$project$KeseRimaTypes$Ship,
+			prof: (!flags.shipDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
+		}
+		]);
+};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $elm$core$Basics$not = _Basics_not;
 var $author$project$Main$numToProf = function (n) {
 	switch (n) {
 		case 0:
@@ -5332,69 +5397,7 @@ var $author$project$Main$init = function (flags) {
 	var keseDeck = _v1.b;
 	var initialStatus = $author$project$KeseRimaTypes$NothingSelected(
 		{
-			board: _List_fromArray(
-				[
-					{
-					coord: {x: 0, y: 0},
-					pieceColor: $author$project$KeseRimaTypes$Rima,
-					prof: flags.rimaDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
-				},
-					{
-					coord: {x: 1, y: 0},
-					pieceColor: $author$project$KeseRimaTypes$Rima,
-					prof: $author$project$KeseRimaTypes$Circle
-				},
-					{
-					coord: {x: 2, y: 0},
-					pieceColor: $author$project$KeseRimaTypes$Rima,
-					prof: $author$project$KeseRimaTypes$All
-				},
-					{
-					coord: {x: 3, y: 0},
-					pieceColor: $author$project$KeseRimaTypes$Rima,
-					prof: $author$project$KeseRimaTypes$Circle
-				},
-					{
-					coord: {x: 4, y: 0},
-					pieceColor: $author$project$KeseRimaTypes$Rima,
-					prof: (!flags.rimaDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
-				},
-					{
-					coord: {x: 0, y: 4},
-					pieceColor: $author$project$KeseRimaTypes$Kese,
-					prof: flags.keseDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
-				},
-					{
-					coord: {x: 1, y: 4},
-					pieceColor: $author$project$KeseRimaTypes$Kese,
-					prof: $author$project$KeseRimaTypes$Circle
-				},
-					{
-					coord: {x: 2, y: 4},
-					pieceColor: $author$project$KeseRimaTypes$Kese,
-					prof: $author$project$KeseRimaTypes$All
-				},
-					{
-					coord: {x: 3, y: 4},
-					pieceColor: $author$project$KeseRimaTypes$Kese,
-					prof: $author$project$KeseRimaTypes$Circle
-				},
-					{
-					coord: {x: 4, y: 4},
-					pieceColor: $author$project$KeseRimaTypes$Kese,
-					prof: (!flags.keseDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
-				},
-					{
-					coord: {x: 1, y: 2},
-					pieceColor: $author$project$KeseRimaTypes$Ship,
-					prof: flags.shipDice ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
-				},
-					{
-					coord: {x: 3, y: 2},
-					pieceColor: $author$project$KeseRimaTypes$Ship,
-					prof: (!flags.shipDice) ? $author$project$KeseRimaTypes$HorizontalVertical : $author$project$KeseRimaTypes$Diagonal
-				}
-				]),
+			board: $author$project$KeseRimaTypes$initialBoard(flags),
 			capturedByKese: _List_Nil,
 			capturedByRima: _List_Nil,
 			keseDeck: keseDeck,

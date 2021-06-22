@@ -1601,67 +1601,7 @@ init flags =
                 , keseHand = keseHand
                 , rimaHand = rimaHand
                 , board =
-                    [ { coord = { x = 0, y = 0 }
-                      , pieceColor = Rima
-                      , prof =
-                            if rimaDice then
-                                HorizontalVertical
-
-                            else
-                                Diagonal
-                      }
-                    , { coord = { x = 1, y = 0 }, pieceColor = Rima, prof = Circle }
-                    , { coord = { x = 2, y = 0 }, pieceColor = Rima, prof = All }
-                    , { coord = { x = 3, y = 0 }, pieceColor = Rima, prof = Circle }
-                    , { coord = { x = 4, y = 0 }
-                      , pieceColor = Rima
-                      , prof =
-                            if not rimaDice then
-                                HorizontalVertical
-
-                            else
-                                Diagonal
-                      }
-                    , { coord = { x = 0, y = 4 }
-                      , pieceColor = Kese
-                      , prof =
-                            if keseDice then
-                                HorizontalVertical
-
-                            else
-                                Diagonal
-                      }
-                    , { coord = { x = 1, y = 4 }, pieceColor = Kese, prof = Circle }
-                    , { coord = { x = 2, y = 4 }, pieceColor = Kese, prof = All }
-                    , { coord = { x = 3, y = 4 }, pieceColor = Kese, prof = Circle }
-                    , { coord = { x = 4, y = 4 }
-                      , pieceColor = Kese
-                      , prof =
-                            if not keseDice then
-                                HorizontalVertical
-
-                            else
-                                Diagonal
-                      }
-                    , { coord = { x = 1, y = 2 }
-                      , pieceColor = Ship
-                      , prof =
-                            if shipDice then
-                                HorizontalVertical
-
-                            else
-                                Diagonal
-                      }
-                    , { coord = { x = 3, y = 2 }
-                      , pieceColor = Ship
-                      , prof =
-                            if not shipDice then
-                                HorizontalVertical
-
-                            else
-                                Diagonal
-                      }
-                    ]
+                    initialBoard { keseDice = keseDice, rimaDice = rimaDice, shipDice = shipDice }
                 , capturedByKese = []
                 , capturedByRima = []
                 }
