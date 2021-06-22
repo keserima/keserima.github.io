@@ -7,6 +7,7 @@ import Html.Attributes exposing (href)
 import KeseRimaTypes exposing (..)
 import List.Extra exposing (filterNot)
 import Regex
+import String exposing (String)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (..)
@@ -158,7 +159,12 @@ coordFromHistoryStr q =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update mesg ((Model { historyFirst, historySecond, currentStatus, saved }) as mdl) =
+update =
+    updateWithPotentialInfoOnDrawnCards Nothing
+
+
+updateWithPotentialInfoOnDrawnCards : Maybe ( Profession, Profession, Profession ) -> Msg -> Model -> ( Model, Cmd Msg )
+updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, historySecond, currentStatus, saved }) as mdl) =
     case mesg of
         GoForward ->
             {- munch off relevant stuffs from historySecond -}
@@ -175,7 +181,7 @@ update mesg ((Model { historyFirst, historySecond, currentStatus, saved }) as md
                                     |> PieceOnTheBoard
                                     |> GiveFocusTo
                         in
-                        update (Orig decodedMsg) mdl
+                        updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
 
                     else
                     -- otherwise, there are three possibilities for the decoded message:
@@ -204,7 +210,7 @@ update mesg ((Model { historyFirst, historySecond, currentStatus, saved }) as md
                                         |> PieceInRimaHand
                                         |> GiveFocusTo
                         in
-                        update (Orig decodedMsg) mdl
+                        updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
 
                     else
                         -- In this branch, what's played is NOT a piece in either player's hand, but rather a PieceOnTheBoard.
@@ -217,39 +223,50 @@ update mesg ((Model { historyFirst, historySecond, currentStatus, saved }) as md
                                     |> PieceOnTheBoard
                                     |> GiveFocusTo
                         in
-                        update (Orig decodedMsg) mdl
+                        updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+
+                MoverIsSelected from cardState ->
+                    case from of
+                        PieceOnTheBoard _ ->
+                            -- "-" ++ coordToHistoryStr to
+                            let
+                                decodedMsg =
+                                    String.slice 1 3 historySecond
+                                        |> coordFromHistoryStr
+                                        |> MovementToward
+                            in
+                            updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+
+                        _ ->
+                            let
+                                to =
+                                    String.slice 0 2 historySecond |> coordFromHistoryStr
+                            in
+                            if String.slice 2 3 historySecond == "." then
+                                -- no cards were drawn
+                                updateWithPotentialInfoOnDrawnCards Nothing (Orig (MovementToward to)) mdl
+
+                            else if String.slice 2 3 historySecond == "{" then
+                                -- cards were drawn, so supply such info
+                                let
+                                    x =
+                                        String.slice 3 4 historySecond |> profFromHistoryStr
+
+                                    y =
+                                        String.slice 4 5 historySecond |> profFromHistoryStr
+
+                                    z =
+                                        String.slice 5 6 historySecond |> profFromHistoryStr
+                                in
+                                updateWithPotentialInfoOnDrawnCards (Just ( x, y, z )) (Orig (MovementToward to)) mdl
+
+                            else
+                                Debug.todo "Unexpected character. Expected `.` or `{`"
 
                 _ ->
-                    Debug.todo "currently, only NothingSelected is supported"
+                    Debug.todo "currently, only NothingSelected and MoverIsSelected are supported"
 
         {-
-
-
-           ( MoverIsSelected from cardState, MovementToward to ) ->
-               case from of
-                   PieceOnTheBoard _ ->
-                       "-" ++ coordToHistoryStr to
-
-                   {- Parachuting from KeseHand -}
-                   PieceInKeseHand _ ->
-                       case ( cardState.keseHand, cardState.keseDeck ) of
-                           ( [ _ ], x :: y :: z :: _ ) ->
-                               coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}.\nR"
-
-                           {- FIXME -}
-                           _ ->
-                               coordToHistoryStr to ++ ".\nR"
-
-                   {- Parachuting from RimaHand -}
-                   PieceInRimaHand _ ->
-                       case ( cardState.rimaHand, cardState.rimaDeck ) of
-                           ( [ _ ], x :: y :: z :: _ ) ->
-                               coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}.\nK"
-
-                           {- FIXME -}
-                           _ ->
-                               coordToHistoryStr to ++ ".\nK"
-
            ( AfterSacrifice _ _, MovementToward to ) ->
                coordToHistoryStr to
 
@@ -328,14 +345,14 @@ update mesg ((Model { historyFirst, historySecond, currentStatus, saved }) as md
         Orig msg ->
             let
                 newHist =
-                    historyFirst ++ newHistory (Orig msg) currentStatus
+                    historyFirst ++ newHistory cardsDrawn (Orig msg) currentStatus
 
                 newHistorySecond =
-                    String.right (String.length historySecond - String.length (newHistory (Orig msg) currentStatus)) historySecond
+                    String.right (String.length historySecond - String.length (newHistory cardsDrawn (Orig msg) currentStatus)) historySecond
 
                 {- FIXME -}
                 newStat =
-                    updateStatus msg currentStatus saved
+                    updateStatus cardsDrawn msg currentStatus saved
             in
             if Regex.contains twoConsecutivePasses newHist then
                 case newStat of
@@ -417,11 +434,11 @@ getWhoseTurn modl =
             Nothing
 
 
-newHistory : Msg -> CurrentStatus -> String
-newHistory msg modl =
+newHistory : Maybe ( Profession, Profession, Profession ) -> Msg -> CurrentStatus -> String
+newHistory cardsDrawn msg modl =
     case msg of
         Orig m ->
-            newHistory_ m modl
+            newHistory_ cardsDrawn m modl
 
         GoForward ->
             "FIXME"
@@ -433,8 +450,8 @@ newHistory msg modl =
             "FIXME"
 
 
-newHistory_ : OriginalMsg -> CurrentStatus -> String
-newHistory_ msg modl =
+newHistory_ : Maybe ( Profession, Profession, Profession ) -> OriginalMsg -> CurrentStatus -> String
+newHistory_ cardsDrawn msg modl =
     let
         unwrap =
             Maybe.withDefault "ERROR!!!!!!!!!!!!!!!!!!!!"
@@ -472,8 +489,8 @@ newHistory_ msg modl =
                 {- Parachuting from KeseHand -}
                 PieceInKeseHand _ ->
                     case ( cardState.keseHand, cardState.keseDeck ) of
-                        ( [ _ ], x :: y :: z :: _ ) ->
-                            coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}.\nR"
+                        ( [ _ ], () :: () :: () :: _ ) ->
+                            coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr (unsafeDeckSummoning cardsDrawn)) ++ "}.\nR"
 
                         {- FIXME -}
                         _ ->
@@ -483,7 +500,7 @@ newHistory_ msg modl =
                 PieceInRimaHand _ ->
                     case ( cardState.rimaHand, cardState.rimaDeck ) of
                         ( [ _ ], x :: y :: z :: _ ) ->
-                            coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}.\nK"
+                            coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr (unsafeDeckSummoning cardsDrawn)) ++ "}.\nK"
 
                         {- FIXME -}
                         _ ->
@@ -508,7 +525,7 @@ newHistory_ msg modl =
                             ( _, _ ) =
                                 drawUpToThree remaining.keseDeck
                         in
-                        "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}"
+                        "{" ++ String.join "" (List.map profToHistoryStr (unsafeDeckSummoning cardsDrawn)) ++ "}"
                         {- FIXME -}
 
                     else if List.isEmpty remaining.rimaHand then
@@ -516,7 +533,7 @@ newHistory_ msg modl =
                             ( _, _ ) =
                                 drawUpToThree remaining.rimaDeck
                         in
-                        "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}"
+                        "{" ++ String.join "" (List.map profToHistoryStr (unsafeDeckSummoning cardsDrawn)) ++ "}"
                         {- FIXME -}
 
                     else
@@ -572,8 +589,18 @@ isVictorious list =
     List.member All list || List.all (\p -> List.member p list) [ Diagonal, HorizontalVertical, Circle ]
 
 
-updateStatus : OriginalMsg -> CurrentStatus -> CurrentStatus -> CurrentStatus
-updateStatus msg modl saved =
+unsafeDeckSummoning : Maybe ( c, c, c ) -> List c
+unsafeDeckSummoning a =
+    case a of
+        Nothing ->
+            Debug.todo "FAILURE: expected to receive cards to be drawn, but got nothing"
+
+        Just ( b, c, d ) ->
+            [ b, c, d ]
+
+
+updateStatus : Maybe ( Profession, Profession, Profession ) -> OriginalMsg -> CurrentStatus -> CurrentStatus -> CurrentStatus
+updateStatus cardsDrawn msg modl saved =
     case ( modl, msg ) of
         ( _, Cancel ) ->
             -- no matter what the state is, abort it and revert to what was saved last
@@ -607,13 +634,11 @@ updateStatus msg modl saved =
                                 ++ cardState.board
                     in
                     case ( newKeseHand, cardState.keseDeck ) of
-                        ( [], x :: y :: z :: zs ) ->
+                        ( [], () :: () :: () :: zs ) ->
                             NothingSelected
                                 { cardState
                                     | board = newBoard
-                                    , keseHand = [ Circle, Circle, Circle ]
-
-                                    {- FIXME -}
+                                    , keseHand = unsafeDeckSummoning cardsDrawn
                                     , whoseTurn = RimaTurn
                                     , keseDeck = zs
                                 }
@@ -632,13 +657,11 @@ updateStatus msg modl saved =
                                 ++ cardState.board
                     in
                     case ( newRimaHand, cardState.rimaDeck ) of
-                        ( [], x :: y :: z :: zs ) ->
+                        ( [], () :: () :: () :: zs ) ->
                             NothingSelected
                                 { cardState
                                     | board = newBoard
-                                    , rimaHand = [ Circle, Circle, Circle ]
-
-                                    {- FIXME -}
+                                    , rimaHand = unsafeDeckSummoning cardsDrawn
                                     , whoseTurn = KeseTurn
                                     , rimaDeck = zs
                                 }
@@ -661,7 +684,7 @@ updateStatus msg modl saved =
                                 drawUpToThree remaining.keseDeck
 
                             keseHand =
-                                [ Circle, Circle, Circle ]
+                                unsafeDeckSummoning cardsDrawn
 
                             {- FIXME -}
                         in
@@ -676,9 +699,7 @@ updateStatus msg modl saved =
                                 drawUpToThree remaining.rimaDeck
 
                             rimaHand =
-                                [ Circle, Circle, Circle ]
-
-                            {- FIXME -}
+                                unsafeDeckSummoning cardsDrawn
                         in
                         { remaining
                             | rimaHand = rimaHand

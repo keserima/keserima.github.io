@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1792, column: 13},
-					end: {line: 1792, column: 23}
+					start: {line: 1813, column: 13},
+					end: {line: 1813, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -5431,6 +5431,9 @@ var $author$project$Main$GameTerminated = function (a) {
 var $author$project$Main$GiveFocusTo = function (a) {
 	return {$: 'GiveFocusTo', a: a};
 };
+var $author$project$Main$MovementToward = function (a) {
+	return {$: 'MovementToward', a: a};
+};
 var $author$project$Main$Orig = function (a) {
 	return {$: 'Orig', a: a};
 };
@@ -5466,8 +5469,8 @@ var $author$project$Main$coordFromHistoryStr = function (q) {
 				return _Debug_todo(
 					'Main',
 					{
-						start: {line: 155, column: 21},
-						end: {line: 155, column: 31}
+						start: {line: 156, column: 21},
+						end: {line: 156, column: 31}
 					})('unexpected `' + (u + '` encountered while expecting a coordinate'));
 		}
 	};
@@ -5684,6 +5687,23 @@ var $author$project$Main$profToHistoryStr = function (prof) {
 			return '*';
 	}
 };
+var $author$project$Main$unsafeDeckSummoning = function (a) {
+	if (a.$ === 'Nothing') {
+		return _Debug_todo(
+			'Main',
+			{
+				start: {line: 596, column: 13},
+				end: {line: 596, column: 23}
+			})('FAILURE: expected to receive cards to be drawn, but got nothing');
+	} else {
+		var _v1 = a.a;
+		var b = _v1.a;
+		var c = _v1.b;
+		var d = _v1.c;
+		return _List_fromArray(
+			[b, c, d]);
+	}
+};
 var $author$project$Main$whoseTurnToHistoryStr = function (w) {
 	if (w.$ === 'KeseTurn') {
 		return 'K';
@@ -5700,8 +5720,8 @@ var $elm$core$Maybe$withDefault = F2(
 			return _default;
 		}
 	});
-var $author$project$Main$newHistory_ = F2(
-	function (msg, modl) {
+var $author$project$Main$newHistory_ = F3(
+	function (cardsDrawn, msg, modl) {
 		var unwrap = $elm$core$Maybe$withDefault('ERROR!!!!!!!!!!!!!!!!!!!!');
 		var _v0 = _Utils_Tuple2(modl, msg);
 		_v0$10:
@@ -5771,19 +5791,15 @@ var $author$project$Main$newHistory_ = F2(
 									if ((((_v5.a.b && (!_v5.a.b.b)) && _v5.b.b) && _v5.b.b.b) && _v5.b.b.b.b) {
 										var _v6 = _v5.a;
 										var _v7 = _v5.b;
-										var x = _v7.a;
 										var _v8 = _v7.b;
-										var y = _v8.a;
 										var _v9 = _v8.b;
-										var z = _v9.a;
 										return $author$project$Main$coordToHistoryStr(to) + ('{' + (A2(
 											$elm$core$String$join,
 											'',
 											A2(
 												$elm$core$List$map,
 												$author$project$Main$profToHistoryStr,
-												_List_fromArray(
-													[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]))) + '}.\nR'));
+												$author$project$Main$unsafeDeckSummoning(cardsDrawn))) + '}.\nR'));
 									} else {
 										return $author$project$Main$coordToHistoryStr(to) + '.\nR';
 									}
@@ -5803,8 +5819,7 @@ var $author$project$Main$newHistory_ = F2(
 											A2(
 												$elm$core$List$map,
 												$author$project$Main$profToHistoryStr,
-												_List_fromArray(
-													[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]))) + '}.\nK'));
+												$author$project$Main$unsafeDeckSummoning(cardsDrawn))) + '}.\nK'));
 									} else {
 										return $author$project$Main$coordToHistoryStr(to) + '.\nK';
 									}
@@ -5830,8 +5845,7 @@ var $author$project$Main$newHistory_ = F2(
 									A2(
 										$elm$core$List$map,
 										$author$project$Main$profToHistoryStr,
-										_List_fromArray(
-											[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]))) + '}');
+										$author$project$Main$unsafeDeckSummoning(cardsDrawn))) + '}');
 							} else {
 								if ($elm$core$List$isEmpty(remaining.rimaHand)) {
 									var _v21 = $author$project$Main$drawUpToThree(remaining.rimaDeck);
@@ -5841,8 +5855,7 @@ var $author$project$Main$newHistory_ = F2(
 										A2(
 											$elm$core$List$map,
 											$author$project$Main$profToHistoryStr,
-											_List_fromArray(
-												[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]))) + '}');
+											$author$project$Main$unsafeDeckSummoning(cardsDrawn))) + '}');
 								} else {
 									return '';
 								}
@@ -5925,12 +5938,12 @@ var $author$project$Main$newHistory_ = F2(
 		}
 		return '';
 	});
-var $author$project$Main$newHistory = F2(
-	function (msg, modl) {
+var $author$project$Main$newHistory = F3(
+	function (cardsDrawn, msg, modl) {
 		switch (msg.$) {
 			case 'Orig':
 				var m = msg.a;
-				return A2($author$project$Main$newHistory_, m, modl);
+				return A3($author$project$Main$newHistory_, cardsDrawn, m, modl);
 			case 'GoForward':
 				return 'FIXME';
 			case 'GoBack':
@@ -5951,8 +5964,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1808, column: 13},
-					end: {line: 1808, column: 23}
+					start: {line: 1829, column: 13},
+					end: {line: 1829, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -6167,8 +6180,8 @@ var $author$project$Main$robIth = F2(
 			A2($elm$core$List$drop, ind + 1, list));
 		return _Utils_Tuple2(xs, newList);
 	});
-var $author$project$Main$updateStatus = F3(
-	function (msg, modl, saved) {
+var $author$project$Main$updateStatus = F4(
+	function (cardsDrawn, msg, modl, saved) {
 		var _v0 = _Utils_Tuple2(modl, msg);
 		_v0$8:
 		while (true) {
@@ -6227,11 +6240,8 @@ var $author$project$Main$updateStatus = F3(
 									var _v7 = _Utils_Tuple2(newKeseHand, cardState.keseDeck);
 									if ((((!_v7.a.b) && _v7.b.b) && _v7.b.b.b) && _v7.b.b.b.b) {
 										var _v8 = _v7.b;
-										var x = _v8.a;
 										var _v9 = _v8.b;
-										var y = _v9.a;
 										var _v10 = _v9.b;
-										var z = _v10.a;
 										var zs = _v10.b;
 										return $author$project$Main$NothingSelected(
 											_Utils_update(
@@ -6239,8 +6249,7 @@ var $author$project$Main$updateStatus = F3(
 												{
 													board: newBoard,
 													keseDeck: zs,
-													keseHand: _List_fromArray(
-														[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]),
+													keseHand: $author$project$Main$unsafeDeckSummoning(cardsDrawn),
 													whoseTurn: $author$project$KeseRimaTypes$RimaTurn
 												}));
 									} else {
@@ -6265,11 +6274,8 @@ var $author$project$Main$updateStatus = F3(
 									var _v12 = _Utils_Tuple2(newRimaHand, cardState.rimaDeck);
 									if ((((!_v12.a.b) && _v12.b.b) && _v12.b.b.b) && _v12.b.b.b.b) {
 										var _v13 = _v12.b;
-										var x = _v13.a;
 										var _v14 = _v13.b;
-										var y = _v14.a;
 										var _v15 = _v14.b;
-										var z = _v15.a;
 										var zs = _v15.b;
 										return $author$project$Main$NothingSelected(
 											_Utils_update(
@@ -6277,8 +6283,7 @@ var $author$project$Main$updateStatus = F3(
 												{
 													board: newBoard,
 													rimaDeck: zs,
-													rimaHand: _List_fromArray(
-														[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]),
+													rimaHand: $author$project$Main$unsafeDeckSummoning(cardsDrawn),
 													whoseTurn: $author$project$KeseRimaTypes$KeseTurn
 												}));
 									} else {
@@ -6310,8 +6315,7 @@ var $author$project$Main$updateStatus = F3(
 						var _v17 = _v0.b;
 						var cardDrawn = function () {
 							if ($elm$core$List$isEmpty(remaining.keseHand)) {
-								var keseHand = _List_fromArray(
-									[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]);
+								var keseHand = $author$project$Main$unsafeDeckSummoning(cardsDrawn);
 								var _v21 = $author$project$Main$drawUpToThree(remaining.keseDeck);
 								var keseDeck = _v21.b;
 								return _Utils_update(
@@ -6319,8 +6323,7 @@ var $author$project$Main$updateStatus = F3(
 									{keseDeck: keseDeck, keseHand: keseHand});
 							} else {
 								if ($elm$core$List$isEmpty(remaining.rimaHand)) {
-									var rimaHand = _List_fromArray(
-										[$author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle, $author$project$KeseRimaTypes$Circle]);
+									var rimaHand = $author$project$Main$unsafeDeckSummoning(cardsDrawn);
 									var _v22 = $author$project$Main$drawUpToThree(remaining.rimaDeck);
 									var rimaDeck = _v22.b;
 									return _Utils_update(
@@ -6476,9 +6479,9 @@ var $author$project$Main$updateStatus = F3(
 		}
 		return modl;
 	});
-var $author$project$Main$update = F2(
-	function (mesg, mdl) {
-		update:
+var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
+	function (cardsDrawn, mesg, mdl) {
+		updateWithPotentialInfoOnDrawnCards:
 		while (true) {
 			var historyFirst = mdl.a.historyFirst;
 			var historySecond = mdl.a.historySecond;
@@ -6486,89 +6489,151 @@ var $author$project$Main$update = F2(
 			var saved = mdl.a.saved;
 			switch (mesg.$) {
 				case 'GoForward':
-					if (currentStatus.$ === 'NothingSelected') {
-						var cardState = currentStatus.a;
-						if (A2($elm$core$String$left, 1, historySecond) === 'S') {
-							var decodedMsg = $author$project$Main$GiveFocusTo(
-								$author$project$KeseRimaTypes$PieceOnTheBoard(
-									$author$project$Main$coordFromHistoryStr(
-										A3($elm$core$String$slice, 2, 4, historySecond))));
-							var $temp$mesg = $author$project$Main$Orig(decodedMsg),
-								$temp$mdl = mdl;
-							mesg = $temp$mesg;
-							mdl = $temp$mdl;
-							continue update;
-						} else {
-							if (($elm$core$String$length(historySecond) === 1) || (A3($elm$core$String$slice, 3, 4, historySecond) === '.')) {
-								var profession = $author$project$Main$profFromHistoryStr(
-									A2($elm$core$String$left, 1, historySecond));
-								var decodedMsg = (A2($elm$core$String$right, 1, historyFirst) === 'K') ? $author$project$Main$GiveFocusTo(
-									$author$project$KeseRimaTypes$PieceInKeseHand(
-										A2(
-											$elm$core$Maybe$withDefault,
-											_Debug_todo(
-												'Main',
-												{
-													start: {line: 197, column: 63},
-													end: {line: 197, column: 73}
-												})('cannot find an adequate piece in Kese\'s Hand'),
-											A2(
-												$elm_community$list_extra$List$Extra$findIndex,
-												$elm$core$Basics$eq(profession),
-												cardState.keseHand)))) : $author$project$Main$GiveFocusTo(
-									$author$project$KeseRimaTypes$PieceInRimaHand(
-										A2(
-											$elm$core$Maybe$withDefault,
-											_Debug_todo(
-												'Main',
-												{
-													start: {line: 203, column: 63},
-													end: {line: 203, column: 73}
-												})('cannot find an adequate piece in Rima\'s Hand'),
-											A2(
-												$elm_community$list_extra$List$Extra$findIndex,
-												$elm$core$Basics$eq(profession),
-												cardState.rimaHand))));
-								var $temp$mesg = $author$project$Main$Orig(decodedMsg),
-									$temp$mdl = mdl;
-								mesg = $temp$mesg;
-								mdl = $temp$mdl;
-								continue update;
-							} else {
+					switch (currentStatus.$) {
+						case 'NothingSelected':
+							var cardState = currentStatus.a;
+							if (A2($elm$core$String$left, 1, historySecond) === 'S') {
 								var decodedMsg = $author$project$Main$GiveFocusTo(
 									$author$project$KeseRimaTypes$PieceOnTheBoard(
 										$author$project$Main$coordFromHistoryStr(
-											A3($elm$core$String$slice, 1, 3, historySecond))));
-								var $temp$mesg = $author$project$Main$Orig(decodedMsg),
+											A3($elm$core$String$slice, 2, 4, historySecond))));
+								var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+									$temp$mesg = $author$project$Main$Orig(decodedMsg),
 									$temp$mdl = mdl;
+								cardsDrawn = $temp$cardsDrawn;
 								mesg = $temp$mesg;
 								mdl = $temp$mdl;
-								continue update;
+								continue updateWithPotentialInfoOnDrawnCards;
+							} else {
+								if (($elm$core$String$length(historySecond) === 1) || (A3($elm$core$String$slice, 3, 4, historySecond) === '.')) {
+									var profession = $author$project$Main$profFromHistoryStr(
+										A2($elm$core$String$left, 1, historySecond));
+									var decodedMsg = (A2($elm$core$String$right, 1, historyFirst) === 'K') ? $author$project$Main$GiveFocusTo(
+										$author$project$KeseRimaTypes$PieceInKeseHand(
+											A2(
+												$elm$core$Maybe$withDefault,
+												_Debug_todo(
+													'Main',
+													{
+														start: {line: 203, column: 63},
+														end: {line: 203, column: 73}
+													})('cannot find an adequate piece in Kese\'s Hand'),
+												A2(
+													$elm_community$list_extra$List$Extra$findIndex,
+													$elm$core$Basics$eq(profession),
+													cardState.keseHand)))) : $author$project$Main$GiveFocusTo(
+										$author$project$KeseRimaTypes$PieceInRimaHand(
+											A2(
+												$elm$core$Maybe$withDefault,
+												_Debug_todo(
+													'Main',
+													{
+														start: {line: 209, column: 63},
+														end: {line: 209, column: 73}
+													})('cannot find an adequate piece in Rima\'s Hand'),
+												A2(
+													$elm_community$list_extra$List$Extra$findIndex,
+													$elm$core$Basics$eq(profession),
+													cardState.rimaHand))));
+									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+										$temp$mesg = $author$project$Main$Orig(decodedMsg),
+										$temp$mdl = mdl;
+									cardsDrawn = $temp$cardsDrawn;
+									mesg = $temp$mesg;
+									mdl = $temp$mdl;
+									continue updateWithPotentialInfoOnDrawnCards;
+								} else {
+									var decodedMsg = $author$project$Main$GiveFocusTo(
+										$author$project$KeseRimaTypes$PieceOnTheBoard(
+											$author$project$Main$coordFromHistoryStr(
+												A3($elm$core$String$slice, 1, 3, historySecond))));
+									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+										$temp$mesg = $author$project$Main$Orig(decodedMsg),
+										$temp$mdl = mdl;
+									cardsDrawn = $temp$cardsDrawn;
+									mesg = $temp$mesg;
+									mdl = $temp$mdl;
+									continue updateWithPotentialInfoOnDrawnCards;
+								}
 							}
-						}
-					} else {
-						return _Debug_todo(
-							'Main',
-							{
-								start: {line: 223, column: 21},
-								end: {line: 223, column: 31}
-							})('currently, only NothingSelected is supported');
+						case 'MoverIsSelected':
+							var from = currentStatus.a;
+							var cardState = currentStatus.b;
+							if (from.$ === 'PieceOnTheBoard') {
+								var decodedMsg = $author$project$Main$MovementToward(
+									$author$project$Main$coordFromHistoryStr(
+										A3($elm$core$String$slice, 1, 3, historySecond)));
+								var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+									$temp$mesg = $author$project$Main$Orig(decodedMsg),
+									$temp$mdl = mdl;
+								cardsDrawn = $temp$cardsDrawn;
+								mesg = $temp$mesg;
+								mdl = $temp$mdl;
+								continue updateWithPotentialInfoOnDrawnCards;
+							} else {
+								var to = $author$project$Main$coordFromHistoryStr(
+									A3($elm$core$String$slice, 0, 2, historySecond));
+								if (A3($elm$core$String$slice, 2, 3, historySecond) === '.') {
+									var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+										$temp$mesg = $author$project$Main$Orig(
+										$author$project$Main$MovementToward(to)),
+										$temp$mdl = mdl;
+									cardsDrawn = $temp$cardsDrawn;
+									mesg = $temp$mesg;
+									mdl = $temp$mdl;
+									continue updateWithPotentialInfoOnDrawnCards;
+								} else {
+									if (A3($elm$core$String$slice, 2, 3, historySecond) === '{') {
+										var z = $author$project$Main$profFromHistoryStr(
+											A3($elm$core$String$slice, 5, 6, historySecond));
+										var y = $author$project$Main$profFromHistoryStr(
+											A3($elm$core$String$slice, 4, 5, historySecond));
+										var x = $author$project$Main$profFromHistoryStr(
+											A3($elm$core$String$slice, 3, 4, historySecond));
+										var $temp$cardsDrawn = $elm$core$Maybe$Just(
+											_Utils_Tuple3(x, y, z)),
+											$temp$mesg = $author$project$Main$Orig(
+											$author$project$Main$MovementToward(to)),
+											$temp$mdl = mdl;
+										cardsDrawn = $temp$cardsDrawn;
+										mesg = $temp$mesg;
+										mdl = $temp$mdl;
+										continue updateWithPotentialInfoOnDrawnCards;
+									} else {
+										return _Debug_todo(
+											'Main',
+											{
+												start: {line: 264, column: 33},
+												end: {line: 264, column: 43}
+											})('Unexpected character. Expected `.` or `{`');
+									}
+								}
+							}
+						default:
+							return _Debug_todo(
+								'Main',
+								{
+									start: {line: 267, column: 21},
+									end: {line: 267, column: 31}
+								})('currently, only NothingSelected and MoverIsSelected are supported');
 					}
 				case 'Orig':
 					var msg = mesg.a;
-					var newStat = A3($author$project$Main$updateStatus, msg, currentStatus, saved);
+					var newStat = A4($author$project$Main$updateStatus, cardsDrawn, msg, currentStatus, saved);
 					var newHistorySecond = A2(
 						$elm$core$String$right,
 						$elm$core$String$length(historySecond) - $elm$core$String$length(
-							A2(
+							A3(
 								$author$project$Main$newHistory,
+								cardsDrawn,
 								$author$project$Main$Orig(msg),
 								currentStatus)),
 						historySecond);
 					var newHist = _Utils_ap(
 						historyFirst,
-						A2(
+						A3(
 							$author$project$Main$newHistory,
+							cardsDrawn,
 							$author$project$Main$Orig(msg),
 							currentStatus));
 					if (A2($elm$regex$Regex$contains, $author$project$Main$twoConsecutivePasses, newHist)) {
@@ -6618,9 +6683,7 @@ var $author$project$Main$update = F2(
 			}
 		}
 	});
-var $author$project$Main$MovementToward = function (a) {
-	return {$: 'MovementToward', a: a};
-};
+var $author$project$Main$update = $author$project$Main$updateWithPotentialInfoOnDrawnCards($elm$core$Maybe$Nothing);
 var $author$project$Main$None = {$: 'None'};
 var $author$project$Main$SendToTrashBinPart1 = function (a) {
 	return {$: 'SendToTrashBinPart1', a: a};
