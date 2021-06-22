@@ -5265,14 +5265,27 @@ var $author$project$KeseRimaTypes$Ship = {$: 'Ship'};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$core$Basics$not = _Basics_not;
-var $author$project$Main$profFromHistoryStr = function (c) {
+var $elm$core$String$cons = _String_cons;
+var $elm$core$String$fromChar = function (_char) {
+	return A2($elm$core$String$cons, _char, '');
+};
+var $elm$core$Debug$todo = _Debug_todo;
+var $author$project$Main$profFromHistoryChar = function (c) {
 	switch (c.valueOf()) {
 		case '+':
 			return $author$project$KeseRimaTypes$HorizontalVertical;
 		case 'o':
 			return $author$project$KeseRimaTypes$Circle;
-		default:
+		case 'x':
 			return $author$project$KeseRimaTypes$Diagonal;
+		default:
+			return _Debug_todo(
+				'Main',
+				{
+					start: {line: 1792, column: 13},
+					end: {line: 1792, column: 23}
+				})(
+				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
 };
 var $elm$core$List$repeatHelp = F3(
@@ -5316,14 +5329,14 @@ var $author$project$Main$init = function (flags) {
 	var rimaHandString = A3($elm$core$String$slice, 27, 30, flags.historyFirst);
 	var rimaHand = A2(
 		$elm$core$List$map,
-		$author$project$Main$profFromHistoryStr,
+		$author$project$Main$profFromHistoryChar,
 		$elm$core$String$toList(rimaHandString));
 	var rimaDice = A3($elm$core$String$slice, 0, 2, flags.historyFirst) === 'R+';
 	var rimaDeck = A2($elm$core$List$repeat, 15, _Utils_Tuple0);
 	var keseHandString = A3($elm$core$String$slice, 20, 23, flags.historyFirst);
 	var keseHand = A2(
 		$elm$core$List$map,
-		$author$project$Main$profFromHistoryStr,
+		$author$project$Main$profFromHistoryChar,
 		$elm$core$String$toList(keseHandString));
 	var keseGoesFirst = A2($elm$core$String$right, 1, flags.historyFirst) === 'K';
 	var keseDice = A3($elm$core$String$slice, 12, 14, flags.historyFirst) === 'K+';
@@ -5415,18 +5428,84 @@ var $author$project$Main$subscriptions = function (_v0) {
 var $author$project$Main$GameTerminated = function (a) {
 	return {$: 'GameTerminated', a: a};
 };
+var $author$project$Main$GiveFocusTo = function (a) {
+	return {$: 'GiveFocusTo', a: a};
+};
 var $author$project$Main$Orig = function (a) {
 	return {$: 'Orig', a: a};
+};
+var $author$project$KeseRimaTypes$PieceInKeseHand = function (a) {
+	return {$: 'PieceInKeseHand', a: a};
+};
+var $author$project$KeseRimaTypes$PieceInRimaHand = function (a) {
+	return {$: 'PieceInRimaHand', a: a};
+};
+var $author$project$KeseRimaTypes$PieceOnTheBoard = function (a) {
+	return {$: 'PieceOnTheBoard', a: a};
 };
 var $elm$regex$Regex$Match = F4(
 	function (match, index, number, submatches) {
 		return {index: index, match: match, number: number, submatches: submatches};
 	});
 var $elm$regex$Regex$contains = _Regex_contains;
+var $author$project$Main$coordFromHistoryStr = function (q) {
+	var foo = function (a) {
+		switch (a) {
+			case '1':
+				return 0;
+			case '2':
+				return 1;
+			case '3':
+				return 2;
+			case '4':
+				return 3;
+			case '5':
+				return 4;
+			default:
+				var u = a;
+				return _Debug_todo(
+					'Main',
+					{
+						start: {line: 155, column: 21},
+						end: {line: 155, column: 31}
+					})('unexpected `' + (u + '` encountered while expecting a coordinate'));
+		}
+	};
+	return {
+		x: foo(
+			A2($elm$core$String$left, 1, q)),
+		y: foo(
+			A2($elm$core$String$right, 1, q))
+	};
+};
 var $elm$core$String$dropRight = F2(
 	function (n, string) {
 		return (n < 1) ? string : A3($elm$core$String$slice, 0, -n, string);
 	});
+var $elm_community$list_extra$List$Extra$findIndexHelp = F3(
+	function (index, predicate, list) {
+		findIndexHelp:
+		while (true) {
+			if (!list.b) {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (predicate(x)) {
+					return $elm$core$Maybe$Just(index);
+				} else {
+					var $temp$index = index + 1,
+						$temp$predicate = predicate,
+						$temp$list = xs;
+					index = $temp$index;
+					predicate = $temp$predicate;
+					list = $temp$list;
+					continue findIndexHelp;
+				}
+			}
+		}
+	});
+var $elm_community$list_extra$List$Extra$findIndex = $elm_community$list_extra$List$Extra$findIndexHelp(0);
 var $author$project$Main$coordToHistoryStr = function (coord) {
 	return _Utils_ap(
 		$elm$core$String$fromInt(coord.x + 1),
@@ -5860,6 +5939,23 @@ var $author$project$Main$newHistory = F2(
 				return 'FIXME';
 		}
 	});
+var $author$project$Main$profFromHistoryStr = function (c) {
+	switch (c) {
+		case '+':
+			return $author$project$KeseRimaTypes$HorizontalVertical;
+		case 'o':
+			return $author$project$KeseRimaTypes$Circle;
+		case 'x':
+			return $author$project$KeseRimaTypes$Diagonal;
+		default:
+			return _Debug_todo(
+				'Main',
+				{
+					start: {line: 1808, column: 13},
+					end: {line: 1808, column: 23}
+				})('unexpected `' + (c + '` encountered while expecting a profession'));
+	}
+};
 var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
 var $elm$regex$Regex$fromString = function (string) {
 	return A2(
@@ -6381,90 +6477,151 @@ var $author$project$Main$updateStatus = F3(
 		return modl;
 	});
 var $author$project$Main$update = F2(
-	function (mesg, _v0) {
-		var historyFirst = _v0.a.historyFirst;
-		var historySecond = _v0.a.historySecond;
-		var currentStatus = _v0.a.currentStatus;
-		var saved = _v0.a.saved;
-		if (mesg.$ === 'Orig') {
-			var msg = mesg.a;
-			var newStat = A3($author$project$Main$updateStatus, msg, currentStatus, saved);
-			var newHistorySecond = A2(
-				$elm$core$String$right,
-				$elm$core$String$length(historySecond) - $elm$core$String$length(
-					A2(
-						$author$project$Main$newHistory,
-						$author$project$Main$Orig(msg),
-						currentStatus)),
-				historySecond);
-			var newHist = _Utils_ap(
-				historyFirst,
-				A2(
-					$author$project$Main$newHistory,
-					$author$project$Main$Orig(msg),
-					currentStatus));
-			if (A2($elm$regex$Regex$contains, $author$project$Main$twoConsecutivePasses, newHist)) {
-				if (newStat.$ === 'NothingSelected') {
-					var cardState = newStat.a;
-					var gameEnd = $author$project$Main$GameTerminated(
-						{board: cardState.board, capturedByKese: cardState.capturedByKese, capturedByRima: cardState.capturedByRima, keseDeck: cardState.keseDeck, keseHand: cardState.keseHand, rimaDeck: cardState.rimaDeck, rimaHand: cardState.rimaHand, whoseVictory: $author$project$KeseRimaTypes$Ship});
-					return _Utils_Tuple2(
-						$author$project$Main$Model(
+	function (mesg, mdl) {
+		update:
+		while (true) {
+			var historyFirst = mdl.a.historyFirst;
+			var historySecond = mdl.a.historySecond;
+			var currentStatus = mdl.a.currentStatus;
+			var saved = mdl.a.saved;
+			switch (mesg.$) {
+				case 'GoForward':
+					if (currentStatus.$ === 'NothingSelected') {
+						var cardState = currentStatus.a;
+						if (A2($elm$core$String$left, 1, historySecond) === 'S') {
+							var decodedMsg = $author$project$Main$GiveFocusTo(
+								$author$project$KeseRimaTypes$PieceOnTheBoard(
+									$author$project$Main$coordFromHistoryStr(
+										A3($elm$core$String$slice, 2, 4, historySecond))));
+							var $temp$mesg = $author$project$Main$Orig(decodedMsg),
+								$temp$mdl = mdl;
+							mesg = $temp$mesg;
+							mdl = $temp$mdl;
+							continue update;
+						} else {
+							if (($elm$core$String$length(historySecond) === 1) || (A3($elm$core$String$slice, 3, 4, historySecond) === '.')) {
+								var profession = $author$project$Main$profFromHistoryStr(
+									A2($elm$core$String$left, 1, historySecond));
+								var decodedMsg = (A2($elm$core$String$right, 1, historyFirst) === 'K') ? $author$project$Main$GiveFocusTo(
+									$author$project$KeseRimaTypes$PieceInKeseHand(
+										A2(
+											$elm$core$Maybe$withDefault,
+											_Debug_todo(
+												'Main',
+												{
+													start: {line: 197, column: 63},
+													end: {line: 197, column: 73}
+												})('cannot find an adequate piece in Kese\'s Hand'),
+											A2(
+												$elm_community$list_extra$List$Extra$findIndex,
+												$elm$core$Basics$eq(profession),
+												cardState.keseHand)))) : $author$project$Main$GiveFocusTo(
+									$author$project$KeseRimaTypes$PieceInRimaHand(
+										A2(
+											$elm$core$Maybe$withDefault,
+											_Debug_todo(
+												'Main',
+												{
+													start: {line: 203, column: 63},
+													end: {line: 203, column: 73}
+												})('cannot find an adequate piece in Rima\'s Hand'),
+											A2(
+												$elm_community$list_extra$List$Extra$findIndex,
+												$elm$core$Basics$eq(profession),
+												cardState.rimaHand))));
+								var $temp$mesg = $author$project$Main$Orig(decodedMsg),
+									$temp$mdl = mdl;
+								mesg = $temp$mesg;
+								mdl = $temp$mdl;
+								continue update;
+							} else {
+								var decodedMsg = $author$project$Main$GiveFocusTo(
+									$author$project$KeseRimaTypes$PieceOnTheBoard(
+										$author$project$Main$coordFromHistoryStr(
+											A3($elm$core$String$slice, 1, 3, historySecond))));
+								var $temp$mesg = $author$project$Main$Orig(decodedMsg),
+									$temp$mdl = mdl;
+								mesg = $temp$mesg;
+								mdl = $temp$mdl;
+								continue update;
+							}
+						}
+					} else {
+						return _Debug_todo(
+							'Main',
 							{
-								currentStatus: gameEnd,
-								historyFirst: A2($elm$core$String$dropRight, 1, newHist) + '--------------------------------\nKeseRima',
-								historySecond: '',
-								saved: gameEnd
-							}),
-						$elm$core$Platform$Cmd$none);
-				} else {
+								start: {line: 223, column: 21},
+								end: {line: 223, column: 31}
+							})('currently, only NothingSelected is supported');
+					}
+				case 'Orig':
+					var msg = mesg.a;
+					var newStat = A3($author$project$Main$updateStatus, msg, currentStatus, saved);
+					var newHistorySecond = A2(
+						$elm$core$String$right,
+						$elm$core$String$length(historySecond) - $elm$core$String$length(
+							A2(
+								$author$project$Main$newHistory,
+								$author$project$Main$Orig(msg),
+								currentStatus)),
+						historySecond);
+					var newHist = _Utils_ap(
+						historyFirst,
+						A2(
+							$author$project$Main$newHistory,
+							$author$project$Main$Orig(msg),
+							currentStatus));
+					if (A2($elm$regex$Regex$contains, $author$project$Main$twoConsecutivePasses, newHist)) {
+						if (newStat.$ === 'NothingSelected') {
+							var cardState = newStat.a;
+							var gameEnd = $author$project$Main$GameTerminated(
+								{board: cardState.board, capturedByKese: cardState.capturedByKese, capturedByRima: cardState.capturedByRima, keseDeck: cardState.keseDeck, keseHand: cardState.keseHand, rimaDeck: cardState.rimaDeck, rimaHand: cardState.rimaHand, whoseVictory: $author$project$KeseRimaTypes$Ship});
+							return _Utils_Tuple2(
+								$author$project$Main$Model(
+									{
+										currentStatus: gameEnd,
+										historyFirst: A2($elm$core$String$dropRight, 1, newHist) + '--------------------------------\nKeseRima',
+										historySecond: '',
+										saved: gameEnd
+									}),
+								$elm$core$Platform$Cmd$none);
+						} else {
+							return _Utils_Tuple2(
+								$author$project$Main$Model(
+									{currentStatus: newStat, historyFirst: newHist, historySecond: newHistorySecond, saved: saved}),
+								$elm$core$Platform$Cmd$none);
+						}
+					} else {
+						if (newStat.$ === 'NothingSelected') {
+							var cardState = newStat.a;
+							return _Utils_Tuple2(
+								$author$project$Main$Model(
+									{
+										currentStatus: newStat,
+										historyFirst: newHist,
+										historySecond: newHistorySecond,
+										saved: $author$project$Main$NothingSelected(cardState)
+									}),
+								$elm$core$Platform$Cmd$none);
+						} else {
+							return _Utils_Tuple2(
+								$author$project$Main$Model(
+									{currentStatus: newStat, historyFirst: newHist, historySecond: newHistorySecond, saved: saved}),
+								$elm$core$Platform$Cmd$none);
+						}
+					}
+				default:
 					return _Utils_Tuple2(
 						$author$project$Main$Model(
-							{currentStatus: newStat, historyFirst: newHist, historySecond: newHistorySecond, saved: saved}),
+							{currentStatus: currentStatus, historyFirst: historyFirst, historySecond: historySecond, saved: saved}),
 						$elm$core$Platform$Cmd$none);
-				}
-			} else {
-				if (newStat.$ === 'NothingSelected') {
-					var cardState = newStat.a;
-					return _Utils_Tuple2(
-						$author$project$Main$Model(
-							{
-								currentStatus: newStat,
-								historyFirst: newHist,
-								historySecond: newHistorySecond,
-								saved: $author$project$Main$NothingSelected(cardState)
-							}),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					return _Utils_Tuple2(
-						$author$project$Main$Model(
-							{currentStatus: newStat, historyFirst: newHist, historySecond: newHistorySecond, saved: saved}),
-						$elm$core$Platform$Cmd$none);
-				}
 			}
-		} else {
-			return _Utils_Tuple2(
-				$author$project$Main$Model(
-					{currentStatus: currentStatus, historyFirst: historyFirst, historySecond: historySecond, saved: saved}),
-				$elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$Main$GiveFocusTo = function (a) {
-	return {$: 'GiveFocusTo', a: a};
-};
 var $author$project$Main$MovementToward = function (a) {
 	return {$: 'MovementToward', a: a};
 };
 var $author$project$Main$None = {$: 'None'};
-var $author$project$KeseRimaTypes$PieceInKeseHand = function (a) {
-	return {$: 'PieceInKeseHand', a: a};
-};
-var $author$project$KeseRimaTypes$PieceInRimaHand = function (a) {
-	return {$: 'PieceInRimaHand', a: a};
-};
-var $author$project$KeseRimaTypes$PieceOnTheBoard = function (a) {
-	return {$: 'PieceOnTheBoard', a: a};
-};
 var $author$project$Main$SendToTrashBinPart1 = function (a) {
 	return {$: 'SendToTrashBinPart1', a: a};
 };
@@ -7497,7 +7654,17 @@ var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 				]))
 		]);
 };
+var $author$project$Main$GoForward = {$: 'GoForward'};
 var $elm$html$Html$br = _VirtualDom_node('br');
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$h2 = _VirtualDom_node('h2');
 var $elm$json$Json$Encode$string = _Json_wrap;
@@ -7636,7 +7803,46 @@ var $author$project$Main$view_ = F5(
 										[
 											$elm$html$Html$text(historyFirst)
 										])),
-									$elm$html$Html$text(historySecond)
+									$elm$html$Html$text(historySecond),
+									A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											A2($elm$html$Html$Attributes$style, 'display', 'flex')
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													A2($elm$html$Html$Attributes$style, 'width', '20%'),
+													$elm$html$Html$Attributes$disabled(true)
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('←')
+												])),
+											A2(
+											$elm$html$Html$div,
+											_List_fromArray(
+												[
+													A2($elm$html$Html$Attributes$style, 'width', '60%')
+												]),
+											_List_Nil),
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													A2($elm$html$Html$Attributes$style, 'width', '20%'),
+													$elm$html$Html$Attributes$disabled(gameEndTweet),
+													$elm$svg$Svg$Events$onClick($author$project$Main$GoForward)
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('→')
+												]))
+										]))
 								]))
 						]))
 				]));

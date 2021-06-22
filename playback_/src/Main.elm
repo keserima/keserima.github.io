@@ -131,9 +131,200 @@ coordToHistoryStr coord =
     String.fromInt (coord.x + 1) ++ String.fromInt (coord.y + 1)
 
 
+coordFromHistoryStr : String -> Coordinate
+coordFromHistoryStr q =
+    let
+        foo a =
+            case a of
+                "1" ->
+                    0
+
+                "2" ->
+                    1
+
+                "3" ->
+                    2
+
+                "4" ->
+                    3
+
+                "5" ->
+                    4
+
+                u ->
+                    Debug.todo ("unexpected `" ++ u ++ "` encountered while expecting a coordinate")
+    in
+    { x = foo (String.left 1 q), y = foo (String.right 1 q) }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
-update mesg (Model { historyFirst, historySecond, currentStatus, saved }) =
+update mesg ((Model { historyFirst, historySecond, currentStatus, saved }) as mdl) =
     case mesg of
+        GoForward ->
+            {- munch off relevant stuffs from historySecond -}
+            case currentStatus of
+                NothingSelected cardState ->
+                    if String.left 1 historySecond == "S" then
+                        -- this is clearly a movement of the ship
+                        -- whose beginning is shaped like "S+22"
+                        let
+                            decodedMsg =
+                                -- hence this is the coordinate
+                                String.slice 2 4 historySecond
+                                    |> coordFromHistoryStr
+                                    |> PieceOnTheBoard
+                                    |> GiveFocusTo
+                        in
+                        update (Orig decodedMsg) mdl
+
+                    else
+                    -- otherwise, there are three possibilities for the decoded message:
+                    -- PieceOnTheBoard, PieceInKeseHand or PieceInRimaHand.
+                    -- If what's played is a piece in either player's hand, then
+                    -- there are two possibilities:
+                    -- * the end of the history string follows immediately after "o", "+" or "x"
+                    -- * or, the profession is followed by a coordinate and a period
+                    if
+                        String.length historySecond == 1 || String.slice 3 4 historySecond == "."
+                    then
+                        let
+                            profession =
+                                String.left 1 historySecond |> profFromHistoryStr
+
+                            decodedMsg =
+                                if String.right 1 historyFirst == "K" {- FIXME -} then
+                                    List.Extra.findIndex ((==) profession) cardState.keseHand
+                                        |> Maybe.withDefault (Debug.todo "cannot find an adequate piece in Kese's Hand")
+                                        |> PieceInKeseHand
+                                        |> GiveFocusTo
+
+                                else
+                                    List.Extra.findIndex ((==) profession) cardState.rimaHand
+                                        |> Maybe.withDefault (Debug.todo "cannot find an adequate piece in Rima's Hand")
+                                        |> PieceInRimaHand
+                                        |> GiveFocusTo
+                        in
+                        update (Orig decodedMsg) mdl
+
+                    else
+                        -- In this branch, what's played is NOT a piece in either player's hand, but rather a PieceOnTheBoard.
+                        -- Also, we already covered the ship.
+                        let
+                            decodedMsg =
+                                -- hence this is the coordinate
+                                String.slice 1 3 historySecond
+                                    |> coordFromHistoryStr
+                                    |> PieceOnTheBoard
+                                    |> GiveFocusTo
+                        in
+                        update (Orig decodedMsg) mdl
+
+                _ ->
+                    Debug.todo "currently, only NothingSelected is supported"
+
+        {-
+
+
+           ( MoverIsSelected from cardState, MovementToward to ) ->
+               case from of
+                   PieceOnTheBoard _ ->
+                       "-" ++ coordToHistoryStr to
+
+                   {- Parachuting from KeseHand -}
+                   PieceInKeseHand _ ->
+                       case ( cardState.keseHand, cardState.keseDeck ) of
+                           ( [ _ ], x :: y :: z :: _ ) ->
+                               coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}.\nR"
+
+                           {- FIXME -}
+                           _ ->
+                               coordToHistoryStr to ++ ".\nR"
+
+                   {- Parachuting from RimaHand -}
+                   PieceInRimaHand _ ->
+                       case ( cardState.rimaHand, cardState.rimaDeck ) of
+                           ( [ _ ], x :: y :: z :: _ ) ->
+                               coordToHistoryStr to ++ "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}.\nK"
+
+                           {- FIXME -}
+                           _ ->
+                               coordToHistoryStr to ++ ".\nK"
+
+           ( AfterSacrifice _ _, MovementToward to ) ->
+               coordToHistoryStr to
+
+           ( NowWaitingForAdditionalSacrifice { remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->
+               case whoseHand of
+                   KeseTurn ->
+                       List.Extra.getAt index remaining.keseHand |> Maybe.map profToHistoryStr |> unwrap
+
+                   RimaTurn ->
+                       List.Extra.getAt index remaining.rimaHand |> Maybe.map profToHistoryStr |> unwrap
+
+           ( NowWaitingForAdditionalSacrifice { mover, remaining }, TurnEnd ) ->
+               let
+                   cardDrawn =
+                       if List.isEmpty remaining.keseHand then
+                           let
+                               ( _, _ ) =
+                                   drawUpToThree remaining.keseDeck
+                           in
+                           "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}"
+                           {- FIXME -}
+
+                       else if List.isEmpty remaining.rimaHand then
+                           let
+                               ( _, _ ) =
+                                   drawUpToThree remaining.rimaDeck
+                           in
+                           "{" ++ String.join "" (List.map profToHistoryStr [ Circle, Circle, Circle ]) ++ "}"
+                           {- FIXME -}
+
+                       else
+                           ""
+               in
+               case List.filter (\p -> p.coord == mover.coord) remaining.board of
+                   [] ->
+                       cardDrawn ++ ".\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
+
+                   captured :: _ ->
+                       {- capture -}
+                       case remaining.whoseTurn of
+                           KeseTurn ->
+                               let
+                                   newCapturedByKese =
+                                       captured.prof :: remaining.capturedByKese
+                               in
+                               if isVictorious newCapturedByKese then
+                                   "[" ++ profToHistoryStr captured.prof ++ "]" ++ cardDrawn ++ ".\n--------------------------------\nKese"
+
+                               else
+                                   "[" ++ profToHistoryStr captured.prof ++ "]" ++ cardDrawn ++ ".\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
+
+                           RimaTurn ->
+                               let
+                                   newCapturedByRima =
+                                       captured.prof :: remaining.capturedByRima
+                               in
+                               if isVictorious newCapturedByRima then
+                                   "[" ++ profToHistoryStr captured.prof ++ "]" ++ cardDrawn ++ ".\n--------------------------------\nRima"
+
+                               else
+                                   "[" ++ profToHistoryStr captured.prof ++ "]" ++ cardDrawn ++ ".\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
+
+           ( WaitForTrashBinClick _, SendToTrashBinPart2 ) ->
+               ""
+
+           ( AfterCircleSacrifice { remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->
+               case whoseHand of
+                   KeseTurn ->
+                       List.Extra.getAt index remaining.keseHand |> Maybe.map profToHistoryStr |> unwrap
+
+                   RimaTurn ->
+                       List.Extra.getAt index remaining.rimaHand |> Maybe.map profToHistoryStr |> unwrap
+
+
+        -}
         Orig msg ->
             let
                 newHist =
@@ -1120,7 +1311,7 @@ targetBlankLink attributes =
     Html.a (Html.Attributes.target "_blank" :: attributes)
 
 
-view_ : Bool -> HistoryString -> HistoryString -> List (Svg msg) -> List (Html msg) -> Html msg
+view_ : Bool -> HistoryString -> HistoryString -> List (Svg Msg) -> List (Html Msg) -> Html Msg
 view_ gameEndTweet historyFirst historySecond svgContent buttons =
     Html.div [ Html.Attributes.style "display" "flex" ]
         [ Html.div [ Html.Attributes.style "padding" "0px 20px 0 20px", Html.Attributes.style "min-width" "360px" ]
@@ -1145,6 +1336,16 @@ view_ gameEndTweet historyFirst historySecond svgContent buttons =
                     [ Html.Attributes.style "background-color" "#aaeeaa" ]
                     [ Html.text historyFirst ]
                 , Html.text historySecond
+                , Html.div [ Html.Attributes.style "display" "flex" ]
+                    [ Html.button [ Html.Attributes.style "width" "20%", Html.Attributes.disabled True ] [ Html.text "←" ]
+                    , Html.div [ Html.Attributes.style "width" "60%" ] []
+                    , Html.button
+                        [ Html.Attributes.style "width" "20%"
+                        , Html.Attributes.disabled gameEndTweet
+                        , onClick GoForward
+                        ]
+                        [ Html.text "→" ]
+                    ]
                 ]
             ]
         ]
@@ -1575,7 +1776,8 @@ numToProf n =
             Diagonal
 
 
-profFromHistoryStr c =
+profFromHistoryChar : Char -> Profession
+profFromHistoryChar c =
     case c of
         '+' ->
             HorizontalVertical
@@ -1583,8 +1785,27 @@ profFromHistoryStr c =
         'o' ->
             Circle
 
-        _ ->
+        'x' ->
             Diagonal
+
+        _ ->
+            Debug.todo ("unexpected `" ++ String.fromChar c ++ "` encountered while expecting a profession")
+
+
+profFromHistoryStr : String -> Profession
+profFromHistoryStr c =
+    case c of
+        "+" ->
+            HorizontalVertical
+
+        "o" ->
+            Circle
+
+        "x" ->
+            Diagonal
+
+        _ ->
+            Debug.todo ("unexpected `" ++ c ++ "` encountered while expecting a profession")
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -1611,13 +1832,13 @@ init flags =
             String.slice 27 30 flags.historyFirst
 
         keseHand =
-            List.map profFromHistoryStr (String.toList keseHandString)
+            List.map profFromHistoryChar (String.toList keseHandString)
 
         keseDeck =
             List.repeat 15 ()
 
         rimaHand =
-            List.map profFromHistoryStr (String.toList rimaHandString)
+            List.map profFromHistoryChar (String.toList rimaHandString)
 
         rimaDeck =
             List.repeat 15 ()
