@@ -198,3 +198,30 @@ getWhoseTurn modl =
             Nothing
 
 
+
+isVictorious : List Profession -> Bool
+isVictorious list =
+    List.member All list || List.all (\p -> List.member p list) [ Diagonal, HorizontalVertical, Circle ]
+
+
+filterWhetherMemberOf : List a -> List a -> List a
+filterWhetherMemberOf judges =
+    List.filter (\c -> List.member c judges)
+
+
+robIth : Int -> List a -> ( List a, List a )
+robIth ind list =
+    let
+        newList =
+            List.take ind list ++ List.drop (ind + 1) list
+
+        xs =
+            case List.drop ind list of
+                x :: _ ->
+                    [ x ]
+
+                {- This path is never taken -}
+                [] ->
+                    []
+    in
+    ( xs, newList )

@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1828, column: 13},
-					end: {line: 1828, column: 23}
+					start: {line: 1799, column: 13},
+					end: {line: 1799, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -5716,7 +5716,7 @@ var $elm$core$List$member = F2(
 			},
 			xs);
 	});
-var $author$project$Main$isVictorious = function (list) {
+var $author$project$KeseRimaTypes$isVictorious = function (list) {
 	return A2($elm$core$List$member, $author$project$KeseRimaTypes$All, list) || A2(
 		$elm$core$List$all,
 		function (p) {
@@ -5753,8 +5753,8 @@ var $author$project$Main$unsafeDeckSummoning = function (a) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 605, column: 13},
-					end: {line: 605, column: 23}
+					start: {line: 599, column: 13},
+					end: {line: 599, column: 23}
 				})('FAILURE: expected to receive cards to be drawn, but got nothing');
 		case 'ThreeCards':
 			var _v1 = a.a;
@@ -5935,11 +5935,11 @@ var $author$project$Main$newHistory_ = F3(
 							var _v19 = remaining.whoseTurn;
 							if (_v19.$ === 'KeseTurn') {
 								var newCapturedByKese = A2($elm$core$List$cons, captured.prof, remaining.capturedByKese);
-								return $author$project$Main$isVictorious(newCapturedByKese) ? ('[' + ($author$project$KeseRimaTypes$profToHistoryStr(captured.prof) + (']' + (cardDrawn + '.\n--------------------------------\nKese')))) : ('[' + ($author$project$KeseRimaTypes$profToHistoryStr(captured.prof) + (']' + (cardDrawn + ('.\n' + $author$project$KeseRimaTypes$whoseTurnToHistoryStr(
+								return $author$project$KeseRimaTypes$isVictorious(newCapturedByKese) ? ('[' + ($author$project$KeseRimaTypes$profToHistoryStr(captured.prof) + (']' + (cardDrawn + '.\n--------------------------------\nKese')))) : ('[' + ($author$project$KeseRimaTypes$profToHistoryStr(captured.prof) + (']' + (cardDrawn + ('.\n' + $author$project$KeseRimaTypes$whoseTurnToHistoryStr(
 									$author$project$KeseRimaTypes$invertWhoseTurn(remaining.whoseTurn)))))));
 							} else {
 								var newCapturedByRima = A2($elm$core$List$cons, captured.prof, remaining.capturedByRima);
-								return $author$project$Main$isVictorious(newCapturedByRima) ? ('[' + ($author$project$KeseRimaTypes$profToHistoryStr(captured.prof) + (']' + (cardDrawn + '.\n--------------------------------\nRima')))) : ('[' + ($author$project$KeseRimaTypes$profToHistoryStr(captured.prof) + (']' + (cardDrawn + ('.\n' + $author$project$KeseRimaTypes$whoseTurnToHistoryStr(
+								return $author$project$KeseRimaTypes$isVictorious(newCapturedByRima) ? ('[' + ($author$project$KeseRimaTypes$profToHistoryStr(captured.prof) + (']' + (cardDrawn + '.\n--------------------------------\nRima')))) : ('[' + ($author$project$KeseRimaTypes$profToHistoryStr(captured.prof) + (']' + (cardDrawn + ('.\n' + $author$project$KeseRimaTypes$whoseTurnToHistoryStr(
 									$author$project$KeseRimaTypes$invertWhoseTurn(remaining.whoseTurn)))))));
 							}
 						}
@@ -6026,8 +6026,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1844, column: 13},
-					end: {line: 1844, column: 23}
+					start: {line: 1815, column: 13},
+					end: {line: 1815, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -6225,7 +6225,7 @@ var $elm$core$List$take = F2(
 	function (n, list) {
 		return A3($elm$core$List$takeFast, 0, n, list);
 	});
-var $author$project$Main$robIth = F2(
+var $author$project$KeseRimaTypes$robIth = F2(
 	function (ind, list) {
 		var xs = function () {
 			var _v0 = A2($elm$core$List$drop, ind, list);
@@ -6288,7 +6288,7 @@ var $author$project$Main$updateStatus = F4(
 									}
 								case 'PieceInKeseHand':
 									var ind = from.a;
-									var _v6 = A2($author$project$Main$robIth, ind, cardState.keseHand);
+									var _v6 = A2($author$project$KeseRimaTypes$robIth, ind, cardState.keseHand);
 									var profs = _v6.a;
 									var newKeseHand = _v6.b;
 									var newBoard = _Utils_ap(
@@ -6322,7 +6322,7 @@ var $author$project$Main$updateStatus = F4(
 									}
 								default:
 									var ind = from.a;
-									var _v11 = A2($author$project$Main$robIth, ind, cardState.rimaHand);
+									var _v11 = A2($author$project$KeseRimaTypes$robIth, ind, cardState.rimaHand);
 									var profs = _v11.a;
 									var newRimaHand = _v11.b;
 									var newBoard = _Utils_ap(
@@ -6426,14 +6426,14 @@ var $author$project$Main$updateStatus = F4(
 							var _v20 = remaining.whoseTurn;
 							if (_v20.$ === 'KeseTurn') {
 								var newCapturedByKese = A2($elm$core$List$cons, captured.prof, remaining.capturedByKese);
-								return $author$project$Main$isVictorious(newCapturedByKese) ? $author$project$KeseRimaTypes$GameTerminated(
+								return $author$project$KeseRimaTypes$isVictorious(newCapturedByKese) ? $author$project$KeseRimaTypes$GameTerminated(
 									{board: newBoard, capturedByKese: newCapturedByKese, capturedByRima: remaining.capturedByRima, keseDeck: remaining.keseDeck, keseHand: remaining.keseHand, rimaDeck: remaining.rimaDeck, rimaHand: remaining.rimaHand, whoseVictory: $author$project$KeseRimaTypes$Kese}) : $author$project$KeseRimaTypes$NothingSelected(
 									_Utils_update(
 										cardDrawn,
 										{board: newBoard, capturedByKese: newCapturedByKese, whoseTurn: $author$project$KeseRimaTypes$RimaTurn}));
 							} else {
 								var newCapturedByRima = A2($elm$core$List$cons, captured.prof, remaining.capturedByRima);
-								return $author$project$Main$isVictorious(newCapturedByRima) ? $author$project$KeseRimaTypes$GameTerminated(
+								return $author$project$KeseRimaTypes$isVictorious(newCapturedByRima) ? $author$project$KeseRimaTypes$GameTerminated(
 									{board: newBoard, capturedByKese: remaining.capturedByKese, capturedByRima: newCapturedByRima, keseDeck: remaining.keseDeck, keseHand: remaining.keseHand, rimaDeck: remaining.rimaDeck, rimaHand: remaining.rimaHand, whoseVictory: $author$project$KeseRimaTypes$Rima}) : $author$project$KeseRimaTypes$NothingSelected(
 									_Utils_update(
 										cardDrawn,
@@ -6451,7 +6451,7 @@ var $author$project$Main$updateStatus = F4(
 						var index = _v0.a.a.index;
 						var _v23 = _v0.b;
 						if (whoseHand.$ === 'KeseTurn') {
-							var _v25 = A2($author$project$Main$robIth, index, remaining.keseHand);
+							var _v25 = A2($author$project$KeseRimaTypes$robIth, index, remaining.keseHand);
 							var sacrifices = _v25.a;
 							var newKeseHand = _v25.b;
 							var _new = {
@@ -6482,7 +6482,7 @@ var $author$project$Main$updateStatus = F4(
 							}
 							return modl;
 						} else {
-							var _v30 = A2($author$project$Main$robIth, index, remaining.rimaHand);
+							var _v30 = A2($author$project$KeseRimaTypes$robIth, index, remaining.rimaHand);
 							var sacrifices = _v30.a;
 							var newRimaHand = _v30.b;
 							var _new = {
@@ -7419,7 +7419,7 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 };
 var $elm$svg$Svg$feGaussianBlur = $elm$svg$Svg$trustedNode('feGaussianBlur');
 var $elm$svg$Svg$filter = $elm$svg$Svg$trustedNode('filter');
-var $author$project$Main$filterWhetherMemberOf = function (judges) {
+var $author$project$KeseRimaTypes$filterWhetherMemberOf = function (judges) {
 	return $elm$core$List$filter(
 		function (c) {
 			return A2($elm$core$List$member, c, judges);
@@ -7468,16 +7468,16 @@ var $author$project$Main$getCandidatesYellow_ = F4(
 		if (_v0.$ === 'Ship') {
 			return hasCircleInHand ? _Utils_ap(
 				A2($elm$core$List$filter, $author$project$KeseRimaTypes$isWater, raw_candidates),
-				A2($author$project$Main$filterWhetherMemberOf, shipPositions, raw_candidates)) : A2($elm$core$List$filter, $author$project$KeseRimaTypes$isWater, raw_candidates);
+				A2($author$project$KeseRimaTypes$filterWhetherMemberOf, shipPositions, raw_candidates)) : A2($elm$core$List$filter, $author$project$KeseRimaTypes$isWater, raw_candidates);
 		} else {
 			return hasCircleInHand ? _Utils_ap(
 				A2($elm_community$list_extra$List$Extra$filterNot, $author$project$KeseRimaTypes$isWater, raw_candidates),
-				A2($author$project$Main$filterWhetherMemberOf, shipPositions, raw_candidates)) : _Utils_ap(
+				A2($author$project$KeseRimaTypes$filterWhetherMemberOf, shipPositions, raw_candidates)) : _Utils_ap(
 				A2(
-					$author$project$Main$filterWhetherMemberOf,
+					$author$project$KeseRimaTypes$filterWhetherMemberOf,
 					$author$project$Main$neitherOccupiedNorWater(robbedBoard),
 					raw_candidates),
-				A2($author$project$Main$filterWhetherMemberOf, shipPositions, raw_candidates));
+				A2($author$project$KeseRimaTypes$filterWhetherMemberOf, shipPositions, raw_candidates));
 		}
 	});
 var $author$project$Main$addDelta = F2(
@@ -8423,12 +8423,12 @@ var $author$project$Main$view2 = F2(
 										return _List_Nil;
 									case 'Kese':
 										return A2(
-											$author$project$Main$filterWhetherMemberOf,
+											$author$project$KeseRimaTypes$filterWhetherMemberOf,
 											A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, robbedBoard),
 											A3($author$project$Main$getCandidatesYellow, true, focused_piece, robbedBoard));
 									default:
 										return A2(
-											$author$project$Main$filterWhetherMemberOf,
+											$author$project$KeseRimaTypes$filterWhetherMemberOf,
 											A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, robbedBoard),
 											A3($author$project$Main$getCandidatesYellow, true, focused_piece, robbedBoard));
 								}
@@ -8751,12 +8751,12 @@ var $author$project$Main$view2 = F2(
 							return _List_Nil;
 						case 'Kese':
 							return A2(
-								$author$project$Main$filterWhetherMemberOf,
+								$author$project$KeseRimaTypes$filterWhetherMemberOf,
 								A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, remaining.board),
 								A4($author$project$Main$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 						default:
 							return A2(
-								$author$project$Main$filterWhetherMemberOf,
+								$author$project$KeseRimaTypes$filterWhetherMemberOf,
 								A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, remaining.board),
 								A4($author$project$Main$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 					}

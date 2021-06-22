@@ -439,7 +439,6 @@ getIndexFromProf remaining profession =
                     Debug.todo "cannot find an adequate piece in Rima's Hand 1"
 
 
-
 newHistory : CardDrawInfo -> PlaybackMsg -> CurrentStatus -> String
 newHistory cardsDrawn msg modl =
     case msg of
@@ -591,11 +590,6 @@ newHistory_ cardsDrawn msg modl =
         _ ->
             {- Do nothing -}
             ""
-
-
-isVictorious : List Profession -> Bool
-isVictorious list =
-    List.member All list || List.all (\p -> List.member p list) [ Diagonal, HorizontalVertical, Circle ]
 
 
 unsafeDeckSummoning : CardDrawInfo -> List Profession
@@ -846,29 +840,6 @@ updateStatus cardsDrawn msg modl saved =
 
         _ ->
             modl
-
-
-filterWhetherMemberOf : List a -> List a -> List a
-filterWhetherMemberOf judges =
-    List.filter (\c -> List.member c judges)
-
-
-robIth : Int -> List a -> ( List a, List a )
-robIth ind list =
-    let
-        newList =
-            List.take ind list ++ List.drop (ind + 1) list
-
-        xs =
-            case List.drop ind list of
-                x :: _ ->
-                    [ x ]
-
-                {- This path is never taken -}
-                [] ->
-                    []
-    in
-    ( xs, newList )
 
 
 boardSvg : List (Svg PlaybackMsg)
