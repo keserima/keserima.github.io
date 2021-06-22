@@ -201,15 +201,13 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                         -- otherwise, there are three possibilities for the decoded message:
                         -- PieceOnTheBoard, PieceInKeseHand or PieceInRimaHand.
                         -- If what's played is a piece in either player's hand, then
-                        -- there are two possibilities:
+                        -- the following options are possible:
                         -- * the end of the history string follows immediately after "o", "+" or "x"
                         -- * or, the profession is followed by a coordinate and a period
-                        -- * or, the profession is followed by a coordinte, "{", three/zero cards drawn, "}" and then finally a period
+                        -- * or, the profession is followed by a coordinate, "{", three/zero cards drawn, "}" and then finally a period
+                        -- * or, the profession is followed by a ~~~
                         if
-                            String.length historySecond
-                                == 1
-                                || String.slice 3 4 historySecond
-                                == "."
+                            String.length historySecond == 1 || String.slice 3 4 historySecond == "." || String.slice 1 4 historySecond == "~~~"
                         then
                             let
                                 profession =
