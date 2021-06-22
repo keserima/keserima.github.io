@@ -21,6 +21,11 @@ type alias Flags =
     }
 
 
+type alias Flags2 =
+    { historyStr : String
+    }
+
+
 type CurrentStatus
     = NothingSelected StateOfCards
     | GameTerminated
@@ -76,10 +81,10 @@ toColor w =
             Rima
 
 
-main : Program Flags Model Msg
+main : Program Flags2 Model Msg
 main =
     Browser.element
-        { init = init
+        { init = init_
         , view = view
         , update = update
         , subscriptions = subscriptions
@@ -160,15 +165,21 @@ coordFromHistoryStr q =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update =
-    updateWithPotentialInfoOnDrawnCards Nothing
+    updateWithPotentialInfoOnDrawnCards NoInfo
 
 
-updateWithPotentialInfoOnDrawnCards : Maybe ( Profession, Profession, Profession ) -> Msg -> Model -> ( Model, Cmd Msg )
+type CardDrawInfo
+    = NoInfo
+    | ThreeCards ( Profession, Profession, Profession )
+    | NoCards
+
+
+updateWithPotentialInfoOnDrawnCards : CardDrawInfo -> Msg -> Model -> ( Model, Cmd Msg )
 updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, historySecond, currentStatus, saved }) as mdl) =
     case mesg of
         GoForward ->
             if String.left 1 historySecond == "~" then
-                updateWithPotentialInfoOnDrawnCards Nothing (Orig Cancel) mdl
+                updateWithPotentialInfoOnDrawnCards NoInfo (Orig Cancel) mdl
 
             else
                 case currentStatus of
@@ -184,7 +195,7 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                                         |> PieceOnTheBoard
                                         |> GiveFocusTo
                             in
-                            updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+                            updateWithPotentialInfoOnDrawnCards NoInfo (Orig decodedMsg) mdl
 
                         else
                         -- otherwise, there are three possibilities for the decoded message:
@@ -193,7 +204,7 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                         -- there are two possibilities:
                         -- * the end of the history string follows immediately after "o", "+" or "x"
                         -- * or, the profession is followed by a coordinate and a period
-                        -- * or, the profession is followed by a coordinte, "{", three cards drawn, "}" and then finally
+                        -- * or, the profession is followed by a coordinte, "{", three/zero cards drawn, "}" and then finally a period
                         if
                             String.length historySecond
                                 == 1
@@ -225,18 +236,20 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                                             Nothing ->
                                                 Debug.todo "cannot find an adequate piece in Rima's Hand 2"
                             in
-                            updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+                            updateWithPotentialInfoOnDrawnCards NoInfo (Orig decodedMsg) mdl
 
                         else if String.slice 3 4 historySecond == "{" then
                             let
-                                x =
-                                    String.slice 4 5 historySecond |> profFromHistoryStr
+                                cardDrawInfo =
+                                    if String.slice 4 5 historySecond == "}" then
+                                        NoCards
 
-                                y =
-                                    String.slice 5 6 historySecond |> profFromHistoryStr
-
-                                z =
-                                    String.slice 6 7 historySecond |> profFromHistoryStr
+                                    else
+                                        ThreeCards
+                                            ( String.slice 4 5 historySecond |> profFromHistoryStr
+                                            , String.slice 5 6 historySecond |> profFromHistoryStr
+                                            , String.slice 6 7 historySecond |> profFromHistoryStr
+                                            )
 
                                 profession =
                                     String.left 1 historySecond |> profFromHistoryStr
@@ -262,7 +275,7 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                                             Nothing ->
                                                 Debug.todo "cannot find an adequate piece in Rima's Hand 2"
                             in
-                            updateWithPotentialInfoOnDrawnCards (Just ( x, y, z )) (Orig decodedMsg) mdl
+                            updateWithPotentialInfoOnDrawnCards cardDrawInfo (Orig decodedMsg) mdl
 
                         else
                             -- In this branch, what's played is NOT a piece in either player's hand, but rather a PieceOnTheBoard.
@@ -275,7 +288,7 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                                         |> PieceOnTheBoard
                                         |> GiveFocusTo
                             in
-                            updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+                            updateWithPotentialInfoOnDrawnCards NoInfo (Orig decodedMsg) mdl
 
                     MoverIsSelected from _ ->
                         case from of
@@ -287,7 +300,7 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                                             |> coordFromHistoryStr
                                             |> MovementToward
                                 in
-                                updateWithPotentialInfoOnDrawnCards Nothing (Orig decodedMsg) mdl
+                                updateWithPotentialInfoOnDrawnCards NoInfo (Orig decodedMsg) mdl
 
                             _ ->
                                 let
@@ -296,21 +309,23 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                                 in
                                 if String.slice 2 3 historySecond == "." then
                                     -- no cards were drawn
-                                    updateWithPotentialInfoOnDrawnCards Nothing (Orig (MovementToward to)) mdl
+                                    updateWithPotentialInfoOnDrawnCards NoInfo (Orig (MovementToward to)) mdl
 
                                 else if String.slice 2 3 historySecond == "{" then
                                     -- cards were drawn, so supply such info
                                     let
-                                        x =
-                                            String.slice 3 4 historySecond |> profFromHistoryStr
+                                        cardDrawInfo =
+                                            if String.slice 3 4 historySecond == "}" then
+                                                NoCards
 
-                                        y =
-                                            String.slice 4 5 historySecond |> profFromHistoryStr
-
-                                        z =
-                                            String.slice 5 6 historySecond |> profFromHistoryStr
+                                            else
+                                                ThreeCards
+                                                    ( String.slice 3 4 historySecond |> profFromHistoryStr
+                                                    , String.slice 4 5 historySecond |> profFromHistoryStr
+                                                    , String.slice 5 6 historySecond |> profFromHistoryStr
+                                                    )
                                     in
-                                    updateWithPotentialInfoOnDrawnCards (Just ( x, y, z )) (Orig (MovementToward to)) mdl
+                                    updateWithPotentialInfoOnDrawnCards cardDrawInfo (Orig (MovementToward to)) mdl
 
                                 else
                                     Debug.todo "Unexpected character. Expected `.` or `{`"
@@ -320,10 +335,10 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                             to =
                                 String.slice 0 2 historySecond |> coordFromHistoryStr
                         in
-                        updateWithPotentialInfoOnDrawnCards Nothing (Orig (MovementToward to)) mdl
+                        updateWithPotentialInfoOnDrawnCards NoInfo (Orig (MovementToward to)) mdl
 
                     WaitForTrashBinClick _ ->
-                        updateWithPotentialInfoOnDrawnCards Nothing (Orig SendToTrashBinPart2) mdl
+                        updateWithPotentialInfoOnDrawnCards NoInfo (Orig SendToTrashBinPart2) mdl
 
                     AfterCircleSacrifice { remaining } ->
                         let
@@ -333,12 +348,12 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                             index =
                                 getIndexFromProf remaining profession
                         in
-                        updateWithPotentialInfoOnDrawnCards Nothing (Orig (SendToTrashBinPart1 { whoseHand = remaining.whoseTurn, index = index })) mdl
+                        updateWithPotentialInfoOnDrawnCards NoInfo (Orig (SendToTrashBinPart1 { whoseHand = remaining.whoseTurn, index = index })) mdl
 
                     NowWaitingForAdditionalSacrifice { remaining } ->
                         case String.left 1 historySecond of
                             "o" ->
-                                updateWithPotentialInfoOnDrawnCards Nothing
+                                updateWithPotentialInfoOnDrawnCards NoInfo
                                     (Orig
                                         (SendToTrashBinPart1
                                             { whoseHand = remaining.whoseTurn
@@ -349,7 +364,7 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                                     mdl
 
                             "+" ->
-                                updateWithPotentialInfoOnDrawnCards Nothing
+                                updateWithPotentialInfoOnDrawnCards NoInfo
                                     (Orig
                                         (SendToTrashBinPart1
                                             { whoseHand = remaining.whoseTurn
@@ -360,7 +375,7 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                                     mdl
 
                             "x" ->
-                                updateWithPotentialInfoOnDrawnCards Nothing
+                                updateWithPotentialInfoOnDrawnCards NoInfo
                                     (Orig
                                         (SendToTrashBinPart1
                                             { whoseHand = remaining.whoseTurn
@@ -373,20 +388,42 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                             "{" ->
                                 -- cards were drawn
                                 let
-                                    x =
-                                        String.slice 1 2 historySecond |> profFromHistoryStr
+                                    cardDrawInfo =
+                                        if String.slice 1 2 historySecond == "}" then
+                                            NoCards
 
-                                    y =
-                                        String.slice 2 3 historySecond |> profFromHistoryStr
-
-                                    z =
-                                        String.slice 3 4 historySecond |> profFromHistoryStr
+                                        else
+                                            ThreeCards
+                                                ( String.slice 1 2 historySecond |> profFromHistoryStr
+                                                , String.slice 2 3 historySecond |> profFromHistoryStr
+                                                , String.slice 3 4 historySecond |> profFromHistoryStr
+                                                )
                                 in
-                                updateWithPotentialInfoOnDrawnCards (Just ( x, y, z )) (Orig TurnEnd) mdl
+                                updateWithPotentialInfoOnDrawnCards cardDrawInfo (Orig TurnEnd) mdl
+
+                            "[" ->
+                                -- capture happened. cards might have been drawn.
+                                if String.slice 3 4 historySecond == "{" then
+                                    let
+                                        cardDrawInfo =
+                                            if String.slice 4 5 historySecond == "}" then
+                                                NoCards
+
+                                            else
+                                                ThreeCards
+                                                    ( String.slice 4 5 historySecond |> profFromHistoryStr
+                                                    , String.slice 5 6 historySecond |> profFromHistoryStr
+                                                    , String.slice 6 7 historySecond |> profFromHistoryStr
+                                                    )
+                                    in
+                                    updateWithPotentialInfoOnDrawnCards cardDrawInfo (Orig TurnEnd) mdl
+
+                                else
+                                    updateWithPotentialInfoOnDrawnCards NoInfo (Orig TurnEnd) mdl
 
                             _ ->
                                 -- cards were not drawn
-                                updateWithPotentialInfoOnDrawnCards Nothing (Orig TurnEnd) mdl
+                                updateWithPotentialInfoOnDrawnCards NoInfo (Orig TurnEnd) mdl
 
                     _ ->
                         Debug.todo "oh no!"
@@ -503,7 +540,7 @@ getWhoseTurn modl =
             Nothing
 
 
-newHistory : Maybe ( Profession, Profession, Profession ) -> Msg -> CurrentStatus -> String
+newHistory : CardDrawInfo -> Msg -> CurrentStatus -> String
 newHistory cardsDrawn msg modl =
     case msg of
         Orig m ->
@@ -519,7 +556,7 @@ newHistory cardsDrawn msg modl =
             "FIXME"
 
 
-newHistory_ : Maybe ( Profession, Profession, Profession ) -> OriginalMsg -> CurrentStatus -> String
+newHistory_ : CardDrawInfo -> OriginalMsg -> CurrentStatus -> String
 newHistory_ cardsDrawn msg modl =
     let
         unwrap =
@@ -658,17 +695,20 @@ isVictorious list =
     List.member All list || List.all (\p -> List.member p list) [ Diagonal, HorizontalVertical, Circle ]
 
 
-unsafeDeckSummoning : Maybe ( c, c, c ) -> List c
+unsafeDeckSummoning : CardDrawInfo -> List Profession
 unsafeDeckSummoning a =
     case a of
-        Nothing ->
+        NoInfo ->
             Debug.todo "FAILURE: expected to receive cards to be drawn, but got nothing"
 
-        Just ( b, c, d ) ->
+        ThreeCards ( b, c, d ) ->
             [ b, c, d ]
 
+        NoCards ->
+            []
 
-updateStatus : Maybe ( Profession, Profession, Profession ) -> OriginalMsg -> CurrentStatus -> CurrentStatus -> CurrentStatus
+
+updateStatus : CardDrawInfo -> OriginalMsg -> CurrentStatus -> CurrentStatus -> CurrentStatus
 updateStatus cardsDrawn msg modl saved =
     case ( modl, msg ) of
         ( _, Cancel ) ->
@@ -1883,6 +1923,14 @@ profFromHistoryStr c =
 
         _ ->
             Debug.todo ("unexpected `" ++ c ++ "` encountered while expecting a profession")
+
+
+init_ : Flags2 -> ( Model, Cmd Msg )
+init_ { historyStr } =
+    init
+        { historyFirst = String.left 66 historyStr
+        , historySecond = String.slice 66 (String.length historyStr) historyStr
+        }
 
 
 init : Flags -> ( Model, Cmd Msg )

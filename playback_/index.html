@@ -10,20 +10,19 @@
 <body>
     <div id="myapp"></div>
     <script>
-        var [historyFirst, historySecond] = [[`R+@11 Sx@23 K+@15
+        var historyStr = [`R+@11 Sx@23 K+@15
 K{oox} R{oxx}
 --------------------------------
-K`, `x55-44.
+Kx55-44.
 Rx51-42.
 Kx44-35ox24.
 Rx42-53x44x35[*].
 --------------------------------
-Rima`], [
-
-            `R+@11 S+@23 K+@15
+Rima`,
+ `R+@11 S+@23 K+@15
 K{ox+} R{oo+}
 --------------------------------
-K`, `+15-14.
+K+15-14.
 Ro13.
 K+14-13[o].
 Ro12.
@@ -71,12 +70,12 @@ K+14-13[*]{}.
 --------------------------------
 Kese`
 
-        ]][1];
+        ][1];
 
         var app = Elm.Main.init({
             node: document.getElementById('myapp'),
             flags: {
-                historyFirst, historySecond
+                historyStr
             }
         });
 
