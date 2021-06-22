@@ -6719,7 +6719,7 @@ var $author$project$Main$pieceSvg_ = F3(
 					p.prof,
 					$author$project$SvgColor$foregroundColor(p.pieceColor))));
 	});
-var $author$project$Main$spacing = function (n) {
+var $author$project$KeseRimaSvgElements$spacing = function (n) {
 	return (n <= 6) ? 0.846 : ((0.846 * 5.0) / (n - 1));
 };
 var $author$project$SvgColor$strokeColor = function (c) {
@@ -6810,7 +6810,7 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 							$author$project$KeseRimaTypes$None,
 							{
 								coord: {
-									x: (-0.115) + (i * $author$project$Main$spacing(
+									x: (-0.115) + (i * $author$project$KeseRimaSvgElements$spacing(
 										$elm$core$List$length(model.capturedByKese))),
 									y: 6.0
 								},
@@ -6838,7 +6838,7 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 							$author$project$KeseRimaTypes$None,
 							{
 								coord: {
-									x: ((-0.115) + (5.0 * 0.846)) - (i * $author$project$Main$spacing(
+									x: ((-0.115) + (5.0 * 0.846)) - (i * $author$project$KeseRimaSvgElements$spacing(
 										$elm$core$List$length(model.capturedByRima))),
 									y: -2.0
 								},
@@ -7349,24 +7349,24 @@ var $author$project$KeseRimaTypes$SendToTrashBinPart2 = {$: 'SendToTrashBinPart2
 var $author$project$SvgColor$trashBinColor = function (c) {
 	return c ? '#555' : '#eee';
 };
+var $author$project$KeseRimaSvgElements$trashBinSvg = _List_fromArray(
+	[
+		A2(
+		$elm$svg$Svg$path,
+		_List_fromArray(
+			[
+				$elm$svg$Svg$Attributes$d('M 0.8 22.4 l 11.8 67.4 c 1 4.4 5 7.4 9.4 7.4 c 0 0 0 0 0 0 h 45.4 c 4.4 0 8.2 -3.2 9.4 -7.4 v 0 l 11.8 -67.4 z m 43.8 11.6 c 1.6 0 2.6 1.2 2.6 2.6 v 43.6 c 0 1.4 -1 2.6 -2.6 2.6 c -1.4 0 -2.6 -1.2 -2.6 -2.6 v -43.6 c 0 -1.4 1.2 -2.6 2.6 -2.6 z m -21 0 c 1.4 0 2.6 1.2 2.6 2.4 l 3.8 43.6 c 0.2 1.4 -0.8 2.6 -2.4 2.8 c -1.4 0 -2.6 -1 -2.8 -2.4 l -3.8 -43.4 c -0.2 -1.6 1 -2.8 2.4 -3 c 0.2 0 0.2 0 0.2 0 z m 42 0 c 0 0 0 0 0.2 0 c 1.4 0.2 2.6 1.4 2.4 3 l -3.8 43.4 c -0.2 1.4 -1.4 2.4 -2.8 2.4 c -1.6 -0.2 -2.6 -1.4 -2.4 -2.8 l 3.8 -43.6 c 0 -1.2 1.2 -2.4 2.6 -2.4 z')
+			]),
+		_List_Nil),
+		A2(
+		$elm$svg$Svg$path,
+		_List_fromArray(
+			[
+				$elm$svg$Svg$Attributes$d('m 40 0 c -1.4 0 -2.6 1.2 -2.6 2.6 V 6 L 2.6 9 A 3 3 90 0 0 0 12 v 0 v 5.8 H 89.2 v -5.8 v 0 a 3 3 90 0 0 -2.6 -3 l -34.6 -3 V 2.6 c 0 -1.4 -1 -2.6 -2.4 -2.6 z')
+			]),
+		_List_Nil)
+	]);
 var $author$project$Main$trashBinSvg_ = function (clickable) {
-	var trashBinSvg = _List_fromArray(
-		[
-			A2(
-			$elm$svg$Svg$path,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$d('M 0.8 22.4 l 11.8 67.4 c 1 4.4 5 7.4 9.4 7.4 c 0 0 0 0 0 0 h 45.4 c 4.4 0 8.2 -3.2 9.4 -7.4 v 0 l 11.8 -67.4 z m 43.8 11.6 c 1.6 0 2.6 1.2 2.6 2.6 v 43.6 c 0 1.4 -1 2.6 -2.6 2.6 c -1.4 0 -2.6 -1.2 -2.6 -2.6 v -43.6 c 0 -1.4 1.2 -2.6 2.6 -2.6 z m -21 0 c 1.4 0 2.6 1.2 2.6 2.4 l 3.8 43.6 c 0.2 1.4 -0.8 2.6 -2.4 2.8 c -1.4 0 -2.6 -1 -2.8 -2.4 l -3.8 -43.4 c -0.2 -1.6 1 -2.8 2.4 -3 c 0.2 0 0.2 0 0.2 0 z m 42 0 c 0 0 0 0 0.2 0 c 1.4 0.2 2.6 1.4 2.4 3 l -3.8 43.4 c -0.2 1.4 -1.4 2.4 -2.8 2.4 c -1.6 -0.2 -2.6 -1.4 -2.4 -2.8 l 3.8 -43.6 c 0 -1.2 1.2 -2.4 2.6 -2.4 z')
-				]),
-			_List_Nil),
-			A2(
-			$elm$svg$Svg$path,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$d('m 40 0 c -1.4 0 -2.6 1.2 -2.6 2.6 V 6 L 2.6 9 A 3 3 90 0 0 0 12 v 0 v 5.8 H 89.2 v -5.8 v 0 a 3 3 90 0 0 -2.6 -3 l -34.6 -3 V 2.6 c 0 -1.4 -1 -2.6 -2.4 -2.6 z')
-				]),
-			_List_Nil)
-		]);
 	return clickable ? A2(
 		$elm$svg$Svg$g,
 		_List_fromArray(
@@ -7377,7 +7377,7 @@ var $author$project$Main$trashBinSvg_ = function (clickable) {
 				$author$project$SvgColor$trashBinColor(clickable))
 			]),
 		_Utils_ap(
-			trashBinSvg,
+			$author$project$KeseRimaSvgElements$trashBinSvg,
 			_List_fromArray(
 				[
 					A2(
@@ -7397,7 +7397,7 @@ var $author$project$Main$trashBinSvg_ = function (clickable) {
 				$elm$svg$Svg$Attributes$fill(
 				$author$project$SvgColor$trashBinColor(clickable))
 			]),
-		trashBinSvg);
+		$author$project$KeseRimaSvgElements$trashBinSvg);
 };
 var $author$project$Main$twoTrashBinsSvg = function (trashBinFocus) {
 	return _List_fromArray(

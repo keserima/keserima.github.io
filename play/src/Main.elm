@@ -598,7 +598,7 @@ displayCapturedCardsAndTwoDecks model =
                         { x =
                             -0.115
                                 {- to handle the automatic offset and the 3px difference in the border -} + toFloat i
-                                * (spacing <| List.length <| model.capturedByKese)
+                                * (KeseRimaSvgElements.spacing <| List.length <| model.capturedByKese)
                         , y = 6.0
                         }
                     , prof = prof
@@ -619,7 +619,7 @@ displayCapturedCardsAndTwoDecks model =
                                 {- to handle the automatic offset and the 3px difference in the border -} + 5.0
                                 * 0.846
                                 - toFloat i
-                                * (spacing <| List.length <| model.capturedByRima)
+                                * (KeseRimaSvgElements.spacing <| List.length <| model.capturedByRima)
                         , y = -2.0
                         }
                     , prof = prof
@@ -629,22 +629,6 @@ displayCapturedCardsAndTwoDecks model =
             model.capturedByRima
         )
     ]
-
-
-spacing : Int -> Float
-spacing n =
-    {- 0.846 * 5 + 0.80 == 5.03 -}
-    {- Adding to this two halves of width 1 borders gives 504px. -}
-    {- This exactly matches (100 pixel * 5) + two halves of width 4 borders -}
-    if n <= 6 then
-        0.846
-
-    else
-        {-
-           0.846 * (6-1) + 0.8 == x * (n-1) + 0.8
-           x = 0.846 * 5 / (n-1)
-        -}
-        0.846 * 5.0 / toFloat (n - 1)
 
 
 stationaryPart : StateOfCards -> List (Svg OriginalMsg)
@@ -670,13 +654,6 @@ twoTrashBinsSvg trashBinFocus =
 
 trashBinSvg_ : Bool -> Svg OriginalMsg
 trashBinSvg_ clickable =
-    let
-        trashBinSvg =
-            {- trash bin -}
-            [ Svg.path [ d "M 0.8 22.4 l 11.8 67.4 c 1 4.4 5 7.4 9.4 7.4 c 0 0 0 0 0 0 h 45.4 c 4.4 0 8.2 -3.2 9.4 -7.4 v 0 l 11.8 -67.4 z m 43.8 11.6 c 1.6 0 2.6 1.2 2.6 2.6 v 43.6 c 0 1.4 -1 2.6 -2.6 2.6 c -1.4 0 -2.6 -1.2 -2.6 -2.6 v -43.6 c 0 -1.4 1.2 -2.6 2.6 -2.6 z m -21 0 c 1.4 0 2.6 1.2 2.6 2.4 l 3.8 43.6 c 0.2 1.4 -0.8 2.6 -2.4 2.8 c -1.4 0 -2.6 -1 -2.8 -2.4 l -3.8 -43.4 c -0.2 -1.6 1 -2.8 2.4 -3 c 0.2 0 0.2 0 0.2 0 z m 42 0 c 0 0 0 0 0.2 0 c 1.4 0.2 2.6 1.4 2.4 3 l -3.8 43.4 c -0.2 1.4 -1.4 2.4 -2.8 2.4 c -1.6 -0.2 -2.6 -1.4 -2.4 -2.8 l 3.8 -43.6 c 0 -1.2 1.2 -2.4 2.6 -2.4 z" ] []
-            , Svg.path [ d "m 40 0 c -1.4 0 -2.6 1.2 -2.6 2.6 V 6 L 2.6 9 A 3 3 90 0 0 0 12 v 0 v 5.8 H 89.2 v -5.8 v 0 a 3 3 90 0 0 -2.6 -3 l -34.6 -3 V 2.6 c 0 -1.4 -1 -2.6 -2.4 -2.6 z" ] []
-            ]
-    in
     if clickable then
         g
             [ Svg.Events.onClick SendToTrashBinPart2
