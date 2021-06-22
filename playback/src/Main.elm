@@ -34,23 +34,27 @@ type alias Flags2 =
     }
 
 
-type CurrentStatus
-    = NothingSelected StateOfCards
+type alias CurrentStatus =
+    CurrentStatus_ ()
+
+
+type CurrentStatus_ a
+    = NothingSelected (StateOfCards_ a)
     | GameTerminated
         { board : List PieceOnBoard
         , capturedByKese : List Profession
         , capturedByRima : List Profession
-        , keseDeck : List ()
-        , rimaDeck : List ()
+        , keseDeck : List a
+        , rimaDeck : List a
         , keseHand : List Profession
         , rimaHand : List Profession
         , whoseVictory : PieceColor
         }
-    | MoverIsSelected Focus StateOfCards
-    | {- Sacrifice is necessary if currently stepping; otherwise not necessary -} NowWaitingForAdditionalSacrifice FloatingMover
-    | WaitForTrashBinClick { mover : PieceOnBoard, remaining : StateOfCards, whoseHand : WhoseTurn, index : Int }
-    | AfterSacrifice MoveCommand FloatingMover
-    | AfterCircleSacrifice FloatingMover
+    | MoverIsSelected Focus (StateOfCards_ a)
+    | {- Sacrifice is necessary if currently stepping; otherwise not necessary -} NowWaitingForAdditionalSacrifice (FloatingMover_ a)
+    | WaitForTrashBinClick { mover : PieceOnBoard, remaining : (StateOfCards_ a), whoseHand : WhoseTurn, index : Int }
+    | AfterSacrifice MoveCommand (FloatingMover_ a)
+    | AfterCircleSacrifice (FloatingMover_ a)
 
 
 type Msg
