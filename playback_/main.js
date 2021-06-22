@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1919, column: 13},
-					end: {line: 1919, column: 23}
+					start: {line: 1927, column: 13},
+					end: {line: 1927, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -6026,8 +6026,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1935, column: 13},
-					end: {line: 1935, column: 23}
+					start: {line: 1943, column: 13},
+					end: {line: 1943, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -8008,6 +8008,12 @@ var $author$project$Main$GoForward = {$: 'GoForward'};
 var $elm$html$Html$br = _VirtualDom_node('br');
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$h2 = _VirtualDom_node('h2');
+var $elm$html$Html$Attributes$height = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'height',
+		$elm$core$String$fromInt(n));
+};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -8022,6 +8028,7 @@ var $elm$html$Html$Attributes$href = function (url) {
 		'href',
 		_VirtualDom_noJavaScriptUri(url));
 };
+var $elm$html$Html$img = _VirtualDom_node('img');
 var $elm$core$List$intersperse = F2(
 	function (sep, xs) {
 		if (!xs.b) {
@@ -8041,6 +8048,12 @@ var $elm$core$List$intersperse = F2(
 		}
 	});
 var $elm$html$Html$p = _VirtualDom_node('p');
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
 var $elm$html$Html$strong = _VirtualDom_node('strong');
 var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
 var $elm$html$Html$a = _VirtualDom_node('a');
@@ -8079,6 +8092,46 @@ var $author$project$Main$view_ = F5(
 							_List_fromArray(
 								[
 									$elm$html$Html$text('架空伝統ゲーム「ケセリマ」棋譜再生')
+								])),
+							A2(
+							$elm$html$Html$p,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$author$project$Main$targetBlankLink,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('https://novelup.plus/story/433986940')
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$img,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$src('../imgs/keserima.png'),
+													$elm$html$Html$Attributes$height(200)
+												]),
+											_List_Nil)
+										]))
+								])),
+							A2(
+							$elm$html$Html$p,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$author$project$Main$targetBlankLink,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('../play/index.html'),
+											A2($elm$html$Html$Attributes$style, 'font-size', '200%')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('新規対局はこちら')
+										]))
 								])),
 							A2(
 							$elm$html$Html$p,

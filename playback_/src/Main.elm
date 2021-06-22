@@ -3,7 +3,7 @@ module Main exposing (init, main, view)
 import Browser
 import Debug
 import Html exposing (Html)
-import Html.Attributes exposing (href)
+import Html.Attributes exposing (href, src)
 import KeseRimaTypes exposing (..)
 import List.Extra exposing (filterNot)
 import Regex
@@ -1451,6 +1451,14 @@ view_ gameEndTweet historyFirst historySecond svgContent buttons =
     Html.div [ Html.Attributes.style "display" "flex" ]
         [ Html.div [ Html.Attributes.style "padding" "0px 20px 0 20px", Html.Attributes.style "min-width" "360px" ]
             [ Html.h2 [] [ Html.text "架空伝統ゲーム「ケセリマ」棋譜再生" ]
+            , Html.p []
+                [ targetBlankLink [ href "https://novelup.plus/story/433986940" ]
+                    [ Html.img [ src "../imgs/keserima.png", Html.Attributes.height 200 ] []
+                    ]
+                ]
+            , Html.p []
+                [ targetBlankLink [ href "../play/index.html", Html.Attributes.style "font-size" "200%" ] [ Html.text "新規対局はこちら" ]
+                ]
             , Html.p [ Html.Attributes.style "font-size" "80%" ]
                 [ targetBlankLink
                     [ href "https://github.com/keserima/keserima.github.io/issues/new" ]
