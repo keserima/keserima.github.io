@@ -6593,6 +6593,13 @@ var $author$project$SvgColor$backgroundColor = function (pieceColor) {
 			return '#60859d';
 	}
 };
+var $author$project$Main$msgToIcon = function (msgToBeSent) {
+	if (msgToBeSent.$ === 'None') {
+		return 'not-allowed';
+	} else {
+		return 'pointer';
+	}
+};
 var $author$project$SvgColor$foregroundColor = function (pieceColor) {
 	switch (pieceColor.$) {
 		case 'Kese':
@@ -6681,8 +6688,8 @@ var $author$project$KeseRimaSvgElements$glyph = F2(
 		}
 	});
 var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
-var $author$project$Main$pieceSvg_ = F3(
-	function (strok, msgToBeSent, p) {
+var $author$project$KeseRimaSvgElements$pieceSvg__ = F4(
+	function (toIcon, strok, msgToBeSent, p) {
 		return A2(
 			$elm$svg$Svg$g,
 			_List_fromArray(
@@ -6692,13 +6699,7 @@ var $author$project$Main$pieceSvg_ = F3(
 					A2(
 					$elm$html$Html$Attributes$style,
 					'cursor',
-					function () {
-						if (msgToBeSent.$ === 'None') {
-							return 'not-allowed';
-						} else {
-							return 'pointer';
-						}
-					}()),
+					toIcon(msgToBeSent)),
 					$elm$svg$Svg$Events$onClick(msgToBeSent)
 				]),
 			A2(
@@ -6722,6 +6723,7 @@ var $author$project$Main$pieceSvg_ = F3(
 					p.prof,
 					$author$project$SvgColor$foregroundColor(p.pieceColor))));
 	});
+var $author$project$Main$pieceSvg_ = $author$project$KeseRimaSvgElements$pieceSvg__($author$project$Main$msgToIcon);
 var $author$project$KeseRimaSvgElements$spacing = function (n) {
 	return (n <= 6) ? 0.846 : ((0.846 * 5.0) / (n - 1));
 };

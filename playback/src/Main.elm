@@ -889,37 +889,21 @@ pieceSvg focused msgToBeSent p =
         p
 
 
+msgToIcon msgToBeSent =
+    case msgToBeSent of
+        Orig None ->
+            "not-allowed"
+
+        TemporarilyDisabled _ ->
+            "default"
+
+        _ ->
+            "pointer"
+
+
 pieceSvg_ : { a | color : String, width : String } -> PlaybackMsg -> PieceWithFloatPosition -> Svg PlaybackMsg
-pieceSvg_ strok msgToBeSent p =
-    g
-        [ transform ("translate(" ++ String.fromFloat (p.coord.x * 100.0) ++ " " ++ String.fromFloat (p.coord.y * 100.0) ++ ")")
-        , Html.Attributes.style "cursor"
-            (case msgToBeSent of
-                Orig None ->
-                    "not-allowed"
-
-                TemporarilyDisabled _ ->
-                    "default"
-
-                _ ->
-                    "pointer"
-            )
-        , Svg.Events.onClick msgToBeSent
-        ]
-        (rect
-            [ x "12"
-            , y "12"
-            , width "80"
-            , height "80"
-            , fill (backgroundColor p.pieceColor)
-            , stroke
-                strok.color
-            , strokeWidth
-                strok.width
-            ]
-            []
-            :: KeseRimaSvgElements.glyph p.prof (foregroundColor p.pieceColor)
-        )
+pieceSvg_ =
+    pieceSvg__ msgToIcon
 
 
 drawUpToThree : List a -> ( List a, List a )

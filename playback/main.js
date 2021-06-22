@@ -5347,8 +5347,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1515, column: 13},
-					end: {line: 1515, column: 23}
+					start: {line: 1499, column: 13},
+					end: {line: 1499, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -6030,8 +6030,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1531, column: 13},
-					end: {line: 1531, column: 23}
+					start: {line: 1515, column: 13},
+					end: {line: 1515, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -7150,6 +7150,25 @@ var $author$project$SvgColor$backgroundColor = function (pieceColor) {
 			return '#60859d';
 	}
 };
+var $author$project$Main$msgToIcon = function (msgToBeSent) {
+	_v0$2:
+	while (true) {
+		switch (msgToBeSent.$) {
+			case 'Orig':
+				if (msgToBeSent.a.$ === 'None') {
+					var _v1 = msgToBeSent.a;
+					return 'not-allowed';
+				} else {
+					break _v0$2;
+				}
+			case 'TemporarilyDisabled':
+				return 'default';
+			default:
+				break _v0$2;
+		}
+	}
+	return 'pointer';
+};
 var $author$project$SvgColor$foregroundColor = function (pieceColor) {
 	switch (pieceColor.$) {
 		case 'Kese':
@@ -7238,8 +7257,8 @@ var $author$project$KeseRimaSvgElements$glyph = F2(
 		}
 	});
 var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
-var $author$project$Main$pieceSvg_ = F3(
-	function (strok, msgToBeSent, p) {
+var $author$project$KeseRimaSvgElements$pieceSvg__ = F4(
+	function (toIcon, strok, msgToBeSent, p) {
 		return A2(
 			$elm$svg$Svg$g,
 			_List_fromArray(
@@ -7249,25 +7268,7 @@ var $author$project$Main$pieceSvg_ = F3(
 					A2(
 					$elm$html$Html$Attributes$style,
 					'cursor',
-					function () {
-						_v0$2:
-						while (true) {
-							switch (msgToBeSent.$) {
-								case 'Orig':
-									if (msgToBeSent.a.$ === 'None') {
-										var _v1 = msgToBeSent.a;
-										return 'not-allowed';
-									} else {
-										break _v0$2;
-									}
-								case 'TemporarilyDisabled':
-									return 'default';
-								default:
-									break _v0$2;
-							}
-						}
-						return 'pointer';
-					}()),
+					toIcon(msgToBeSent)),
 					$elm$svg$Svg$Events$onClick(msgToBeSent)
 				]),
 			A2(
@@ -7291,6 +7292,7 @@ var $author$project$Main$pieceSvg_ = F3(
 					p.prof,
 					$author$project$SvgColor$foregroundColor(p.pieceColor))));
 	});
+var $author$project$Main$pieceSvg_ = $author$project$KeseRimaSvgElements$pieceSvg__($author$project$Main$msgToIcon);
 var $author$project$KeseRimaSvgElements$spacing = function (n) {
 	return (n <= 6) ? 0.846 : ((0.846 * 5.0) / (n - 1));
 };

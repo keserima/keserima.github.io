@@ -166,3 +166,25 @@ trashBinSvg_ clickable =
     else
         g [ fill (trashBinColor clickable) ] trashBinSvg
 
+pieceSvg__ : (msg -> String) -> { a | color : String, width : String } -> msg -> PieceWithFloatPosition -> Svg msg
+pieceSvg__ toIcon strok msgToBeSent p =
+    g
+        [ transform ("translate(" ++ String.fromFloat (p.coord.x * 100.0) ++ " " ++ String.fromFloat (p.coord.y * 100.0) ++ ")")
+        , Html.Attributes.style "cursor"
+            (toIcon msgToBeSent)
+        , Svg.Events.onClick msgToBeSent
+        ]
+        (rect
+            [ x "12"
+            , y "12"
+            , width "80"
+            , height "80"
+            , fill (backgroundColor p.pieceColor)
+            , stroke
+                strok.color
+            , strokeWidth
+                strok.width
+            ]
+            []
+            :: glyph p.prof (foregroundColor p.pieceColor)
+        )
