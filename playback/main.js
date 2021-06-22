@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1762, column: 13},
-					end: {line: 1762, column: 23}
+					start: {line: 1742, column: 13},
+					end: {line: 1742, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -6026,8 +6026,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1778, column: 13},
-					end: {line: 1778, column: 23}
+					start: {line: 1758, column: 13},
+					end: {line: 1758, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -7580,7 +7580,7 @@ var $author$project$Main$getCandidatesYellowWithCommand = F4(
 			}());
 	});
 var $author$project$SvgColor$redCandidateColor = '#ff0000';
-var $author$project$Main$goalCandidateRedSvg = F2(
+var $author$project$KeseRimaSvgElements$goalCandidateRedSvg = F2(
 	function (msgToBeSent, coord) {
 		return A2(
 			$elm$svg$Svg$g,
@@ -7607,7 +7607,7 @@ var $author$project$Main$goalCandidateRedSvg = F2(
 				]));
 	});
 var $author$project$SvgColor$yellowCandidateColor = '#ffff00';
-var $author$project$Main$goalCandidateYellowSvg = F2(
+var $author$project$KeseRimaSvgElements$goalCandidateYellowSvg = F2(
 	function (msgToBeSent, coord) {
 		return A2(
 			$elm$svg$Svg$g,
@@ -8449,7 +8449,7 @@ var $author$project$Main$view2 = F2(
 										$elm$core$List$map,
 										function (coord) {
 											return A2(
-												$author$project$Main$goalCandidateRedSvg,
+												$author$project$KeseRimaSvgElements$goalCandidateRedSvg,
 												cnst(
 													$author$project$KeseRimaTypes$MovementToward(coord)),
 												coord);
@@ -8460,7 +8460,7 @@ var $author$project$Main$view2 = F2(
 											$elm$core$List$map,
 											function (coord) {
 												return A2(
-													$author$project$Main$goalCandidateYellowSvg,
+													$author$project$KeseRimaSvgElements$goalCandidateYellowSvg,
 													cnst(
 														$author$project$KeseRimaTypes$MovementToward(coord)),
 													coord);
@@ -8504,7 +8504,7 @@ var $author$project$Main$view2 = F2(
 									$elm$core$List$map,
 									function (coord) {
 										return A2(
-											$author$project$Main$goalCandidateYellowSvg,
+											$author$project$KeseRimaSvgElements$goalCandidateYellowSvg,
 											cnst(
 												$author$project$KeseRimaTypes$MovementToward(coord)),
 											coord);
@@ -8774,7 +8774,7 @@ var $author$project$Main$view2 = F2(
 							$elm$core$List$map,
 							function (coord) {
 								return A2(
-									$author$project$Main$goalCandidateRedSvg,
+									$author$project$KeseRimaSvgElements$goalCandidateRedSvg,
 									cnst(
 										$author$project$KeseRimaTypes$MovementToward(coord)),
 									coord);
@@ -8785,7 +8785,7 @@ var $author$project$Main$view2 = F2(
 								$elm$core$List$map,
 								function (coord) {
 									return A2(
-										$author$project$Main$goalCandidateYellowSvg,
+										$author$project$KeseRimaSvgElements$goalCandidateYellowSvg,
 										cnst(
 											$author$project$KeseRimaTypes$MovementToward(coord)),
 										coord);

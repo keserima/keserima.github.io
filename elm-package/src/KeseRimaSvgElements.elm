@@ -3,6 +3,8 @@ import KeseRimaTypes exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (..)
+import SvgColor exposing (..)
+import Html.Attributes
 
 glyph : Profession -> String -> List (Svg msg)
 glyph profession color =
@@ -27,3 +29,22 @@ glyph profession color =
 
         All ->
             glyph HorizontalVertical color ++ glyph Diagonal color ++ glyph Circle color
+
+goalCandidateYellowSvg : msg -> Coordinate -> Svg msg
+goalCandidateYellowSvg msgToBeSent coord =
+    g
+        [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")")
+        , Svg.Events.onClick msgToBeSent
+        , Html.Attributes.style "cursor" "pointer"
+        ]
+        [ circle [ cx "52", cy "52", r "16", fill yellowCandidateColor ] [] ]
+
+
+goalCandidateRedSvg : msg -> Coordinate -> Svg msg
+goalCandidateRedSvg msgToBeSent coord =
+    g
+        [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")")
+        , Svg.Events.onClick msgToBeSent
+        , Html.Attributes.style "cursor" "pointer"
+        ]
+        [ rect [ x "36", y "36", width "32", height "32", fill redCandidateColor ] [] ]

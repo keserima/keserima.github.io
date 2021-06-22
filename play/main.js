@@ -7012,7 +7012,7 @@ var $author$project$Main$getCandidatesYellowWithCommand = F4(
 			}());
 	});
 var $author$project$SvgColor$redCandidateColor = '#ff0000';
-var $author$project$Main$goalCandidateRedSvg = F2(
+var $author$project$KeseRimaSvgElements$goalCandidateRedSvg = F2(
 	function (msgToBeSent, coord) {
 		return A2(
 			$elm$svg$Svg$g,
@@ -7039,7 +7039,7 @@ var $author$project$Main$goalCandidateRedSvg = F2(
 				]));
 	});
 var $author$project$SvgColor$yellowCandidateColor = '#ffff00';
-var $author$project$Main$goalCandidateYellowSvg = F2(
+var $author$project$KeseRimaSvgElements$goalCandidateYellowSvg = F2(
 	function (msgToBeSent, coord) {
 		return A2(
 			$elm$svg$Svg$g,
@@ -7952,7 +7952,7 @@ var $author$project$Main$view = function (_v0) {
 									$elm$core$List$map,
 									function (coord) {
 										return A2(
-											$author$project$Main$goalCandidateRedSvg,
+											$author$project$KeseRimaSvgElements$goalCandidateRedSvg,
 											$author$project$KeseRimaTypes$MovementToward(coord),
 											coord);
 									},
@@ -7962,7 +7962,7 @@ var $author$project$Main$view = function (_v0) {
 										$elm$core$List$map,
 										function (coord) {
 											return A2(
-												$author$project$Main$goalCandidateYellowSvg,
+												$author$project$KeseRimaSvgElements$goalCandidateYellowSvg,
 												$author$project$KeseRimaTypes$MovementToward(coord),
 												coord);
 										},
@@ -8002,7 +8002,7 @@ var $author$project$Main$view = function (_v0) {
 								$elm$core$List$map,
 								function (coord) {
 									return A2(
-										$author$project$Main$goalCandidateYellowSvg,
+										$author$project$KeseRimaSvgElements$goalCandidateYellowSvg,
 										$author$project$KeseRimaTypes$MovementToward(coord),
 										coord);
 								},
@@ -8257,7 +8257,7 @@ var $author$project$Main$view = function (_v0) {
 						$elm$core$List$map,
 						function (coord) {
 							return A2(
-								$author$project$Main$goalCandidateRedSvg,
+								$author$project$KeseRimaSvgElements$goalCandidateRedSvg,
 								$author$project$KeseRimaTypes$MovementToward(coord),
 								coord);
 						},
@@ -8267,7 +8267,7 @@ var $author$project$Main$view = function (_v0) {
 							$elm$core$List$map,
 							function (coord) {
 								return A2(
-									$author$project$Main$goalCandidateYellowSvg,
+									$author$project$KeseRimaSvgElements$goalCandidateYellowSvg,
 									$author$project$KeseRimaTypes$MovementToward(coord),
 									coord);
 							},

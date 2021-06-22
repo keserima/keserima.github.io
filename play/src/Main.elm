@@ -485,26 +485,6 @@ boardSvg =
     ]
 
 
-goalCandidateYellowSvg : OriginalMsg -> Coordinate -> Svg OriginalMsg
-goalCandidateYellowSvg msgToBeSent coord =
-    g
-        [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")")
-        , Svg.Events.onClick msgToBeSent
-        , Html.Attributes.style "cursor" "pointer"
-        ]
-        [ circle [ cx "52", cy "52", r "16", fill yellowCandidateColor ] [] ]
-
-
-goalCandidateRedSvg : OriginalMsg -> Coordinate -> Svg OriginalMsg
-goalCandidateRedSvg msgToBeSent coord =
-    g
-        [ transform ("translate(" ++ String.fromInt (coord.x * 100) ++ " " ++ String.fromInt (coord.y * 100) ++ ")")
-        , Svg.Events.onClick msgToBeSent
-        , Html.Attributes.style "cursor" "pointer"
-        ]
-        [ rect [ x "36", y "36", width "32", height "32", fill redCandidateColor ] [] ]
-
-
 pieceSvgOnGrid : Bool -> OriginalMsg -> PieceOnBoard -> Svg OriginalMsg
 pieceSvgOnGrid focused msg { coord, prof, pieceColor } =
     pieceSvg focused msg { coord = { x = toFloat coord.x, y = toFloat coord.y }, prof = prof, pieceColor = pieceColor }
