@@ -6864,7 +6864,7 @@ var $elm_community$list_extra$List$Extra$filterNot = F2(
 			A2($elm$core$Basics$composeL, $elm$core$Basics$not, pred),
 			list);
 	});
-var $author$project$Main$neitherOccupiedNorWater = function (board) {
+var $author$project$KeseRimaTypes$neitherOccupiedNorWater = function (board) {
 	return A2(
 		$elm_community$list_extra$List$Extra$filterNot,
 		$author$project$KeseRimaTypes$isWater,
@@ -6907,12 +6907,12 @@ var $author$project$Main$getCandidatesYellow_ = F4(
 				A2($author$project$KeseRimaTypes$filterWhetherMemberOf, shipPositions, raw_candidates)) : _Utils_ap(
 				A2(
 					$author$project$KeseRimaTypes$filterWhetherMemberOf,
-					$author$project$Main$neitherOccupiedNorWater(robbedBoard),
+					$author$project$KeseRimaTypes$neitherOccupiedNorWater(robbedBoard),
 					raw_candidates),
 				A2($author$project$KeseRimaTypes$filterWhetherMemberOf, shipPositions, raw_candidates));
 		}
 	});
-var $author$project$Main$addDelta = F2(
+var $author$project$KeseRimaTypes$addDelta = F2(
 	function (coord, _v0) {
 		var deltaX = _v0.a;
 		var deltaY = _v0.b;
@@ -6932,7 +6932,7 @@ var $author$project$Main$rawCandidates = F2(
 			case 'HorizontalVertical':
 				return A2(
 					$elm$core$List$concatMap,
-					$author$project$Main$addDelta(coord),
+					$author$project$KeseRimaTypes$addDelta(coord),
 					_List_fromArray(
 						[
 							_Utils_Tuple2(1, 0),
@@ -6943,7 +6943,7 @@ var $author$project$Main$rawCandidates = F2(
 			case 'Diagonal':
 				return A2(
 					$elm$core$List$concatMap,
-					$author$project$Main$addDelta(coord),
+					$author$project$KeseRimaTypes$addDelta(coord),
 					_List_fromArray(
 						[
 							_Utils_Tuple2(1, 1),
@@ -6954,7 +6954,7 @@ var $author$project$Main$rawCandidates = F2(
 			default:
 				return A2(
 					$elm$core$List$concatMap,
-					$author$project$Main$addDelta(coord),
+					$author$project$KeseRimaTypes$addDelta(coord),
 					_List_fromArray(
 						[
 							_Utils_Tuple2(1, 1),
@@ -6989,7 +6989,7 @@ var $author$project$Main$getCandidatesYellowWithCommand = F4(
 				if (moveCommand.$ === 'HorizVert') {
 					return A2(
 						$elm$core$List$concatMap,
-						$author$project$Main$addDelta(piece.coord),
+						$author$project$KeseRimaTypes$addDelta(piece.coord),
 						_List_fromArray(
 							[
 								_Utils_Tuple2(1, 0),
@@ -7000,7 +7000,7 @@ var $author$project$Main$getCandidatesYellowWithCommand = F4(
 				} else {
 					return A2(
 						$elm$core$List$concatMap,
-						$author$project$Main$addDelta(piece.coord),
+						$author$project$KeseRimaTypes$addDelta(piece.coord),
 						_List_fromArray(
 							[
 								_Utils_Tuple2(1, 1),
@@ -7146,7 +7146,7 @@ var $author$project$KeseRimaTypes$toColor = function (w) {
 		return $author$project$KeseRimaTypes$Rima;
 	}
 };
-var $author$project$Main$playerSvg = F2(
+var $author$project$KeseRimaSvgElements$playerSvg = F2(
 	function (playerColor, o) {
 		var translateY = function () {
 			if (playerColor.$ === 'KeseTurn') {
@@ -7318,14 +7318,14 @@ var $author$project$Main$stationaryPart = function (cardState) {
 				_List_fromArray(
 					[
 						A2(
-						$author$project$Main$playerSvg,
+						$author$project$KeseRimaSvgElements$playerSvg,
 						$author$project$KeseRimaTypes$KeseTurn,
 						{
 							bigAndBlurred: _Utils_eq($author$project$KeseRimaTypes$KeseTurn, cardState.whoseTurn),
 							victoryCrown: false
 						}),
 						A2(
-						$author$project$Main$playerSvg,
+						$author$project$KeseRimaSvgElements$playerSvg,
 						$author$project$KeseRimaTypes$RimaTurn,
 						{
 							bigAndBlurred: _Utils_eq($author$project$KeseRimaTypes$RimaTurn, cardState.whoseTurn),
@@ -7849,14 +7849,14 @@ var $author$project$Main$view = function (_v0) {
 								_List_fromArray(
 									[
 										A2(
-										$author$project$Main$playerSvg,
+										$author$project$KeseRimaSvgElements$playerSvg,
 										$author$project$KeseRimaTypes$KeseTurn,
 										{
 											bigAndBlurred: !_Utils_eq($author$project$KeseRimaTypes$Rima, cardState.whoseVictory),
 											victoryCrown: !_Utils_eq($author$project$KeseRimaTypes$Rima, cardState.whoseVictory)
 										}),
 										A2(
-										$author$project$Main$playerSvg,
+										$author$project$KeseRimaSvgElements$playerSvg,
 										$author$project$KeseRimaTypes$RimaTurn,
 										{
 											bigAndBlurred: !_Utils_eq($author$project$KeseRimaTypes$Kese, cardState.whoseVictory),
@@ -8006,7 +8006,7 @@ var $author$project$Main$view = function (_v0) {
 										$author$project$KeseRimaTypes$MovementToward(coord),
 										coord);
 								},
-								$author$project$Main$neitherOccupiedNorWater(cardState.board)),
+								$author$project$KeseRimaTypes$neitherOccupiedNorWater(cardState.board)),
 							_Utils_ap(
 								A2(
 									$elm$core$List$indexedMap,

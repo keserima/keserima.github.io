@@ -1,5 +1,6 @@
 module KeseRimaTypes exposing (..)
 import Regex
+import List.Extra exposing (filterNot)
 
 type alias Coordinate =
     { x : Int, y : Int }
@@ -238,3 +239,25 @@ allCoord =
                 [ 0, 1, 2, 3, 4 ]
         )
         [ 0, 1, 2, 3, 4 ]
+
+neitherOccupiedNorWater : List PieceOnBoard -> List Coordinate
+neitherOccupiedNorWater board =
+    allCoord
+        |> filterNot (\coord -> List.member coord (List.map .coord board))
+        |> filterNot isWater
+
+
+addDelta : Coordinate -> ( Int, Int ) -> List Coordinate
+addDelta coord ( deltaX, deltaY ) =
+    let
+        x =
+            coord.x + deltaX
+
+        y =
+            coord.y + deltaY
+    in
+    if 0 <= x && x <= 4 && 0 <= y && y <= 4 then
+        [ { x = x, y = y } ]
+
+    else
+        []
