@@ -4,19 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <title>ケセリマの棋譜を眺める</title>
+    <script src="past_games.js"></script>
     <script src="main.js"></script>
 </head>
 
 <body>
-    <a href="https://novelup.plus/story/433986940" target="_blank"><img src="../imgs/keserima.png" height="200"></a>
-    <p>ここには以下の棋譜を再生する機能がいつか実装されるはずですが、今のところまだ実装できていません。</p><p><a href="../play/index.html"
-            style="font-size: 200%">こちら</a>から新規対局を楽しむことができますので、ご利用ください。</p>
     <div id="myapp"></div>
     <script>
+        var url2 = new URL(window.location);
+        var params = new URLSearchParams(url2.search);
+        var historyStr = params.get("playback") ?? PAST_GAMES[Math.floor(Math.random() * PAST_GAMES.length)];
         var app = Elm.Main.init({
             node: document.getElementById('myapp'),
-            flags: { url: location.href }
+            flags: {
+                historyStr
+            }
         });
+
     </script>
 </body>
 
