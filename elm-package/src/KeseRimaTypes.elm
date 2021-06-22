@@ -67,6 +67,24 @@ type Focus
     | PieceInKeseHand Int
     | PieceInRimaHand Int
 
+type CurrentStatus_ a
+    = NothingSelected (StateOfCards_ a)
+    | GameTerminated
+        { board : List PieceOnBoard
+        , capturedByKese : List Profession
+        , capturedByRima : List Profession
+        , keseDeck : List a
+        , rimaDeck : List a
+        , keseHand : List Profession
+        , rimaHand : List Profession
+        , whoseVictory : PieceColor
+        }
+    | MoverIsSelected Focus (StateOfCards_ a)
+    | {- Sacrifice is necessary if currently stepping; otherwise not necessary -} NowWaitingForAdditionalSacrifice (FloatingMover_ a)
+    | WaitForTrashBinClick { mover : PieceOnBoard, remaining : (StateOfCards_ a), whoseHand : WhoseTurn, index : Int }
+    | AfterSacrifice MoveCommand (FloatingMover_ a)
+    | AfterCircleSacrifice (FloatingMover_ a)
+
 
 isWater : Coordinate -> Bool
 isWater coord =
