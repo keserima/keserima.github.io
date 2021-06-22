@@ -652,20 +652,6 @@ twoTrashBinsSvg trashBinFocus =
     ]
 
 
-trashBinSvg_ : Bool -> Svg OriginalMsg
-trashBinSvg_ clickable =
-    if clickable then
-        g
-            [ Svg.Events.onClick SendToTrashBinPart2
-            , Html.Attributes.style "cursor" "pointer"
-            , fill (trashBinColor clickable)
-            ]
-            (trashBinSvg ++ [ circle [ cx "45", cy "55", r "16", fill yellowCandidateColor ] [] ])
-
-    else
-        g [ fill (trashBinColor clickable) ] trashBinSvg
-
-
 targetBlankLink : List (Attribute msg) -> List (Html msg) -> Html msg
 targetBlankLink attributes =
     Html.a (Html.Attributes.target "_blank" :: attributes)
