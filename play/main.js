@@ -6608,7 +6608,7 @@ var $elm$svg$Svg$Attributes$d = _VirtualDom_attribute('d');
 var $elm$svg$Svg$path = $elm$svg$Svg$trustedNode('path');
 var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
 var $elm$svg$Svg$Attributes$strokeLinecap = _VirtualDom_attribute('stroke-linecap');
-var $author$project$Main$glyph = F2(
+var $author$project$KeseRimaSvgElements$glyph = F2(
 	function (profession, color) {
 		var style = _List_fromArray(
 			[
@@ -6671,10 +6671,10 @@ var $author$project$Main$glyph = F2(
 					]);
 			default:
 				return _Utils_ap(
-					A2($author$project$Main$glyph, $author$project$KeseRimaTypes$HorizontalVertical, color),
+					A2($author$project$KeseRimaSvgElements$glyph, $author$project$KeseRimaTypes$HorizontalVertical, color),
 					_Utils_ap(
-						A2($author$project$Main$glyph, $author$project$KeseRimaTypes$Diagonal, color),
-						A2($author$project$Main$glyph, $author$project$KeseRimaTypes$Circle, color)));
+						A2($author$project$KeseRimaSvgElements$glyph, $author$project$KeseRimaTypes$Diagonal, color),
+						A2($author$project$KeseRimaSvgElements$glyph, $author$project$KeseRimaTypes$Circle, color)));
 		}
 	});
 var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
@@ -6715,7 +6715,7 @@ var $author$project$Main$pieceSvg_ = F3(
 						]),
 					_List_Nil),
 				A2(
-					$author$project$Main$glyph,
+					$author$project$KeseRimaSvgElements$glyph,
 					p.prof,
 					$author$project$SvgColor$foregroundColor(p.pieceColor))));
 	});
@@ -7132,7 +7132,7 @@ var $author$project$Main$pieceWaitingForAdditionalCommandSvg = function (p) {
 					]),
 				_List_Nil),
 			A2(
-				$author$project$Main$glyph,
+				$author$project$KeseRimaSvgElements$glyph,
 				p.prof,
 				$author$project$SvgColor$foregroundColor(p.pieceColor))));
 };

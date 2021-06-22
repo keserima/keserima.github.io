@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1786, column: 13},
-					end: {line: 1786, column: 23}
+					start: {line: 1762, column: 13},
+					end: {line: 1762, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -5492,8 +5492,8 @@ var $author$project$Main$coordFromHistoryStr = function (q) {
 				return _Debug_todo(
 					'Main',
 					{
-						start: {line: 94, column: 21},
-						end: {line: 94, column: 31}
+						start: {line: 95, column: 21},
+						end: {line: 95, column: 31}
 					})('unexpected `' + (u + '` encountered while expecting a coordinate'));
 		}
 	};
@@ -5547,8 +5547,8 @@ var $author$project$Main$getIndexFromProf = F2(
 				return _Debug_todo(
 					'Main',
 					{
-						start: {line: 431, column: 21},
-						end: {line: 431, column: 31}
+						start: {line: 432, column: 21},
+						end: {line: 432, column: 31}
 					})('cannot find an adequate piece in Kese\'s Hand 1');
 			}
 		} else {
@@ -5563,8 +5563,8 @@ var $author$project$Main$getIndexFromProf = F2(
 				return _Debug_todo(
 					'Main',
 					{
-						start: {line: 439, column: 21},
-						end: {line: 439, column: 31}
+						start: {line: 440, column: 21},
+						end: {line: 440, column: 31}
 					})('cannot find an adequate piece in Rima\'s Hand 1');
 			}
 		}
@@ -5753,8 +5753,8 @@ var $author$project$Main$unsafeDeckSummoning = function (a) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 599, column: 13},
-					end: {line: 599, column: 23}
+					start: {line: 600, column: 13},
+					end: {line: 600, column: 23}
 				})('FAILURE: expected to receive cards to be drawn, but got nothing');
 		case 'ThreeCards':
 			var _v1 = a.a;
@@ -6026,8 +6026,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1802, column: 13},
-					end: {line: 1802, column: 23}
+					start: {line: 1778, column: 13},
+					end: {line: 1778, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -6593,8 +6593,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 													return _Debug_todo(
 														'Main',
 														{
-															start: {line: 158, column: 49},
-															end: {line: 158, column: 59}
+															start: {line: 159, column: 49},
+															end: {line: 159, column: 59}
 														})('cannot find an adequate piece in Kese\'s Hand 2');
 												}
 											} else {
@@ -6610,8 +6610,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 													return _Debug_todo(
 														'Main',
 														{
-															start: {line: 168, column: 49},
-															end: {line: 168, column: 59}
+															start: {line: 169, column: 49},
+															end: {line: 169, column: 59}
 														})('cannot find an adequate piece in Rima\'s Hand 2');
 												}
 											}
@@ -6641,8 +6641,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 														return _Debug_todo(
 															'Main',
 															{
-																start: {line: 197, column: 49},
-																end: {line: 197, column: 59}
+																start: {line: 198, column: 49},
+																end: {line: 198, column: 59}
 															})('cannot find an adequate piece in Kese\'s Hand 2');
 													}
 												} else {
@@ -6658,8 +6658,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 														return _Debug_todo(
 															'Main',
 															{
-																start: {line: 207, column: 49},
-																end: {line: 207, column: 59}
+																start: {line: 208, column: 49},
+																end: {line: 208, column: 59}
 															})('cannot find an adequate piece in Rima\'s Hand 2');
 													}
 												}
@@ -6741,8 +6741,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 											return _Debug_todo(
 												'Main',
 												{
-													start: {line: 262, column: 37},
-													end: {line: 262, column: 47}
+													start: {line: 263, column: 37},
+													end: {line: 263, column: 47}
 												})('Unexpected character. Expected `.` or `{`');
 										}
 									}
@@ -6878,8 +6878,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 								return _Debug_todo(
 									'Main',
 									{
-										start: {line: 360, column: 25},
-										end: {line: 360, column: 35}
+										start: {line: 361, column: 25},
+										end: {line: 361, column: 35}
 									})('oh no!');
 						}
 					}
@@ -7164,7 +7164,7 @@ var $elm$svg$Svg$Attributes$d = _VirtualDom_attribute('d');
 var $elm$svg$Svg$path = $elm$svg$Svg$trustedNode('path');
 var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
 var $elm$svg$Svg$Attributes$strokeLinecap = _VirtualDom_attribute('stroke-linecap');
-var $author$project$Main$glyph = F2(
+var $author$project$KeseRimaSvgElements$glyph = F2(
 	function (profession, color) {
 		var style = _List_fromArray(
 			[
@@ -7227,10 +7227,10 @@ var $author$project$Main$glyph = F2(
 					]);
 			default:
 				return _Utils_ap(
-					A2($author$project$Main$glyph, $author$project$KeseRimaTypes$HorizontalVertical, color),
+					A2($author$project$KeseRimaSvgElements$glyph, $author$project$KeseRimaTypes$HorizontalVertical, color),
 					_Utils_ap(
-						A2($author$project$Main$glyph, $author$project$KeseRimaTypes$Diagonal, color),
-						A2($author$project$Main$glyph, $author$project$KeseRimaTypes$Circle, color)));
+						A2($author$project$KeseRimaSvgElements$glyph, $author$project$KeseRimaTypes$Diagonal, color),
+						A2($author$project$KeseRimaSvgElements$glyph, $author$project$KeseRimaTypes$Circle, color)));
 		}
 	});
 var $elm$svg$Svg$Attributes$transform = _VirtualDom_attribute('transform');
@@ -7283,7 +7283,7 @@ var $author$project$Main$pieceSvg_ = F3(
 						]),
 					_List_Nil),
 				A2(
-					$author$project$Main$glyph,
+					$author$project$KeseRimaSvgElements$glyph,
 					p.prof,
 					$author$project$SvgColor$foregroundColor(p.pieceColor))));
 	});
@@ -7700,7 +7700,7 @@ var $author$project$Main$pieceWaitingForAdditionalCommandSvg = function (p) {
 					]),
 				_List_Nil),
 			A2(
-				$author$project$Main$glyph,
+				$author$project$KeseRimaSvgElements$glyph,
 				p.prof,
 				$author$project$SvgColor$foregroundColor(p.pieceColor))));
 };

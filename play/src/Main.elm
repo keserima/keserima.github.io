@@ -3,6 +3,7 @@ module Main exposing (init, main, view)
 import Browser
 import Html exposing (Html)
 import Html.Attributes exposing (href)
+import KeseRimaSvgElements exposing (..)
 import KeseRimaTypes exposing (..)
 import List.Extra exposing (filterNot)
 import Regex
@@ -484,31 +485,6 @@ boardSvg =
     ]
 
 
-glyph : Profession -> String -> List (Svg msg)
-glyph profession color =
-    let
-        style =
-            [ fill "transparent", stroke color, strokeWidth "6", strokeLinecap "round" ]
-    in
-    case profession of
-        HorizontalVertical ->
-            [ Svg.path (d "M 21 52 h 62" :: style) []
-            , Svg.path (d "M 52 21 v 62" :: style) []
-            ]
-
-        Diagonal ->
-            [ Svg.path (d "M 24 24 l  56 56" :: style) []
-            , Svg.path (d "M 80 24 l -56 56" :: style) []
-            ]
-
-        Circle ->
-            [ circle ([ cx "52", cy "52", r "27" ] ++ style) []
-            ]
-
-        All ->
-            glyph HorizontalVertical color ++ glyph Diagonal color ++ glyph Circle color
-
-
 goalCandidateYellowSvg : OriginalMsg -> Coordinate -> Svg OriginalMsg
 goalCandidateYellowSvg msgToBeSent coord =
     g
@@ -580,7 +556,7 @@ pieceSvg_ strok msgToBeSent p =
                 strok.width
             ]
             []
-            :: glyph p.prof (foregroundColor p.pieceColor)
+            :: KeseRimaSvgElements.glyph p.prof (foregroundColor p.pieceColor)
         )
 
 
@@ -600,7 +576,7 @@ pieceWaitingForAdditionalCommandSvg p =
             , strokeWidth "2"
             ]
             []
-            :: glyph p.prof (foregroundColor p.pieceColor)
+            :: KeseRimaSvgElements.glyph p.prof (foregroundColor p.pieceColor)
         )
 
 
