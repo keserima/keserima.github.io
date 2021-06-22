@@ -6409,7 +6409,7 @@ var $author$project$KeseRimaTypes$PieceOnTheBoard = function (a) {
 var $author$project$KeseRimaTypes$SendToTrashBinPart1 = function (a) {
 	return {$: 'SendToTrashBinPart1', a: a};
 };
-var $author$project$Main$allCoordsOccupiedBy = F2(
+var $author$project$KeseRimaTypes$allCoordsOccupiedBy = F2(
 	function (color, board) {
 		return A2(
 			$elm$core$List$map,
@@ -7927,12 +7927,12 @@ var $author$project$Main$view = function (_v0) {
 								case 'Kese':
 									return A2(
 										$author$project$KeseRimaTypes$filterWhetherMemberOf,
-										A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, robbedBoard),
+										A2($author$project$KeseRimaTypes$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, robbedBoard),
 										A3($author$project$KeseRimaTypes$getCandidatesYellow, true, focused_piece, robbedBoard));
 								default:
 									return A2(
 										$author$project$KeseRimaTypes$filterWhetherMemberOf,
-										A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, robbedBoard),
+										A2($author$project$KeseRimaTypes$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, robbedBoard),
 										A3($author$project$KeseRimaTypes$getCandidatesYellow, true, focused_piece, robbedBoard));
 							}
 						}();
@@ -8238,12 +8238,12 @@ var $author$project$Main$view = function (_v0) {
 					case 'Kese':
 						return A2(
 							$author$project$KeseRimaTypes$filterWhetherMemberOf,
-							A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, remaining.board),
+							A2($author$project$KeseRimaTypes$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, remaining.board),
 							A4($author$project$KeseRimaTypes$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 					default:
 						return A2(
 							$author$project$KeseRimaTypes$filterWhetherMemberOf,
-							A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, remaining.board),
+							A2($author$project$KeseRimaTypes$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, remaining.board),
 							A4($author$project$KeseRimaTypes$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 				}
 			}();

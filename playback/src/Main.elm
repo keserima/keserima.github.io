@@ -1101,11 +1101,6 @@ view_ gameEndTweet historyFirst historySecond svgContent buttons =
         ]
 
 
-allCoordsOccupiedBy : PieceColor -> List PieceOnBoard -> List Coordinate
-allCoordsOccupiedBy color board =
-    board |> List.filter (\p -> p.pieceColor == color) |> List.map .coord
-
-
 view : Model -> Html PlaybackMsg
 view =
     view2 TemporarilyDisabled

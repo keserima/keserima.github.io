@@ -342,3 +342,8 @@ getCandidatesYellowWithCommand moveCommand hasCircleInHand piece robbedBoard =
             Diag ->
                 List.concatMap (addDelta piece.coord) [ ( 1, 1 ), ( -1, -1 ), ( -1, 1 ), ( 1, -1 ) ]
         )
+
+
+allCoordsOccupiedBy : PieceColor -> List PieceOnBoard -> List Coordinate
+allCoordsOccupiedBy color board =
+    board |> List.filter (\p -> p.pieceColor == color) |> List.map .coord

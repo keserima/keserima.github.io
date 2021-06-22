@@ -753,10 +753,6 @@ view_ gameEndTweet history svgContent buttons =
         ]
 
 
-allCoordsOccupiedBy : PieceColor -> List PieceOnBoard -> List Coordinate
-allCoordsOccupiedBy color board =
-    board |> List.filter (\p -> p.pieceColor == color) |> List.map .coord
-
 
 view : Model -> Html OriginalMsg
 view (Model { historyString, currentStatus }) =

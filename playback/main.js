@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1534, column: 13},
-					end: {line: 1534, column: 23}
+					start: {line: 1529, column: 13},
+					end: {line: 1529, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -6026,8 +6026,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1550, column: 13},
-					end: {line: 1550, column: 23}
+					start: {line: 1545, column: 13},
+					end: {line: 1545, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -6954,7 +6954,7 @@ var $author$project$Main$TemporarilyDisabled = function (a) {
 	return {$: 'TemporarilyDisabled', a: a};
 };
 var $author$project$KeseRimaTypes$None = {$: 'None'};
-var $author$project$Main$allCoordsOccupiedBy = F2(
+var $author$project$KeseRimaTypes$allCoordsOccupiedBy = F2(
 	function (color, board) {
 		return A2(
 			$elm$core$List$map,
@@ -8424,12 +8424,12 @@ var $author$project$Main$view2 = F2(
 									case 'Kese':
 										return A2(
 											$author$project$KeseRimaTypes$filterWhetherMemberOf,
-											A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, robbedBoard),
+											A2($author$project$KeseRimaTypes$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, robbedBoard),
 											A3($author$project$KeseRimaTypes$getCandidatesYellow, true, focused_piece, robbedBoard));
 									default:
 										return A2(
 											$author$project$KeseRimaTypes$filterWhetherMemberOf,
-											A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, robbedBoard),
+											A2($author$project$KeseRimaTypes$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, robbedBoard),
 											A3($author$project$KeseRimaTypes$getCandidatesYellow, true, focused_piece, robbedBoard));
 								}
 							}();
@@ -8752,12 +8752,12 @@ var $author$project$Main$view2 = F2(
 						case 'Kese':
 							return A2(
 								$author$project$KeseRimaTypes$filterWhetherMemberOf,
-								A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, remaining.board),
+								A2($author$project$KeseRimaTypes$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Rima, remaining.board),
 								A4($author$project$KeseRimaTypes$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 						default:
 							return A2(
 								$author$project$KeseRimaTypes$filterWhetherMemberOf,
-								A2($author$project$Main$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, remaining.board),
+								A2($author$project$KeseRimaTypes$allCoordsOccupiedBy, $author$project$KeseRimaTypes$Kese, remaining.board),
 								A4($author$project$KeseRimaTypes$getCandidatesYellowWithCommand, command, true, mover, remaining.board));
 					}
 				}();
