@@ -7139,7 +7139,7 @@ var $author$project$Main$pieceWaitingForAdditionalCommandSvg = function (p) {
 var $author$project$SvgColor$blurShadowColor = '#404040';
 var $author$project$SvgColor$crownColor = '#ffff00';
 var $elm$svg$Svg$Attributes$style = _VirtualDom_attribute('style');
-var $author$project$Main$toColor = function (w) {
+var $author$project$KeseRimaTypes$toColor = function (w) {
 	if (w.$ === 'KeseTurn') {
 		return $author$project$KeseRimaTypes$Kese;
 	} else {
@@ -7190,7 +7190,7 @@ var $author$project$Main$playerSvg = F2(
 					crownStyle),
 				_List_Nil)
 			]);
-		var color = $author$project$Main$toColor(playerColor);
+		var color = $author$project$KeseRimaTypes$toColor(playerColor);
 		var person = _List_fromArray(
 			[
 				A2(
@@ -7778,7 +7778,7 @@ var $author$project$Main$view = function (_v0) {
 										false,
 										(_Utils_eq(piece.pieceColor, $author$project$KeseRimaTypes$Ship) || _Utils_eq(
 											piece.pieceColor,
-											$author$project$Main$toColor(cardState.whoseTurn))) ? $author$project$KeseRimaTypes$GiveFocusTo(
+											$author$project$KeseRimaTypes$toColor(cardState.whoseTurn))) ? $author$project$KeseRimaTypes$GiveFocusTo(
 											$author$project$KeseRimaTypes$PieceOnTheBoard(piece.coord)) : $author$project$KeseRimaTypes$None,
 										piece);
 								},

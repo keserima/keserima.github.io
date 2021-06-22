@@ -55,16 +55,6 @@ type Model
         }
 
 
-toColor : WhoseTurn -> PieceColor
-toColor w =
-    case w of
-        KeseTurn ->
-            Kese
-
-        RimaTurn ->
-            Rima
-
-
 main : Program Flags2 Model PlaybackMsg
 main =
     Browser.element

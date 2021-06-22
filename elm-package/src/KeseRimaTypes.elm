@@ -95,6 +95,15 @@ type OriginalMsg
     | MovementToward Coordinate
 
 
+toColor : WhoseTurn -> PieceColor
+toColor w =
+    case w of
+        KeseTurn ->
+            Kese
+
+        RimaTurn ->
+            Rima
+
 
 isWater : Coordinate -> Bool
 isWater coord =
