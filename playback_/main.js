@@ -8156,7 +8156,8 @@ var $author$project$Main$view_ = F5(
 											_List_fromArray(
 												[
 													A2($elm$html$Html$Attributes$style, 'width', '20%'),
-													$elm$html$Html$Attributes$disabled(gameEndTweet),
+													$elm$html$Html$Attributes$disabled(
+													gameEndTweet || $elm$core$String$isEmpty(historySecond)),
 													$elm$svg$Svg$Events$onClick($author$project$Main$GoForward)
 												]),
 											_List_fromArray(

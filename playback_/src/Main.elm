@@ -1471,7 +1471,7 @@ view_ gameEndTweet historyFirst historySecond svgContent buttons =
                     , Html.div [ Html.Attributes.style "width" "60%" ] []
                     , Html.button
                         [ Html.Attributes.style "width" "20%"
-                        , Html.Attributes.disabled gameEndTweet
+                        , Html.Attributes.disabled (gameEndTweet || String.isEmpty historySecond)
                         , onClick GoForward
                         ]
                         [ Html.text "→" ]
