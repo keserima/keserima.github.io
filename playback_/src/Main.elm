@@ -2052,12 +2052,3 @@ init flags =
         }
     , Cmd.none
     )
-
-
-assertEq a b =
-    \c ->
-        if a == b then
-            c
-
-        else
-            Debug.todo ("assertion failed: `" ++ Debug.toString a ++ "` and `" ++ Debug.toString b ++ "` are not equal")
