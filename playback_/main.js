@@ -5282,8 +5282,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1819, column: 13},
-					end: {line: 1819, column: 23}
+					start: {line: 1826, column: 13},
+					end: {line: 1826, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -5446,6 +5446,10 @@ var $author$project$KeseRimaTypes$PieceInRimaHand = function (a) {
 var $author$project$KeseRimaTypes$PieceOnTheBoard = function (a) {
 	return {$: 'PieceOnTheBoard', a: a};
 };
+var $author$project$Main$SendToTrashBinPart1 = function (a) {
+	return {$: 'SendToTrashBinPart1', a: a};
+};
+var $author$project$Main$SendToTrashBinPart2 = {$: 'SendToTrashBinPart2'};
 var $elm$regex$Regex$Match = F4(
 	function (match, index, number, submatches) {
 		return {index: index, match: match, number: number, submatches: submatches};
@@ -5692,8 +5696,8 @@ var $author$project$Main$unsafeDeckSummoning = function (a) {
 		return _Debug_todo(
 			'Main',
 			{
-				start: {line: 602, column: 13},
-				end: {line: 602, column: 23}
+				start: {line: 609, column: 13},
+				end: {line: 609, column: 23}
 			})('FAILURE: expected to receive cards to be drawn, but got nothing');
 	} else {
 		var _v1 = a.a;
@@ -5964,8 +5968,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1835, column: 13},
-					end: {line: 1835, column: 23}
+					start: {line: 1842, column: 13},
+					end: {line: 1842, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -6620,13 +6624,64 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 							mesg = $temp$mesg;
 							mdl = $temp$mdl;
 							continue updateWithPotentialInfoOnDrawnCards;
+						case 'WaitForTrashBinClick':
+							var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+								$temp$mesg = $author$project$Main$Orig($author$project$Main$SendToTrashBinPart2),
+								$temp$mdl = mdl;
+							cardsDrawn = $temp$cardsDrawn;
+							mesg = $temp$mesg;
+							mdl = $temp$mdl;
+							continue updateWithPotentialInfoOnDrawnCards;
+						case 'AfterCircleSacrifice':
+							var remaining = currentStatus.a.remaining;
+							var profession = $author$project$Main$profFromHistoryStr(
+								A2($elm$core$String$left, 1, historySecond));
+							var index = function () {
+								var _v3 = remaining.whoseTurn;
+								if (_v3.$ === 'KeseTurn') {
+									return A2(
+										$elm$core$Maybe$withDefault,
+										_Debug_todo(
+											'Main',
+											{
+												start: {line: 285, column: 63},
+												end: {line: 285, column: 73}
+											})('cannot find an adequate piece in Kese\'s Hand'),
+										A2(
+											$elm_community$list_extra$List$Extra$findIndex,
+											$elm$core$Basics$eq(profession),
+											remaining.keseHand));
+								} else {
+									return A2(
+										$elm$core$Maybe$withDefault,
+										_Debug_todo(
+											'Main',
+											{
+												start: {line: 289, column: 63},
+												end: {line: 289, column: 73}
+											})('cannot find an adequate piece in Rima\'s Hand'),
+										A2(
+											$elm_community$list_extra$List$Extra$findIndex,
+											$elm$core$Basics$eq(profession),
+											remaining.rimaHand));
+								}
+							}();
+							var $temp$cardsDrawn = $elm$core$Maybe$Nothing,
+								$temp$mesg = $author$project$Main$Orig(
+								$author$project$Main$SendToTrashBinPart1(
+									{index: index, whoseHand: remaining.whoseTurn})),
+								$temp$mdl = mdl;
+							cardsDrawn = $temp$cardsDrawn;
+							mesg = $temp$mesg;
+							mdl = $temp$mdl;
+							continue updateWithPotentialInfoOnDrawnCards;
 						default:
 							return _Debug_todo(
 								'Main',
 								{
-									start: {line: 274, column: 21},
-									end: {line: 274, column: 31}
-								})('currently, only NothingSelected, MoverIsSelected and AfterSacrifice are supported');
+									start: {line: 294, column: 21},
+									end: {line: 294, column: 31}
+								})('currently, NowWaitingForAdditionalSacrifice is not yet supported');
 					}
 				case 'Orig':
 					var msg = mesg.a;
@@ -6696,9 +6751,6 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 	});
 var $author$project$Main$update = $author$project$Main$updateWithPotentialInfoOnDrawnCards($elm$core$Maybe$Nothing);
 var $author$project$Main$None = {$: 'None'};
-var $author$project$Main$SendToTrashBinPart1 = function (a) {
-	return {$: 'SendToTrashBinPart1', a: a};
-};
 var $author$project$Main$allCoordsOccupiedBy = F2(
 	function (color, board) {
 		return A2(
@@ -7640,7 +7692,6 @@ var $author$project$Main$turnEndButton = A2(
 		[
 			$elm$svg$Svg$text('ターンエンド')
 		]));
-var $author$project$Main$SendToTrashBinPart2 = {$: 'SendToTrashBinPart2'};
 var $author$project$SvgColor$trashBinColor = function (c) {
 	return c ? '#555' : '#eee';
 };

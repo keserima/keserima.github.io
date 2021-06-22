@@ -270,8 +270,28 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                     in
                     updateWithPotentialInfoOnDrawnCards Nothing (Orig (MovementToward to)) mdl
 
+                WaitForTrashBinClick _ ->
+                    updateWithPotentialInfoOnDrawnCards Nothing (Orig SendToTrashBinPart2) mdl
+
+                AfterCircleSacrifice { remaining } ->
+                    let
+                        profession =
+                            String.left 1 historySecond |> profFromHistoryStr
+
+                        index =
+                            case remaining.whoseTurn of
+                                KeseTurn ->
+                                    List.Extra.findIndex ((==) profession) remaining.keseHand
+                                        |> Maybe.withDefault (Debug.todo "cannot find an adequate piece in Kese's Hand")
+
+                                RimaTurn ->
+                                    List.Extra.findIndex ((==) profession) remaining.rimaHand
+                                        |> Maybe.withDefault (Debug.todo "cannot find an adequate piece in Rima's Hand")
+                    in
+                    updateWithPotentialInfoOnDrawnCards Nothing (Orig (SendToTrashBinPart1 { whoseHand = remaining.whoseTurn, index = index })) mdl
+
                 _ ->
-                    Debug.todo "currently, only NothingSelected, MoverIsSelected and AfterSacrifice are supported"
+                    Debug.todo "currently, NowWaitingForAdditionalSacrifice is not yet supported"
 
         {-
 
@@ -334,19 +354,6 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
 
                                else
                                    "[" ++ profToHistoryStr captured.prof ++ "]" ++ cardDrawn ++ ".\n" ++ whoseTurnToHistoryStr (invertWhoseTurn remaining.whoseTurn)
-
-           ( WaitForTrashBinClick _, SendToTrashBinPart2 ) ->
-               ""
-
-           ( AfterCircleSacrifice { remaining }, SendToTrashBinPart1 { whoseHand, index } ) ->
-               case whoseHand of
-                   KeseTurn ->
-                       List.Extra.getAt index remaining.keseHand |> Maybe.map profToHistoryStr |> unwrap
-
-                   RimaTurn ->
-                       List.Extra.getAt index remaining.rimaHand |> Maybe.map profToHistoryStr |> unwrap
-
-
         -}
         Orig msg ->
             let
