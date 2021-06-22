@@ -125,3 +125,44 @@ isWater coord =
 
         _ ->
             False
+
+
+profToHistoryStr : Profession -> String
+profToHistoryStr prof =
+    case prof of
+        Circle ->
+            "o"
+
+        HorizontalVertical ->
+            "+"
+
+        Diagonal ->
+            "x"
+
+        All ->
+            "*"
+
+whoseTurnToHistoryStr : WhoseTurn -> String
+whoseTurnToHistoryStr w =
+    case w of
+        KeseTurn ->
+            "K"
+
+        RimaTurn ->
+            "R"
+
+
+invertWhoseTurn : WhoseTurn -> WhoseTurn
+invertWhoseTurn w =
+    case w of
+        KeseTurn ->
+            RimaTurn
+
+        RimaTurn ->
+            KeseTurn
+
+
+coordToHistoryStr : Coordinate -> String
+coordToHistoryStr coord =
+    String.fromInt (coord.x + 1) ++ String.fromInt (coord.y + 1)
+

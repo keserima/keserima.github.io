@@ -5309,7 +5309,7 @@ var $author$project$Main$numToProf = function (n) {
 			return $author$project$KeseRimaTypes$Diagonal;
 	}
 };
-var $author$project$Main$profToHistoryStr = function (prof) {
+var $author$project$KeseRimaTypes$profToHistoryStr = function (prof) {
 	switch (prof.$) {
 		case 'Circle':
 			return 'o';
@@ -5410,10 +5410,10 @@ var $author$project$Main$init = function (flags) {
 				historyString: 'R' + ((flags.rimaDice ? '+' : 'x') + ('@11 ' + ('S' + ((flags.shipDice ? '+' : 'x') + ('@23 K' + ((flags.keseDice ? '+' : 'x') + ('@15\n' + ('K{' + (A2(
 					$elm$core$String$join,
 					'',
-					A2($elm$core$List$map, $author$project$Main$profToHistoryStr, keseHand)) + ('} ' + ('R{' + (A2(
+					A2($elm$core$List$map, $author$project$KeseRimaTypes$profToHistoryStr, keseHand)) + ('} ' + ('R{' + (A2(
 					$elm$core$String$join,
 					'',
-					A2($elm$core$List$map, $author$project$Main$profToHistoryStr, rimaHand)) + ('}\n--------------------------------\n' + (flags.keseGoesFirst ? 'K' : 'R')))))))))))))),
+					A2($elm$core$List$map, $author$project$KeseRimaTypes$profToHistoryStr, rimaHand)) + ('}\n--------------------------------\n' + (flags.keseGoesFirst ? 'K' : 'R')))))))))))))),
 				saved: initialStatus
 			}),
 		$elm$core$Platform$Cmd$none);
@@ -5440,7 +5440,7 @@ var $elm$core$String$dropRight = F2(
 	function (n, string) {
 		return (n < 1) ? string : A3($elm$core$String$slice, 0, -n, string);
 	});
-var $author$project$Main$coordToHistoryStr = function (coord) {
+var $author$project$KeseRimaTypes$coordToHistoryStr = function (coord) {
 	return _Utils_ap(
 		$elm$core$String$fromInt(coord.x + 1),
 		$elm$core$String$fromInt(coord.y + 1));
@@ -5515,7 +5515,7 @@ var $author$project$Main$getWhoseTurn = function (modl) {
 			return $elm$core$Maybe$Nothing;
 	}
 };
-var $author$project$Main$invertWhoseTurn = function (w) {
+var $author$project$KeseRimaTypes$invertWhoseTurn = function (w) {
 	if (w.$ === 'KeseTurn') {
 		return $author$project$KeseRimaTypes$RimaTurn;
 	} else {
@@ -5590,7 +5590,7 @@ var $elm$core$Maybe$map = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $author$project$Main$whoseTurnToHistoryStr = function (w) {
+var $author$project$KeseRimaTypes$whoseTurnToHistoryStr = function (w) {
 	if (w.$ === 'KeseTurn') {
 		return 'K';
 	} else {
@@ -5618,7 +5618,7 @@ var $author$project$Main$newHistory = F2(
 					return '~~~ ' + unwrap(
 						A2(
 							$elm$core$Maybe$map,
-							$author$project$Main$whoseTurnToHistoryStr,
+							$author$project$KeseRimaTypes$whoseTurnToHistoryStr,
 							$author$project$Main$getWhoseTurn(modl)));
 				case 'GiveFocusTo':
 					if (_v0.a.$ === 'NothingSelected') {
@@ -5629,7 +5629,7 @@ var $author$project$Main$newHistory = F2(
 								return unwrap(
 									A2(
 										$elm$core$Maybe$map,
-										$author$project$Main$profToHistoryStr,
+										$author$project$KeseRimaTypes$profToHistoryStr,
 										A2($elm_community$list_extra$List$Extra$getAt, index, cardState.keseHand)));
 							case 'PieceInRimaHand':
 								var cardState = _v0.a.a;
@@ -5637,7 +5637,7 @@ var $author$project$Main$newHistory = F2(
 								return unwrap(
 									A2(
 										$elm$core$Maybe$map,
-										$author$project$Main$profToHistoryStr,
+										$author$project$KeseRimaTypes$profToHistoryStr,
 										A2($elm_community$list_extra$List$Extra$getAt, index, cardState.rimaHand)));
 							default:
 								var cardState = _v0.a.a;
@@ -5653,8 +5653,8 @@ var $author$project$Main$newHistory = F2(
 									return _Utils_ap(
 										_Utils_eq(p.pieceColor, $author$project$KeseRimaTypes$Ship) ? 'S' : '',
 										_Utils_ap(
-											$author$project$Main$profToHistoryStr(p.prof),
-											$author$project$Main$coordToHistoryStr(p.coord)));
+											$author$project$KeseRimaTypes$profToHistoryStr(p.prof),
+											$author$project$KeseRimaTypes$coordToHistoryStr(p.coord)));
 								} else {
 									return 'ERROR!!!!!!!!';
 								}
@@ -5671,7 +5671,7 @@ var $author$project$Main$newHistory = F2(
 							var to = _v0.b.a;
 							switch (from.$) {
 								case 'PieceOnTheBoard':
-									return '-' + $author$project$Main$coordToHistoryStr(to);
+									return '-' + $author$project$KeseRimaTypes$coordToHistoryStr(to);
 								case 'PieceInKeseHand':
 									var _v5 = _Utils_Tuple2(cardState.keseHand, cardState.keseDeck);
 									if ((((_v5.a.b && (!_v5.a.b.b)) && _v5.b.b) && _v5.b.b.b) && _v5.b.b.b.b) {
@@ -5682,16 +5682,16 @@ var $author$project$Main$newHistory = F2(
 										var y = _v8.a;
 										var _v9 = _v8.b;
 										var z = _v9.a;
-										return $author$project$Main$coordToHistoryStr(to) + ('{' + (A2(
+										return $author$project$KeseRimaTypes$coordToHistoryStr(to) + ('{' + (A2(
 											$elm$core$String$join,
 											'',
 											A2(
 												$elm$core$List$map,
-												$author$project$Main$profToHistoryStr,
+												$author$project$KeseRimaTypes$profToHistoryStr,
 												_List_fromArray(
 													[x, y, z]))) + '}.\nR'));
 									} else {
-										return $author$project$Main$coordToHistoryStr(to) + '.\nR';
+										return $author$project$KeseRimaTypes$coordToHistoryStr(to) + '.\nR';
 									}
 								default:
 									var _v10 = _Utils_Tuple2(cardState.rimaHand, cardState.rimaDeck);
@@ -5703,22 +5703,22 @@ var $author$project$Main$newHistory = F2(
 										var y = _v13.a;
 										var _v14 = _v13.b;
 										var z = _v14.a;
-										return $author$project$Main$coordToHistoryStr(to) + ('{' + (A2(
+										return $author$project$KeseRimaTypes$coordToHistoryStr(to) + ('{' + (A2(
 											$elm$core$String$join,
 											'',
 											A2(
 												$elm$core$List$map,
-												$author$project$Main$profToHistoryStr,
+												$author$project$KeseRimaTypes$profToHistoryStr,
 												_List_fromArray(
 													[x, y, z]))) + '}.\nK'));
 									} else {
-										return $author$project$Main$coordToHistoryStr(to) + '.\nK';
+										return $author$project$KeseRimaTypes$coordToHistoryStr(to) + '.\nK';
 									}
 							}
 						case 'AfterSacrifice':
 							var _v15 = _v0.a;
 							var to = _v0.b.a;
-							return $author$project$Main$coordToHistoryStr(to);
+							return $author$project$KeseRimaTypes$coordToHistoryStr(to);
 						default:
 							break _v0$10;
 					}
@@ -5734,7 +5734,7 @@ var $author$project$Main$newHistory = F2(
 								return '{' + (A2(
 									$elm$core$String$join,
 									'',
-									A2($elm$core$List$map, $author$project$Main$profToHistoryStr, keseHand)) + '}');
+									A2($elm$core$List$map, $author$project$KeseRimaTypes$profToHistoryStr, keseHand)) + '}');
 							} else {
 								if ($elm$core$List$isEmpty(remaining.rimaHand)) {
 									var _v21 = $author$project$Main$drawUpToThree(remaining.rimaDeck);
@@ -5742,7 +5742,7 @@ var $author$project$Main$newHistory = F2(
 									return '{' + (A2(
 										$elm$core$String$join,
 										'',
-										A2($elm$core$List$map, $author$project$Main$profToHistoryStr, rimaHand)) + '}');
+										A2($elm$core$List$map, $author$project$KeseRimaTypes$profToHistoryStr, rimaHand)) + '}');
 								} else {
 									return '';
 								}
@@ -5755,19 +5755,19 @@ var $author$project$Main$newHistory = F2(
 							},
 							remaining.board);
 						if (!_v18.b) {
-							return cardDrawn + ('.\n' + $author$project$Main$whoseTurnToHistoryStr(
-								$author$project$Main$invertWhoseTurn(remaining.whoseTurn)));
+							return cardDrawn + ('.\n' + $author$project$KeseRimaTypes$whoseTurnToHistoryStr(
+								$author$project$KeseRimaTypes$invertWhoseTurn(remaining.whoseTurn)));
 						} else {
 							var captured = _v18.a;
 							var _v19 = remaining.whoseTurn;
 							if (_v19.$ === 'KeseTurn') {
 								var newCapturedByKese = A2($elm$core$List$cons, captured.prof, remaining.capturedByKese);
-								return $author$project$Main$isVictorious(newCapturedByKese) ? ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + (']' + (cardDrawn + '.\n--------------------------------\nKese')))) : ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + (']' + (cardDrawn + ('.\n' + $author$project$Main$whoseTurnToHistoryStr(
-									$author$project$Main$invertWhoseTurn(remaining.whoseTurn)))))));
+								return $author$project$Main$isVictorious(newCapturedByKese) ? ('[' + ($author$project$KeseRimaTypes$profToHistoryStr(captured.prof) + (']' + (cardDrawn + '.\n--------------------------------\nKese')))) : ('[' + ($author$project$KeseRimaTypes$profToHistoryStr(captured.prof) + (']' + (cardDrawn + ('.\n' + $author$project$KeseRimaTypes$whoseTurnToHistoryStr(
+									$author$project$KeseRimaTypes$invertWhoseTurn(remaining.whoseTurn)))))));
 							} else {
 								var newCapturedByRima = A2($elm$core$List$cons, captured.prof, remaining.capturedByRima);
-								return $author$project$Main$isVictorious(newCapturedByRima) ? ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + (']' + (cardDrawn + '.\n--------------------------------\nRima')))) : ('[' + ($author$project$Main$profToHistoryStr(captured.prof) + (']' + (cardDrawn + ('.\n' + $author$project$Main$whoseTurnToHistoryStr(
-									$author$project$Main$invertWhoseTurn(remaining.whoseTurn)))))));
+								return $author$project$Main$isVictorious(newCapturedByRima) ? ('[' + ($author$project$KeseRimaTypes$profToHistoryStr(captured.prof) + (']' + (cardDrawn + '.\n--------------------------------\nRima')))) : ('[' + ($author$project$KeseRimaTypes$profToHistoryStr(captured.prof) + (']' + (cardDrawn + ('.\n' + $author$project$KeseRimaTypes$whoseTurnToHistoryStr(
+									$author$project$KeseRimaTypes$invertWhoseTurn(remaining.whoseTurn)))))));
 							}
 						}
 					} else {
@@ -5790,13 +5790,13 @@ var $author$project$Main$newHistory = F2(
 								return unwrap(
 									A2(
 										$elm$core$Maybe$map,
-										$author$project$Main$profToHistoryStr,
+										$author$project$KeseRimaTypes$profToHistoryStr,
 										A2($elm_community$list_extra$List$Extra$getAt, index, remaining.keseHand)));
 							} else {
 								return unwrap(
 									A2(
 										$elm$core$Maybe$map,
-										$author$project$Main$profToHistoryStr,
+										$author$project$KeseRimaTypes$profToHistoryStr,
 										A2($elm_community$list_extra$List$Extra$getAt, index, remaining.rimaHand)));
 							}
 						case 'AfterCircleSacrifice':
@@ -5807,13 +5807,13 @@ var $author$project$Main$newHistory = F2(
 								return unwrap(
 									A2(
 										$elm$core$Maybe$map,
-										$author$project$Main$profToHistoryStr,
+										$author$project$KeseRimaTypes$profToHistoryStr,
 										A2($elm_community$list_extra$List$Extra$getAt, index, remaining.keseHand)));
 							} else {
 								return unwrap(
 									A2(
 										$elm$core$Maybe$map,
-										$author$project$Main$profToHistoryStr,
+										$author$project$KeseRimaTypes$profToHistoryStr,
 										A2($elm_community$list_extra$List$Extra$getAt, index, remaining.rimaHand)));
 							}
 						default:
