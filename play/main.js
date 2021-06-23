@@ -5859,6 +5859,22 @@ var $author$project$KeseRimaTypes$NowWaitingForAdditionalSacrifice = function (a
 var $author$project$KeseRimaTypes$WaitForTrashBinClick = function (a) {
 	return {$: 'WaitForTrashBinClick', a: a};
 };
+var $author$project$KeseRimaTypes$drawUpToThree = function (xs) {
+	if ((xs.b && xs.b.b) && xs.b.b.b) {
+		var a = xs.a;
+		var _v1 = xs.b;
+		var b = _v1.a;
+		var _v2 = _v1.b;
+		var c = _v2.a;
+		var ys = _v2.b;
+		return _Utils_Tuple2(
+			_List_fromArray(
+				[a, b, c]),
+			ys);
+	} else {
+		return _Utils_Tuple2(xs, _List_Nil);
+	}
+};
 var $elm_community$list_extra$List$Extra$remove = F2(
 	function (x, xs) {
 		if (!xs.b) {
@@ -6039,8 +6055,8 @@ var $author$project$KeseRimaTypes$robIth = F2(
 			A2($elm$core$List$drop, ind + 1, list));
 		return _Utils_Tuple2(xs, newList);
 	});
-var $author$project$Main$updateStatus = F3(
-	function (msg, modl, saved) {
+var $author$project$KeseRimaTypes$updateStatus_ = F5(
+	function (cardsDrawnInfoGen, d, msg, modl, saved) {
 		var _v0 = _Utils_Tuple2(modl, msg);
 		_v0$8:
 		while (true) {
@@ -6111,8 +6127,11 @@ var $author$project$Main$updateStatus = F3(
 												{
 													board: newBoard,
 													keseDeck: zs,
-													keseHand: _List_fromArray(
-														[x, y, z]),
+													keseHand: A2(
+														cardsDrawnInfoGen,
+														_List_fromArray(
+															[x, y, z]),
+														d),
 													whoseTurn: $author$project$KeseRimaTypes$RimaTurn
 												}));
 									} else {
@@ -6149,8 +6168,11 @@ var $author$project$Main$updateStatus = F3(
 												{
 													board: newBoard,
 													rimaDeck: zs,
-													rimaHand: _List_fromArray(
-														[x, y, z]),
+													rimaHand: A2(
+														cardsDrawnInfoGen,
+														_List_fromArray(
+															[x, y, z]),
+														d),
 													whoseTurn: $author$project$KeseRimaTypes$KeseTurn
 												}));
 									} else {
@@ -6182,20 +6204,26 @@ var $author$project$Main$updateStatus = F3(
 						var _v17 = _v0.b;
 						var cardDrawn = function () {
 							if ($elm$core$List$isEmpty(remaining.keseHand)) {
-								var _v21 = $author$project$Main$drawUpToThree(remaining.keseDeck);
+								var _v21 = $author$project$KeseRimaTypes$drawUpToThree(remaining.keseDeck);
 								var keseHand = _v21.a;
 								var keseDeck = _v21.b;
 								return _Utils_update(
 									remaining,
-									{keseDeck: keseDeck, keseHand: keseHand});
+									{
+										keseDeck: keseDeck,
+										keseHand: A2(cardsDrawnInfoGen, keseHand, d)
+									});
 							} else {
 								if ($elm$core$List$isEmpty(remaining.rimaHand)) {
-									var _v22 = $author$project$Main$drawUpToThree(remaining.rimaDeck);
+									var _v22 = $author$project$KeseRimaTypes$drawUpToThree(remaining.rimaDeck);
 									var rimaHand = _v22.a;
 									var rimaDeck = _v22.b;
 									return _Utils_update(
 										remaining,
-										{rimaDeck: rimaDeck, rimaHand: rimaHand});
+										{
+											rimaDeck: rimaDeck,
+											rimaHand: A2(cardsDrawnInfoGen, rimaHand, d)
+										});
 								} else {
 									return remaining;
 								}
@@ -6346,6 +6374,13 @@ var $author$project$Main$updateStatus = F3(
 		}
 		return modl;
 	});
+var $author$project$Main$updateStatus = A2(
+	$author$project$KeseRimaTypes$updateStatus_,
+	F2(
+		function (xyz, _v0) {
+			return xyz;
+		}),
+	_Utils_Tuple0);
 var $author$project$Main$update = F2(
 	function (msg, _v0) {
 		var historyString = _v0.a.historyString;

@@ -5347,8 +5347,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1463, column: 13},
-					end: {line: 1463, column: 23}
+					start: {line: 1221, column: 13},
+					end: {line: 1221, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -5578,7 +5578,7 @@ var $author$project$KeseRimaTypes$coordToHistoryStr = function (coord) {
 		$elm$core$String$fromInt(coord.x + 1),
 		$elm$core$String$fromInt(coord.y + 1));
 };
-var $author$project$Main$drawUpToThree = function (xs) {
+var $author$project$KeseRimaTypes$drawUpToThree = function (xs) {
 	if ((xs.b && xs.b.b) && xs.b.b.b) {
 		var a = xs.a;
 		var _v1 = xs.b;
@@ -5902,7 +5902,7 @@ var $author$project$Main$newHistory_ = F3(
 						var _v17 = _v0.b;
 						var cardDrawn = function () {
 							if ($elm$core$List$isEmpty(remaining.keseHand)) {
-								var _v20 = $author$project$Main$drawUpToThree(remaining.keseDeck);
+								var _v20 = $author$project$KeseRimaTypes$drawUpToThree(remaining.keseDeck);
 								return '{' + (A2(
 									$elm$core$String$join,
 									'',
@@ -5912,7 +5912,7 @@ var $author$project$Main$newHistory_ = F3(
 										$author$project$Main$unsafeDeckSummoning(cardsDrawn))) + '}');
 							} else {
 								if ($elm$core$List$isEmpty(remaining.rimaHand)) {
-									var _v21 = $author$project$Main$drawUpToThree(remaining.rimaDeck);
+									var _v21 = $author$project$KeseRimaTypes$drawUpToThree(remaining.rimaDeck);
 									return '{' + (A2(
 										$elm$core$String$join,
 										'',
@@ -6030,8 +6030,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1479, column: 13},
-					end: {line: 1479, column: 23}
+					start: {line: 1237, column: 13},
+					end: {line: 1237, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -6246,8 +6246,8 @@ var $author$project$KeseRimaTypes$robIth = F2(
 			A2($elm$core$List$drop, ind + 1, list));
 		return _Utils_Tuple2(xs, newList);
 	});
-var $author$project$Main$updateStatus = F4(
-	function (cardsDrawn, msg, modl, saved) {
+var $author$project$KeseRimaTypes$updateStatus_ = F5(
+	function (cardsDrawnInfoGen, d, msg, modl, saved) {
 		var _v0 = _Utils_Tuple2(modl, msg);
 		_v0$8:
 		while (true) {
@@ -6306,8 +6306,11 @@ var $author$project$Main$updateStatus = F4(
 									var _v7 = _Utils_Tuple2(newKeseHand, cardState.keseDeck);
 									if ((((!_v7.a.b) && _v7.b.b) && _v7.b.b.b) && _v7.b.b.b.b) {
 										var _v8 = _v7.b;
+										var x = _v8.a;
 										var _v9 = _v8.b;
+										var y = _v9.a;
 										var _v10 = _v9.b;
+										var z = _v10.a;
 										var zs = _v10.b;
 										return $author$project$KeseRimaTypes$NothingSelected(
 											_Utils_update(
@@ -6315,7 +6318,11 @@ var $author$project$Main$updateStatus = F4(
 												{
 													board: newBoard,
 													keseDeck: zs,
-													keseHand: $author$project$Main$unsafeDeckSummoning(cardsDrawn),
+													keseHand: A2(
+														cardsDrawnInfoGen,
+														_List_fromArray(
+															[x, y, z]),
+														d),
 													whoseTurn: $author$project$KeseRimaTypes$RimaTurn
 												}));
 									} else {
@@ -6340,8 +6347,11 @@ var $author$project$Main$updateStatus = F4(
 									var _v12 = _Utils_Tuple2(newRimaHand, cardState.rimaDeck);
 									if ((((!_v12.a.b) && _v12.b.b) && _v12.b.b.b) && _v12.b.b.b.b) {
 										var _v13 = _v12.b;
+										var x = _v13.a;
 										var _v14 = _v13.b;
+										var y = _v14.a;
 										var _v15 = _v14.b;
+										var z = _v15.a;
 										var zs = _v15.b;
 										return $author$project$KeseRimaTypes$NothingSelected(
 											_Utils_update(
@@ -6349,7 +6359,11 @@ var $author$project$Main$updateStatus = F4(
 												{
 													board: newBoard,
 													rimaDeck: zs,
-													rimaHand: $author$project$Main$unsafeDeckSummoning(cardsDrawn),
+													rimaHand: A2(
+														cardsDrawnInfoGen,
+														_List_fromArray(
+															[x, y, z]),
+														d),
 													whoseTurn: $author$project$KeseRimaTypes$KeseTurn
 												}));
 									} else {
@@ -6381,20 +6395,26 @@ var $author$project$Main$updateStatus = F4(
 						var _v17 = _v0.b;
 						var cardDrawn = function () {
 							if ($elm$core$List$isEmpty(remaining.keseHand)) {
-								var keseHand = $author$project$Main$unsafeDeckSummoning(cardsDrawn);
-								var _v21 = $author$project$Main$drawUpToThree(remaining.keseDeck);
+								var _v21 = $author$project$KeseRimaTypes$drawUpToThree(remaining.keseDeck);
+								var keseHand = _v21.a;
 								var keseDeck = _v21.b;
 								return _Utils_update(
 									remaining,
-									{keseDeck: keseDeck, keseHand: keseHand});
+									{
+										keseDeck: keseDeck,
+										keseHand: A2(cardsDrawnInfoGen, keseHand, d)
+									});
 							} else {
 								if ($elm$core$List$isEmpty(remaining.rimaHand)) {
-									var rimaHand = $author$project$Main$unsafeDeckSummoning(cardsDrawn);
-									var _v22 = $author$project$Main$drawUpToThree(remaining.rimaDeck);
+									var _v22 = $author$project$KeseRimaTypes$drawUpToThree(remaining.rimaDeck);
+									var rimaHand = _v22.a;
 									var rimaDeck = _v22.b;
 									return _Utils_update(
 										remaining,
-										{rimaDeck: rimaDeck, rimaHand: rimaHand});
+										{
+											rimaDeck: rimaDeck,
+											rimaHand: A2(cardsDrawnInfoGen, rimaHand, d)
+										});
 								} else {
 									return remaining;
 								}
@@ -6544,6 +6564,10 @@ var $author$project$Main$updateStatus = F4(
 			}
 		}
 		return modl;
+	});
+var $author$project$Main$updateStatus = $author$project$KeseRimaTypes$updateStatus_(
+	function (_v0) {
+		return $author$project$Main$unsafeDeckSummoning;
 	});
 var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 	function (cardsDrawn, mesg, mdl) {
