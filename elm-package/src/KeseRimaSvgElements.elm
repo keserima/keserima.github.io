@@ -188,3 +188,39 @@ pieceSvg__ toIcon strok msgToBeSent p =
             []
             :: glyph p.prof (foregroundColor p.pieceColor)
         )
+
+twoDecks : { a | keseDeck : List b, rimaDeck : List c } -> List (Svg msg)
+twoDecks model =
+    [ g [ id "keseDeck" ]
+        (List.indexedMap
+            (\i _ ->
+                rect
+                    [ x "535.7"
+                    , y (String.fromInt (504 - 80 - 10 * i))
+                    , width "80"
+                    , height "80"
+                    , fill (backgroundColor Kese)
+                    , strokeWidth "1"
+                    , stroke (strokeColor Kese)
+                    ]
+                    []
+            )
+            model.keseDeck
+        )
+    , g [ id "rimaDeck" ]
+        (List.indexedMap
+            (\i _ ->
+                rect
+                    [ x "535.7"
+                    , y (String.fromInt (10 * i))
+                    , width "80"
+                    , height "80"
+                    , fill (backgroundColor Rima)
+                    , strokeWidth "1"
+                    , stroke (strokeColor Rima)
+                    ]
+                    []
+            )
+            model.rimaDeck
+        )
+    ]

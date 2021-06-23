@@ -5347,8 +5347,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1499, column: 13},
-					end: {line: 1499, column: 23}
+					start: {line: 1468, column: 13},
+					end: {line: 1468, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -6030,8 +6030,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1515, column: 13},
-					end: {line: 1515, column: 23}
+					start: {line: 1484, column: 13},
+					end: {line: 1484, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -7140,16 +7140,6 @@ var $author$project$Main$captureAndTurnEndButton = A2(
 			$elm$svg$Svg$text('駒を取ってターンエンド')
 		]));
 var $elm$svg$Svg$defs = $elm$svg$Svg$trustedNode('defs');
-var $author$project$SvgColor$backgroundColor = function (pieceColor) {
-	switch (pieceColor.$) {
-		case 'Rima':
-			return '#c8beb7';
-		case 'Kese':
-			return '#483e37';
-		default:
-			return '#60859d';
-	}
-};
 var $author$project$Main$msgToIcon = function (msgToBeSent) {
 	_v0$2:
 	while (true) {
@@ -7168,6 +7158,16 @@ var $author$project$Main$msgToIcon = function (msgToBeSent) {
 		}
 	}
 	return 'pointer';
+};
+var $author$project$SvgColor$backgroundColor = function (pieceColor) {
+	switch (pieceColor.$) {
+		case 'Rima':
+			return '#c8beb7';
+		case 'Kese':
+			return '#483e37';
+		default:
+			return '#60859d';
+	}
 };
 var $author$project$SvgColor$foregroundColor = function (pieceColor) {
 	switch (pieceColor.$) {
@@ -7306,7 +7306,7 @@ var $author$project$SvgColor$strokeColor = function (c) {
 			return '#777';
 	}
 };
-var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
+var $author$project$KeseRimaSvgElements$twoDecks = function (model) {
 	return _List_fromArray(
 		[
 			A2(
@@ -7364,64 +7364,71 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 								]),
 							_List_Nil);
 					}),
-				model.rimaDeck)),
-			A2(
-			$elm$svg$Svg$g,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$id('capturedByKese')
-				]),
-			A2(
-				$elm$core$List$indexedMap,
-				F2(
-					function (i, prof) {
-						return A3(
-							$author$project$Main$pieceSvg_,
-							{
-								color: $author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Rima),
-								width: '1'
-							},
-							$author$project$Main$Orig($author$project$KeseRimaTypes$None),
-							{
-								coord: {
-									x: (-0.115) + (i * $author$project$KeseRimaSvgElements$spacing(
-										$elm$core$List$length(model.capturedByKese))),
-									y: 6.0
-								},
-								pieceColor: $author$project$KeseRimaTypes$Rima,
-								prof: prof
-							});
-					}),
-				model.capturedByKese)),
-			A2(
-			$elm$svg$Svg$g,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$id('capturedByRima')
-				]),
-			A2(
-				$elm$core$List$indexedMap,
-				F2(
-					function (i, prof) {
-						return A3(
-							$author$project$Main$pieceSvg_,
-							{
-								color: $author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Kese),
-								width: '1'
-							},
-							$author$project$Main$Orig($author$project$KeseRimaTypes$None),
-							{
-								coord: {
-									x: ((-0.115) + (5.0 * 0.846)) - (i * $author$project$KeseRimaSvgElements$spacing(
-										$elm$core$List$length(model.capturedByRima))),
-									y: -2.0
-								},
-								pieceColor: $author$project$KeseRimaTypes$Kese,
-								prof: prof
-							});
-					}),
-				model.capturedByRima))
+				model.rimaDeck))
 		]);
+};
+var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
+	return _Utils_ap(
+		$author$project$KeseRimaSvgElements$twoDecks(model),
+		_List_fromArray(
+			[
+				A2(
+				$elm$svg$Svg$g,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$id('capturedByKese')
+					]),
+				A2(
+					$elm$core$List$indexedMap,
+					F2(
+						function (i, prof) {
+							return A3(
+								$author$project$Main$pieceSvg_,
+								{
+									color: $author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Rima),
+									width: '1'
+								},
+								$author$project$Main$Orig($author$project$KeseRimaTypes$None),
+								{
+									coord: {
+										x: (-0.115) + (i * $author$project$KeseRimaSvgElements$spacing(
+											$elm$core$List$length(model.capturedByKese))),
+										y: 6.0
+									},
+									pieceColor: $author$project$KeseRimaTypes$Rima,
+									prof: prof
+								});
+						}),
+					model.capturedByKese)),
+				A2(
+				$elm$svg$Svg$g,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$id('capturedByRima')
+					]),
+				A2(
+					$elm$core$List$indexedMap,
+					F2(
+						function (i, prof) {
+							return A3(
+								$author$project$Main$pieceSvg_,
+								{
+									color: $author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Kese),
+									width: '1'
+								},
+								$author$project$Main$Orig($author$project$KeseRimaTypes$None),
+								{
+									coord: {
+										x: ((-0.115) + (5.0 * 0.846)) - (i * $author$project$KeseRimaSvgElements$spacing(
+											$elm$core$List$length(model.capturedByRima))),
+										y: -2.0
+									},
+									pieceColor: $author$project$KeseRimaTypes$Kese,
+									prof: prof
+								});
+						}),
+					model.capturedByRima))
+			]));
 };
 var $elm$svg$Svg$feGaussianBlur = $elm$svg$Svg$trustedNode('feGaussianBlur');
 var $elm$svg$Svg$filter = $elm$svg$Svg$trustedNode('filter');

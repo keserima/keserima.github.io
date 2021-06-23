@@ -918,83 +918,52 @@ drawUpToThree xs =
 
 displayCapturedCardsAndTwoDecks : { a | keseDeck : List b, rimaDeck : List c, capturedByKese : List Profession, capturedByRima : List Profession } -> List (Svg PlaybackMsg)
 displayCapturedCardsAndTwoDecks model =
-    [ g [ id "keseDeck" ]
-        (List.indexedMap
-            (\i _ ->
-                rect
-                    [ x "535.7"
-                    , y (String.fromInt (504 - 80 - 10 * i))
-                    , width "80"
-                    , height "80"
-                    , fill (backgroundColor Kese)
-                    , strokeWidth "1"
-                    , stroke (strokeColor Kese)
-                    ]
-                    []
-            )
-            model.keseDeck
-        )
-    , g [ id "rimaDeck" ]
-        (List.indexedMap
-            (\i _ ->
-                rect
-                    [ x "535.7"
-                    , y (String.fromInt (10 * i))
-                    , width "80"
-                    , height "80"
-                    , fill (backgroundColor Rima)
-                    , strokeWidth "1"
-                    , stroke (strokeColor Rima)
-                    ]
-                    []
-            )
-            model.rimaDeck
-        )
-    , g [ id "capturedByKese" ]
-        (List.indexedMap
-            (\i prof ->
-                pieceSvg_
-                    { color = strokeColor Rima
+    twoDecks model
+        ++ [ g [ id "capturedByKese" ]
+                (List.indexedMap
+                    (\i prof ->
+                        pieceSvg_
+                            { color = strokeColor Rima
 
-                    {- what is captured by Kese turns out to be Rima -}
-                    , width = "1"
-                    }
-                    (Orig None)
-                    { coord =
-                        { x =
-                            -0.115
-                                {- to handle the automatic offset and the 3px difference in the border -} + toFloat i
-                                * (KeseRimaSvgElements.spacing <| List.length <| model.capturedByKese)
-                        , y = 6.0
-                        }
-                    , prof = prof
-                    , pieceColor = Rima
-                    }
-            )
-            model.capturedByKese
-        )
-    , g [ id "capturedByRima" ]
-        (List.indexedMap
-            (\i prof ->
-                pieceSvg_
-                    { color = strokeColor Kese, width = "1" }
-                    (Orig None)
-                    { coord =
-                        { x =
-                            -0.115
-                                {- to handle the automatic offset and the 3px difference in the border -} + 5.0
-                                * 0.846
-                                - toFloat i
-                                * (KeseRimaSvgElements.spacing <| List.length <| model.capturedByRima)
-                        , y = -2.0
-                        }
-                    , prof = prof
-                    , pieceColor = Kese
-                    }
-            )
-            model.capturedByRima
-        )
-    ]
+                            {- what is captured by Kese turns out to be Rima -}
+                            , width = "1"
+                            }
+                            (Orig None)
+                            { coord =
+                                { x =
+                                    -0.115
+                                        {- to handle the automatic offset and the 3px difference in the border -} + toFloat i
+                                        * (KeseRimaSvgElements.spacing <| List.length <| model.capturedByKese)
+                                , y = 6.0
+                                }
+                            , prof = prof
+                            , pieceColor = Rima
+                            }
+                    )
+                    model.capturedByKese
+                )
+           , g [ id "capturedByRima" ]
+                (List.indexedMap
+                    (\i prof ->
+                        pieceSvg_
+                            { color = strokeColor Kese, width = "1" }
+                            (Orig None)
+                            { coord =
+                                { x =
+                                    -0.115
+                                        {- to handle the automatic offset and the 3px difference in the border -} + 5.0
+                                        * 0.846
+                                        - toFloat i
+                                        * (KeseRimaSvgElements.spacing <| List.length <| model.capturedByRima)
+                                , y = -2.0
+                                }
+                            , prof = prof
+                            , pieceColor = Kese
+                            }
+                    )
+                    model.capturedByRima
+                )
+           ]
 
 
 stationaryPart : StateOfCards -> List (Svg PlaybackMsg)
