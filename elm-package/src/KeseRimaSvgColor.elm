@@ -1,4 +1,4 @@
-module SvgColor exposing (..)
+module KeseRimaSvgColor exposing (..)
 
 import KeseRimaTypes exposing (..)
 

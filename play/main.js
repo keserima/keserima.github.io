@@ -6489,10 +6489,10 @@ var $author$project$KeseRimaTypes$isWater = function (coord) {
 	}
 	return false;
 };
-var $author$project$SvgColor$boardBackgroundColor = function (coord) {
+var $author$project$KeseRimaSvgColor$boardBackgroundColor = function (coord) {
 	return $author$project$KeseRimaTypes$isWater(coord) ? '#5e93b8' : '#ccc';
 };
-var $author$project$SvgColor$boardBorderColor = '#000';
+var $author$project$KeseRimaSvgColor$boardBorderColor = '#000';
 var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
 var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
 var $elm$svg$Svg$g = $elm$svg$Svg$trustedNode('g');
@@ -6526,8 +6526,8 @@ var $author$project$Main$boardSvg = _List_fromArray(
 							$elm$svg$Svg$Attributes$width('100'),
 							$elm$svg$Svg$Attributes$height('100'),
 							$elm$svg$Svg$Attributes$fill(
-							$author$project$SvgColor$boardBackgroundColor(coord)),
-							$elm$svg$Svg$Attributes$stroke($author$project$SvgColor$boardBorderColor),
+							$author$project$KeseRimaSvgColor$boardBackgroundColor(coord)),
+							$elm$svg$Svg$Attributes$stroke($author$project$KeseRimaSvgColor$boardBorderColor),
 							$elm$svg$Svg$Attributes$strokeWidth('4')
 						]),
 					_List_Nil);
@@ -6590,7 +6590,7 @@ var $author$project$Main$msgToIcon = function (msgToBeSent) {
 		return 'pointer';
 	}
 };
-var $author$project$SvgColor$backgroundColor = function (pieceColor) {
+var $author$project$KeseRimaSvgColor$backgroundColor = function (pieceColor) {
 	switch (pieceColor.$) {
 		case 'Rima':
 			return '#c8beb7';
@@ -6600,7 +6600,7 @@ var $author$project$SvgColor$backgroundColor = function (pieceColor) {
 			return '#60859d';
 	}
 };
-var $author$project$SvgColor$foregroundColor = function (pieceColor) {
+var $author$project$KeseRimaSvgColor$foregroundColor = function (pieceColor) {
 	switch (pieceColor.$) {
 		case 'Kese':
 			return '#c8beb7';
@@ -6713,7 +6713,7 @@ var $author$project$KeseRimaSvgElements$pieceSvg__ = F4(
 							$elm$svg$Svg$Attributes$width('80'),
 							$elm$svg$Svg$Attributes$height('80'),
 							$elm$svg$Svg$Attributes$fill(
-							$author$project$SvgColor$backgroundColor(p.pieceColor)),
+							$author$project$KeseRimaSvgColor$backgroundColor(p.pieceColor)),
 							$elm$svg$Svg$Attributes$stroke(strok.color),
 							$elm$svg$Svg$Attributes$strokeWidth(strok.width)
 						]),
@@ -6721,13 +6721,13 @@ var $author$project$KeseRimaSvgElements$pieceSvg__ = F4(
 				A2(
 					$author$project$KeseRimaSvgElements$glyph,
 					p.prof,
-					$author$project$SvgColor$foregroundColor(p.pieceColor))));
+					$author$project$KeseRimaSvgColor$foregroundColor(p.pieceColor))));
 	});
 var $author$project$Main$pieceSvg_ = $author$project$KeseRimaSvgElements$pieceSvg__($author$project$Main$msgToIcon);
 var $author$project$KeseRimaSvgElements$spacing = function (n) {
 	return (n <= 6) ? 0.846 : ((0.846 * 5.0) / (n - 1));
 };
-var $author$project$SvgColor$strokeColor = function (c) {
+var $author$project$KeseRimaSvgColor$strokeColor = function (c) {
 	switch (c.$) {
 		case 'Rima':
 			return '#000';
@@ -6760,10 +6760,10 @@ var $author$project$KeseRimaSvgElements$twoDecks = function (model) {
 									$elm$svg$Svg$Attributes$width('80'),
 									$elm$svg$Svg$Attributes$height('80'),
 									$elm$svg$Svg$Attributes$fill(
-									$author$project$SvgColor$backgroundColor($author$project$KeseRimaTypes$Kese)),
+									$author$project$KeseRimaSvgColor$backgroundColor($author$project$KeseRimaTypes$Kese)),
 									$elm$svg$Svg$Attributes$strokeWidth('1'),
 									$elm$svg$Svg$Attributes$stroke(
-									$author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Kese))
+									$author$project$KeseRimaSvgColor$strokeColor($author$project$KeseRimaTypes$Kese))
 								]),
 							_List_Nil);
 					}),
@@ -6788,10 +6788,10 @@ var $author$project$KeseRimaSvgElements$twoDecks = function (model) {
 									$elm$svg$Svg$Attributes$width('80'),
 									$elm$svg$Svg$Attributes$height('80'),
 									$elm$svg$Svg$Attributes$fill(
-									$author$project$SvgColor$backgroundColor($author$project$KeseRimaTypes$Rima)),
+									$author$project$KeseRimaSvgColor$backgroundColor($author$project$KeseRimaTypes$Rima)),
 									$elm$svg$Svg$Attributes$strokeWidth('1'),
 									$elm$svg$Svg$Attributes$stroke(
-									$author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Rima))
+									$author$project$KeseRimaSvgColor$strokeColor($author$project$KeseRimaTypes$Rima))
 								]),
 							_List_Nil);
 					}),
@@ -6816,7 +6816,7 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 							return A3(
 								$author$project$Main$pieceSvg_,
 								{
-									color: $author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Rima),
+									color: $author$project$KeseRimaSvgColor$strokeColor($author$project$KeseRimaTypes$Rima),
 									width: '1'
 								},
 								$author$project$KeseRimaTypes$None,
@@ -6844,7 +6844,7 @@ var $author$project$Main$displayCapturedCardsAndTwoDecks = function (model) {
 							return A3(
 								$author$project$Main$pieceSvg_,
 								{
-									color: $author$project$SvgColor$strokeColor($author$project$KeseRimaTypes$Kese),
+									color: $author$project$KeseRimaSvgColor$strokeColor($author$project$KeseRimaTypes$Kese),
 									width: '1'
 								},
 								$author$project$KeseRimaTypes$None,
@@ -7023,7 +7023,7 @@ var $author$project$KeseRimaTypes$getCandidatesYellowWithCommand = F4(
 				}
 			}());
 	});
-var $author$project$SvgColor$redCandidateColor = '#ff0000';
+var $author$project$KeseRimaSvgColor$redCandidateColor = '#ff0000';
 var $author$project$KeseRimaSvgElements$goalCandidateRedSvg = F2(
 	function (msgToBeSent, coord) {
 		return A2(
@@ -7045,12 +7045,12 @@ var $author$project$KeseRimaSvgElements$goalCandidateRedSvg = F2(
 							$elm$svg$Svg$Attributes$y('36'),
 							$elm$svg$Svg$Attributes$width('32'),
 							$elm$svg$Svg$Attributes$height('32'),
-							$elm$svg$Svg$Attributes$fill($author$project$SvgColor$redCandidateColor)
+							$elm$svg$Svg$Attributes$fill($author$project$KeseRimaSvgColor$redCandidateColor)
 						]),
 					_List_Nil)
 				]));
 	});
-var $author$project$SvgColor$yellowCandidateColor = '#ffff00';
+var $author$project$KeseRimaSvgColor$yellowCandidateColor = '#ffff00';
 var $author$project$KeseRimaSvgElements$goalCandidateYellowSvg = F2(
 	function (msgToBeSent, coord) {
 		return A2(
@@ -7071,7 +7071,7 @@ var $author$project$KeseRimaSvgElements$goalCandidateYellowSvg = F2(
 							$elm$svg$Svg$Attributes$cx('52'),
 							$elm$svg$Svg$Attributes$cy('52'),
 							$elm$svg$Svg$Attributes$r('16'),
-							$elm$svg$Svg$Attributes$fill($author$project$SvgColor$yellowCandidateColor)
+							$elm$svg$Svg$Attributes$fill($author$project$KeseRimaSvgColor$yellowCandidateColor)
 						]),
 					_List_Nil)
 				]));
@@ -7084,7 +7084,7 @@ var $author$project$Main$keseHandPos = F2(
 			prof: prof
 		};
 	});
-var $author$project$SvgColor$borderColor = function (c) {
+var $author$project$KeseRimaSvgColor$borderColor = function (c) {
 	switch (c.$) {
 		case 'Rima':
 			return '#005242';
@@ -7097,7 +7097,7 @@ var $author$project$SvgColor$borderColor = function (c) {
 var $author$project$Main$pieceSvg = F3(
 	function (focused, msgToBeSent, p) {
 		var strok = focused ? {
-			color: $author$project$SvgColor$borderColor(p.pieceColor),
+			color: $author$project$KeseRimaSvgColor$borderColor(p.pieceColor),
 			width: '10'
 		} : {color: 'none', width: 'none'};
 		return A3($author$project$Main$pieceSvg_, strok, msgToBeSent, p);
@@ -7117,7 +7117,7 @@ var $author$project$Main$pieceSvgOnGrid = F3(
 				prof: prof
 			});
 	});
-var $author$project$SvgColor$floatingPieceBorderColor = '#ffff00';
+var $author$project$KeseRimaSvgColor$floatingPieceBorderColor = '#ffff00';
 var $author$project$KeseRimaSvgElements$pieceWaitingForAdditionalCommandSvg = function (p) {
 	return A2(
 		$elm$svg$Svg$g,
@@ -7138,18 +7138,18 @@ var $author$project$KeseRimaSvgElements$pieceWaitingForAdditionalCommandSvg = fu
 						$elm$svg$Svg$Attributes$width('80'),
 						$elm$svg$Svg$Attributes$height('80'),
 						$elm$svg$Svg$Attributes$fill(
-						$author$project$SvgColor$backgroundColor(p.pieceColor)),
-						$elm$svg$Svg$Attributes$stroke($author$project$SvgColor$floatingPieceBorderColor),
+						$author$project$KeseRimaSvgColor$backgroundColor(p.pieceColor)),
+						$elm$svg$Svg$Attributes$stroke($author$project$KeseRimaSvgColor$floatingPieceBorderColor),
 						$elm$svg$Svg$Attributes$strokeWidth('2')
 					]),
 				_List_Nil),
 			A2(
 				$author$project$KeseRimaSvgElements$glyph,
 				p.prof,
-				$author$project$SvgColor$foregroundColor(p.pieceColor))));
+				$author$project$KeseRimaSvgColor$foregroundColor(p.pieceColor))));
 };
-var $author$project$SvgColor$blurShadowColor = '#404040';
-var $author$project$SvgColor$crownColor = '#ffff00';
+var $author$project$KeseRimaSvgColor$blurShadowColor = '#404040';
+var $author$project$KeseRimaSvgColor$crownColor = '#ffff00';
 var $elm$svg$Svg$Attributes$style = _VirtualDom_attribute('style');
 var $author$project$KeseRimaTypes$toColor = function (w) {
 	if (w.$ === 'KeseTurn') {
@@ -7182,7 +7182,7 @@ var $author$project$KeseRimaSvgElements$playerSvg = F2(
 				$elm$svg$Svg$Attributes$y('-12'),
 				$elm$svg$Svg$Attributes$width('24'),
 				$elm$svg$Svg$Attributes$height('24'),
-				$elm$svg$Svg$Attributes$fill($author$project$SvgColor$crownColor)
+				$elm$svg$Svg$Attributes$fill($author$project$KeseRimaSvgColor$crownColor)
 			]);
 		var crown = _List_fromArray(
 			[
@@ -7213,7 +7213,7 @@ var $author$project$KeseRimaSvgElements$playerSvg = F2(
 						$elm$svg$Svg$Attributes$cy('0'),
 						$elm$svg$Svg$Attributes$r('12'),
 						$elm$svg$Svg$Attributes$fill(
-						$author$project$SvgColor$backgroundColor(color))
+						$author$project$KeseRimaSvgColor$backgroundColor(color))
 					]),
 				_List_Nil),
 				A2(
@@ -7224,7 +7224,7 @@ var $author$project$KeseRimaSvgElements$playerSvg = F2(
 						$elm$svg$Svg$Attributes$cy('-5.5'),
 						$elm$svg$Svg$Attributes$r('4'),
 						$elm$svg$Svg$Attributes$fill(
-						$author$project$SvgColor$foregroundColor(color))
+						$author$project$KeseRimaSvgColor$foregroundColor(color))
 					]),
 				_List_Nil),
 				A2(
@@ -7232,7 +7232,7 @@ var $author$project$KeseRimaSvgElements$playerSvg = F2(
 				_List_fromArray(
 					[
 						$elm$svg$Svg$Attributes$fill(
-						$author$project$SvgColor$foregroundColor(color)),
+						$author$project$KeseRimaSvgColor$foregroundColor(color)),
 						$elm$svg$Svg$Attributes$d('m 0,0.5 c -3,0 -5.8,1 -8,3 v 3 h 16 v -3 c -2.2,-2 -5,-3 -8,-3 z')
 					]),
 				_List_Nil)
@@ -7245,8 +7245,8 @@ var $author$project$KeseRimaSvgElements$playerSvg = F2(
 					$elm$svg$Svg$Attributes$cy('0'),
 					$elm$svg$Svg$Attributes$r('12'),
 					$elm$svg$Svg$Attributes$fill(
-					$author$project$SvgColor$backgroundColor(color)),
-					$elm$svg$Svg$Attributes$style('fill:' + ($author$project$SvgColor$blurShadowColor + ';fill-opacity:1;filter:url(#blur)'))
+					$author$project$KeseRimaSvgColor$backgroundColor(color)),
+					$elm$svg$Svg$Attributes$style('fill:' + ($author$project$KeseRimaSvgColor$blurShadowColor + ';fill-opacity:1;filter:url(#blur)'))
 				]),
 			_List_Nil);
 		return o.bigAndBlurred ? (o.victoryCrown ? A2(
@@ -7358,7 +7358,7 @@ var $author$project$Main$turnEndButton = A2(
 			$elm$svg$Svg$text('ターンエンド')
 		]));
 var $author$project$KeseRimaTypes$SendToTrashBinPart2 = {$: 'SendToTrashBinPart2'};
-var $author$project$SvgColor$trashBinColor = function (c) {
+var $author$project$KeseRimaSvgColor$trashBinColor = function (c) {
 	return c ? '#555' : '#eee';
 };
 var $author$project$KeseRimaSvgElements$trashBinSvg = _List_fromArray(
@@ -7386,7 +7386,7 @@ var $author$project$KeseRimaSvgElements$trashBinSvg_ = function (clickable) {
 				$elm$svg$Svg$Events$onClick($author$project$KeseRimaTypes$SendToTrashBinPart2),
 				A2($elm$html$Html$Attributes$style, 'cursor', 'pointer'),
 				$elm$svg$Svg$Attributes$fill(
-				$author$project$SvgColor$trashBinColor(clickable))
+				$author$project$KeseRimaSvgColor$trashBinColor(clickable))
 			]),
 		_Utils_ap(
 			$author$project$KeseRimaSvgElements$trashBinSvg,
@@ -7399,7 +7399,7 @@ var $author$project$KeseRimaSvgElements$trashBinSvg_ = function (clickable) {
 							$elm$svg$Svg$Attributes$cx('45'),
 							$elm$svg$Svg$Attributes$cy('55'),
 							$elm$svg$Svg$Attributes$r('16'),
-							$elm$svg$Svg$Attributes$fill($author$project$SvgColor$yellowCandidateColor)
+							$elm$svg$Svg$Attributes$fill($author$project$KeseRimaSvgColor$yellowCandidateColor)
 						]),
 					_List_Nil)
 				]))) : A2(
@@ -7407,7 +7407,7 @@ var $author$project$KeseRimaSvgElements$trashBinSvg_ = function (clickable) {
 		_List_fromArray(
 			[
 				$elm$svg$Svg$Attributes$fill(
-				$author$project$SvgColor$trashBinColor(clickable))
+				$author$project$KeseRimaSvgColor$trashBinColor(clickable))
 			]),
 		$author$project$KeseRimaSvgElements$trashBinSvg);
 };

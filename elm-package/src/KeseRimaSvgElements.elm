@@ -3,7 +3,7 @@ import KeseRimaTypes exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (..)
-import SvgColor exposing (..)
+import KeseRimaSvgColor exposing (..)
 import Html.Attributes
 
 glyph : Profession -> String -> List (Svg msg)

@@ -3,23 +3,19 @@ module Main exposing (init, main, view)
 import Browser
 import Html exposing (Html)
 import Html.Attributes exposing (href)
+import KeseRimaSvgColor exposing (..)
 import KeseRimaSvgElements exposing (..)
 import KeseRimaTypes exposing (..)
-import List.Extra exposing (filterNot)
+import List.Extra
 import Regex
-import Svg exposing (..)
-import Svg.Attributes exposing (..)
-import Svg.Events exposing (..)
-import SvgColor exposing (..)
-import Url.Builder exposing (..)
+import Svg exposing (Attribute, Svg, defs, feGaussianBlur, g, rect, svg, text)
+import Svg.Attributes exposing (fill, height, id, result, stdDeviation, stroke, strokeWidth, transform, viewBox, width, x, y)
+import Svg.Events exposing (onClick)
+import Url.Builder exposing (crossOrigin)
 
 
 type alias StateOfCards =
     StateOfCards_ Profession
-
-
-type alias FloatingMover =
-    FloatingMover_ Profession
 
 
 type alias Flags =

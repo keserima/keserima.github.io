@@ -4,6 +4,7 @@ import Browser
 import Debug
 import Html exposing (Html)
 import Html.Attributes exposing (href, src)
+import KeseRimaSvgColor exposing (..)
 import KeseRimaSvgElements exposing (..)
 import KeseRimaTypes exposing (..)
 import List.Extra
@@ -12,7 +13,6 @@ import String exposing (String)
 import Svg exposing (Attribute, Svg, defs, feGaussianBlur, g, rect, svg, text)
 import Svg.Attributes exposing (fill, height, id, result, stdDeviation, stroke, strokeWidth, transform, viewBox, width, x, y)
 import Svg.Events exposing (onClick)
-import SvgColor exposing (..)
 
 
 type alias StateOfCards =
