@@ -5347,8 +5347,8 @@ var $author$project$Main$profFromHistoryChar = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1468, column: 13},
-					end: {line: 1468, column: 23}
+					start: {line: 1463, column: 13},
+					end: {line: 1463, column: 23}
 				})(
 				'unexpected `' + ($elm$core$String$fromChar(c) + '` encountered while expecting a profession'));
 	}
@@ -5496,8 +5496,8 @@ var $author$project$Main$coordFromHistoryStr = function (q) {
 				return _Debug_todo(
 					'Main',
 					{
-						start: {line: 95, column: 21},
-						end: {line: 95, column: 31}
+						start: {line: 90, column: 21},
+						end: {line: 90, column: 31}
 					})('unexpected `' + (u + '` encountered while expecting a coordinate'));
 		}
 	};
@@ -5551,8 +5551,8 @@ var $author$project$Main$getIndexFromProf = F2(
 				return _Debug_todo(
 					'Main',
 					{
-						start: {line: 432, column: 21},
-						end: {line: 432, column: 31}
+						start: {line: 427, column: 21},
+						end: {line: 427, column: 31}
 					})('cannot find an adequate piece in Kese\'s Hand 1');
 			}
 		} else {
@@ -5567,8 +5567,8 @@ var $author$project$Main$getIndexFromProf = F2(
 				return _Debug_todo(
 					'Main',
 					{
-						start: {line: 440, column: 21},
-						end: {line: 440, column: 31}
+						start: {line: 435, column: 21},
+						end: {line: 435, column: 31}
 					})('cannot find an adequate piece in Rima\'s Hand 1');
 			}
 		}
@@ -5757,8 +5757,8 @@ var $author$project$Main$unsafeDeckSummoning = function (a) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 600, column: 13},
-					end: {line: 600, column: 23}
+					start: {line: 595, column: 13},
+					end: {line: 595, column: 23}
 				})('FAILURE: expected to receive cards to be drawn, but got nothing');
 		case 'ThreeCards':
 			var _v1 = a.a;
@@ -6030,8 +6030,8 @@ var $author$project$Main$profFromHistoryStr = function (c) {
 			return _Debug_todo(
 				'Main',
 				{
-					start: {line: 1484, column: 13},
-					end: {line: 1484, column: 23}
+					start: {line: 1479, column: 13},
+					end: {line: 1479, column: 23}
 				})('unexpected `' + (c + '` encountered while expecting a profession'));
 	}
 };
@@ -6597,8 +6597,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 													return _Debug_todo(
 														'Main',
 														{
-															start: {line: 159, column: 49},
-															end: {line: 159, column: 59}
+															start: {line: 154, column: 49},
+															end: {line: 154, column: 59}
 														})('cannot find an adequate piece in Kese\'s Hand 2');
 												}
 											} else {
@@ -6614,8 +6614,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 													return _Debug_todo(
 														'Main',
 														{
-															start: {line: 169, column: 49},
-															end: {line: 169, column: 59}
+															start: {line: 164, column: 49},
+															end: {line: 164, column: 59}
 														})('cannot find an adequate piece in Rima\'s Hand 2');
 												}
 											}
@@ -6645,8 +6645,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 														return _Debug_todo(
 															'Main',
 															{
-																start: {line: 198, column: 49},
-																end: {line: 198, column: 59}
+																start: {line: 193, column: 49},
+																end: {line: 193, column: 59}
 															})('cannot find an adequate piece in Kese\'s Hand 2');
 													}
 												} else {
@@ -6662,8 +6662,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 														return _Debug_todo(
 															'Main',
 															{
-																start: {line: 208, column: 49},
-																end: {line: 208, column: 59}
+																start: {line: 203, column: 49},
+																end: {line: 203, column: 59}
 															})('cannot find an adequate piece in Rima\'s Hand 2');
 													}
 												}
@@ -6745,8 +6745,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 											return _Debug_todo(
 												'Main',
 												{
-													start: {line: 263, column: 37},
-													end: {line: 263, column: 47}
+													start: {line: 258, column: 37},
+													end: {line: 258, column: 47}
 												})('Unexpected character. Expected `.` or `{`');
 										}
 									}
@@ -6882,8 +6882,8 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 								return _Debug_todo(
 									'Main',
 									{
-										start: {line: 361, column: 25},
-										end: {line: 361, column: 35}
+										start: {line: 356, column: 25},
+										end: {line: 356, column: 35}
 									})('oh no!');
 						}
 					}

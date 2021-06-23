@@ -6,22 +6,17 @@ import Html exposing (Html)
 import Html.Attributes exposing (href, src)
 import KeseRimaSvgElements exposing (..)
 import KeseRimaTypes exposing (..)
-import List.Extra exposing (filterNot)
+import List.Extra
 import Regex
 import String exposing (String)
-import Svg exposing (..)
-import Svg.Attributes exposing (..)
-import Svg.Events exposing (..)
+import Svg exposing (Attribute, Svg, defs, feGaussianBlur, g, rect, svg, text)
+import Svg.Attributes exposing (fill, height, id, result, stdDeviation, stroke, strokeWidth, transform, viewBox, width, x, y)
+import Svg.Events exposing (onClick)
 import SvgColor exposing (..)
-import Url.Builder exposing (..)
 
 
 type alias StateOfCards =
     StateOfCards_ ()
-
-
-type alias FloatingMover =
-    FloatingMover_ ()
 
 
 type alias Flags =
