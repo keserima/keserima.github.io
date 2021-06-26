@@ -173,6 +173,11 @@ twoConsecutivePasses =
     Maybe.withDefault Regex.never <|
         Regex.fromString "([RK]o[1-5][1-5]-[1-5][1-5]\\.\\n){2}"
 
+sixConsecutiveShipMovements : Regex.Regex
+sixConsecutiveShipMovements =
+    {- Unforgivable dark magic -}
+    Maybe.withDefault Regex.never <|
+        Regex.fromString "([RK]S[^.]*\\.\\n){6}"
 
 getWhoseTurn : CurrentStatus_ a -> Maybe WhoseTurn
 getWhoseTurn modl =

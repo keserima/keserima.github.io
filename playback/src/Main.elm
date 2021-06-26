@@ -367,7 +367,7 @@ updateWithPotentialInfoOnDrawnCards cardsDrawn mesg ((Model { historyFirst, hist
                 newStat =
                     updateStatus cardsDrawn msg currentStatus saved
             in
-            if Regex.contains twoConsecutivePasses newHist then
+            if Regex.contains twoConsecutivePasses newHist || Regex.contains sixConsecutiveShipMovements newHist then
                 case newStat of
                     NothingSelected cardState ->
                         let

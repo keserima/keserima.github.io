@@ -6043,6 +6043,10 @@ var $elm$regex$Regex$fromString = function (string) {
 		string);
 };
 var $elm$regex$Regex$never = _Regex_never;
+var $author$project$KeseRimaTypes$sixConsecutiveShipMovements = A2(
+	$elm$core$Maybe$withDefault,
+	$elm$regex$Regex$never,
+	$elm$regex$Regex$fromString('([RK]S[^.]*\\.\\n){6}'));
 var $author$project$KeseRimaTypes$twoConsecutivePasses = A2(
 	$elm$core$Maybe$withDefault,
 	$elm$regex$Regex$never,
@@ -6930,7 +6934,7 @@ var $author$project$Main$updateWithPotentialInfoOnDrawnCards = F3(
 							cardsDrawn,
 							$author$project$Main$Orig(msg),
 							currentStatus));
-					if (A2($elm$regex$Regex$contains, $author$project$KeseRimaTypes$twoConsecutivePasses, newHist)) {
+					if (A2($elm$regex$Regex$contains, $author$project$KeseRimaTypes$twoConsecutivePasses, newHist) || A2($elm$regex$Regex$contains, $author$project$KeseRimaTypes$sixConsecutiveShipMovements, newHist)) {
 						if (newStat.$ === 'NothingSelected') {
 							var cardState = newStat.a;
 							var gameEnd = $author$project$KeseRimaTypes$GameTerminated(

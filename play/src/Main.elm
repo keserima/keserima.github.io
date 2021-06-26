@@ -58,7 +58,7 @@ update msg (Model { historyString, currentStatus, saved }) =
         newStat =
             updateStatus msg currentStatus saved
     in
-    if Regex.contains twoConsecutivePasses newHist then
+    if Regex.contains twoConsecutivePasses newHist || Regex.contains sixConsecutiveShipMovements newHist then
         case newStat of
             NothingSelected cardState ->
                 let
@@ -405,6 +405,7 @@ view_ gameEndTweet history svgContent buttons =
                     , "2021/06/13 16:13(UTC+09:00) キャンセルの足し忘れを修正"
                     , "2021/06/13 23:38(UTC+09:00) ボタンに色を付けてスペースも入れた"
                     , "2021/06/15 12:36(UTC+09:00) ページのレイアウトを調整"
+                    , "2021/06/27 03:07(UTC+09:00) 6船ルールを実装"
                     ]
                 )
             , Html.p [ Html.Attributes.style "font-size" "80%" ]
